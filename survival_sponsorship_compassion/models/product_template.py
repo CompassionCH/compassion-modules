@@ -8,13 +8,12 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     survival_sponsorship_sale = fields.Boolean(
-        default=False,
-        help="The product can be sold as a survival sponsorship one"
+        default=False, help="The product can be sold as a survival sponsorship one"
     )

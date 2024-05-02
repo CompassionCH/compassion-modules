@@ -9,19 +9,20 @@
 ##############################################################################
 from dateutil.relativedelta import relativedelta
 
-import odoo.fields
-from odoo import fields, models, api
+from odoo import fields, models
 
 
 class RecurringContract(models.Model):
     _inherit = ["recurring.contract"]
 
-    type = fields.Selection(selection_add=[('CSP', 'Survival Sponsorship')],ondelete={'CSP': 'set default'})
+    type = fields.Selection(
+        selection_add=[("CSP", "Survival Sponsorship")], ondelete={"CSP": "set default"}
+    )
 
     def invoice_paid(self, invoice):
         super().invoice_paid(invoice)
-        self.filtered(lambda c: c.type == 'CSP').contract_active()
+        self.filtered(lambda c: c.type == "CSP").contract_active()
 
     def limited_time(self):
         for contract in self:
-            contract.end_date = odoo.fields.datetime.now() + relativedelta(months=18)
+            contract.end_date = fields.datetime.now() + relativedelta(months=18)

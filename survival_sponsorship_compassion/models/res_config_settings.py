@@ -8,11 +8,12 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 
 class ResConfigSettings(models.TransientModel):
-    """ Settings configuration for warning notifications"""
+    """Settings configuration for warning notifications"""
+
     _inherit = "res.config.settings"
 
     survival_sponsorship_warn_user_ids = fields.Many2many(

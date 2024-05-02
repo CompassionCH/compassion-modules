@@ -30,26 +30,26 @@
 {
     "name": "Compassion Survival Sponsorships",
     "version": "14.0.1.0.0",
-    "summary": "New type for the sponsorships that add the possibility to sponsor a country in the survival program (CSP).",
-    "description": """Add products related to that new sponsorship type and some specific calculations such as the number of places available for a product.""",
+    "summary": "New type for the sponsorships that add the possibility "
+    "to sponsor a country in the survival program (CSP).",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "sponsorship_compassion",  # compassion-modules
         "intervention_compassion",  # compassion-modules
     ],
     "data": [
-        'views/product_product_view.xml',
-        'views/product_template_view.xml',
-        'views/recurring_contract.xml',
-        'views/res_config_settings_view.xml',
-        'data/product_warning_automation.xml',
-        'data/survival_product_template.xml'
+        "views/product_product_view.xml",
+        "views/product_template_view.xml",
+        "views/recurring_contract.xml",
+        "views/res_config_settings_view.xml",
+        "data/product_warning_automation.xml",
+        "data/survival_product_template.xml",
     ],
     "demo": [],
     "installable": True,
     "auto_install": False,
-    "development_status": "Stable",
+    "development_status": "Production/Stable",
 }

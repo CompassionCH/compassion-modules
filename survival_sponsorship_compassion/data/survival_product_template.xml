@@ -5,6 +5,6 @@
             <field name="type">service</field>
             <field name="survival_sponsorship_sale">True</field>
         </record>
-        <function name="create_missing_products" model="product.product"/>
+        <function name="create_missing_products" model="product.product" />
     </data>
 </odoo>
