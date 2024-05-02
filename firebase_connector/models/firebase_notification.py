@@ -123,7 +123,6 @@ class FirebaseNotification(models.Model):
             if notif.send_date < dt:
                 raise UserError(_("Send date should be in the future"))
 
-    @api.multi
     def send(self, **kwargs):
         """
         This method take a notification object in Odoo and send it to the
@@ -185,7 +184,6 @@ class FirebaseNotification(models.Model):
                 self.env.clear()
                 _logger.error("Error while sending notifications", exc_info=True)
 
-    @api.multi
     def send_multicast_and_handle_errors(self, registration_ids, notif, data=None):
         if not firebase_app:
             _logger.error(
@@ -268,7 +266,6 @@ class FirebaseNotification(models.Model):
                     }
                 )
 
-    @api.multi
     def duplicate_to_unread(self):
         self.ensure_one()
 
@@ -305,7 +302,6 @@ class FirebaseNotification(models.Model):
         ]).send()
         return True
 
-    @api.multi
     def schedule(self):
         stage_id = self.env.ref('firebase_connector.notification_stage_2').id
         if self.send_date:
