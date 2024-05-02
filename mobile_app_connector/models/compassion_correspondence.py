@@ -20,7 +20,6 @@ class CompassionCorrespondence(models.Model):
     _name = "correspondence"
     _inherit = ["correspondence", "compassion.mapped.model"]
 
-    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile
@@ -168,7 +167,6 @@ class CompassionCorrespondence(models.Model):
         )
         return f"{web_base_url}/web/image/{gen._name}/{gen.id}/preview_pdf"
 
-    @api.multi
     def mobile_send_letter(self, *params, **parameters):
         """
         Function called by the app upon clicking on send letter.
@@ -235,7 +233,6 @@ class CompassionCorrespondence(models.Model):
             "DbId": gen[:1].ids,
         }
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if mapping_name != "mobile_app_correspondence":

@@ -122,7 +122,6 @@ class AppTile(models.Model):
                 tile._onchange_subtype()
         return True
 
-    @api.multi
     def render_tile(self, tile_data=None):
         """
         This is the main function rendering the JSON for the mobile app.
@@ -245,7 +244,6 @@ class AppTile(models.Model):
             res["OrderDate"] = self.create_date
         return res
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

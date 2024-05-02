@@ -58,7 +58,6 @@ class WordpressPost(models.Model):
 
     _sql_constraints = [("wp_unique", "unique(wp_id)", "This post already exists")]
 
-    @api.multi
     @api.depends("category_ids", "category_ids.default_tile_type")
     def _compute_tile_type(self):
         for post in self:
@@ -66,12 +65,10 @@ class WordpressPost(models.Model):
             if default_types and not post.tile_type:
                 post.tile_type = default_types[0]
 
-    @api.multi
     def _compute_tile_subtype(self):
         for post in self:
             post.tile_subtype = "PR2" if post.tile_type == "Prayer" else "ST_T1"
 
-    @api.multi
     def _inverse_tile_type(self):
         # Simply allows to write in field
         return True
@@ -262,7 +259,6 @@ class WordpressPost(models.Model):
         """
         return self.env["res.lang"].search([("code", "!=", "en_US")])
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

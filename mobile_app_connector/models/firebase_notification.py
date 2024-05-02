@@ -42,7 +42,6 @@ class FirebaseNotification(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def send(self, **kwargs):
         """
         Filters notifications w.r.t. user's preference

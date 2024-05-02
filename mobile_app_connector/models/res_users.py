@@ -18,7 +18,6 @@ class CompassionLogin(models.Model):
     _name = "res.users"
     _inherit = ["res.users", "compassion.mapped.model"]
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

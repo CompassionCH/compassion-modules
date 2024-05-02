@@ -49,7 +49,6 @@
     <record id="action_mobile_app_tile_type" model="ir.actions.act_window">
         <field name="name">Tile type</field>
         <field name="res_model">mobile.app.tile.type</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -125,7 +124,6 @@
     <record id="action_mobile_app_tile_subtype" model="ir.actions.act_window">
         <field name="name">Tile subtype</field>
         <field name="res_model">mobile.app.tile.subtype</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 

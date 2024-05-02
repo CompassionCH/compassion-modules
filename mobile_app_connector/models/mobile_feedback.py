@@ -74,11 +74,9 @@ class MobileFeedback(models.Model):
 
         return record.id
 
-    @api.multi
     def mark_read(self):
         return self.write({"state": "read"})
 
-    @api.multi
     def create_crm_claim(self):
         self.ensure_one()
         return self.with_context(lang=self.language)._create_claim()

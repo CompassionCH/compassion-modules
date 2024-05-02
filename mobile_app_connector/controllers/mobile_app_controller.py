@@ -190,7 +190,7 @@ class RestController(http.Controller):
             if partner_id == request.env.user.partner_id.id:
                 # This will ensure the user is logged in
                 request.session.check_security()
-                hub_obj = hub_obj.sudo(request.session.uid)
+                hub_obj = hub_obj.with_user(request.session.uid)
             else:
                 raise Unauthorized()
         return hub_obj.mobile_get_message(partner_id=partner_id, **parameters)

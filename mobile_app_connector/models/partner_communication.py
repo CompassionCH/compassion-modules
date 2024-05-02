@@ -56,7 +56,6 @@ class CommunicationJob(models.Model):
 
         return super()._get_default_vals(vals, default_vals)
 
-    @api.multi
     def send(self):
         """ Create a mobile notification when requested """
         jobs = (
@@ -93,12 +92,10 @@ class CommunicationJob(models.Model):
 
         return res
 
-    @api.multi
     def unlink(self):
         self.mapped("mobile_notification_id").filtered(lambda n: not n.sent).unlink()
         return super().unlink()
 
-    @api.multi
     @api.depends("partner_id")
     def _compute_firebase_registration_exists(self):
         """

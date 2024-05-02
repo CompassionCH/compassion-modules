@@ -33,7 +33,6 @@ class GetPartnerMessage(models.Model):
 
         return partners
 
-    @api.multi
     def write(self, vals):
         res = super().write(vals)
         if vals.get("portal_sponsorships"):
