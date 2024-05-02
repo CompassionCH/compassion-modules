@@ -1,0 +1,15 @@
+{
+  "name": "mobile_app_child_pictures",
+  "model": "compassion.child.pictures",
+  "mapping": {
+    "Date": {
+      "field": "date"
+    },
+    "Url": {
+      "field": "image_url_compassion"
+    },
+    "OrderDate": {
+      "field": "date"
+    }
+  }
+}

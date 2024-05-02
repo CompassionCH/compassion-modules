@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="sequence_claim_app" model="ir.sequence">
+        <field name="name">App sequence</field>
+        <field name="prefix">APP</field>
+    </record>
+</odoo>

@@ -1,0 +1,3068 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* mobile_app_connector
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-01 09:06+0000\n"
+"PO-Revision-Date: 2022-04-01 11:40+0200\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.0.1\n"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch3
+msgid "${\"My child\" if len(child) == 1 else \"My children\"}"
+msgstr ""
+"% set child = ctx['objects']\n"
+"% if len(child) == 1:\n"
+"% set mon = 'Mon' if child.gender == 'M' else 'Ma'\n"
+"% else:\n"
+"% set mon = 'Mes'\n"
+"% endif\n"
+"${mon} filleul${child.get('accord_e')}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_ch1
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch1
+msgid "${\"My child\" if len(ctx['objects']) == 1 else \"My children\"}"
+msgstr "${\"Mon filleul\" if len(ctx['objects']) == 1 else \"Mes filleuls\"}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t3
+msgid ""
+"${ctx['objects'].child_id.preferred_name} has birthday on ${ctx['objects']."
+"child_id.get_date('birthdate', 'date_month')}"
+msgstr ""
+"${ctx['objects'].child_id.preferred_name} a son anniversaire le "
+"${ctx['objects'].child_id.get_date('birthdate', 'date_month')}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_gi1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi1
+msgid "${ctx['objects'].description_sale}"
+msgstr "${ctx['objects'].description_sale}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_ch2
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch2
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht1
+msgid "${ctx['objects'].get_list('preferred_name', 1, 'My children photos')}"
+msgstr ""
+"${ctx['objects'].get_list('preferred_name', 1, 'Mes enfants parrainés')}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_ch1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_ch1
+msgid "${ctx['objects'].get_list('preferred_name', 1, 'Thank you')}"
+msgstr "${ctx['objects'].get_list('preferred_name', 1, 'Merci')}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_gi1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_gi1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_gi3
+msgid "${ctx['objects'].name}"
+msgstr "${ctx['objects'].name}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_gi3
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_10
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_11
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_12
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_13
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_14
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_15
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_16
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_17
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_18
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_19
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_2
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_20
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_21
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_22
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_23
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_24
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_25
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_26
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_27
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_3
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_4
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_5
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_6
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_7
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_8
+#: model:mobile.app.tile,title:mobile_app_connector.tile_pr1_9
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_pr1
+msgid "${ctx['objects'].preferred_name}"
+msgstr "${ctx['objects'].preferred_name}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_gi7
+#: model:mobile.app.tile,title:mobile_app_connector.tile_le1
+#: model:mobile.app.tile,title:mobile_app_connector.tile_le_t1
+#: model:mobile.app.tile,title:mobile_app_connector.tile_le_t2
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_LE1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_gi7
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_t1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_t2
+msgid "${ctx['objects'].sudo().child_id.preferred_name}"
+msgstr "${ctx['objects'].sudo().child_id.preferred_name}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_24
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    1 John 4:8 says, perfect love drives out fear. Pray that "
+"${child.preferred_name} will be free from fear and anxiety.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    1 Jean 4, 8 indique que l'amour bannit la crainte. Priez "
+"pour que ${child.preferred_name} soit libéré de la peur et de l'anxiété.</"
+"p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_5
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>\"... being confident of this, that he who began a "
+"good work in you will carry it on to completion until the day of Christ "
+"Jesus.\"</i> Philippians 1:6 NIV\n"
+"                </p>\n"
+"                <p>Praise God for His work in your life. Pray that ${child."
+"preferred_name} will have confidence in the work of Christ in ${child."
+"get('his')} life and great hope for ${child.get('his')} future.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>\"Je suis persuadé que celui qui a commencé en vous "
+"cette bonne oeuvre la rendra parfaite pour le jour de Jésus-Christ\"</i> "
+"(Phil. 1,6)\n"
+"                </p>\n"
+"                <p>Remerciez Dieu pour son oeuvre dans votre vie. Demandez-"
+"lui de permettre à ${child.preferred_name} d'avoir confiance dans les plans "
+"de Dieu et d'avoir de l'espérance pour son avenir.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_25
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>\"My God is my rock, in whom I take refuge, my shield "
+"and the horn of my salvation. He is my stronghold, my refuge and my saviour "
+"– from violent people you save me.\"</i> 2 Samuel 22:3</p>\n"
+"                <p>Pray that ${child.preferred_name} will know God's "
+"protection and feel safe in Him.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>\"Dieu est mon rocher et mon refuge, mon abri et mon "
+"sauveur. \"</i> 2 Samuel 22:3</p>\n"
+"                <p>Priez pour que ${child.preferred_name} soit conscient de "
+"la protection de Dieu et trouve sa sécurité en lui.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_21
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Corruption is a serious problem in developing "
+"countries. James 3:17 says, the wisdom that comes from heaven is first of "
+"all pure; then peace-loving, considerate, submissive, full of mercy and good "
+"fruit, impartial and sincere.</p>\n"
+"                <p>Pray that God will raise up men and women of integrity to "
+"positions of leadership, influence and authority in the community and "
+"country where ${child.preferred_name} lives.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    La corruption est un problème récurrent dans de nombreux "
+"pays touchés par l'extrême pauvreté. Priez pour que Dieu mette en place des "
+"personnes intègres, sages, impartiales dans les postes à responsabilité et "
+"d'autorité de la région et du pays de ${child.preferred_name}. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_4
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Do you have brothers and sisters? Does ${child."
+"preferred_name}? Take a moment to look into ${child.get('his')} profile and "
+"pray for the other children in ${child.preferred_name}'s family. Pray that "
+"they may share the blessing of sponsorship and for good relationships.\n"
+"                </p>\n"
+"                <p><i>\"A friend loves at all times, and a brother is born "
+"for a time of adversity.\"</i> Proverbs 17:17</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Avez-vous des frères et soeurs ? Prenez un instant pour "
+"voir si ${child.preferred_name} en a aussi, et priez pour ses frères et "
+"soeurs éventuels. Priez qu'ils soient aussi bénis à travers le parrainage de "
+"${child.preferred_name}, et qu'ils aient de bonnes relations.</p>\n"
+"<p><i>\"'Un ami montre son affection en toutes circonstances. Un frère est "
+"fait pour partager les difficultés.\"</i> Proverbes 17:17</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_3
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Do you know ${child.preferred_name}'s family? Take a "
+"moment to look into ${child.get('his')} profile and pray for those who make "
+"up ${child.get('his')} household. Pray for God's peace on the home, His "
+"provision for their needs and unity in their relationships.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Que savez-vous de la famille de ${child."
+"preferred_name} ? Prenez quelques instants pour regarder son dossier. Priez "
+"pour sa famille et sa situation familiale. Priez pour que la paix de Dieu "
+"repose sur ce foyer, pour une bonne entente des membres de la famille et "
+"pour la provision divine. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_16
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Do you remember taking tests at school? Pray for ${child."
+"preferred_name} to know God's peace and have clarity of mind as ${child."
+"get('he')} faces tests and exams at school. May the peace of God guard "
+"${child.preferred_name}'s heart and mind in Christ Jesus.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Vous souvenez-vous des tests et autres examens à "
+"l'école ? Priez pour ${child.preferred_name}, afin qu'${child.get('he')} "
+"puisse aborder ces évaluations avec paix et confiance. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_22
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    How do you feel about going to the dentist? Pray that "
+"${child.preferred_name} would have access to all the healthcare provision "
+"that ${child.get('he')} needs.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Etes-vous reconnaissant(e) pour le système de soins "
+"médicaux de votre pays ? Priez pour que ${child.preferred_name} puisse avoir "
+"accès à des soins et un suivi médicaux de qualité. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_8
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    How far are you from a flushing toilet? Praise God for "
+"the provision we enjoy of good sanitation and all the health benefits it "
+"brings. Pray for development of infrastructure in ${child.preferred_name}'s "
+"community, protection and health.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quelle distance vous sépare d'une toilette ? Remerciez "
+"Dieu pour sa providence et savourez cette chance. Priez pour le "
+"développement d'infrastructures sanitaires sûres, là où vit ${child."
+"preferred_name}. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_7
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    How far are you from a safe water supply? Praise God for "
+"the provision we enjoy. Pray for ${child.preferred_name}'s access to clean, "
+"safe water and protection from waterborne disease.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quelle distance vous sépare d'une source (robinet) d'eau "
+"potable ? Remerciez Dieu pour sa providence et savourez cette eau. Priez "
+"pour ${child.preferred_name} afin qu'${child.get('he')} puisse avoir accès à "
+"de l'eau potable et qu'${child.get('he')} soit protégé des maladies liées à "
+"la consommation d'eau polluée.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_10
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    How have you been blessed by your sponsorship? Give "
+"thanks to God for the joy of connection and the opportunity to show His love."
+"</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Le parrainage vous a-t-il aussi enrichi ? Remerciez Dieu "
+"pour la joie de cette relation avec ${child.preferred_name} et pour cette "
+"occasion de démontrer son amour.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_12
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    If you could meet with ${child.preferred_name} today, "
+"what would you say to ${child.get('him')}?</p>\n"
+"                <p>Pray that ${child.get('he')} would know your love and "
+"encouragement, would be strengthened within and be conscious of Christ's "
+"love in ${child.get('his')} life.</p>\n"
+"                <p>If you have time, why not send ${child.get('him')} a "
+"short message today and let ${child.get('him')} know how you're praying for "
+"${child.get('him')}?</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Si vous pouviez rencontrer ${child.preferred_name} "
+"aujourd'hui, que lui diriez-vous ?</p>\n"
+"                <p>Priez pour qu'${child.get('he')} soit sensible à vos "
+"encouragements, renouvelé${child.get('accord_e') or ''} dans son espérance "
+"pour une vie transformée et dans son assurance de l'amour du Christ pour "
+"${child.get('lui_elle')}.</p>\n"
+"                <p>Si vous avez quelques minutes, pourquoi ne pas lui écrire "
+"pour l'encourager et lui dire que vous priez pour ${child.get('lui_elle')}.</"
+"p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_19
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Many churches that run Compassion projects find greater "
+"levels of respect in the community when they serve the children and many "
+"experience wonderful church growth.</p>\n"
+"                <p>Pray for the leader of ${child.preferred_name}'s church — "
+"for love, wisdom and strength. May they be a truly Godly leader and a great "
+"witness to the community.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    De nombreuses Eglises partenaires de Compassion gagnent "
+"en crédibilité grâce à leur engagement déterminé et persévérant pour les "
+"enfants les plus démunis.</p>\n"
+"                <p>Priez pour que les forces et la vision des responsables "
+"du centre de développement de l'enfant de ${child.preferred_name} soient "
+"renouvelées.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_20
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    May those who care for ${child.preferred_name} be wise "
+"and loving as they nurture ${child.get('him')}. The project runs activities "
+"for parents and families.</p>\n"
+"                <p>Pray that ${child.preferred_name}'s family will "
+"participate. Pray that they learn good practices and hear that God loves "
+"them.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Priez pour que les adultes en charge de ${child."
+"preferred_name} aient de la sagesse et de l'amour pour accompagner le "
+"développement de cet enfant.</p>\n"
+"                <p>Priez pour qu'ils soient réceptifs aux bonnes habitudes "
+"qu'${child.get('he')} apprend lors des activités du centre de développement "
+"de l'enfant et qu'ils puissent les intégrer dans leur culture familiale "
+"(hygiène, alimentation, relations, etc.).</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_27
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Praise God that ${child.preferred_name} is regularly "
+"visited at home by the incredible staff at ${child.get('his')} Compassion "
+"project. Pray that these visits will bless and encourage the whole family.</"
+"p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Remerciez Dieu pour les visites régulières des "
+"collaborateurs du centre de développement de l'enfant à ${child."
+"preferred_name} chez ${child.get('lui_elle')}. Priez pour que ces temps de "
+"visite constituent un encouragement pour toute la famille.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_18
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Praise and thank God that He hears and answers our "
+"prayers. He hears and answers the prayers that ${child.preferred_name} "
+"offers for you. Give thanks to God for the wonder of prayer. Why not send a "
+"message and thank ${child.preferred_name} for praying for you.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Remerciez Dieu d'écouter et de répondre aux prières. Il "
+"entend et répond aussi aux prières de ${child.preferred_name} pour vous. "
+"Pourquoi ne pas écrire une carte, une lettre pour remercier ${child."
+"preferred_name} de prier pour vous ?</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_6
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pray for ${child.preferred_name} in the light of John "
+"10:10 that the lies of poverty will be dismissed and that ${child.get('he')} "
+"will have abundant life. The thief comes only to steal and kill and destroy; "
+"I have come that they may have life, and have it to the full.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Priez pour que le mensonge de la pauvreté soit démasqué. "
+"Que le voleur qui vient pour dérober et détruire soit identifié et que la "
+"vie en abondance promise par le Christ puisse illuminer la vie de ${child."
+"preferred_name}.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_23
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pray for ${child.preferred_name}'s self image. Pray for "
+"${child.get('him')} to know how valued ${child.get('he')} ${child.get('is')} "
+"in God's sight. Pray for the teaching ${child.preferred_name} receives from "
+"the project about being confident and secure in Christ. </p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Priez pour l'estime personnelle de ${child."
+"preferred_name}. Priez pour qu'${child.get('he')} soit conscient${child."
+"get('accord_e') or ''} de sa valeur aux yeux de Dieu, qu'${child.get('he')} "
+"reçoive cette assurance personnelle de Dieu, et qu'${child.get('he')} puisse "
+"trouve sa sécurité en Christ. </p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_9
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pray for unity in ${child.preferred_name}'s church. Pray "
+"that ${child.get('he')} will know acceptance, love and belonging in ${child."
+"get('his')} community.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Priez pour l'unité dans l'Eglise de ${child."
+"preferred_name}. Priez pour qu'${child.get('he')} puisse découvrir "
+"l'accueil, l'amour, et l'acceptation fraternels.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_17
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Take a look at the last few letters ${child."
+"preferred_name} wrote to you. What does ${child.preferred_name} ask you to "
+"pray for? Lift those requests to God.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Prenez quelques instants pour parcourir les lettres de "
+"${child.preferred_name}. Vous a-t-${child.get('he')} partagé des sujets de "
+"préoccupation, de prière ? Priez spécifiquement pour ces besoins-là.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_15
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Take a moment to look into ${child.preferred_name}'s "
+"profile to see what ${child.get('his')} favourite subject is.</p>\n"
+"                <p>Pray for ${child.preferred_name}'s schooling - that "
+"${child.get('he')} may learn well, enjoy studying new things and grow in "
+"wisdom.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Prenez un instant pour voir quelles sont les branches "
+"scolaires préférées de ${child.preferred_name}</p>\n"
+"                <p>Priez pour l'école de ${child.preferred_name}, afin "
+"qu'${child.get('he')} ait du plaisir et de la motivation à apprendre, "
+"qu'${child.get('he')} progresse bien à l'école et puisse voir les fruits de "
+"ses efforts.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_13
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Take a moment to look into ${child.preferred_name}'s "
+"profile to see what activities ${child.get('he')} enjoys. Pray for ${child."
+"preferred_name} to discover ${child.get('his')} talents and achieve ${child."
+"get('his')} goals.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Prenez quelques instants pour voir dans son dossier les "
+"activités préférées de ${child.preferred_name}. Priez pour qu'${child."
+"get('he')} puisse découvrir ses talents et les voir se développer.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_26
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    When was the last time you ate something you'd "
+"grown? Pray for great harvests to bring provision, health and food security "
+"to ${child.preferred_name}'s nation, community and family.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quand est-ce que vous avez mangé pour la dernière fois "
+"un aliment que vous avez cultivé vous-même ? Priez pour une moisson "
+"généreuse dans la famille, la localité et la région de ${child."
+"preferred_name}.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_14
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    When you were ${child.preferred_name}'s age, what did "
+"you want to do for a job? Is that what you're doing today? Pray for ${child."
+"preferred_name}'s aspirations — that ${child.get('he')} will dream and "
+"pursue ${child.get('his')} dreams.</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quel profession rêviez-vous de faire en tant qu'enfant ? "
+"Ce rêve s'est-il concrétisé ? Priez pour les aspirations de ${child."
+"preferred_name} et pour qu'${child.get('he')} ose voir son avenir en grand, "
+"avec confiance.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_2
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Who has been a father or mother figure to you?  Thank "
+"God for these wonderful people.\n"
+"                </p>\n"
+"                <p>Pray for ${child.preferred_name} to know the same love, "
+"support and encouragement that you have received. Give thanks for ${child."
+"preferred_name}'s caregivers and pray for them to know God's goodness and "
+"provision today. Pray for the Compassion project team who care for ${child."
+"preferred_name} week in, week out.</p>\n"
+"            "
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_1
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Who is your closest friend? Take a moment to thank God "
+"for them today. Praise God that He is the one who created relationship.\n"
+"                </p><p>\n"
+"                    Pray for ${child.preferred_name} to have good friends "
+"who will encourage and support ${child.get('him')}. Ask that ${child."
+"get('he')} develops really strong friendships at ${child.get('his')} "
+"Compassion project.<br />\n"
+"                </p><p>\n"
+"                    Pray also that ${child.preferred_name} will know the "
+"friendship and love of ${child.get('his')} Heavenly Father.\n"
+"                </p>\n"
+"            "
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_11
+msgid ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    You are bringing hope to ${child.preferred_name}! You "
+"are a hero! We praise and thank God for you. Rejoice today that God is using "
+"you to change ${child.preferred_name}'s life</p>\n"
+"            "
+msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Vous apportez un espoir plus fort que la pauvreté à "
+"${child.preferred_name}. Vous êtes un(e) héro ! Nous remercions Dieu pour "
+"votre engagement. Réjouissez-vous que Dieu vous utilise pour participer à la "
+"transformation de la vie d'un enfant démuni.</p>\n"
+"            "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
+msgid ""
+"% set child = ctx['objects']\n"
+"% if len(child) == 1:\n"
+"You're changing ${child.get('his')} life\n"
+"% else:\n"
+"You're changing ${child.get_number()}\n"
+"% endif\n"
+"Thank You\n"
+"        "
+msgstr ""
+"% set child = ctx['objects']\n"
+"Vous changez\n"
+"% if len(child) == 1:\n"
+"${child.get('sa')} vie\n"
+"% else:\n"
+"la vie de ${child.get_number()}\n"
+"% endif\n"
+"       "
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_co4
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_co4
+msgid ""
+"% set child = ctx['objects'].child_id\n"
+"${child.preferred_name} / ${child.project_id.country_id.name}\n"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
+msgid ""
+"% set partner = ctx['objects'].sudo()\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_category', '!=', "
+"'sponsorship')], order='last_payment desc', limit=1)\n"
+"% if invoice:\n"
+"You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
+"% else:\n"
+"Make a donation"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_le1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
+msgid ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"You wrote today.\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"You last wrote ${sponsorship.last_letter} days ago\n"
+"    % else:\n"
+"You never wrote to your sponsored child.\n"
+"    % endif\n"
+"% endif"
+msgstr ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"Vous avez écrit aujourd'hui\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"Cela fait ${sponsorship.last_letter} jours que vous avez écrit\n"
+"    % else:\n"
+"Vous n'avez encore jamais écrit\n"
+"    % endif\n"
+"% endif"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_le_t1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t1
+msgid ""
+"A letter has arrived from your sponsored child on ${ctx['objects']."
+"get_date('status_date')}"
+msgstr ""
+"Votre filleul ${ctx['objects'].child_id.get('accord_e') or ''} vous a écrit "
+"une lettre le ${ctx['objects'].get_date('status_date')}"
+
+#. module: mobile_app_connector
+#: model:mail.template,subject:mobile_app_connector.email_template_user_not_found
+msgid "Account Setup: User Not Found"
+msgstr "Création de compte pour l'app mobile"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:104
+#, python-format
+msgid "Account registration"
+msgstr "Inscription"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__action_destination
+msgid "Action Destination"
+msgstr "Action Destination"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__action_text
+msgid "Action Text"
+msgstr "Action Text"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
+msgid "Action type"
+msgstr "Type d’action"
+
+#. module: mobile_app_connector
+#: model:ir.cron,name:mobile_app_connector.activate_banners
+msgid "Activate Mobile App Banners"
+msgstr "Activate Mobile App Banners"
+
+#. module: mobile_app_connector
+#: model:ir.cron,name:mobile_app_connector.activate_writings
+msgid "Activate Mobile App Writings"
+msgstr "Activate Mobile App Writings"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__active
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__active
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__active
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
+#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
+msgid "Active"
+msgstr "Actif"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_state
+msgid "Activity State"
+msgstr "Status de l'Activité"
+
+#. module: mobile_app_connector
+#: selection:wp.post,post_type:0
+msgid "Agenda"
+msgstr "Agenda"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/res_partner.py:19
+#: selection:res.partner,app_displayed_sponsorships:0
+#, python-format
+msgid "All (partner is the correspondent and/or the payer)"
+msgstr "Tous (le partenaire est le correspondant et/ou le payeur)"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/res_partner.py:20
+#: selection:res.partner,app_displayed_sponsorships:0
+#, python-format
+msgid "All + correspondence info shown to payer only."
+msgstr "Tous + correspondance montrée au payeur."
+
+#. module: mobile_app_connector
+#: model:crm.claim.category,name:mobile_app_connector.claim_cat_android
+#: selection:mobile.app.feedback,source:0
+msgid "Android"
+msgstr "Android"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_t3
+msgid "Anniversary"
+msgstr "Anniversaire"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__crm_claim_id
+msgid "Answer to feedback"
+msgstr "Réponse aux commentaires"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_26
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_26
+msgid "Ask God to give ${ctx['objects'].preferred_name} food security."
+msgstr ""
+"Demandez à Dieu que  ${ctx['objects'].preferred_name} ait  assez à manger."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_6
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_6
+msgid "Ask God to give ${ctx['objects'].preferred_name} life to the full."
+msgstr ""
+"Demandez à Dieu de libérer ${ctx['objects'].preferred_name} des mensonges de "
+"la pauvreté."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_7
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_7
+msgid "Ask God to give ${ctx['objects'].preferred_name} safe water."
+msgstr ""
+"Demandez à Dieu de donner à ${ctx['objects'].preferred_name} de l'eau propre."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_13
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_13
+msgid ""
+"Ask God to guide ${ctx['objects'].preferred_name} to discover "
+"${ctx['objects'].get('his')} talents."
+msgstr ""
+"Demandez à Dieu de permettre à ${ctx['objects'].preferred_name} de découvrir "
+"ses talents."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_22
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_22
+msgid ""
+"Ask that ${ctx['objects'].preferred_name} will have access to the healthcare "
+"${ctx['objects'].get('he')} needs."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} ait accès aux soins médicaux "
+"dont il/elle a besoin."
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__model_id
+msgid "Associated records"
+msgstr "Enregistrements associés"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_auto_send
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_auto_send
+msgid "Auto send"
+msgstr "Envoi automatique"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__is_automatic_ordering
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__is_automatic_ordering
+msgid "Automatic ordering"
+msgstr "Tri automatique"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_banner
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_banner
+msgid "Banners"
+msgstr "Bannières"
+
+#. module: mobile_app_connector
+#: model:ir.cron,cron_name:mobile_app_connector.activate_banners
+#: model:ir.cron,cron_name:mobile_app_connector.activate_writings
+#: model:ir.cron,cron_name:mobile_app_connector.wp_fetch_agendas_cron
+#: model:ir.cron,cron_name:mobile_app_connector.wp_fetch_downloads_cron
+#: model:ir.cron,cron_name:mobile_app_connector.wp_fetch_posts_cron
+msgid "Base: Auto-vacuum internal data"
+msgstr "Base : données internes sur l'aspiration automatique"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_birthdate_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_birthdate_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_birthdate_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_birthdate_date
+msgid "Birthdate"
+msgstr "Date de naissance"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:76
+#: selection:mobile.app.banner,internal_action:0
+#, python-format
+msgid "Blog"
+msgstr "Blog"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__body
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__body
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_body
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_body
+msgid "Body"
+msgstr "Corps"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,visibility:0
+msgid "Both"
+msgstr "Les deux"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__button_text
+msgid "Button Text"
+msgstr "Texte du bouton"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__category_ids
+msgid "Categories"
+msgstr "Catégories"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__name
+msgid "Category title"
+msgstr "Catégorie"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__child_id
+msgid "Child"
+msgstr "Enfant"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_registration_tree
+msgid "Child Notification"
+msgstr "Notification d’enfant"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+msgid "Child channel"
+msgstr "Canal enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:78
+#, python-format
+msgid "Child compass"
+msgstr "Boussole de l'enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:81
+#, python-format
+msgid "Child gift"
+msgstr "Cadeau enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:84
+#, python-format
+msgid "Child letter"
+msgstr "Lettre de l’enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:86
+#, python-format
+msgid "Child page"
+msgstr "Page enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:83
+#, python-format
+msgid "Child photos"
+msgstr "Photos de l'enfant"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_compassion_child_pictures
+msgid "Child picture"
+msgstr "Photo de l’enfant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:77
+#, python-format
+msgid "Child selector"
+msgstr "Sélecteur enfant"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Child selector (opens the list of children)"
+msgstr "Sélecteur d’enfants (ouvre la liste des enfants)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__visibility
+msgid "Choose private if the sponsor must be logged in to see the tile"
+msgstr ""
+"Choisissez privé si le parrain doit être connecté pour voir la vignette"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_city
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_city
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_city
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_city
+msgid "City"
+msgstr "Ville"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:411
+#, python-format
+msgid "Click here to send the template email request."
+msgstr "Cliquez ici pour envoyer une demande de création de compte."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_co3
+msgid "Clock"
+msgstr "Heure"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__code
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__code
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__code
+msgid "Code"
+msgstr "Code"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_partner_communication_config
+msgid "Communication Configuration"
+msgstr "Communication Configuration"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_partner_communication_job
+msgid "Communication Job"
+msgstr "Communication Job"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Compass (opens the compass on the project page)"
+msgstr "Boussole (ouvre la boussole sur la page du projet)"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_res_config_settings
+msgid "Config Settings"
+msgstr "Configuration"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/res_partner.py:23
+#: selection:res.partner,app_displayed_sponsorships:0
+#, python-format
+msgid "Correspondent (Children the partner correspond with)"
+msgstr "Correspondant (Enfants avec lesquels le partenaire correspond)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_country_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_country_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_country_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_country_id
+msgid "Country"
+msgstr "Pays"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__create_date
+msgid "Creation Date"
+msgstr "Date de Création"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__date
+msgid "Date"
+msgstr "Date"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__date_start
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__date_start
+msgid "Date Start"
+msgstr "Date de début"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__date_stop
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__date_stop
+msgid "Date Stop"
+msgstr "Date de fin"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_wp_post__display_on_hub
+#: model:ir.model.fields,help:mobile_app_connector.field_wp_post_category__display_on_hub
+msgid "Deactivate in order to hide tiles in App."
+msgstr "Désactiver afin de masquer les vignettes dans l’application."
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_wp_post_category__order_weight
+msgid "Decrease order weight to display tiles above others"
+msgstr "Réduire le nombre pour afficher au-dessus des autres vignettes"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_action_destination
+msgid "Default Action Destination"
+msgstr "Destination de l’action par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_action_text
+msgid "Default Action Text"
+msgstr "Texte de l’action par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_body
+msgid "Default Body"
+msgstr "Corps par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_config_settings__s2b_template_default_id
+msgid "Default S2B template"
+msgstr "Modèle S2B par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__default_tile_type
+msgid "Default Tile Type"
+msgstr "Type de vignette par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_title
+msgid "Default Title"
+msgstr "Titre par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_model_id
+msgid "Default model"
+msgstr "Modèle par défaut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__name
+msgid "Description"
+msgstr "Description"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__destination
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_destination
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_destination
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_notification_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+msgid "Destination"
+msgstr "Destination"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Destination Action"
+msgstr "Destination Action"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__destination_type
+msgid "Destination Type"
+msgstr "Destination Type"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
+msgid "Destination type"
+msgstr "Type de destination"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_firebase_registration
+msgid "Device registered with Firebase Cloud Messaging"
+msgstr "Appareil enregistré auprès de Firebase Cloud Messaging"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "Disappointing"
+msgstr "Décevant"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__display_on_hub
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__display_on_hub
+msgid "Display On Hub"
+msgstr "Afficher sur le hub"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__has_sponsorship
+msgid "Do you currently sponsor a child?"
+msgstr "Parrainez-vous un enfant ?"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_gi1
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi1
+msgid "Donate"
+msgstr "Faire un don"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: selection:mobile.app.banner,internal_action:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
+msgid "Donation"
+msgstr "Don"
+
+#. module: mobile_app_connector
+#: selection:wp.post,post_type:0
+msgid "Download"
+msgstr "Télécharger"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_email
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_email
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_email
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__end_date
+msgid "End Date"
+msgstr "Date de fin"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Event donation"
+msgstr "Don d’événement"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__external_url
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__external_url
+msgid "External Url"
+msgstr "Lien externe"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "Extraordinary"
+msgstr "Extraordinaire"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_feedback
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_mi2
+#: model:mobile.app.tile,title:mobile_app_connector.tile_mi2
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_MI2
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_MI2
+msgid "Feedback"
+msgstr "Évaluation"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:82
+#, python-format
+msgid "Feedback form"
+msgstr "Formulaire d'évaluation"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Feedback overlay (redirects to contact form for feedback)"
+msgstr "Appréciation (redirige sur le formulaire d'évaluation)"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_feedback
+msgid "Feedbacks"
+msgstr "Évaluations"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_compassion_field_office
+msgid "Field Office"
+msgstr "Centre national"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Find help"
+msgstr "Trouver de l’aide"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__firebase_registration_exists
+msgid "Firebase Registration Exists"
+msgstr "Firebase Registration Exists"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_firstname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_firstname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_firstname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_firstname
+msgid "First Name"
+msgstr "Prénom"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "First payment"
+msgstr "Premier paiement"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__icon
+msgid "FontAwesome icon name"
+msgstr "Icone Fontawesome"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__force_refresh
+msgid "Force Refresh"
+msgstr "Forcer l’actualisation"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_messages__force_refresh
+msgid "Force the hub of sponsor to refresh"
+msgstr "Forcer le hub du parrain à se rafraîchir"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:80
+#, python-format
+msgid "Fund donation"
+msgstr "Don pour fonds"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__product_template_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__fund_type
+msgid "Fund product"
+msgstr "Produit pour le fonds"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_registration_tree
+msgid "General Notification"
+msgstr "Notification générale"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+msgid "General channel"
+msgstr "Canal général"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_general_settings
+msgid "General settings"
+msgstr "Configuration générale"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi5
+msgid "Give a donation"
+msgstr "Faire un don"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_gi3
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi3
+msgid "Give a gift"
+msgstr "Faire un don"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Give a gift overlay (opens the child gift page)"
+msgstr "Faire un cadeau (ouvre la page pour faire un cadeau de parrainage)"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Give overlay (opens the donation page)"
+msgstr "Faire un don (ouvre la page de don)"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_27
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_27
+msgid ""
+"Give thanks that ${ctx['objects'].preferred_name} receives regular home "
+"visits from caring project staff."
+msgstr ""
+"Remerciez Dieu pour les visites des équipes de Compassion au domicile de "
+"${ctx['objects'].preferred_name}."
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "Great"
+msgstr "Super"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_notification_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_writing_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
+msgid "Group By"
+msgstr "Grouper par"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Group visit"
+msgstr "Visite de groupe"
+
+#. module: mobile_app_connector
+#: model:mail.template,body_html:mobile_app_connector.email_template_user_not_found
+msgid ""
+"Hello,<br/><br/>Please set my %(app_type) account with the following email "
+"address: \"%(email_address)\"<br/><br/>Yours sincerely"
+msgstr ""
+"Bonjour,<br/><br/>Merci de bien vouloir configurer mon compte utilisateur "
+"pour %(app_type) avec l'adresse e-mail suivante : \"%(email_address)\"<br/"
+"><br/>Meilleures salutations"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Help"
+msgstr "Aide"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,priority:0
+msgid "High"
+msgstr "Haute"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,name:mobile_app_connector.default-welcome-screen
+msgid "Hope stronger than poverty"
+msgstr "Un espoir plus fort que la pauvreté"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:98
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__improve_app
+#, python-format
+msgid "How can we improve the app"
+msgstr "Vos idées d'amélioration"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_hub
+msgid "Hub"
+msgstr "Hub"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_hub
+msgid "Hub mobile app"
+msgstr "Hub app mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__id
+msgid "ID"
+msgstr "ID"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_product__image_icon
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_template__image_icon
+msgid "Icon Mobile App"
+msgstr "Icone app mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__image_url
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__image_url
+msgid "Image Url"
+msgstr "URL de l’image"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid ""
+"Individual child page (seems not working, opening the list of children "
+"instead of individual child)"
+msgstr ""
+"Page enfant individuelle (semble ne pas fonctionner, ouvrant la liste des "
+"enfants au lieu de l’enfant individuel)"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,destination_type:0
+msgid "Internal"
+msgstr "Interne"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__internal_action
+msgid "Internal Action"
+msgstr "Action interne"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__is_expired
+msgid "Is Expired"
+msgstr "A expiré"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__is_prayer
+msgid "Is Prayer"
+msgstr "Est une prière"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_account_move
+msgid "Journal Entries"
+msgstr "Pièces comptables"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__json_messages
+msgid "Json Messages"
+msgstr "Messages Json"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
+msgid "Lang"
+msgstr "Langue"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_lang
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__language
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_lang
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_lang
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_lang
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__lang
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+msgid "Language"
+msgstr "Langue"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category____last_update
+msgid "Last Modified on"
+msgstr "Dernière Modification le"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_lastname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_lastname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_lastname
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_lastname
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__last_refresh_date
+msgid "Last Refresh Date"
+msgstr "Date de la dernière actualisation"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: model:ir.model,name:mobile_app_connector.model_correspondence
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
+msgid "Letter"
+msgstr "Lettre"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,internal_action:0
+msgid "Letter writing"
+msgstr "Rédaction de lettres"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:79
+#, python-format
+msgid "Letters hub"
+msgstr "Hub Lettres"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_firebase_notification_partner_read
+msgid "Link between partner and notifications read status"
+msgstr "Lien entre le partenaire et l’état de lecture des notifications"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "List of types"
+msgstr "Liste des types"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_mi1
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_MI1
+msgid "Log in"
+msgstr "Connexion"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:75
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_mi1
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_MI1
+#, python-format
+msgid "Login"
+msgstr "Connexion"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Login overlay (redirects to login)"
+msgstr "Connexion (redirige vers le login)"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,priority:0
+msgid "Low"
+msgstr "Faible"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:309
+#, python-format
+msgid "Mail delivery error"
+msgstr "Erreur lors de l'envoi de l'e-mail"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__action_text
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__body
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__prayer_body
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__prayer_title
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__title
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_action_text
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_body
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_title
+msgid "Mako template enabled.Use ctx['objects'] to get associated records."
+msgstr ""
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_form
+msgid "Mark as read"
+msgstr "Marquer comme lu"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_messages
+msgid "Message for mobil app"
+msgstr "Message pour l’application mobile"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app
+msgid "Mobile App"
+msgstr "App Mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_banner
+msgid "Mobile App Banner"
+msgstr "Bannières App"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_frequently_asked_questions
+msgid "Mobile App FAQ"
+msgstr "FAQ App Mobile"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:105
+#: model:crm.claim.category,name:mobile_app_connector.claim_cat_feedback
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_feedback
+#, python-format
+msgid "Mobile App Feedback"
+msgstr "Feedback App"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Mobile App Registration"
+msgstr "Inscription app mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_writing
+msgid "Mobile App Writing"
+msgstr "Modèle lettre app mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner__app_messages
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users__app_messages
+msgid "Mobile app messages"
+msgstr "Messages d’application mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_move__mobile_notification_id
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_communication_job_form
+msgid "Mobile notification"
+msgstr "Notification mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_account_move__mobile_notification_id
+msgid "Mobile notification sent for a donation confirmation"
+msgstr "Notification envoyée pour une confirmation de don"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__mode
+msgid "Mode"
+msgstr "Mode"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__model
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_model
+msgid "Model"
+msgstr "Modèle"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Muskathlon registration"
+msgstr "Inscription au Muskathlon"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_co4
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_co2
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_co3
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_co4
+msgid "My Community"
+msgstr "Ma communauté"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "My Community (opens the project page)"
+msgstr "Ma communauté (ouvre la page du projet)"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
+msgid "My Hub"
+msgstr "Mon Hub"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,internal_action:0
+msgid "My prayers"
+msgstr "Mes prières"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:419
+#, python-format
+msgid "MyCompassion"
+msgstr "MyCompassion"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__needs_refresh
+msgid "Needs Refresh"
+msgstr "Besoin d’actualisation"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_cht1
+msgid "New Photo"
+msgstr "Nouvelle photo"
+
+#. module: mobile_app_connector
+#: selection:wp.post,post_type:0
+msgid "News"
+msgstr "News"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Next"
+msgstr "Suivant"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Date limite de l'Activité à Venir"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé d'activité suivant"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'Activités à Venir"
+
+#. module: mobile_app_connector
+#: selection:registration.base.form,has_sponsorship:0
+msgid "No"
+msgstr "Non"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:292
+#, python-format
+msgid "No email entered"
+msgstr "E-mail manquant"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:299
+#, python-format
+msgid "No such account"
+msgstr "Ce compte n'existe pas"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "None"
+msgstr "Aucun"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+msgid "None (bypass user's preferences)"
+msgstr "Aucun (contourner les préférences de l’utilisateur)"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,priority:0
+msgid "Normal"
+msgstr "Normale"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_id
+msgid "Notification"
+msgstr "Notification"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_firebase_notification
+msgid "Notification to send to Firebase Cloud Messaging"
+msgstr "Notification à envoyer à Firebase Cloud Messaging"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "ONLINE"
+msgstr "EN LIGNE"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,mode:0
+msgid "One tile per record"
+msgstr "Une vignette par enregistrement"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,destination_type:0
+msgid "Open in web browser"
+msgstr "Ouvrir dans le navigateur"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__order_weight
+msgid "Order Weight"
+msgstr "Priorité (poids)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_privacy_statement_agreement__origin_signature
+msgid "Origin Signature"
+msgstr "Signature d’origine"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/request.py:81
+#, python-format
+msgid "Original request from %s %s "
+msgstr "Demande initiale de %s %s "
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,activity_state:0
+msgid "Overdue"
+msgstr "Retard"
+
+#. module: mobile_app_connector
+#: selection:wp.post,tile_subtype:0
+msgid "PR2"
+msgstr "PR2"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__partner_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__partner_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_id
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_gi7
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi7
+msgid "Pay now"
+msgstr "Activer mon parrainage"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_banner.py:80
+#: code:addons/mobile_app_connector/models/mobile_writing.py:65
+#, python-format
+msgid "Period is not valid"
+msgstr "La période n’est pas valide"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_phone
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_phone
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_phone
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_ch2
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_ch2
+msgid "Photos"
+msgstr "Photos"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Photos overlay (opens the photos of child)"
+msgstr "Photos (ouvre les photos de l'enfant)"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/compassion_correspondence.py:249
+#, python-format
+msgid "Physical letters cannot be displayed."
+msgstr "Les lettres physiques ne peuvent pas être affichées."
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,activity_state:0
+msgid "Planned"
+msgstr "Planifié"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__position
+msgid "Position"
+msgstr "Position"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__post_type
+msgid "Post Type"
+msgstr "Type d’article"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_11
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_11
+msgid "Praise God — He is using you to change lives."
+msgstr ""
+"Remerciez Dieu de vous permettre de participer à la transformation de la vie "
+"d'un enfant."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_21
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_21
+msgid "Pray against corruption."
+msgstr "Priez contre la corruption."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_17
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_17
+msgid ""
+"Pray as ${ctx['objects'].preferred_name} asks in ${ctx['objects']."
+"get('his')} letters."
+msgstr ""
+"Priez pour les demandes de prière exprimées par ${ctx['objects']."
+"preferred_name} dans ses lettres."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_15
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_15
+msgid "Pray for ${ctx['objects'].preferred_name} to have a good education."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} puisse avoir une bonne "
+"formation scolaire."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_1
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_1
+msgid "Pray for ${ctx['objects'].preferred_name} to make strong friendships"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_3
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_3
+msgid "Pray for ${ctx['objects'].preferred_name}'s family and home."
+msgstr ""
+"Priez pour la famille et l'habitation de ${ctx['objects'].preferred_name}."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_20
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_20
+msgid "Pray for ${ctx['objects'].preferred_name}'s parents/guardians. "
+msgstr ""
+"Priez pour les parents ou adultes qui s'occupent de ${ctx['objects']."
+"preferred_name}."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_25
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_25
+msgid "Pray for ${ctx['objects'].preferred_name}'s safety."
+msgstr "Priez pour la sécurité de ${ctx['objects'].preferred_name}."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_4
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_4
+msgid "Pray for ${ctx['objects'].preferred_name}'s siblings."
+msgstr "Priez pour les frères et soeurs de${ctx['objects'].preferred_name}."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_2
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_2
+msgid "Pray for good role models in ${ctx['objects'].preferred_name}'s life."
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_8
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_8
+msgid ""
+"Pray for good sanitation in ${ctx['objects'].preferred_name}'s community."
+msgstr ""
+"Priez pour l'accès à des installations sanitaires sûres pour "
+"${ctx['objects'].preferred_name} et son quartier, son village."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_16
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_16
+msgid ""
+"Pray for peace when ${ctx['objects'].preferred_name} has to take tests and "
+"exams."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} puisse aborder les tests et "
+"examens scolaires avec sérénité."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_19
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_19
+msgid ""
+"Pray for the church that runs ${ctx['objects'].preferred_name}'s project."
+msgstr ""
+"Priez pour l'Eglise qui s'occupe du centre de développement de l'enfant de "
+"${ctx['objects'].preferred_name}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_1
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_10
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_11
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_12
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_13
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_14
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_15
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_16
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_17
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_18
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_19
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_2
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_20
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_21
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_22
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_23
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_24
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_25
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_26
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_27
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_3
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_4
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_5
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_6
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_7
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_8
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_9
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_pr1
+msgid "Pray now"
+msgstr "Prier"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_24
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_24
+msgid "Pray that ${ctx['objects'].preferred_name} will be free from fear."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} soit libéré de la peur."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_23
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_23
+msgid ""
+"Pray that ${ctx['objects'].preferred_name} will have a positive self image."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} ait une bonne image de soi "
+"et de l'assurance."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_5
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_5
+msgid "Pray that ${ctx['objects'].preferred_name} will have hope."
+msgstr "Priez pour que ${ctx['objects'].preferred_name} ait de l'espoir."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_14
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_14
+msgid "Pray that ${ctx['objects'].preferred_name} will pursue big dreams."
+msgstr ""
+"Priez pour que ${ctx['objects'].preferred_name} puisse poursuivre de grands "
+"rêves pour sa vie."
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
+#: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
+msgid "Prayer"
+msgstr "Prière"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__prayer_body
+msgid "Prayer Body"
+msgstr "Contenu de la prière"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__prayer_title
+msgid "Prayer Title"
+msgstr "Titre de la prière"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Prev"
+msgstr "Préc."
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__print_count
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__print_count
+msgid "Print Count"
+msgstr "Nombre d’impressions"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__priority
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_privacy_statement_agreement
+msgid "Privacy Statement Agreement"
+msgstr "Accord sur la déclaration de confidentialité"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,visibility:0
+msgid "Private"
+msgstr "Privé"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_product_product
+msgid "Product"
+msgstr "Produit"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_product_template
+msgid "Product Template"
+msgstr "Modèle d'article"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_compassion_project
+msgid "Project Geolocation Point"
+msgstr "Point de géolocalisation du projet"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:85
+#, python-format
+msgid "Project page"
+msgstr "Page du projet"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,visibility:0
+msgid "Public"
+msgstr "Publique"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,state:0
+msgid "Read"
+msgstr "Lire"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_le_t2
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_t2
+msgid "Read again"
+msgstr "Lire à nouveau"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_le_t1
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_t1
+msgid "Read now"
+msgstr "Lire maintenant"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Read overlay (opens a letter, text version)"
+msgstr "Lire une lettre (ouvre une lettre, version texte)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_registration__receive_child_notification
+msgid "Receive Child Notification"
+msgstr "Recevoir les notifications au sujet des enfants"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_registration__receive_general_notification
+msgid "Receive General Notification"
+msgstr "Recevoir les notifications générales"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__records_filter
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__default_records_filter
+msgid "Records filter function"
+msgstr "Fonction de filtre d’enregistrements"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Contrat récurrent"
+
+#. module: mobile_app_connector
+#: model:ir.cron,name:mobile_app_connector.wp_fetch_agendas_cron
+msgid "Refresh Wordpress Agendas"
+msgstr "Refresh Wordpress Agendas"
+
+#. module: mobile_app_connector
+#: model:ir.cron,name:mobile_app_connector.wp_fetch_downloads_cron
+msgid "Refresh Wordpress Download"
+msgstr "Refresh Wordpress Download"
+
+#. module: mobile_app_connector
+#: model:ir.cron,name:mobile_app_connector.wp_fetch_posts_cron
+msgid "Refresh Wordpress Posts"
+msgstr "Refresh Wordpress Posts"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,state:0
+msgid "Replied"
+msgstr "Répondu"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_form
+msgid "Reply"
+msgstr "Répondre"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_crm_claim
+msgid "Request"
+msgstr "Demande"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_user_id
+msgid "Responsible User"
+msgstr "Responsable"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.view_app_settings_form
+msgid "S2B Template"
+msgstr "Modèle S2B"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "SMS Sponsorship"
+msgstr "Parrainage SMS"
+
+#. module: mobile_app_connector
+#: selection:wp.post,tile_subtype:0
+msgid "ST_T1"
+msgstr "ST_T1"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_product_product__image_icon
+#: model:ir.model.fields,help:mobile_app_connector.field_product_template__image_icon
+msgid "See https://fontawesome.com to find code icon."
+msgstr "Voir https://fontawesome.com pour trouver l’icône de code."
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_model_id
+msgid "Select related objects type"
+msgstr "Sélectionner le type d’objets associés"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_gi3
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi3
+msgid "Send a gift to your sponsored child"
+msgstr "Un cadeau pour ${ctx['objects'].get('your sponsored child')}"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_send
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_send
+msgid "Send mobile notification"
+msgstr "Envoyer une notification mobile"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_settings
+msgid "Settings"
+msgstr "Configuration"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_product__mobile_app
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_template__mobile_app
+msgid "Show in Mobile App"
+msgstr "Afficher dans l'app"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__source
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__source
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__source
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__source
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__source
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+msgid "Source"
+msgstr "Origine"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_cms_form_res_users__source
+#: model:ir.model.fields,help:mobile_app_connector.field_registration_base_form__source
+#: model:ir.model.fields,help:mobile_app_connector.field_registration_not_supporter__source
+#: model:ir.model.fields,help:mobile_app_connector.field_registration_supporter_form__source
+msgid "Source for registration"
+msgstr "Source d’inscription"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_compassion_child
+msgid "Sponsored Child"
+msgstr "Enfant parrainé"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner__app_displayed_sponsorships
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users__app_displayed_sponsorships
+msgid "Sponsorships displayed in the app"
+msgstr "Parrainages affichés dans l’application"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__star
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+msgid "Star"
+msgstr "Étoile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__start_date
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_state_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__state
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__state
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__state
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_state_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_state_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_state_id
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+msgid "State"
+msgstr "État"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_writing_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_feedback__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid ""
+"Stories and prayer with relevant blog at the top (opens the story and puts "
+"other blog posts at the bottom)"
+msgstr ""
+"Blogs et prières (ouvre la news et affiche le reste du contenu au-dessous)"
+
+#. module: mobile_app_connector
+#: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
+msgid "Story"
+msgstr "Histoire"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_street
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_street
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_street
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_street
+msgid "Street"
+msgstr "Rue"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__subtype_ids
+msgid "Subtypes"
+msgstr "Sous-types"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__template_ids
+msgid "Templates"
+msgstr "Modèles"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__gtc_accept
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__gtc_accept
+msgid "Terms and conditions"
+msgstr "Conditions générales"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_18
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_18
+msgid "Thank God ${ctx['objects'].preferred_name} prays for you."
+msgstr ""
+"Remerciez Dieu pour les prières de ${ctx['objects'].preferred_name} en votre "
+"faveur."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_9
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_9
+msgid "Thank God for the blessing of community."
+msgstr ""
+"Remerciez Dieu de bénir l'Eglise du centre de développement de l'enfant de "
+"${ctx['objects'].preferred_name}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_10
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_10
+msgid "Thank God that you can sponsor."
+msgstr "Remerciez Dieu de pouvoir parrainer un enfant."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht2
+msgid "Thank You"
+msgstr "Merci"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,body:mobile_app_connector.default-welcome-screen
+msgid ""
+"Thank you for downloading the Compassion app! Feel free to send us your "
+"feedback to help us improve it."
+msgstr ""
+"Merci d'avoir téléchargé l'app de Compassion! N'hésitez pas à nous faire "
+"part de vos retours afin de nous aider à l'améliorer."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:200
+#, python-format
+msgid "Thank you for your generosity!"
+msgstr "Merci pour votre générosité !"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:254
+#: code:addons/mobile_app_connector/models/account_invoice.py:265
+#, python-format
+msgid "The product %s was not found"
+msgstr "Le produit %s n'a pas été trouvé"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid ""
+"The subtype sets the display style of the tile in the Mobile application."
+msgstr ""
+"Le sous-type définit le style d’affichage de la vignette dans l’application "
+"mobile."
+
+#. module: mobile_app_connector
+#: sql_constraint:wp.post.category:0
+msgid "This category already exists"
+msgstr "Cette catégorie existe déjà"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__mode
+msgid "This defines how to process related data"
+msgstr "Cela définit comment traiter les données associées"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:121
+#: code:addons/mobile_app_connector/forms/registration_form.py:311
+#: code:addons/mobile_app_connector/forms/registration_form.py:403
+#, python-format
+msgid "This email is already linked to an account."
+msgstr "Cet e-mail est déjà utilisé."
+
+#. module: mobile_app_connector
+#: sql_constraint:wp.post:0
+msgid "This post already exists"
+msgstr "Cet article existe déjà"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/wordpress_post.py:95
+#, python-format
+msgid ""
+"This post was disabled probably because it doesn't have a content. Please "
+"make sure the post has a body to avoid any display issues in the mobile app."
+msgstr ""
+"Cet article a été désactivé probablement parce qu’il n’a pas de contenu. "
+"Veuillez vous assurer que le message a un corps pour éviter tout problème "
+"d’affichage dans l’application mobile."
+
+#. module: mobile_app_connector
+#: sql_constraint:mobile.app.tile.subtype:0
+msgid "This subtype already exists"
+msgstr "Ce sous-type existe déjà"
+
+#. module: mobile_app_connector
+#: sql_constraint:mobile.app.tile.type:0
+msgid "This tile type already exists"
+msgstr "Ce type de vignette existe déjà"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_tile
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_tile
+msgid "Tile"
+msgstr "Tuile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__preview
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__tile_preview
+msgid "Tile Preview"
+msgstr "Aperçu"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__tile_subtype
+msgid "Tile Subtype"
+msgstr "Sous-type de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__tile_type
+msgid "Tile Type"
+msgstr "Type de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_tile_subtype
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_tile_subtype
+msgid "Tile subtype"
+msgstr "Sous-type de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_tile_subtype
+msgid "Tile subtypes"
+msgstr "Sous-types de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_tile_type
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_tile_type
+msgid "Tile type"
+msgstr "Type de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_tile_type
+msgid "Tile types"
+msgstr "Types de tuile"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_tile_list
+msgid "Tiles"
+msgstr "Tuiles"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,title:mobile_app_connector.tile_co4
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_co4
+msgid "Time and weather"
+msgstr "Heure et météo"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__name
+msgid "Title"
+msgstr "Titre"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,button_text:mobile_app_connector.default-welcome-screen
+msgid "To the news"
+msgstr "Vers les nouvelles"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,activity_state:0
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Top of letters hub (opens the letter writing page)"
+msgstr "Haut du hub de lettres (ouvre la page d’écriture de lettres)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__topic
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_topic
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_topic
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_notification_search
+msgid "Topic"
+msgstr "Sujet"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__subtype_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__type_id
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
+msgid "Type"
+msgstr "Type"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__url
+msgid "URL"
+msgstr "URL"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.tile,mode:0
+msgid "Unique tile"
+msgstr "Une seule tuile"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
+#: selection:mobile.app.feedback,state:0
+msgid "Unread"
+msgstr "Non lu"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
+msgid "Used"
+msgstr "Utilisée"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_res_users
+msgid "Users"
+msgstr "Utilisateurs"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:112
+#, python-format
+msgid "Verify your e-mail address"
+msgstr "Vérifiez votre adresse e-mail"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "Very well"
+msgstr "Très bien"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__view_order
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__view_order
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__view_order
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__view_order
+msgid "View order"
+msgstr "Ordre d'affichage"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__visibility
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_search
+msgid "Visibility"
+msgstr "Visibilité"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/wordpress_post.py:94
+#, python-format
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:427
+#, python-format
+msgid ""
+"We couldn't find your sponsorships. Please contact us for setting up your "
+"account."
+msgstr ""
+"Nous n'avons pas pu associer automatiquement vos parrainages à cette adresse "
+"e-mail. Merci de prendre contact avec nous pour la création de votre compte."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:307
+#, python-format
+msgid "We sent you the reset instructions."
+msgstr "Instructions envoyées par e-mail."
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_mi2
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_MI2
+msgid "We'd love to hear what you think about our App"
+msgstr "Merci de nous dire ce que vous pensez de l'App"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_mi1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_MI1
+msgid "We've noticed you're not currently logged in"
+msgstr "Oups, il semble que vous ne soyez pas connecté"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_co2
+msgid "Weather"
+msgstr "Météo"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Website My Account"
+msgstr ""
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Website new gift"
+msgstr ""
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Website new letter"
+msgstr "Nouvelle lettre site web"
+
+#. module: mobile_app_connector
+#: selection:privacy.statement.agreement,origin_signature:0
+msgid "Website new sponsorship"
+msgstr "Nouveau parrainage site web"
+
+#. module: mobile_app_connector
+#: selection:mobile.app.feedback,star:0
+msgid "Well"
+msgstr "Bien"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:95
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__name
+#, python-format
+msgid "What did you like"
+msgstr "Qu'avez-vous aimé"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_12
+#: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_12
+msgid "What would you say to ${ctx['objects'].preferred_name} today?"
+msgstr ""
+"Que souhaitez-vous dire à ${ctx['objects'].preferred_name} aujourd'hui?"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_wp
+msgid "Wordpress News"
+msgstr "Actualités Wordpress"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_wp_post_category
+#: model:ir.ui.menu,name:mobile_app_connector.menu_wp_post_category
+msgid "Wordpress Post Categories"
+msgstr "Catégories de publications Wordpress"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__wp_id
+msgid "Wordpress Post ID"
+msgstr "ID de publication Wordpress"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_wp_post
+#: model:ir.ui.menu,name:mobile_app_connector.menu_wp_post
+msgid "Wordpress Posts"
+msgstr "Articles Wordpress"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/tools/wp_requests.py:36
+#, python-format
+msgid "Wordpress authentication failed !"
+msgstr "L’authentification Wordpress a échoué !"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_wp_post
+msgid "Wordpress post"
+msgstr "Article Wordpress"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_wp_post_category
+msgid "Wordpress post category"
+msgstr "Catégorie de publication Wordpress"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_t3
+msgid "Write a card"
+msgstr "Ecrire une carte"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,action_text:mobile_app_connector.tile_le1
+#: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_LE1
+msgid "Write a letter"
+msgstr "Ecrire une lettre"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_writing
+msgid "Writing categories"
+msgstr "Catégories"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_writing
+msgid "Writings"
+msgstr "Écrits"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/res_users.py:27
+#, python-format
+msgid "Wrong user or password"
+msgstr "Utilisateur ou mot de passe incorrect"
+
+#. module: mobile_app_connector
+#: selection:registration.base.form,has_sponsorship:0
+msgid "Yes"
+msgstr "Oui"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:114
+#, python-format
+msgid ""
+"You cannot pay your sponsorship with gifts at the same time. Please make two "
+"separate donations."
+msgstr ""
+"Vous ne pouvez pas payer votre parrainage avec des cadeaux en même temps. "
+"Veuillez faire deux dons distincts."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:199
+#, python-format
+msgid "You gave CHF %s.- for %s"
+msgstr "Vous avez donné CHF %s.- pour %s"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi7
+msgid "You have not yet paid your sponsorship"
+msgstr "En attente du premier versement"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_le_t2
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t2
+msgid "You wrote a letter on ${ctx['objects'].get_date('scanned_date')}"
+msgstr ""
+"Vous avez écrit une lettre le ${ctx['objects'].get_date('scanned_date')}"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_cht2
+msgid "You're changing ${ctx['objects'].get('his')} life"
+msgstr "Vous changez ${ctx['objects'].get('sa')} vie"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:120
+#, python-format
+msgid "Your Mobile App Feedback"
+msgstr "Votre feedback sur l'application mobile"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:194
+#, python-format
+msgid ""
+"Your account has been successfully created, you will now receive an email to "
+"finalize your registration."
+msgstr ""
+"Votre compte a été créé avec succès, vous allez recevoir un e-mail pour "
+"finaliser votre inscription."
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_registration_success
+msgid ""
+"Your account was successfully created.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            You must now setup your password. Please verify "
+"your e-mail address to finalize your registration."
+msgstr ""
+"Votre compte a été créé avec succès.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            Vous devez maintenant configurer votre mot de "
+"passe. Veuillez vérifier votre adresse e-mail pour finaliser votre "
+"inscription."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:93
+#, python-format
+msgid "Your feedback from the app"
+msgstr "Vos observations faites depuis l'application"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:271
+#: code:addons/mobile_app_connector/forms/registration_form.py:344
+#, python-format
+msgid "Your personal data"
+msgstr "Vos données personnelles"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/request.py:86
+#, python-format
+msgid "Your question was well received"
+msgstr "Merci, nous vous répondrons dans les plus brefs délais."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:131
+#, python-format
+msgid ""
+"Your sponsorship payment doesn't match any expected payment. Please reach to "
+"our team to check what is due."
+msgstr ""
+"Votre paiement de parrainage ne correspond à aucun paiement attendu. "
+"Veuillez contacter notre équipe pour vérifier ce qui est dû."
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:74
+#, python-format
+msgid "Youtube"
+msgstr "Youtube"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "Youtube video opens (must contain video information, opens video)"
+msgstr ""
+"La vidéo Youtube s’ouvre (doit contenir des informations vidéo, ouvre la "
+"vidéo)"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_zip
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_zip
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_zip
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_zip
+msgid "Zip"
+msgstr "Code postal"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_cms_form_res_users
+msgid "cms.form.res.users"
+msgstr "cms.form.res.users"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__param_1
+msgid "first parameter"
+msgstr "premier paramètre"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,image_url:mobile_app_connector.default-welcome-screen
+msgid "https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg"
+msgstr "https://compassion.ch/medias/banners/app/app_banner_1.jpg"
+
+#. module: mobile_app_connector
+#: model:crm.claim.category,name:mobile_app_connector.claim_cat_ios
+#: selection:mobile.app.feedback,source:0
+msgid "iOS"
+msgstr "iOS"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:423
+#, python-format
+msgid "my mobile app"
+msgstr "l'application mobile"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/account_invoice.py:185
+#, python-format
+msgid "one of our fund"
+msgstr "l’un de nos fonds"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_base_form
+msgid "registration.base.form"
+msgstr "registration.base.form"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_not_supporter
+msgid "registration.not.supporter"
+msgstr "registration.not.supporter"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_supporter_form
+msgid "registration.supporter.form"
+msgstr "registration.supporter.form"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__param_2
+msgid "second parameter"
+msgstr "deuxième paramètre"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__param_3
+msgid "third parameter"
+msgstr "troisième paramètre"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "tile_1"
+msgstr "tile_1"
+
+#. module: mobile_app_connector
+#: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
+msgid "tile_2"
+msgstr "tile_2"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile__records_filter
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_records_filter
+msgid "will use the filtered function on the associated records"
+msgstr "utilisera la fonction filtrée sur les enregistrements associés"

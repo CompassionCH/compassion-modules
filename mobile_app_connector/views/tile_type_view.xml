@@ -1,0 +1,140 @@
+<odoo>
+    <!-- Tile type views -->
+    <record model="ir.ui.view" id="tile_type_form">
+        <field name="name">mobile.app.tile.type.form</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="view_order"/>
+                        </group>
+<!--                        For now we don't use it-->
+<!--                         <group>-->
+<!--                            <field name="param_1"/>-->
+<!--                            <field name="param_2"/>-->
+<!--                            <field name="param_3"/>-->
+<!--                        </group>-->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_type_tree">
+        <field name="name">mobile.app.tile.type.tree</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="view_order" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_type_search">
+        <field name="name">mobile.app.tile.type.search</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobile_app_tile_type" model="ir.actions.act_window">
+        <field name="name">Tile type</field>
+        <field name="res_model">mobile.app.tile.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for Tile Type -->
+    <menuitem id="menu_mobile_app_tile_type"
+              name="Tile types"
+              parent="menu_mobile_app_hub"
+              action="action_mobile_app_tile_type"
+              groups="sales_team.group_sale_manager"
+              sequence="50"
+    />
+
+    <!-- Tile subtype views -->
+    <record model="ir.ui.view" id="tile_subtype_form">
+        <field name="name">mobile.app.tile.subtype.form</field>
+        <field name="model">mobile.app.tile.subtype</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="view_order"/>
+                        </group>
+                        <group>
+                            <field name="type_id"/>
+                            <field name="default_action_destination"/>
+                            <field name="tile_preview" widget="image"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="default_model_id"/>
+                        <field name="default_records_filter"/>
+                        <field name="default_title"/>
+                        <field name="default_body"/>
+                        <field name="default_action_text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_subtype_tree">
+        <field name="name">mobile.app.tile.subtype.tree</field>
+        <field name="model">mobile.app.tile.subtype</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="view_order" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="type_id"/>
+                <field name="default_action_destination"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_subtype_search">
+        <field name="name">mobile.app.tile.subtype.search</field>
+        <field name="model">mobile.app.tile.subtype</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="type_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobile_app_tile_subtype" model="ir.actions.act_window">
+        <field name="name">Tile subtype</field>
+        <field name="res_model">mobile.app.tile.subtype</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for Tile SubType -->
+    <menuitem id="menu_mobile_app_tile_subtype"
+              name="Tile subtypes"
+              parent="menu_mobile_app_hub"
+              action="action_mobile_app_tile_subtype"
+              groups="sales_team.group_sale_manager"
+              sequence="60"
+    />
+</odoo>

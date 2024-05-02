@@ -1,6 +1,7 @@
 # generated from manifests external_dependencies
 babel
 bs4
+firebase_admin
 iso639-lang
 jwt
 langdetect
@@ -14,5 +15,7 @@ python-magic
 pytz
 pyzbar
 regex
+requests
+simplejson
 timezonefinder
 wand

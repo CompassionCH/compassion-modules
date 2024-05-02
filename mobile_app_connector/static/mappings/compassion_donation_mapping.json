@@ -1,0 +1,21 @@
+{
+  "name": "mobile_app_donation",
+  "model": "product.template",
+  "mapping": {
+    "DisplayOrder": {
+      "field": "id"
+    },
+    "FundName": {
+      "field": "name"
+    },
+    "Id": {
+      "field": "id"
+    },
+    "ImageIcon": {
+      "field": "image_icon"
+    },
+    "FundAmount": {
+      "field": "list_price"
+    }
+  }
+}

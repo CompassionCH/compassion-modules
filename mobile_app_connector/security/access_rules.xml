@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="my_children" model="ir.rule">
+        <field name="name">My children</field>
+        <field name="model_id" ref="model_compassion_child"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.mapped('sponsorship_ids.child_id.id'))]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="child_pictures_model_access" model="ir.rule">
+        <field name="name">Child pictures access to portal users</field>
+        <field name="model_id" ref="model_compassion_child_pictures"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">[('child_id.sponsor_id', '=', user.partner_id.id)]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="perm_create" eval="0"/>
+    </record>
+    <record id="my_sponsorships" model="ir.rule">
+        <field name="name">My sponsorships</field>
+        <field name="model_id" ref="sponsorship_compassion.model_recurring_contract"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.mapped('sponsorship_ids.id'))]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_contacts" model="ir.rule">
+        <field name="name">My contacts</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="domain_force">[('id', 'in', (user.partner_id.mapped('sponsorship_ids.correspondent_id')+user.partner_id.mapped('sponsorship_ids.partner_id')+user.partner_id.mapped('church_id')).ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_correspondence" model="ir.rule">
+        <field name="name">My correspondence</field>
+        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="domain_force">['|', ('partner_id', '=', user.partner_id.id), '&amp;', ('sponsorship_id.partner_id.portal_sponsorships', '=', 'all_info'), ('sponsorship_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_children_households" model="ir.rule">
+        <field name="name">My children's households</field>
+        <field name="model_id" ref="child_compassion.model_compassion_household"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.mapped('sponsorship_ids.child_id.household_id').ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="firebase_registration_rule" model="ir.rule">
+        <field name="name">Firebase registration rule</field>
+        <field name="model_id" ref="firebase_connector.model_firebase_registration"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

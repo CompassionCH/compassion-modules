@@ -1,0 +1,19 @@
+<odoo>
+    <record model="ir.ui.view" id="mobile_app_communication_config_form">
+        <field name="name">mobile.app.communication.config.form</field>
+        <field name="model">partner.communication.config</field>
+        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group[1]">
+                <group>
+                    <field name="mobile_notification_send" />
+                    <field name="mobile_notification_auto_send" attrs="{'invisible': [('mobile_notification_send', '=', False)]}"/>
+                    <field name="mobile_notification_title" attrs="{'invisible': [('mobile_notification_send', '=', False)]}"/>
+                    <field name="mobile_notification_body" attrs="{'invisible': [('mobile_notification_send', '=', False)]}"/>
+                    <field name="mobile_notification_destination" attrs="{'invisible': [('mobile_notification_send', '=', False)]}"/>
+                    <field name="mobile_notification_topic" attrs="{'invisible': [('mobile_notification_send', '=', False)]}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
