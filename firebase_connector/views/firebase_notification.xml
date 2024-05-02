@@ -2,21 +2,18 @@
     <record id="action_view_firebase_notification_statistics_partner" model="ir.actions.act_window">
         <field name="name">Partner Statistics</field>
         <field name="res_model">firebase.notification.partner.read</field>
-        <field name="view_type">form</field>
         <field name="view_mode">graph,tree,form</field>
         <field name="domain">[('notification_id', '=', active_id), ('opened', '=', True)]</field>
     </record>
     <record id="action_view_firebase_notification_statistics_failed" model="ir.actions.act_window">
         <field name="name">Failed notifications Statistics</field>
         <field name="res_model">firebase.notification.statistics</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('notification_id', '=', active_id), ('failed', '=', True)]</field>
     </record>
     <record id="action_view_firebase_notification_statistics_received" model="ir.actions.act_window">
         <field name="name">Received notifications Statistics</field>
         <field name="res_model">firebase.notification.statistics</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('notification_id', '=', active_id), ('delivered', '=', True)]</field>
     </record>
@@ -259,7 +256,6 @@
     <record id="action_firebase_notification" model="ir.actions.act_window">
         <field name="name">Firebase Notifications</field>
         <field name="res_model">firebase.notification</field>
-        <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form,graph</field>
         <field name="context"></field>
     </record>
@@ -267,7 +263,6 @@
     <record id="action_firebase_notification_stage" model="ir.actions.act_window">
         <field name="name">Firebase Stages Notification</field>
         <field name="res_model">firebase.notification.stage</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context"></field>
     </record>
