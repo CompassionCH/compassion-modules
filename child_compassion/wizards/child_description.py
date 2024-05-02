@@ -130,7 +130,7 @@ class ChildDescription(models.TransientModel):
         descriptions.
         {lang: description_field}
         """
-        return {"en_US": "desc_en"}
+        return {"en_US": "description_en"}
 
     def _generate_translation(self):
         """Generate child description."""

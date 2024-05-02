@@ -2700,7 +2700,7 @@ msgid "English"
 msgstr "Anglais"
 
 #. module: child_compassion
-#: model:ir.model.fields,field_description:child_compassion.field_compassion_child__desc_en
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child__description_en
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__description_en
 msgid "English description"
 msgstr "Description en anglais"
@@ -3452,7 +3452,7 @@ msgid "Formal Education Level"
 msgstr "Niveau d'éducation formelle"
 
 #. module: child_compassion
-#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_desc_fr
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_description_fr
 msgid "French description"
 msgstr "Description en français"
 
@@ -3563,7 +3563,7 @@ msgid "Geography"
 msgstr "Géographie"
 
 #. module: child_compassion
-#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_desc_de
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_description_de
 msgid "German description"
 msgstr "Description en allemand"
 
@@ -4852,7 +4852,7 @@ msgid "Issue Email"
 msgstr "Courriel de la question"
 
 #. module: child_compassion
-#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_desc_it
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_description_it
 msgid "Italian description"
 msgstr "Description en italien"
 

@@ -252,7 +252,7 @@
                         </page>
                         <page string="Descriptions">
                             <group>
-                                <field name="desc_en" widget="html" />
+                                <field name="description_en" widget="html" />
                             </group>
                         </page>
                         <page string="Detailed Information">
