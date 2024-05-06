@@ -116,6 +116,11 @@ class ProductProduct(models.Model):
                     if product.survival_slot_number > 0
                     else 1
                 ) * 100
+            else:
+                product.alltime_survival_sponsorship_number = 0
+                product.survival_slot_number = 0
+                product.slot_used = 0
+                product.survival_sponsorship_number = 0
 
     @api.model
     def create_missing_products(self):
