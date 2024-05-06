@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="tile_ch1" model="mobile.app.tile">
             <field name="name">My children</field>
-            <field name="subtype_id" ref="tile_subtype_ch1"/>
+            <field name="subtype_id" ref="tile_subtype_ch1" />
             <field name="mode">one</field>
             <field name="visibility">private</field>
             <field name="priority">High</field>
@@ -12,7 +12,7 @@
         </record>
         <record id="tile_mi1" model="mobile.app.tile">
             <field name="name">Login</field>
-            <field name="subtype_id" ref="tile_subtype_MI1"/>
+            <field name="subtype_id" ref="tile_subtype_MI1" />
             <field name="mode">one</field>
             <field name="visibility">public</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -20,7 +20,7 @@
         </record>
         <record id="tile_mi2" model="mobile.app.tile">
             <field name="name">Feedback</field>
-            <field name="subtype_id" ref="tile_subtype_MI2"/>
+            <field name="subtype_id" ref="tile_subtype_MI2" />
             <field name="mode">one</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -28,7 +28,7 @@
         </record>
         <record id="tile_ch2" model="mobile.app.tile">
             <field name="name">Photo list</field>
-            <field name="subtype_id" ref="tile_subtype_ch2"/>
+            <field name="subtype_id" ref="tile_subtype_ch2" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -36,7 +36,7 @@
         </record>
         <record id="tile_gi1" model="mobile.app.tile">
             <field name="name">Fund donation</field>
-            <field name="subtype_id" ref="tile_subtype_gi1"/>
+            <field name="subtype_id" ref="tile_subtype_gi1" />
             <field name="mode">many</field>
             <field name="visibility">both</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -44,7 +44,7 @@
         </record>
         <record id="tile_gi3" model="mobile.app.tile">
             <field name="name">Sponsorship Gift</field>
-            <field name="subtype_id" ref="tile_subtype_gi3"/>
+            <field name="subtype_id" ref="tile_subtype_gi3" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -52,7 +52,7 @@
         </record>
         <record id="tile_gi7" model="mobile.app.tile">
             <field name="name">Awaiting payment</field>
-            <field name="subtype_id" ref="tile_subtype_gi7"/>
+            <field name="subtype_id" ref="tile_subtype_gi7" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -60,7 +60,7 @@
         </record>
         <record id="tile_le1" model="mobile.app.tile">
             <field name="name">Write a letter</field>
-            <field name="subtype_id" ref="tile_subtype_LE1"/>
+            <field name="subtype_id" ref="tile_subtype_LE1" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -68,7 +68,7 @@
         </record>
         <record id="tile_le_t1" model="mobile.app.tile">
             <field name="name">B2S letter</field>
-            <field name="subtype_id" ref="tile_subtype_le_t1"/>
+            <field name="subtype_id" ref="tile_subtype_le_t1" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -76,7 +76,7 @@
         </record>
         <record id="tile_le_t2" model="mobile.app.tile">
             <field name="name">S2B letter</field>
-            <field name="subtype_id" ref="tile_subtype_le_t2"/>
+            <field name="subtype_id" ref="tile_subtype_le_t2" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <!-- the correct action_destination will be set when the init method will be called -->
@@ -84,7 +84,7 @@
         </record>
         <record id="tile_co4" model="mobile.app.tile">
             <field name="name">Time and weather</field>
-            <field name="subtype_id" ref="tile_subtype_le_co4"/>
+            <field name="subtype_id" ref="tile_subtype_le_co4" />
             <field name="mode">many</field>
             <field name="visibility">private</field>
             <field name="priority">High</field>
@@ -92,6 +92,6 @@
             <field name="action_destination">Compass</field>
         </record>
 
-        <function model="mobile.app.tile" name="init_tiles"/>
+        <function model="mobile.app.tile" name="init_tiles" />
     </data>
 </odoo>

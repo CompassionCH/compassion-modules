@@ -10,13 +10,12 @@
 
 import logging
 
-from odoo import models, api, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
-
     _name = "product.template"
     _inherit = ["product.template", "compassion.mapped.model"]
 
@@ -53,7 +52,6 @@ class ProductTemplate(models.Model):
 
 
 class Product(models.Model):
-
     _inherit = "product.product"
 
     def get_app_json(self, multi=False):

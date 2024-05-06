@@ -7,11 +7,11 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import api, models
 
 
 class CompassionProject(models.Model):
-    """A Compassion project """
+    """A Compassion project"""
 
     _name = "compassion.project"
     _inherit = ["compassion.project", "compassion.mapped.model"]

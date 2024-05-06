@@ -5,21 +5,21 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="icon"/>
-                            <field name="position"/>
-                            <field name="template_ids" widget="many2many"/>
+                            <field name="name" />
+                            <field name="icon" />
+                            <field name="position" />
+                            <field name="template_ids" widget="many2many" />
                         </group>
                         <group>
-                            <field name="date_start"/>
-                            <field name="date_stop"/>
-                            <field name="active"/>
-                            <field name="print_count"/>
+                            <field name="date_start" />
+                            <field name="date_stop" />
+                            <field name="active" />
+                            <field name="print_count" />
                         </group>
                     </group>
                 </sheet>
@@ -31,12 +31,12 @@
         <field name="name">mobile.app.writing.tree</field>
         <field name="model">mobile.app.writing</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state=='new';grey:state=='used'">
-                <field name="name"/>
-                <field name="date_start"/>
-                <field name="date_stop"/>
-                <field name="print_count"/>
-                <field name="state"/>
+            <tree>
+                <field name="name" />
+                <field name="date_start" />
+                <field name="date_stop" />
+                <field name="print_count" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -46,10 +46,15 @@
         <field name="model">mobile.app.writing</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="state"/>
+                <field name="name" />
+                <field name="state" />
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter
+            string="Status"
+            name="group_state"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
                 </group>
             </search>
         </field>
@@ -62,11 +67,12 @@
     </record>
 
     <!-- Add menu for app writing -->
-    <menuitem id="menu_mobile_app_writing"
-              name="Writing categories"
-              parent="menu_mobile_app_settings"
-              action="action_mobile_app_writing"
-              sequence="3"
-    />
+    <menuitem
+    id="menu_mobile_app_writing"
+    name="Writing categories"
+    parent="menu_mobile_app_settings"
+    action="action_mobile_app_writing"
+    sequence="3"
+  />
 
 </odoo>

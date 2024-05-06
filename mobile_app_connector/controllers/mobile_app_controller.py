@@ -10,30 +10,32 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import logging
 import html
+import logging
+from base64 import b64decode
 
 import werkzeug
-from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
+from werkzeug.exceptions import MethodNotAllowed, NotFound, Unauthorized
 
-from odoo import http, _
-from odoo.addons.base.models.ir_mail_server import MailDeliveryException
+from odoo import _, http
 from odoo.http import request
 
-from base64 import b64decode
+from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 
 _logger = logging.getLogger(__name__)
 
 
 def _get_lang(req, params):
-    """ Fetches the lang from the request parameters. """
+    """Fetches the lang from the request parameters."""
     lang_mapping = {"fr": "fr_CH", "en": "en_US", "de": "de_DE", "it": "it_IT"}
     app_lang = params.get("language", "")[:2]
     return lang_mapping.get(app_lang, req.env.lang)
 
 
 class RestController(http.Controller):
-    @http.route("/mobile-app-api/login", type="json", methods=["GET", "POST"], auth="public")
+    @http.route(
+        "/mobile-app-api/login", type="json", methods=["GET", "POST"], auth="public"
+    )
     def mobile_app_login(self, username=None, password=None, **kwargs):
         """
         This is the first entry point for logging, which will setup the
@@ -47,14 +49,16 @@ class RestController(http.Controller):
         try:
             if request.httprequest.method == "POST":
                 request_data = request.jsonrequest
-                request.session.authenticate(request.session.db,
-                                             request_data['username'],
-                                             b64decode(request_data['password']))
+                request.session.authenticate(
+                    request.session.db,
+                    request_data["username"],
+                    b64decode(request_data["password"]),
+                )
             # TODO remove connection through GET once app update is old enough
             elif request.httprequest.method == "GET":
                 request.session.authenticate(request.session.db, username, password)
             user = request.env.user
-        except:
+        except Exception:
             _logger.warning("Wrong login attempt from the app for user %s", username)
             user = request.env["res.users"]
         return user.data_to_json("mobile_app_login")
@@ -139,6 +143,8 @@ class RestController(http.Controller):
         for key in parameters:
             parameters[key] = html.escape(parameters[key])
 
+        # Backward compatibility for old app versions
+        model = model.replace("invoice", "move")
         odoo_obj = request.env.get(model).with_context(
             lang=_get_lang(request, parameters)
         )
@@ -216,67 +222,30 @@ class RestController(http.Controller):
         res = hero.data_to_json("mobile_app_banner")
         return [res]
 
-    @http.route("/sponsor_a_child", type="http", auth="public", website=True,
-                sitemap=False)
+    @http.route(
+        "/sponsor_a_child", type="http", auth="public", website=True, sitemap=False
+    )
     def mobile_app_sponsorship_request(self, **parameters):
         """
-        Create a sms_child_request and redirect user to sms sponsorship form
-        It uses sms sponsorship
-        :return: Redirect to sms_sponsorship form
+        :return: Redirect to random child sponsorship
         """
-        if not parameters.get('source'):
-            return werkzeug.exceptions.BadRequest('Missing "source" GET parameter')
+        return werkzeug.utils.redirect("/children/random", 302)
 
-        values = {
-            "lang_code": _get_lang(request, parameters),
-            "source": parameters.get("source"),
-            "partner_id": parameters.get("partner_id"),
-        }
-        sms_child_request = request.env["sms.child.request"].sudo().create(values)
-        return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
-
-    @http.route("/sponsor_this_child", type="http", auth="public", website=True,
-                sitemap=False)
+    @http.route(
+        "/sponsor_this_child", type="http", auth="public", website=True, sitemap=False
+    )
     def mobile_app_sponsorship_request_specific_child(self, **parameters):
         """
-        Create a sms_child_request for a provided child id and redirect user to sms sponsorship form
+        Create a sms_child_request for a provided child id and redirect user to
+        sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
-        if not parameters.get('source'):
-            return werkzeug.exceptions.BadRequest('Missing "source" GET parameter')
+        child_id = parameters.get("child_id")
+        if not child_id:
+            return self.mobile_app_sponsorship_request()
 
-        if not parameters.get("child_id"):
-            redirect_parameters = f"source={parameters.get('source')}"
-            if parameters.get('partner_id'):
-                redirect_parameters += f"&partner_id={parameters.get('partner_id')}"
-            return werkzeug.utils.redirect(f"/sponsor_a_child?{redirect_parameters}", 302)
-
-        child = request.env['compassion.child'].sudo().search([("id", "=", parameters.get('child_id'))])
-
-        # Get number of active requests for this child. We should not offer to sponsor a sponsored child
-        number_active_sms_child_requests_for_child = request.env["sms.child.request"].sudo().search_count([
-            ("child_id", "=", child.id),
-            '|', ('sponsorship_confirmed', '=', True),
-            ('state', '=like', 'step_')  # If the request is at step1 or step2
-        ])
-
-        # Ensure child exists, is on hold and no active sms child request exists for this child
-        # Not using ensure_one() to have all under the same error
-        if len(child) != 1 or not child.hold_id or number_active_sms_child_requests_for_child != 0:
-            return werkzeug.exceptions.Gone('Child does not exist or is no longer available. Sorry.')
-
-        values = {
-            "lang_code": _get_lang(request, parameters),
-            "source": parameters.get("source"),
-            "child_id": child.id,
-            "partner_id": parameters.get("partner_id"),
-            # child_reserved mean that a child has been affected to the request
-            # not that the child is reserved for this request only
-            "state": "child_reserved"
-        }
-        sms_child_request = request.env["sms.child.request"].sudo().create(values)
-        return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
+        return werkzeug.utils.redirect(f"/child/{child_id}/sponsor/", 302)
 
     @http.route(
         "/mobile-app-api/forgot-password", type="json", auth="public", methods=["GET"]
@@ -309,3 +278,40 @@ class RestController(http.Controller):
                 response["message"] = _("Mail delivery error")
 
         return response
+
+    @http.route(
+        "/compassion/payment/invoice/<int:move_id>",
+        type="http",
+        auth="public",
+        methods=["GET"],
+        website=True,
+        sitemap=False,
+    )
+    def get_payment_page(self, move_id, **kwargs):
+        """
+        This route is used to display the payment page for an invoice.
+        :param move_id: id of the invoice
+        :return: payment page
+        """
+        move_obj = request.env["account.move"].sudo()
+        move = move_obj.browse(move_id)
+        if not move.exists():
+            raise NotFound()
+        payment_link = (
+            request.env["payment.link.wizard"]
+            .sudo()
+            .create(
+                {
+                    "res_id": move.id,
+                    "res_model": "account.move",
+                    "amount": move.amount_residual,
+                    "currency_id": move.currency_id.id,
+                    "partner_id": move.partner_id.id,
+                    "amount_max": move.amount_residual,
+                    "description": move.payment_reference,
+                }
+            )
+        )
+        return request.redirect(
+            f"{payment_link.link}&return_url={kwargs.get('success_url', '')}"
+        )

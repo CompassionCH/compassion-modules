@@ -55,7 +55,7 @@ class FAQ(models.AbstractModel):
         answers = [answer.text for answer in answers_list]
 
         faq = []
-        for (question, answer) in zip(questions, answers):
+        for question, answer in zip(questions, answers):
             faq.append({"Question": question, "Answer": answer})
 
         return faq

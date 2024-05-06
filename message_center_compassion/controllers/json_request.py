@@ -7,7 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import json
 import logging
 import uuid
 from datetime import datetime
@@ -17,30 +16,15 @@ import werkzeug
 from odoo import exceptions
 from odoo.http import (
     AuthenticationError,
-    JsonRequest,
-    Response,
-    Root,
     SessionExpiredException,
 )
-from odoo.tools import config, date_utils
+from odoo.tools import config
+
+from odoo.addons.rest_json_api.http import JsonRequest
 
 _logger = logging.getLogger(__name__)
 
-# Monkeypatch type of request rooter to use RESTJsonRequest
-old_get_request = Root.get_request
-
 TEST_MODE = config.get("test_enable")
-
-
-def get_request(self, httprequest):
-    if httprequest.mimetype == "application/json" and httprequest.environ[
-        "PATH_INFO"
-    ].startswith("/onramp"):
-        return RESTJsonRequest(httprequest)
-    return old_get_request(self, httprequest)
-
-
-Root.get_request = get_request
 
 
 class RESTJsonRequest(JsonRequest):
@@ -85,42 +69,15 @@ class RESTJsonRequest(JsonRequest):
             self.params = dict()
             self.context = dict(self.session.context)
 
-    def dispatch(self):
-        """Log the received message before processing it."""
-        _logger.debug(
-            "[%s] %s %s %s",
-            self.httprequest.environ["REQUEST_METHOD"],
-            self.httprequest.url,
-            [(k, v) for k, v in self.httprequest.headers.items()],
-            self.jsonrequest,
-        )
-        return super().dispatch()
+    def _postprocess(self, request_path, odoo_result):
+        """Add required headers."""
+        if request_path.startswith("/onramp"):
+            odoo_result.headers.append(("x-cim-RequestId", self.uuid))
 
-    def _json_response(self, result=None, error=None):
-        """Format the answer and add required headers."""
-        response = {}
-        status = 200
-        if error is not None:
-            status = error.get("ErrorCode")
-            response = error
-        if result is not None:
-            status = result.pop("code", 200)
-            response = result
-
-        mime = "application/json"
-        body = json.dumps(response, default=date_utils.json_default)
-        headers = [
-            ("Content-Type", mime),
-            ("Content-Length", len(body)),
-            ("x-cim-RequestId", self.uuid),
-        ]
-
-        http_response = Response(body, headers=headers, status=status)
-        _logger.debug('[SEND] %s %s "%s"', status, headers, response)
-        return http_response
-
-    def _handle_exception(self, exception):
-        """Format the errors to conform to GMC error types."""
+    def _custom_exception(self, exception, request_path):
+        if not request_path.startswith("/onramp"):
+            return False
+        # Format the errors to conform to GMC error types
         error = {
             "ErrorId": self.uuid,
             "ErrorTimestamp": self.timestamp,

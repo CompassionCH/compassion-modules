@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class DemandPlanningSettings(models.TransientModel):
@@ -33,6 +33,8 @@ class DemandPlanningSettings(models.TransientModel):
             param_obj.get_param("mobile_app_connector.s2b_template", "0")
         )
         res.update(
-            {"s2b_template_default_id": s2b_template_id, }
+            {
+                "s2b_template_default_id": s2b_template_id,
+            }
         )
         return res

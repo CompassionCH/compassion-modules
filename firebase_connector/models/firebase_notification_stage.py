@@ -7,7 +7,7 @@ class FirebaseNotificationStage(models.Model):
     _order = "sequence"
 
     name = fields.Char(
-        string='Stage Name',
+        string="Stage Name",
         required=True,
         translate=True,
     )

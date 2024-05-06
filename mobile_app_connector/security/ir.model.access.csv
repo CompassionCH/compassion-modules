@@ -14,7 +14,7 @@ full_mobile_app_messages,Mobile app messages full access,model_mobile_app_messag
 read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
 read_access_correspondence_template_page,Correspondence template page read access,sbc_compassion.model_correspondence_template_page,,1,0,0,0
 read_access_product_template,Product template read access,model_product_template,base.group_portal,1,0,0,0
-read_access_lang_compassion,Lang compassion read access,child_compassion.model_res_lang_compassion,base.group_portal,1,0,0,0
+read_access_lang_compassion,Lang compassion read access,advanced_translation.model_res_lang_compassion,base.group_portal,1,0,0,0
 read_access_field_office,Field office read access,child_compassion.model_compassion_field_office,base.group_portal,1,0,0,0
 read_access_fcp_program,FCP Program read access,child_compassion.model_fcp_program,base.group_portal,1,0,0,0
 read_access_fcp_church_utility,FCP church utility read access,child_compassion.model_fcp_church_utility,base.group_portal,1,0,0,0

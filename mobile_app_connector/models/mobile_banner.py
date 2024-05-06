@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
@@ -42,14 +42,16 @@ class AppBanner(models.Model):
     button_text = fields.Char(translate=True)
     body = fields.Text(translate=True)
     fund_type = fields.Many2one(
-        "product.product", "Fund product", readonly=False,
-        domain=[("mobile_app", "=", True)]
+        "product.product",
+        "Fund product",
+        readonly=False,
+        domain=[("mobile_app", "=", True)],
     )
     image_url = fields.Char(translate=True)
     external_url = fields.Char(translate=True)
     date_start = fields.Date(readonly=True, states={"new": [("readonly", False)]})
     date_stop = fields.Date(readonly=True, states={"new": [("readonly", False)]})
-    active = fields.Boolean(oldname="is_active", default=True)
+    active = fields.Boolean(default=True)
     state = fields.Selection(
         [("new", "New"), ("active", "Active"), ("used", "Used")],
         compute="_compute_state",
@@ -85,10 +87,17 @@ class AppBanner(models.Model):
         today = fields.Date.today()
         active_banners = self.search([])
         current_banners = self.search(
-            [("date_start", "<=", today), ("date_stop", ">=", today), ]
+            [
+                ("date_start", "<=", today),
+                ("date_stop", ">=", today),
+            ]
         )
         without_dates_banners = self.search(
-            ["|", ("date_start", "=", None), ("date_stop", "=", None), ]
+            [
+                "|",
+                ("date_start", "=", None),
+                ("date_stop", "=", None),
+            ]
         )
         # Deactivate old stories
         (active_banners - current_banners - without_dates_banners).write(

@@ -10,13 +10,13 @@
 
 import logging
 
-from odoo import models, api
+from odoo import api, models
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionRecurringContract(models.Model):
-    """ A sponsorship """
+    """A sponsorship"""
 
     _inherit = "recurring.contract"
 
@@ -33,14 +33,10 @@ class CompassionRecurringContract(models.Model):
     def create(self, vals):
         contract = super().create(vals)
         sponsors = self.mapped("partner_id") + self.mapped("correspondent_id")
-        sponsors.mapped("app_messages").write({
-            "force_refresh": True
-        })
+        sponsors.mapped("app_messages").write({"force_refresh": True})
         return contract
 
     def contract_active(self):
         sponsors = self.mapped("partner_id") + self.mapped("correspondent_id")
-        sponsors.mapped("app_messages").write({
-            "force_refresh": True
-        })
+        sponsors.mapped("app_messages").write({"force_refresh": True})
         return super().contract_active()

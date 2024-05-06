@@ -11,13 +11,13 @@
 import datetime
 import logging
 
-from odoo import models, api
+from odoo import models
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionChildPictures(models.Model):
-    """ A sponsored child """
+    """A sponsored child"""
 
     _name = "compassion.child.pictures"
     _inherit = ["compassion.child.pictures", "compassion.mapped.model"]

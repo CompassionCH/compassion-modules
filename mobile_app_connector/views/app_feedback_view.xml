@@ -5,26 +5,37 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="create_crm_claim" string="Reply" type="object" states="unread,read" class="oe_highlight"/>
-                    <button name="mark_read" string="Mark as read" type="object" states="unread"/>
-                    <field name="state" widget="statusbar"/>
+                    <button
+            name="create_crm_claim"
+            string="Reply"
+            type="object"
+            states="unread,read"
+            class="oe_highlight"
+          />
+                    <button
+            name="mark_read"
+            string="Mark as read"
+            type="object"
+            states="unread"
+          />
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="star" widget="priority"/>
-                            <field name="name"/>
-                            <field name="improve_app"/>
+                            <field name="star" widget="priority" />
+                            <field name="name" />
+                            <field name="improve_app" />
                         </group>
                         <group>
-                            <field name="partner_id"/>
+                            <field name="partner_id" />
                             <field name="create_date" />
-                            <field name="language"/>
-                            <field name="source"/>
+                            <field name="language" />
+                            <field name="source" />
                         </group>
                     </group>
                     <group>
-                        <field name="crm_claim_id" states="replied"/>
+                        <field name="crm_claim_id" states="replied" />
                     </group>
                 </sheet>
             </form>
@@ -35,16 +46,15 @@
         <field name="name">mobile.app.feedback.tree</field>
         <field name="model">mobile.app.feedback</field>
         <field name="arch" type="xml">
-            <tree colors="blue:star=='4';grey:star=='3';green:star=='5'"
-                create="false">
-                <field name="create_date"/>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="star"/>
-                <field name="improve_app"/>
-                <field name="source"/>
-                <field name="state"/>
-                <field name="language"/>
+            <tree create="false">
+                <field name="create_date" />
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="star" />
+                <field name="improve_app" />
+                <field name="source" />
+                <field name="state" />
+                <field name="language" />
             </tree>
         </field>
     </record>
@@ -54,19 +64,39 @@
         <field name="model">mobile.app.feedback</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="language"/>
-                <field name="state"/>
-                <filter name="unread" string="Unread" domain="[('state', '=', 'unread')]"/>
+                <field name="name" />
+                <field name="language" />
+                <field name="state" />
+                <filter
+          name="unread"
+          string="Unread"
+          domain="[('state', '=', 'unread')]"
+        />
                 <group expand="0" string="Group By">
-                    <filter string="Star" name="star"
-                            domain="[]" context="{'group_by':'star'}"/>
-                    <filter string="Source" name="source"
-                            domain="[]" context="{'group_by':'source'}"/>
-                    <filter string="Language" name="group_lang"
-                            domain="[]" context="{'group_by':'language'}"/>
-                    <filter string="State" name="group_state"
-                            domain="[]" context="{'group_by':'state'}"/>
+                    <filter
+            string="Star"
+            name="star"
+            domain="[]"
+            context="{'group_by':'star'}"
+          />
+                    <filter
+            string="Source"
+            name="source"
+            domain="[]"
+            context="{'group_by':'source'}"
+          />
+                    <filter
+            string="Language"
+            name="group_lang"
+            domain="[]"
+            context="{'group_by':'language'}"
+          />
+                    <filter
+            string="State"
+            name="group_state"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
                 </group>
             </search>
         </field>
@@ -80,9 +110,11 @@
     </record>
 
     <!-- Add menu for app feedbacks -->
-    <menuitem id="menu_mobile_app_feedback"
-              name="Feedback"
-              parent="menu_mobile_app"
-              action="action_mobile_app_feedback"/>
+    <menuitem
+    id="menu_mobile_app_feedback"
+    name="Feedback"
+    parent="menu_mobile_app"
+    action="action_mobile_app_feedback"
+  />
 
 </odoo>

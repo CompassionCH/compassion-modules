@@ -6,13 +6,14 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import json
 import logging
 import random
-import json
 from collections import defaultdict
+
 from dateutil.parser import parse
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -51,9 +52,12 @@ class AppHub(models.AbstractModel):
 
         partner = self.env["res.partner"].browse(partner_id)
         all_sponsorships = partner.get_portal_sponsorships().with_context(
-            allow_during_suspension=True)
+            allow_during_suspension=True
+        )
         sponsorships = all_sponsorships.filtered(
-            lambda s: s.state in ("active", "terminated") and (s.can_write_letter or s.can_make_gift))
+            lambda s: s.state in ("active", "terminated")
+            and (s.can_write_letter or s.can_make_gift)
+        )
 
         unpaid = all_sponsorships.filtered(
             lambda c: not c.is_active
@@ -103,10 +107,14 @@ class AppHub(models.AbstractModel):
         force_refresh = pagination.get("force_refresh")
 
         # No need to regenerate if sponsor is looking for old tiles or if hub is recent
-        if not force_refresh and start != 0 or not app_messages.needs_refresh \
-                and app_messages:
+        if (
+            not force_refresh
+            and start != 0
+            or not app_messages.needs_refresh
+            and app_messages
+        ):
             json_messages = json.loads(app_messages.json_messages)
-            messages = json_messages[start:start+limit]
+            messages = json_messages[start : start + limit]
             for message in messages:
                 message["OrderDate"] = parse(message["OrderDate"])
         else:
@@ -137,9 +145,7 @@ class AppHub(models.AbstractModel):
             _logger.debug("END SORTING MESSAGES")
 
             if not app_messages:
-                app_messages = app_messages.sudo().create({
-                    "partner_id": partner.id
-                })
+                app_messages = app_messages.sudo().create({"partner_id": partner.id})
                 partner.app_messages = app_messages
             app_messages.json_messages = json.dumps(messages, default=str)
             app_messages.last_refresh_date = fields.Datetime.now()
@@ -162,7 +168,10 @@ class AppHub(models.AbstractModel):
 
         # To allow donation for users that are not sponsor
         res.update(
-            {"SupporterGroupId": partner_id, "SupporterId": partner_id, }
+            {
+                "SupporterGroupId": partner_id,
+                "SupporterId": partner_id,
+            }
         )
 
         return res
@@ -182,8 +191,8 @@ class AppHub(models.AbstractModel):
         """
         available_tiles = (
             self.env["mobile.app.tile"]
-                .search([("visibility", "!=", "private")])
-                .sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
+            .search([("visibility", "!=", "private")])
+            .sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         )
         tiles = []
         # Fetch products for fund donations
@@ -192,7 +201,7 @@ class AppHub(models.AbstractModel):
         )
         if available_tiles:
             tiles.extend(
-                available_tiles[0:self.LIMIT_PUBLIC_TILES].render_tile(
+                available_tiles[0 : self.LIMIT_PUBLIC_TILES].render_tile(
                     {"product.product": products}
                 )
             )
@@ -201,7 +210,7 @@ class AppHub(models.AbstractModel):
 
         start = int(pagination.get("start", 0))
         limit = int(pagination.get("limit", 10))
-        tiles = tiles[start:start+limit]
+        tiles = tiles[start : start + limit]
 
         return self._construct_hub_message(0, tiles, **pagination)
 
@@ -219,12 +228,12 @@ class AppHub(models.AbstractModel):
         )
         messages = []
         if available_posts:
-            for post in available_posts[0:self.LIMIT_WORDPRESS_TILES]:
+            for post in available_posts[0 : self.LIMIT_WORDPRESS_TILES]:
                 messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
 
     def _construct_hub_message(
-            self, partner_id, messages, children=None, start=0, limit=100, **kwargs
+        self, partner_id, messages, children=None, start=0, limit=100, **kwargs
     ):
         """
         Wrapper for constructing the JSON message for the mobile app, for
@@ -264,7 +273,7 @@ class AppHub(models.AbstractModel):
         )
         return result
 
-    def _assign_order(self, messages):
+    def _assign_order(self, messages):  # noqa: C901
         """
         This will update the list of messages and assign the SortOrder
         value for each message, in order to control the order of the displayed
@@ -314,7 +323,8 @@ class AppHub(models.AbstractModel):
 
         to_order = [m for m in messages if m["IsAutomaticOrdering"]]
         to_order.sort(
-            key=lambda m: fields.Datetime.from_string(m["OrderDate"]), reverse=True)
+            key=lambda m: fields.Datetime.from_string(m["OrderDate"]), reverse=True
+        )
 
         letters = {"tiles": [], "max_number_tile": 1}
         prayers = {"tiles": [], "max_number_tile": 0}
@@ -364,7 +374,7 @@ class AppHub(models.AbstractModel):
         for tile in to_order:
             recent_group = recent_content[tile["SubType"]]
             if recent_group["max_number_tile"] > len(recent_group["tiles"]) and (
-                    tile["SubType"] != "LE_T1" or tile.get("UnReadRecently")
+                tile["SubType"] != "LE_T1" or tile.get("UnReadRecently")
             ):
                 recent_group["tiles"].append(tile)
             elif tile["SubType"] in fixed_group_tiles:
@@ -390,8 +400,9 @@ class AppHub(models.AbstractModel):
             tile["SortOrder"] = fixed_content_order
             fixed_content_order += category_length // len(fixed_group)
 
-        rest_group.sort(key=lambda x: fields.Datetime.from_string(x["OrderDate"]),
-                        reverse=True)
+        rest_group.sort(
+            key=lambda x: fields.Datetime.from_string(x["OrderDate"]), reverse=True
+        )
 
         for tile in rest_group:
             tile["SortOrder"] = rest_of_tiles_order
@@ -414,7 +425,7 @@ class AppHub(models.AbstractModel):
             [
                 m
                 for m in messages
-                if m["SortOrder"] >= 2000 and not m["SubType"] in spread_group_tiles
+                if m["SortOrder"] >= 2000 and m["SubType"] not in spread_group_tiles
             ]
         )
 
@@ -440,10 +451,10 @@ class AppHub(models.AbstractModel):
         for c, n in zip(messages, messages[1:] + [messages[0]]):
             diff = n["SortOrder"] - c["SortOrder"] - 1
             if (
-                    c["SortOrder"] >= 2000
-                    and not c["SubType"] in spread_group_tiles
-                    and not n["SubType"] in spread_group_tiles
-                    and diff > 0
+                c["SortOrder"] >= 2000
+                and c["SubType"] not in spread_group_tiles
+                and n["SubType"] not in spread_group_tiles
+                and diff > 0
             ):
                 percent_to_add = len(spread_group) / (number_tile - 1) + (
                     bias_factor * 0.01
@@ -453,8 +464,8 @@ class AppHub(models.AbstractModel):
                 # the probability augmenting of not choosing to add
                 # it at a previous step)
                 if (
-                        len(spread_group) > (number_tile - 1)
-                        or random.random() < percent_to_add
+                    len(spread_group) > (number_tile - 1)
+                    or random.random() < percent_to_add
                 ):
                     number_jump = min(diff, max(1, number_spread_tile // number_tile))
                     jump = max(1, diff // (number_jump + 1))
@@ -484,7 +495,7 @@ class AppHub(models.AbstractModel):
         # We add the remaining tiles to the end of the hub
         while number_spread_tile > 0:
             key = random_list.pop()
-            for i in range(number_tile_type[key]):
+            for _i in range(number_tile_type[key]):
                 if key in possible_subtype and possible_subtype[key] != 0:
                     final_tile = tile_grouped[key].pop()
                     final_tile["SortOrder"] = rest_of_tiles_order
