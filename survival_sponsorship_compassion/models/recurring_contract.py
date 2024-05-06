@@ -18,9 +18,9 @@ class RecurringContract(models.Model):
     type = fields.Selection(
         selection_add=[("CSP", "Survival Sponsorship")], ondelete={"CSP": "set default"}
     )
-    child_code_csp_country = fields.Char(
-        "Sponsored child code", compute="_compute_child_code_with_country",
-         readonly=True, store=True
+    csp_country = fields.Char(
+        "CSP Country", compute="_compute_csp_country",
+        readonly=True, store=True
     )
 
     def invoice_paid(self, invoice):
@@ -31,11 +31,10 @@ class RecurringContract(models.Model):
         for contract in self:
             contract.end_date = fields.datetime.now() + relativedelta(months=18)
 
-    def _compute_child_code_with_country(self):
+    def _compute_csp_country(self):
         for contract in self:
-            contract.child_code_csp_country = contract.child_code
             if contract.type == 'CSP':
-                country = contract.contract_line_ids.product_id.survival_sponsorship_field_office_id.country
-                print('child_code: ', contract.child_code, ' | country:', country)
-                if country:
-                    contract.child_code_csp_country = contract.child_code + ' - ' + country
+                product = contract.contract_line_ids.product_id
+                csp_product = product.survival_sponsorship_field_office_id
+                if csp_product:
+                    contract.csp_country = csp_product.country_name

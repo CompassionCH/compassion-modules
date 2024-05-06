@@ -49,8 +49,8 @@
                ref="recurring_contract.view_recurring_contract_tree"
         />
         <field name="arch" type="xml">
-            <field name="child_code" position="replace">
-                <field name="child_code_csp_country" />
+            <field name="child_code" position="after">
+                <field name="csp_country" />
             </field>
         </field>
     </record>
