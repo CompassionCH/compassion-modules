@@ -9,7 +9,7 @@
 import logging
 import random
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class AppTile(models.Model):
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
-    active = fields.Boolean(oldname="is_active", default=True)
+    active = fields.Boolean(default=True)
     visibility = fields.Selection(
         [("public", "Public"), ("private", "Private"), ("both", "Both")],
         required=True,
@@ -87,7 +87,7 @@ class AppTile(models.Model):
     @api.depends("subtype_id", "subtype_id.code", "name")
     def _compute_display_name(self):
         for tile in self:
-            tile.display_name = u"[{}] {}".format(tile.code, tile.name)
+            tile.display_name = "[{}] {}".format(tile.code, tile.name)
 
     def _compute_is_prayer(self):
         prayer_type = self.env.ref("mobile_app_connector.tile_type_prayer")
@@ -157,8 +157,10 @@ class AppTile(models.Model):
                             lambda rec: rec.id not in prayed_child
                         )
                         # We drop tiles with expectation equal 1 tile / child
-                        if not to_pray_children or random.uniform(0, 1) > \
-                                num_children / num_prayers:
+                        if (
+                            not to_pray_children
+                            or random.uniform(0, 1) > num_children / num_prayers
+                        ):
                             continue
                         child = random.choice(to_pray_children)
                         text_data = tile._render_single_tile(child)
@@ -183,8 +185,8 @@ class AppTile(models.Model):
                     + self.env.ref(module % "tile_type_community")
                 )
                 if (
-                        tile.subtype_id.type_id not in no_render
-                        and tile.subtype_id != self.env.ref(module % "tile_subtype_pr1")
+                    tile.subtype_id.type_id not in no_render
+                    and tile.subtype_id != self.env.ref(module % "tile_subtype_pr1")
                 ):
                     res.append(tile_json)
         return res
@@ -200,7 +202,7 @@ class AppTile(models.Model):
         if records and self.records_filter:
             try:
                 records = records.filtered(safe_eval(self.records_filter))
-            except:
+            except Exception:
                 _logger.error(
                     "Cannot filter recordset given the function", exc_info=True
                 )
@@ -237,7 +239,7 @@ class AppTile(models.Model):
 
             if hasattr(records, "get_app_json"):
                 res.update(records.get_app_json(multi=len(records) > 1))
-        except:
+        except Exception:
             _logger.error("Error rendering tile %s", self.name, exc_info=True)
             res = {}
         if not res.get("OrderDate"):

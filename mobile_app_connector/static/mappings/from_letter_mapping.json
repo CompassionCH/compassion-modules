@@ -35,7 +35,7 @@
       "field": "letter_format"
     },
     "base64string": {
-      "field": "b64image",
+      "field": "letter_image",
       "to_json_conversion": false
     },
     "Type": {

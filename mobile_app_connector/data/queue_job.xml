@@ -1,8 +1,0 @@
-<odoo>
-    <!-- Job functions -->
-    <record id="remove_donation_job" model="queue.job.function">
-        <field name="model_id" ref="model_account_invoice"/>
-        <field name="method">remove_mobile_donation_if_not_paid</field>
-        <field name="channel_id" ref="cms_form_compassion.channel_cms_form_compassion"/>
-    </record>
-</odoo>

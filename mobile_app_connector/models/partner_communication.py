@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class CommunicationJob(models.Model):
@@ -57,32 +57,32 @@ class CommunicationJob(models.Model):
         return super()._get_default_vals(vals, default_vals)
 
     def send(self):
-        """ Create a mobile notification when requested """
+        """Create a mobile notification when requested"""
         jobs = (
             self.filtered(lambda j: j.state == "pending")
-                .filtered("mobile_notification_send")
-                .filtered("firebase_registration_exists")
+            .filtered("mobile_notification_send")
+            .filtered("firebase_registration_exists")
         )
         res = super().send()
 
         for job in jobs:
             # For notifications, we take only the first related object (no multi-mode)
             # to render the notification text.
-            object = job.get_objects()[:1]
+            res_object = job.get_objects()[:1]
             template = job.email_template_id.with_context(lang=job.partner_id.lang)
             mobile_notif = job.env["firebase.notification"].create(
                 {
                     "title": template._render_template(
-                        job.mobile_notification_title, object._name, object.id
+                        job.mobile_notification_title, res_object._name, res_object.id
                     ),
                     "body": template._render_template(
-                        job.mobile_notification_body, object._name, object.id
+                        job.mobile_notification_body, res_object._name, res_object.id
                     ),
                     "destination": job.mobile_notification_destination,
                     "topic": job.mobile_notification_topic,
                     "partner_ids": [(4, job.partner_id.id)],
                     "res_model": self._name,
-                    "res_id": job.id
+                    "res_id": job.id,
                 }
             )
             job.mobile_notification_id = mobile_notif
@@ -99,8 +99,8 @@ class CommunicationJob(models.Model):
     @api.depends("partner_id")
     def _compute_firebase_registration_exists(self):
         """
-            Check whether the partner has at least one registration_id
-            (i.e. we can send him a notification, he downloaded and logged in the app)
+        Check whether the partner has at least one registration_id
+        (i.e. we can send him a notification, he downloaded and logged in the app)
         """
         for job in self:
             job.firebase_registration_exists = (

@@ -35,7 +35,9 @@
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": ["mass_mailing"],
-    "external_dependencies": {"python": ["firebase_admin"], },
+    "external_dependencies": {
+        "python": ["firebase_admin"],
+    },
     "data": [
         "data/ir_cron.xml",
         "data/notification_data.xml",

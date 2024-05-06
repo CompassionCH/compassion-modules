@@ -13,7 +13,7 @@ from base64 import b64encode
 from werkzeug.exceptions import NotFound
 from werkzeug.utils import escape
 
-from odoo import models, api, fields, _
+from odoo import _, api, fields, models
 
 
 class CompassionCorrespondence(models.Model):
@@ -38,7 +38,7 @@ class CompassionCorrespondence(models.Model):
                 data.append(letter.data_to_json("mobile_app_from_letter"))
 
         order_date = self.sent_date or self.status_date
-        if self.direction == "Supporter to beneficiary":
+        if self.direction == "Supporter To Beneficiary":
             order_date = self.scanned_date
 
         return {
@@ -74,7 +74,7 @@ class CompassionCorrespondence(models.Model):
         if letter_id:
             letter = self.browse(int(letter_id))
             if letter.exists() and (
-                    letter.letter_image or not letter.store_letter_image
+                letter.letter_image or not letter.store_letter_image
             ):
                 letter.email_read = fields.Datetime.now()
                 return host + "/b2s_image?id=" + letter.uuid
@@ -91,9 +91,15 @@ class CompassionCorrespondence(models.Model):
         return params[key]
 
     def _convert_special_characters(self, string):
-        return string.replace("&amp;quot;", "\"").replace("&amp;amp;", "&")\
-            .replace("&quot;", "\"").replace("&amp;", "&")\
-            .replace("&#x27;", "'").replace("&lt;", "<").replace("&gt;", ">")
+        return (
+            string.replace("&amp;quot;", '"')
+            .replace("&amp;amp;", "&")
+            .replace("&quot;", '"')
+            .replace("&amp;", "&")
+            .replace("&#x27;", "'")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+        )
 
     def mobile_get_preview(self, *args, **other_params):
         """
@@ -112,8 +118,7 @@ class CompassionCorrespondence(models.Model):
                              - 'file_upl': the image
         :return: An URL pointing to the PDF preview of the generated letter
         """
-        body = self._get_required_param("letter-copy", other_params)\
-            .replace("\r", "")
+        body = self._get_required_param("letter-copy", other_params).replace("\r", "")
         selected_child = self._get_required_param("selected-child", other_params)
         # iOS sends the childID, while Android sends the local_id!
         # We try to convert the integer in case the request is from iOS
@@ -130,8 +135,8 @@ class CompassionCorrespondence(models.Model):
             # write a card -> default template
             template_id = (
                 self.env["res.config.settings"]
-                    .sudo()
-                    .get_param("s2b_template_default_id")
+                .sudo()
+                .get_param("s2b_template_default_id")
             )
         attached_file = other_params.get("file_upl")
         datas = False
@@ -146,16 +151,29 @@ class CompassionCorrespondence(models.Model):
                     },
                 )
             ]
-        gen = self.env["correspondence.s2b.generator"].sudo().create({
-            "name": "app-" + child_local_id,
-            "selection_domain": f"[('child_id.local_id', '=', '{child_local_id}'),"
-                                f"('state', 'not in', ['draft','cancelled'])]",
-            "body": self._convert_special_characters(escape(body)),
-            "language_id": int(self.env["langdetect"].detect_language(body)),
-            "s2b_template_id": int(template_id),
-            "image_ids": datas,
-            "source": other_params.get("source", "app"),
-        })
+        english = self.env.ref("advanced_translation.lang_compassion_english").id
+        domain = (
+            (
+                f"[('child_id.local_id', '=', '{child_local_id}'),"
+                f"('state', 'not in', ['draft','cancelled'])]"
+            ),
+        )
+        gen = (
+            self.env["correspondence.s2b.generator"]
+            .sudo()
+            .create(
+                {
+                    "name": "app-" + child_local_id,
+                    "selection_domain": domain,
+                    "body": self._convert_special_characters(escape(body)),
+                    "language_id": int(self.env["langdetect"].detect_language(body))
+                    or english,
+                    "template_id": int(template_id),
+                    "image_ids": datas,
+                    "source": other_params.get("source", "app"),
+                }
+            )
+        )
         gen.onchange_domain()
         # Only generate for one sponsorship! If the child was sponsored several times
         gen.sponsorship_ids = gen.sponsorship_ids[:1]
@@ -198,34 +216,28 @@ class CompassionCorrespondence(models.Model):
             # write a card -> default template
             template_id = (
                 self.env["res.config.settings"]
-                    .sudo()
-                    .get_param("s2b_template_default_id")
+                .sudo()
+                .get_param("s2b_template_default_id")
             )
         child_id = self._get_required_param("Need", params)
         if isinstance(child_id, list):
             child_id = child_id[0]
         child = self.env["compassion.child"].browse(int(child_id))
+        # Use the latest preview for generating the letter
         gen = (
             self.env["correspondence.s2b.generator"]
-                .sudo()
-                .search(
+            .sudo()
+            .search(
                 [
                     ("name", "=", "app-" + child.local_id),
                     ("sponsorship_ids.child_id", "=", child.id),
-                    ("s2b_template_id", "=", int(template_id)),
+                    ("template_id", "=", int(template_id)),
                     ("state", "in", ["draft", "preview"]),
                 ],
                 order="create_date DESC",
             )
         )
-        # Use the latest preview for generating the letter
-        # update utms
-        utm_source = params.get("utm_source")
-        utm_medium = params.get("utm_medium")
-        utm_campaign = params.get("utm_campaign")
-        utms = self.env["utm.mixin"].get_utms(utm_source, utm_medium, utm_campaign)
-
-        gen[:1].generate_letters(utms)
+        gen[:1].generate_letters()
         # Delete old previews
         gen[1:].unlink()
 
@@ -254,16 +266,12 @@ class CompassionCorrespondence(models.Model):
         return res
 
     def process_letter(self):
-        self.mapped("partner_id.app_messages").write({
-            "force_refresh": True
-        })
+        self.mapped("partner_id.app_messages").write({"force_refresh": True})
         return super().process_letter()
 
     @api.model
     def create(self, vals):
         letter = super().create(vals)
         if vals.get("direction") == "Supporter To Beneficiary":
-            letter.mapped("partner_id.app_messages").write({
-                "force_refresh": True
-            })
+            letter.mapped("partner_id.app_messages").write({"force_refresh": True})
         return letter

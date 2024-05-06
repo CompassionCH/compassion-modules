@@ -6,8 +6,8 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_wp_post"/>
+            <field name="active" eval="True" />
+            <field name="model_id" ref="model_wp_post" />
             <field name="code">model.fetch_posts('posts')</field>
             <field name="state">code</field>
         </record>
@@ -17,8 +17,8 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_wp_post"/>
+            <field name="active" eval="True" />
+            <field name="model_id" ref="model_wp_post" />
             <field name="code">model.fetch_posts('agendas')</field>
             <field name="state">code</field>
         </record>
@@ -28,8 +28,8 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_wp_post"/>
+            <field name="active" eval="True" />
+            <field name="model_id" ref="model_wp_post" />
             <field name="code">model.fetch_posts('download')</field>
             <field name="state">code</field>
         </record>
@@ -39,8 +39,8 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_mobile_app_banner"/>
+            <field name="active" eval="True" />
+            <field name="model_id" ref="model_mobile_app_banner" />
             <field name="code">model.validity_cron()</field>
             <field name="state">code</field>
         </record>
@@ -50,8 +50,8 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_mobile_app_writing"/>
+            <field name="active" eval="True" />
+            <field name="model_id" ref="model_mobile_app_writing" />
             <field name="code">model.validity_cron()</field>
             <field name="state">code</field>
         </record>

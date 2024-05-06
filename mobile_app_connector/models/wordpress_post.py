@@ -10,7 +10,8 @@ import html
 import logging
 from urllib import parse
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
+
 from ..tools import wp_requests
 
 _logger = logging.getLogger(__name__)
@@ -53,7 +54,11 @@ class WordpressPost(models.Model):
         store=True,
     )
     tile_subtype = fields.Selection(
-        [("PR2", "PR2"), ("ST_T1", "ST_T1"), ], compute="_compute_tile_subtype"
+        [
+            ("PR2", "PR2"),
+            ("ST_T1", "ST_T1"),
+        ],
+        compute="_compute_tile_subtype",
     )
 
     _sql_constraints = [("wp_unique", "unique(wp_id)", "This post already exists")]
@@ -134,7 +139,8 @@ class WordpressPost(models.Model):
 
                         content_empty = True
                         self_url = self._fix_wp_api_url(
-                            post_data["_links"]["self"][0]["href"])
+                            post_data["_links"]["self"][0]["href"]
+                        )
                         http_response = requests.get(self_url)
                         if http_response.ok:
                             content = http_response.json()
@@ -143,13 +149,14 @@ class WordpressPost(models.Model):
                         try:
                             # Fetch image for thumbnail
                             image_json_url = self._fix_wp_api_url(
-                                post_data["_links"]["wp:featuredmedia"][0]["href"])
+                                post_data["_links"]["wp:featuredmedia"][0]["href"]
+                            )
                             image_json = requests.get(image_json_url).json()
                             if (
-                                    ".jpg"
-                                    in image_json["media_details"]["sizes"]["medium"][
-                                        "source_url"
-                                    ]
+                                ".jpg"
+                                in image_json["media_details"]["sizes"]["medium"][
+                                    "source_url"
+                                ]
                             ):
                                 image_url = image_json["media_details"]["sizes"][
                                     "medium"
@@ -212,7 +219,9 @@ class WordpressPost(models.Model):
         # If there is a difference between categories
         if sorted(self.category_ids.ids) != sorted(categories_id):
             self.write(
-                {"category_ids": [(6, 0, categories_id)], }
+                {
+                    "category_ids": [(6, 0, categories_id)],
+                }
             )
         self.update_display_on_hub()
 
@@ -246,8 +255,8 @@ class WordpressPost(models.Model):
         return categories_id
 
     def update_display_on_hub(self):
-        """ Compute visibility of post based on the visibility of its
-        categories. It will be visible if at least one category is visible. """
+        """Compute visibility of post based on the visibility of its
+        categories. It will be visible if at least one category is visible."""
         for post in self:
             post.display_on_hub = post.category_ids.filtered("display_on_hub")
 

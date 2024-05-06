@@ -14,7 +14,6 @@ from . import res_users
 from . import compassion_project
 from . import product_template
 from . import compassion_correspondence
-from . import account_invoice
 from . import account_move
 from . import res_partner
 from . import app_hub
@@ -29,10 +28,8 @@ from . import mobile_feedback
 from . import mobile_writing
 from . import firebase_registration
 from . import firebase_notification
-from . import privacy_statement
 from . import frequently_asked_questions
 from . import compassion_field_office
 from . import partner_communication
 from . import communication_config
-from . import payment_transaction
 from . import app_messages

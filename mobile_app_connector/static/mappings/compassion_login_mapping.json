@@ -95,7 +95,7 @@
       "to_json_conversion": "'1'"
     },
     "photo": {
-      "field": "image"
+      "field": "image_128"
     },
     "sponsorshipplus_flag": {
       "to_json_conversion": "'1'"

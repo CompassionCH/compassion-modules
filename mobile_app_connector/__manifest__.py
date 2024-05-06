@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion EU Mobile App Connector",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -38,13 +38,16 @@
         "sbc_compassion",
         "partner_contact_birthdate",
         "base_geolocalize",
-        "firebase_connector",  # compassion-modules
-        "sms_sponsorship",  # compassion-modules
-        "thankyou_letters",  # compassion-modules
+        "firebase_connector",
+        "website_sponsorship",
+        "thankyou_letters",
         "crm_claim",  # oca_addons/crm
-        "wordpress_configuration",  # compassion-modules
+        "wordpress_configuration",
+        "rest_json_api",
     ],
-    "external_dependencies": {"python": ["simplejson", "bs4", "requests"], },
+    "external_dependencies": {
+        "python": ["simplejson", "bs4", "requests"],
+    },
     "data": [
         "security/ir.model.access.csv",
         "security/access_rules.xml",
@@ -56,7 +59,6 @@
         "data/ir_cron.xml",
         "data/request_sequence.xml",
         "data/crm_claim_category_data.xml",
-        "data/queue_job.xml",
         "views/wp_post_view.xml",
         "views/wp_post_category_view.xml",
         "views/app_banner_view.xml",
@@ -67,7 +69,6 @@
         "views/product_view.xml",
         "views/app_feedback_view.xml",
         "views/firebase_registration.xml",
-        "templates/registration_form.xml",
         "views/firebase_notification.xml",
         "views/communication_job.xml",
         "views/communication_config.xml",

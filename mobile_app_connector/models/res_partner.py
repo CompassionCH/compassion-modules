@@ -8,15 +8,13 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields, _
+from odoo import api, fields, models
 
 
 class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
 
-    app_messages = fields.Many2one(
-        "mobile.app.messages", "Mobile app messages"
-    )
+    app_messages = fields.Many2one("mobile.app.messages", "Mobile app messages")
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -26,9 +24,9 @@ class GetPartnerMessage(models.Model):
         partners = super().create(vals_list)
 
         for partner_id in partners:
-            app_messages = self.env["mobile.app.messages"].create({
-                "partner_id": partner_id.id
-            })
+            app_messages = self.env["mobile.app.messages"].create(
+                {"partner_id": partner_id.id}
+            )
             partner_id.app_messages = app_messages
 
         return partners

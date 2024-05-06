@@ -7,16 +7,18 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="partner_id"/>
-                        <field name="registration_id"/>
-                        <field name="language"/>
-                        <button class="oe_inline oe_stat_button"
-                                string="Send Notification"
-                                type="object"
-                                name="send_message_from_interface"
-                                context="{'message_title': 'Test', 'message_body':'Test Notification'}"
-                                icon="fa-paper-plane"
-                                invisible="1"/>
+                        <field name="partner_id" />
+                        <field name="registration_id" />
+                        <field name="language" />
+                        <button
+              class="oe_inline oe_stat_button"
+              string="Send Notification"
+              type="object"
+              name="send_message_from_interface"
+              context="{'message_title': 'Test', 'message_body':'Test Notification'}"
+              icon="fa-paper-plane"
+              invisible="1"
+            />
                                 <!--change to be able to send a test notification to a particular device-->
                     </group>
                 </sheet>
@@ -28,9 +30,9 @@
         <field name="model">firebase.registration</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="partner_name"/>
-                <field name="registration_id"/>
-                <field name="language"/>
+                <field name="partner_name" />
+                <field name="registration_id" />
+                <field name="language" />
             </tree>
         </field>
     </record>
@@ -40,9 +42,14 @@
         <field name="model">firebase.registration</field>
         <field name="arch" type="xml">
             <search>
-                <field name="partner_name"/>
+                <field name="partner_name" />
                 <group expand="0" string="Group By">
-                    <filter string="Partner" name="group_type" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter
+            string="Partner"
+            name="group_type"
+            domain="[]"
+            context="{'group_by':'partner_id'}"
+          />
                 </group>
             </search>
         </field>
@@ -55,12 +62,13 @@
     </record>
 
     <!--Add menu for Firebase Registration-->
-    <menuitem id="menu_mobile_app_firebase_registration"
-              name="Firebase registrations"
-              parent="firebase_connector.menu_firebase_notification"
-              action="firebase_connector.action_firebase_registration"
-              groups="sales_team.group_sale_manager"
-              sequence="53"
-    />
+    <menuitem
+    id="menu_mobile_app_firebase_registration"
+    name="Firebase registrations"
+    parent="firebase_connector.menu_firebase_notification"
+    action="firebase_connector.action_firebase_registration"
+    groups="sales_team.group_sale_manager"
+    sequence="53"
+  />
 
 </odoo>

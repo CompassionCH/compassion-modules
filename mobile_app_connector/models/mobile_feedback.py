@@ -10,7 +10,7 @@
 import logging
 from datetime import datetime
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +41,16 @@ class MobileFeedback(models.Model):
         readonly=True,
     )
     create_date = fields.Datetime(
-        string="Creation Date", readonly=True, default=datetime.today(),
+        string="Creation Date",
+        readonly=True,
+        default=datetime.today(),
     )
     state = fields.Selection(
-        [("unread", "Unread"), ("read", "Read"), ("replied", "Replied"), ],
+        [
+            ("unread", "Unread"),
+            ("read", "Read"),
+            ("replied", "Replied"),
+        ],
         default="unread",
     )
     crm_claim_id = fields.Many2one("crm.claim", "Answer to feedback", readonly=False)
@@ -52,7 +58,7 @@ class MobileFeedback(models.Model):
     @api.model
     def _get_lang(self):
         langs = self.env["res.lang"].search([])
-        return [(l.code, l.name) for l in langs]
+        return [(lang.code, lang.name) for lang in langs]
 
     def mobile_feedback(self, data=None, **parameters):
         star = str(float(parameters.get("star", 3.0)))
@@ -103,15 +109,15 @@ class MobileFeedback(models.Model):
                 "subject": _("Mobile App Feedback"),
                 "name": body,
                 "categ_id": self.env["crm.claim.category"]
-                    .search([("name", "=", self.source)])
-                    .id,
+                .search([("name", "=", self.source)])
+                .id,
                 "claim_category": self.env.ref(
                     "mobile_app_connector.claim_cat_feedback"
                 ).id,
                 "partner_id": partner.id,
                 "language": self.language,
                 "date": self.create_date,
-                "description": body
+                "description": body,
             }
         )
         claim.message_post(
@@ -128,7 +134,6 @@ class MobileFeedback(models.Model):
             "res_model": "crm.claim",
             "target": "current",
             "res_id": claim.id,
-            "flags": {"initial_mode": "edit"},
         }
 
     @api.model

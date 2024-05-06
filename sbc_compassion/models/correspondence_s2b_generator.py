@@ -9,7 +9,6 @@
 ##############################################################################
 import base64
 import logging
-from collections import defaultdict
 from io import BytesIO
 
 from wand.exceptions import PolicyError
@@ -176,23 +175,20 @@ class CorrespondenceS2bGenerator(models.Model):
         """Generate a picture for preview."""
         return self.write({"state": "draft"})
 
-    def generate_letters(self, utms=None):
+    def generate_letters(self):
         """
         Launch S2B Creation job
         :return: True
         """
-        self.with_delay().generate_letters_job(utms)
+        self.with_delay().generate_letters_job()
         return True
 
-    def generate_letters_job(self, utms=None):
+    def generate_letters_job(self):
         """
         Create S2B Letters
         :return: True
         """
         try:
-            if utms is None:
-                utms = dict()
-            utms = defaultdict(lambda: None, utms)
             letters = self.env["correspondence"]
             for sponsorship in self.sponsorship_ids:
                 text = self._get_text(sponsorship)
@@ -204,9 +200,6 @@ class CorrespondenceS2bGenerator(models.Model):
                     "source": self.source,
                     "original_language_id": self.language_id.id,
                     "original_text": text,
-                    "campaign_id": utms["campaign"],
-                    "medium_id": utms["medium"],
-                    "source_id": utms["source"],
                 }
                 if self.image_ids:
                     vals["original_attachment_ids"] = [

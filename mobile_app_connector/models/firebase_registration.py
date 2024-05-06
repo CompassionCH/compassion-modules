@@ -10,11 +10,11 @@
 import logging
 from builtins import NotImplementedError
 
+from odoo import api, fields, models
+
 from odoo.addons.firebase_connector.controllers.firebase_controller import (
     RestController as Firebase,
 )
-
-from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ class GetPartnerMessage(models.Model):
                     "operation": "Insert",
                     "supId": partner_id,
                     "firebaseId": firebase_id,
-                }
+                },
             )
         else:
             n_child = json_data.get("appchild")
@@ -100,10 +100,12 @@ class GetPartnerMessage(models.Model):
             reg.receive_general_notification = n_info == "1" or n_info is True
 
         return {
-            "UpdateRecordingContactResult":
-                f"App notification Child And App notification child Info updated "
+            "UpdateRecordingContactResult": (
+                "App notification Child And App "
+                "notification child Info updated "
                 f"of Supporter ID : {partner_id} ({firebase_id} "
                 f"{reg.receive_child_notification}, {reg.receive_general_notification})"
+            )
         }
 
     @api.model
@@ -137,14 +139,16 @@ class GetPartnerMessage(models.Model):
 
         if operation == "Insert":
             response = Firebase().firebase_register(
-                registration_id=firebase_id, partner_id=partner_id,language=language
+                registration_id=firebase_id, partner_id=partner_id, language=language
             )
         elif operation == "Delete":
             response = Firebase().firebase_unregister(
                 registration_id=firebase_id, partner_id=partner_id
             )
         else:
-            raise NotImplementedError("Operation %s is not supported by Odoo" % operation)
+            raise NotImplementedError(
+                "Operation %s is not supported by Odoo" % operation
+            )
         try:
             reg_id = int(response.data)
         except TypeError:

@@ -10,7 +10,7 @@
 
 import requests
 
-from odoo import exceptions, _
+from odoo import _, exceptions
 
 
 class Session(requests.Session):
@@ -29,7 +29,10 @@ class Session(requests.Session):
 
         auth = self.post(
             wp_api_url,
-            json={"username": wp_config.user, "password": wp_config.password, },
+            json={
+                "username": wp_config.user,
+                "password": wp_config.password,
+            },
         ).json()
 
         if "token" not in auth:

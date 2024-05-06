@@ -2,22 +2,34 @@
     <record model="ir.ui.view" id="mobile_app_firebase_registration_form">
         <field name="name">mobile.app.firebase.registration.form</field>
         <field name="model">firebase.registration</field>
-        <field name="inherit_id" ref="firebase_connector.firebase_registration_form"/>
+        <field
+      name="inherit_id"
+      ref="firebase_connector.firebase_registration_form"
+    />
         <field name="arch" type="xml">
              <field name="partner_id" position="after">
-                 <field name="receive_general_notification"/>
-                 <field name="receive_child_notification"/>
+                 <field name="receive_general_notification" />
+                 <field name="receive_child_notification" />
              </field>
         </field>
     </record>
     <record model="ir.ui.view" id="mobile_app_firebase_registration_tree">
         <field name="name">mobile.app.firebase.registration.tree</field>
         <field name="model">firebase.registration</field>
-        <field name="inherit_id" ref="firebase_connector.firebase_registration_tree"/>
+        <field
+      name="inherit_id"
+      ref="firebase_connector.firebase_registration_tree"
+    />
         <field name="arch" type="xml">
             <field name="partner_name" position="after">
-                <field name="receive_general_notification" string="General Notification"/>
-                <field name="receive_child_notification" string="Child Notification"/>
+                <field
+          name="receive_general_notification"
+          string="General Notification"
+        />
+                <field
+          name="receive_child_notification"
+          string="Child Notification"
+        />
             </field>
         </field>
     </record>

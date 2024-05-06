@@ -35,7 +35,7 @@
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "development_status": "Production/Stable",
-    "depends": ["base", "queue_job"],
+    "depends": ["base", "queue_job", "rest_json_api"],
     "external_dependencies": {
         "python": ["jwt"],
     },

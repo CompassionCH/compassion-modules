@@ -8,10 +8,9 @@
 #
 ##############################################################################
 
-import cgi
 import logging
 
-from odoo import models, api, _, fields
+from odoo import _, fields, models
 from odoo.tools import html_escape as escape
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,7 @@ class CrmClaim(models.Model):
         :return: a dict with key FeedbackAndContactusResult
         """
         for key in parameters:
-            parameters[key] = cgi.escape(parameters[key])
+            parameters[key] = escape(parameters[key])
 
         email = parameters["email"]
         firstname = parameters["firstname"]
@@ -60,19 +59,14 @@ class CrmClaim(models.Model):
         claim = self.sudo().create(
             {
                 "email_from": email,
-                "subject": subject,
-                "code": self.env.ref("mobile_app_connector.sequence_claim_app")
-                    .sudo()
-                    ._next(),
                 "name": question,
                 "categ_id": self.env["crm.claim.category"]
-                    .sudo()
-                    .search([("name", "=", source)])
-                    .id,
+                .sudo()
+                .search([("name", "=", source)])
+                .id,
                 "partner_id": partner.id,
                 "stage_id": self.sudo().env.ref("crm_claim.stage_claim1").id,
                 "user_id": False,
-                "language": self.env["langdetect"].sudo().detect_language(question).lang_id.code,
             }
         )
         claim.message_post(

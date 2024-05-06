@@ -34,8 +34,10 @@ class FirebaseNotification(models.Model):
     )
 
     product_template_id = fields.Many2one(
-        "product.template", "Fund product", readonly=False,
-        domain=[("mobile_app", "=", True)]
+        "product.template",
+        "Fund product",
+        readonly=False,
+        domain=[("mobile_app", "=", True)],
     )
     child_id = fields.Many2one("compassion.child", "Child", readonly=False)
 
@@ -53,11 +55,13 @@ class FirebaseNotification(models.Model):
             kwargs = {}
 
         for notif in self:
-            kwargs.update({
-                "topic": notif.topic,
-                "destination": notif.destination or "",
-                "fund_type_id": str(notif.product_template_id.id),
-            })
+            kwargs.update(
+                {
+                    "topic": notif.topic,
+                    "destination": notif.destination or "",
+                    "fund_type_id": str(notif.product_template_id.id),
+                }
+            )
             super(FirebaseNotification, notif).send(**kwargs)
 
     def duplicate_to_unread(self):
@@ -79,8 +83,7 @@ class FirebaseNotification(models.Model):
         """
         firebase_id = params.get("firebase_id")
         reg = self.env["firebase.registration"].search(
-            [("registration_id", "=", firebase_id)],
-            limit=1
+            [("registration_id", "=", firebase_id)], limit=1
         )
 
         dt = fields.Datetime.now()
@@ -137,7 +140,7 @@ class FirebaseNotification(models.Model):
                     "UPDATED_ON": notif.send_date,
                     "USER_ID": "",
                     "IS_READ": is_read,
-                    "POST_TITLE": notif.sudo().product_template_id.name or '',
+                    "POST_TITLE": notif.sudo().product_template_id.name or "",
                     "POST_ID": notif.sudo().product_template_id.id or 0,
                 }
             )
@@ -157,11 +160,13 @@ class FirebaseNotificationPartnerRead(models.Model):
         notif = self.env["firebase.notification.partner.read"].search(
             [
                 ("notification_id", "=", int(notif_id)),
-                ("partner_id", "=", self.env.user.partner_id.id)
+                ("partner_id", "=", self.env.user.partner_id.id),
             ]
         )
-        notif.write({
-            "opened": True,
-            "read_date": fields.Datetime.now(),
-        })
+        notif.write(
+            {
+                "opened": True,
+                "read_date": fields.Datetime.now(),
+            }
+        )
         return 1

@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
@@ -68,12 +68,22 @@ class AppWriting(models.Model):
     @api.model
     def validity_cron(self):
         today = fields.Date.today()
-        active_writings = self.search([("active", "=", True), ])
+        active_writings = self.search(
+            [
+                ("active", "=", True),
+            ]
+        )
         current_writings = self.search(
-            [("date_start", "<=", today), ("date_stop", ">=", today), ]
+            [
+                ("date_start", "<=", today),
+                ("date_stop", ">=", today),
+            ]
         )
         without_dates_writings = self.search(
-            [("date_start", "=", None), ("date_stop", "=", None), ]
+            [
+                ("date_start", "=", None),
+                ("date_stop", "=", None),
+            ]
         )
         # Deactivate old stories
         (active_writings - current_writings - without_dates_writings).write(

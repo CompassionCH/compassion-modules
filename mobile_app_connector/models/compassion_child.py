@@ -11,13 +11,13 @@
 import datetime
 import logging
 
-from odoo import models, api
+from odoo import api, models
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionChild(models.Model):
-    """ A sponsored child """
+    """A sponsored child"""
 
     _name = "compassion.child"
     _inherit = ["compassion.child", "compassion.mapped.model"]
@@ -116,11 +116,13 @@ class CompassionChild(models.Model):
         hobbies = child.translate("hobby_ids.value")
 
         family_members = household.member_ids.filtered(
-            lambda x: "Beneficiary" not in x.role and (
-                not x.child_id or x.child_id.id != child.id)).mapped(
-            lambda x: x.name.replace(
-                child.lastname, "").strip().split(
-                " ")[0] + ", " + x.translate("role"))
+            lambda x: "Beneficiary" not in x.role
+            and (not x.child_id or x.child_id.id != child.id)
+        ).mapped(
+            lambda x: x.name.replace(child.lastname, "").strip().split(" ")[0]
+            + ", "
+            + x.translate("role")
+        )
 
         if isinstance(hobbies, str):
             hobbies = [hobbies]
@@ -141,7 +143,7 @@ class CompassionChild(models.Model):
             "hobbies": hobbies,
             "guardians": guardians,
             "familyMembers": family_members,
-            "notEnrolledReason": self._lower((child.not_enrolled_reason or "")),
+            "notEnrolledReason": self._lower(child.not_enrolled_reason or ""),
         }
 
         result = {"ChildBioServiceResult": child_bio}
@@ -161,11 +163,7 @@ class CompassionChild(models.Model):
         if not res:
             res = {}
         if "FullBodyImageURL" in res.keys():
-            image_url = self.env["child.pictures.download.wizard"].get_picture_url(
-                res["FullBodyImageURL"], "headshot", 300, 300
-            )
-            res["ImageUrl"] = image_url
-            res["ImageURL"] = image_url
+            res["ImageURL"] = self.thumbnail_url
         for key, value in list(res.copy().items()):
             if key == "BirthDate":
                 if value:
@@ -173,7 +171,11 @@ class CompassionChild(models.Model):
                         "%d/%m/%Y %H:%M:%S"
                     )
             if key in ("SupporterGroupId", "SupporterId") and not value:
-                sponsor = self.env["recurring.contract"].search([("child_id", "=", self.id)], limit=1).correspondent_id
+                sponsor = (
+                    self.env["recurring.contract"]
+                    .search([("child_id", "=", self.id)], limit=1)
+                    .correspondent_id
+                )
                 if sponsor:
                     value = sponsor.id
                     res[key] = value
@@ -187,7 +189,5 @@ class CompassionChild(models.Model):
         return res
 
     def details_answer(self, vals):
-        self.mapped("sponsor_id.app_messages").write({
-            "force_refresh": True
-        })
+        self.mapped("sponsor_id.app_messages").write({"force_refresh": True})
         return super().details_answer(vals)

@@ -9,18 +9,16 @@
 
 import logging
 
-from odoo import api, models, fields, SUPERUSER_ID, _
-from odoo.tools import config
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
 try:
     import firebase_admin
-    from firebase_admin import credentials
-    from firebase_admin import messaging
-    from firebase_admin import exceptions
-except ImportError as e:
+    from firebase_admin import credentials, exceptions, messaging
+except ImportError:
     _logger.warning("Please install the PIP package firebase_admin")
 
 try:
@@ -28,7 +26,7 @@ try:
         config.get("google_application_credentials")
     )
     firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
-except (KeyError, ValueError) as e:
+except (KeyError, ValueError):
     firebase_app = None
     _logger.warning(
         "google_application_credentials is not correctly configured " "in odoo.conf"
@@ -46,12 +44,20 @@ class FirebaseNotification(models.Model):
     _order = "send_date desc, id desc"
 
     color = fields.Integer(
-        string='Color Index', compute="_compute_color", inverse="_inverse_color")
+        string="Color Index", compute="_compute_color", inverse="_inverse_color"
+    )
     stage_id = fields.Many2one(
-        'firebase.notification.stage', 'Stage', ondelete='restrict', required=True,
-        default=lambda self: self.env['firebase.notification.stage'].search(
-            [], limit=1), group_expand='_group_expand_stage_ids', index=True,
-        copy=False)
+        "firebase.notification.stage",
+        "Stage",
+        ondelete="restrict",
+        required=True,
+        default=lambda self: self.env["firebase.notification.stage"].search(
+            [], limit=1
+        ),
+        group_expand="_group_expand_stage_ids",
+        index=True,
+        copy=False,
+    )
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
@@ -70,23 +76,23 @@ class FirebaseNotification(models.Model):
     res_model = fields.Char()
     res_id = fields.Integer()
     test_mode = fields.Boolean()
-    delivered = fields.Integer(compute="_compute_statistics")
-    expected = fields.Integer(compute="_compute_statistics")
+    delivered = fields.Integer(compute="_compute_statistics", store=True)
+    expected = fields.Integer(compute="_compute_statistics", store=True)
     failed = fields.Integer(compute="_compute_statistics", store=True)
     opened = fields.Integer(compute="_compute_statistics", store=True)
-    received_ratio = fields.Integer(compute="_compute_statistics")
-    failed_ratio = fields.Integer(compute="_compute_statistics")
-    opened_ratio = fields.Integer(compute="_compute_statistics")
+    received_ratio = fields.Integer(compute="_compute_statistics", store=True)
+    failed_ratio = fields.Integer(compute="_compute_statistics", store=True)
+    opened_ratio = fields.Integer(compute="_compute_statistics", store=True)
 
     @api.model
     def _get_lang(self):
         langs = self.env["res.lang"].search([])
-        return [(l.code, l.name) for l in langs]
+        return [(lang.code, lang.name) for lang in langs]
 
-    @api.onchange('stage_id')
+    @api.onchange("stage_id")
     def onchange_stage_id(self):
         for notification in self:
-            stage_id = self.env.ref('firebase_connector.notification_stage_2').id
+            stage_id = self.env.ref("firebase_connector.notification_stage_2").id
             if notification.stage_id.id == stage_id:
                 if not notification.send_date:
                     dt = fields.Datetime.now()
@@ -95,10 +101,9 @@ class FirebaseNotification(models.Model):
     @api.model
     def create(self, vals):
         if vals.get("res_id") and vals.get("res_model"):
-            previous_notification = self.env["firebase.notification"].search([
-                ("res_model", "=", vals["res_model"]),
-                ("res_id", "=", vals["res_id"])
-            ])
+            previous_notification = self.env["firebase.notification"].search(
+                [("res_model", "=", vals["res_model"]), ("res_id", "=", vals["res_id"])]
+            )
             if previous_notification:
                 return previous_notification
         return super(FirebaseNotification, self).create(vals)
@@ -135,9 +140,10 @@ class FirebaseNotification(models.Model):
         """
         if kwargs is None:
             kwargs = {}
-        self.write({
-            "stage_id": self.env.ref('firebase_connector.notification_stage_3').id})
-        self.env.cr.commit()
+        self.write(
+            {"stage_id": self.env.ref("firebase_connector.notification_stage_3").id}
+        )
+        self.env.cr.commit()  # pylint:disable=invalid-commit
         for notif in self:
             registration_ids = self.env["firebase.registration"].search(
                 [("partner_id", "in", notif.partner_ids.ids)]
@@ -150,12 +156,17 @@ class FirebaseNotification(models.Model):
             # filter registration based on language
             if notif.language:
                 registration_ids = registration_ids.filtered(
-                    lambda reg: not reg.language or reg.language == notif.language)
+                    lambda reg, _n=notif: not reg.language
+                    or reg.language == _n.language
+                )
 
-            kwargs.update({
-                "notification_id": str(notif.id),
-                "title": notif.title, "body": notif.body
-            })
+            kwargs.update(
+                {
+                    "notification_id": str(notif.id),
+                    "title": notif.title,
+                    "body": notif.body,
+                }
+            )
 
             split = 500
             nb_batches = len(registration_ids) // split
@@ -165,22 +176,27 @@ class FirebaseNotification(models.Model):
                 for j in range(0, nb_batches + remaining):
                     i = j * split
                     status_ok = status_ok or self.send_multicast_and_handle_errors(
-                        registration_ids[i: i + split], notif, kwargs)
+                        registration_ids[i : i + split], notif, kwargs
+                    )
                     if status_ok:
-                        self.env["firebase.notification.partner.read"].create([
-                            {"partner_id": partner.id, "notification_id": notif.id}
-                            for partner in registration_ids[i: i + split].exists()
+                        self.env["firebase.notification.partner.read"].create(
+                            [
+                                {"partner_id": partner.id, "notification_id": notif.id}
+                                for partner in registration_ids[i : i + split]
+                                .exists()
                                 .mapped("partner_id")
-                        ])
-                        self.env.cr.commit()
+                            ]
+                        )
+                        self.env.cr.commit()  # pylint:disable=invalid-commit
                 notif.sent = status_ok
 
                 if status_ok:
                     notif.send_date = fields.Datetime.now()
                     notif.stage_id = self.env.ref(
-                        'firebase_connector.notification_stage_4').id
-                    self.env.cr.commit()
-            except:
+                        "firebase_connector.notification_stage_4"
+                    ).id
+                    self.env.cr.commit()  # pylint:disable=invalid-commit
+            except Exception:
                 self.env.clear()
                 _logger.error("Error while sending notifications", exc_info=True)
 
@@ -199,31 +215,34 @@ class FirebaseNotification(models.Model):
             registration_tokens.append(token.registration_id)
         if registration_tokens:
             multicast_message = messaging.MulticastMessage(
-                notification=notification,
-                data=data,
-                tokens=registration_tokens
+                notification=notification, data=data, tokens=registration_tokens
             )
 
             try:
                 response = messaging.send_multicast(
-                    multicast_message, dry_run=self.test_mode)
+                    multicast_message, dry_run=self.test_mode
+                )
                 _logger.info(
-                    '{0} messages were sent successfully'.format(response.success_count)
+                    "{} messages were sent successfully".format(response.success_count)
                 )
                 responses = response.responses
                 failed_tokens = []
                 for idx, resp in enumerate(responses):
-                    registration_id = self.env["firebase.registration"] \
-                        .search([("registration_id", "=", registration_tokens[idx])])
+                    registration_id = self.env["firebase.registration"].search(
+                        [("registration_id", "=", registration_tokens[idx])]
+                    )
                     if not resp.success:
                         failed_tokens.append(registration_tokens[idx])
-                        self.env["firebase.notification.statistics"].create({
-                            "code": resp.exception.code,
-                            "notification_id": notif.id,
-                            "delivered": False, "failed": True,
-                            "create_date": fields.Datetime.now(),
-                            "registration_id": registration_id.id
-                        })
+                        self.env["firebase.notification.statistics"].create(
+                            {
+                                "code": resp.exception.code,
+                                "notification_id": notif.id,
+                                "delivered": False,
+                                "failed": True,
+                                "create_date": fields.Datetime.now(),
+                                "registration_id": registration_id.id,
+                            }
+                        )
                         if resp.exception.code == exceptions.NOT_FOUND:
                             _logger.debug(
                                 "A device is not reachable from Firebase, unlinking."
@@ -232,26 +251,28 @@ class FirebaseNotification(models.Model):
                             if registration_id:
                                 registration_id.unlink()
                     else:
-                        self.env["firebase.notification.statistics"].create({
-                            "code": "success",
-                            "notification_id": notif.id,
-                            "delivered": True,
-                            "failed": False,
-                            "create_date": fields.Datetime.now(),
-                            "registration_id": registration_id.id}
+                        self.env["firebase.notification.statistics"].create(
+                            {
+                                "code": "success",
+                                "notification_id": notif.id,
+                                "delivered": True,
+                                "failed": False,
+                                "create_date": fields.Datetime.now(),
+                                "registration_id": registration_id.id,
+                            }
                         )
                 _logger.warning(
-                    'List of tokens that caused failures: {0}'.format(failed_tokens)
+                    "List of tokens that caused failures: {}".format(failed_tokens)
                 )
 
                 if response.success_count > 0:
                     return True
             except (
-                    messaging.QuotaExceededError,
-                    messaging.SenderIdMismatchError,
-                    messaging.ThirdPartyAuthError,
-                    messaging.UnregisteredError,
-                    exceptions.FirebaseError,
+                messaging.QuotaExceededError,
+                messaging.SenderIdMismatchError,
+                messaging.ThirdPartyAuthError,
+                messaging.UnregisteredError,
+                exceptions.FirebaseError,
             ) as ex:
                 _logger.error(ex)
                 # Save error in ir.logging to allow tracking of errors
@@ -294,16 +315,14 @@ class FirebaseNotification(models.Model):
 
     def notification_cron(self):
         dt = fields.Datetime.now()
-        stage_id = self.env.ref('firebase_connector.notification_stage_2').id
-        self.search([
-            ("sent", "=", False),
-            ("send_date", "<", dt),
-            ("stage_id", "=", stage_id)
-        ]).send()
+        stage_id = self.env.ref("firebase_connector.notification_stage_2").id
+        self.search(
+            [("sent", "=", False), ("send_date", "<", dt), ("stage_id", "=", stage_id)]
+        ).send()
         return True
 
     def schedule(self):
-        stage_id = self.env.ref('firebase_connector.notification_stage_2').id
+        stage_id = self.env.ref("firebase_connector.notification_stage_2").id
         if self.send_date:
             self.write(dict(stage_id=stage_id))
         else:
@@ -311,7 +330,8 @@ class FirebaseNotification(models.Model):
             self.write(dict(stage_id=stage_id, send_date=dt))
 
     def _compute_statistics(self):
-        self.env.cr.execute("""
+        self.env.cr.execute(
+            """
                     SELECT
                         n.id as notification_id,
                         COUNT(s.id) AS expected,
@@ -329,18 +349,20 @@ class FirebaseNotification(models.Model):
                         n.id IN %s
                     GROUP BY
                         n.id
-                """, (tuple(self.ids),))
+                """,
+            (tuple(self.ids),),
+        )
         for row in self.env.cr.dictfetchall():
-            total = row['expected'] or 1
-            row['opened_ratio'] = 100.0 * row['opened'] / total
-            row['received_ratio'] = 100.0 * row['delivered'] / total
-            row['failed_ratio'] = 100.0 * row['failed'] / total
-            self.browse(row.pop('notification_id')).update(row)
+            total = row["expected"] or 1
+            row["opened_ratio"] = 100.0 * row["opened"] / total
+            row["received_ratio"] = 100.0 * row["delivered"] / total
+            row["failed_ratio"] = 100.0 * row["failed"] / total
+            self.browse(row.pop("notification_id")).update(row)
 
     @api.model
     def _group_expand_stage_ids(self, stages, domain, order):
-        """ Read group customization in order to display all the stages in the
-            kanban view, even if they are empty
+        """Read group customization in order to display all the stages in the
+        kanban view, even if they are empty
         """
         stage_ids = stages._search([], order=order, access_rights_uid=SUPERUSER_ID)
         return stages.browse(stage_ids)

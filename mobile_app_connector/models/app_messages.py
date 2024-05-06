@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 # Time in days after which the hub is reconstructed for fetching any new tiles
 HUB_REFRESH_DAYS = 3
