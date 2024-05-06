@@ -18,4 +18,40 @@
             </field>
         </field>
     </record>
+    <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.select</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id"
+               ref="recurring_contract.view_recurring_contract_filter"
+        />
+        <field name="arch" type="xml">
+            <filter name="group_type" position="replace">
+                <filter
+                  name="group_type"
+                  string="Type of Sponsorship"
+                  domain="[('type', 'in', ['S', 'SC', 'CSP', 'SWP'])]"
+                  context="{'group_by':'type'}"
+                />
+            </filter>
+
+            <filter name="type_sponsorship" position="after">
+                <filter string="Survival Sponsorship"
+                        name="type_survival"
+                        domain="[('type', '=', 'CSP')]"
+                />
+            </filter>
+        </field>
+    </record>
+    <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.tree</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id"
+               ref="recurring_contract.view_recurring_contract_tree"
+        />
+        <field name="arch" type="xml">
+            <field name="child_code" position="replace">
+                <field name="child_code_csp_country" />
+            </field>
+        </field>
+    </record>
 </odoo>

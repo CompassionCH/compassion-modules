@@ -190,12 +190,10 @@
     <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
         <field name="name">sponsorship.compassion.select</field>
         <field name="model">recurring.contract</field>
-        <field
-      name="inherit_id"
-      ref="recurring_contract.view_recurring_contract_filter"
-    />
+        <field name="inherit_id"
+               ref="recurring_contract.view_recurring_contract_filter"
+        />
         <field name="arch" type="xml">
-
             <field name="reference" position="attributes">
                 <attribute name="filter_domain">
                     ['|', '|', '|', '|', '|', '|',
@@ -212,24 +210,46 @@
             <field name="payment_mode_id" position="after">
                 <field name="origin_id" />
             </field>
-            <xpath expr="//filter[@name='state']" position="after">
+            <field name="partner_id" position="after">
+                <field name="type"/>
+            </field>
+            <field name="payment_mode_id" position="before">
+                <filter
+                  name="group_type"
+                  string="Type of Sponsorship"
+                  domain="[('type', 'in', ['S', 'SC', 'SWP'])]"
+                  context="{'group_by':'type'}"
+                />
+            </field>
+            <filter name="state" position="after">
                 <separator />
                 <filter
-          name="group_type"
-          string="Origin"
-          domain="[]"
-          context="{'group_by':'origin_id'}"
-        />
-            </xpath>
-
+                  name="group_origin"
+                  string="Origin"
+                  domain="[]"
+                  context="{'group_by':'origin_id'}"
+                />
+            </filter>
             <filter name="finished" position="after">
-                <filter
-          string="Last 3 Months"
-          name="last_3_months"
-          domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
-                             ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"
-          help="Last 3 months"
-        />
+                <filter string="Last 3 Months" name="last_3_months"
+                    domain="[
+                        ('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
+                        ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))
+                    ]"
+                    help="Last 3 months"
+                />
+                <separator />
+                <filter string="Child Sponsorship" name="type_sponsorship"
+                        domain="[('type', '=', 'S')]"
+                />
+                <filter string="Correspondent Sponsorship"
+                        name="type_correspondence"
+                        domain="[('type', '=', 'SC')]"
+                />
+                <filter string="Write&amp;Pray Sponsorship"
+                        name="type_write_pray"
+                        domain="[('type', '=', 'SWP')]"
+                />
             </filter>
         </field>
     </record>
