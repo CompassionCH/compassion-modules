@@ -33,11 +33,9 @@ class RecurringContract(models.Model):
 
     def _compute_child_code_with_country(self):
         for contract in self:
+            contract.child_code_csp_country = contract.child_code
             if contract.type == 'CSP':
-                contract.child_code_csp_country = contract.child_code
                 country = contract.contract_line_ids.product_id.survival_sponsorship_field_office_id.country
                 print('child_code: ', contract.child_code, ' | country:', country)
                 if country:
                     contract.child_code_csp_country = contract.child_code + ' - ' + country
-            else:
-                contract.child_code_csp_country = contract.child_code
