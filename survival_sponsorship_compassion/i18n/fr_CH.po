@@ -1,0 +1,254 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Compassion Odoo 14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-23 11:07+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
+msgid ""
+"(Inherited from product template) The product can be sold as a survival "
+"sponsorship one"
+msgstr ""
+"(Héritage du modèle de produit) Le produit peut être vendu en tant que "
+"parrainage de survie."
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract_group
+msgid "A group of contracts"
+msgstr "Groupe de contrats"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
+msgid "Alltime Survival Sponsorship Number"
+msgstr "Nombre total de parrainages CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__csp_country
+msgid "CSP Country"
+msgstr "Pays CSP"
+
+#. module: survival_sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_survival_sponsorship_view
+msgid "Communications"
+msgstr "Communications"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
+msgid "Define which country this product is applicable to"
+msgstr "Définir le pays auquel ce produit s'applique"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_group__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_line__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_wordpress_configuration__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_group__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_line__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__id
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_wordpress_configuration__id
+msgid "ID"
+msgstr "ID"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_group____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract_line____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_wordpress_configuration____last_update
+msgid "Last Modified on"
+msgstr "Dernière Modification le"
+
+#. module: survival_sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view
+msgid "Limited time CSP"
+msgstr "CSP à durée limitée"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_child_name
+msgid "Name of the baby (com)"
+msgstr "Nom du bébé (com)"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_mom_name
+msgid "Name of the mom (com)"
+msgstr "Nom de la mère (com)"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
+msgid ""
+"Number of active sponsorships for the survival sponsorship program in a "
+"given country"
+msgstr ""
+"Nombre de parrainages actifs pour le programme de parrainage de survie dans "
+"un pays donné"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_slot_number
+msgid ""
+"Number of places available for the survival sponsorship program in a given "
+"country"
+msgstr ""
+"Nombre de places disponibles pour le programme de parrainage de survie dans "
+"un pays donné"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__slot_used
+msgid "Number of places used (all = 100, none = 0)"
+msgstr "Nombre de lieux utilisés (tous = 100, aucun = 0)"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
+msgid ""
+"Number of sponsorships for the survival sponsorship program in a given "
+"country"
+msgstr ""
+"Nombre de parrainages pour le programme de parrainage de survie dans un pays "
+"donné"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.constraint,message:survival_sponsorship_compassion.constraint_product_product_field_office_product_unique
+msgid "Only one product can exists for a given field office"
+msgstr "Il ne peut exister qu'un seul produit pour un bureau national donné"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_product_product
+msgid "Product"
+msgstr "Produit"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_product_template
+msgid "Product Template"
+msgstr "Modèle d'article"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Contrat récurrent"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract_line
+msgid "Recurring contract line"
+msgstr "Ligne de contrat récurrente"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__slot_used
+msgid "Slot Used"
+msgstr "Nombre de parrainages utilisés"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__type
+msgid "Sponsorship type"
+msgstr "Type de parrainage"
+
+#. module: survival_sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_survival_sponsorship_view
+msgid "Statistics"
+msgstr "Statistiques"
+
+#. module: survival_sponsorship_compassion
+#: model:base.automation,name:survival_sponsorship_compassion.warn_admin_on_product_overload
+#: model:ir.actions.server,name:survival_sponsorship_compassion.warn_admin_on_product_overload_ir_actions_server
+msgid "Survival Product Limit"
+msgstr "Limite des produits de survie"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_slot_number
+msgid "Survival Slot Number"
+msgstr "Nombre de parrainages disponibles"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields.selection,name:survival_sponsorship_compassion.selection__recurring_contract__type__csp
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Survival Sponsorship"
+msgstr "Parrainage CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
+msgid "Survival Sponsorship Field office"
+msgstr "Bureau National CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
+msgid "Survival Sponsorship Number"
+msgstr "Numéro de parrainage CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
+msgid "Survival Sponsorship Sale"
+msgstr "Vente de parrainage CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_wordpress_configuration__survival_sponsorship_url
+msgid "Survival Sponsorship Url"
+msgstr "Url de parrainage de CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:product.template,name:survival_sponsorship_compassion.survival_product_template
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_survival_sponsorship_view
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_template_survival_sponsorship_sale_view
+msgid "Survival Sponsorships"
+msgstr "Parrainages CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__survival_sponsorship_warn_user_ids
+msgid "Survival sponsorship product places owner"
+msgstr "Responsables CSP"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
+msgid "The product can be sold as a survival sponsorship one"
+msgstr "Le produit peut être vendu en tant que parrainage de survie."
+
+#. module: survival_sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view
+msgid "This button will calculate an end date in 18 months from now."
+msgstr "Ce bouton permet de calculer une date de fin dans 18 mois."
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_child_name
+#: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_mom_name
+msgid "This field is used in the communications"
+msgstr "Ce champ est utilisé dans les communications"
+
+#. module: survival_sponsorship_compassion
+#: model:product.template,uom_name:survival_sponsorship_compassion.survival_product_template
+msgid "Units"
+msgstr "Unités"
+
+#. module: survival_sponsorship_compassion
+#: model:ir.model,name:survival_sponsorship_compassion.model_wordpress_configuration
+msgid "Wordpress parameters (host, user, password) for a company"
+msgstr ""
+"Paramètres Wordpress (hôte, utilisateur, mot de passe) pour une entreprise"
+
+#. module: survival_sponsorship_compassion
+#: model:product.template,thanks_name:survival_sponsorship_compassion.survival_product_template
+msgid "for Mother and child program"
+msgstr "pour le programme de survie"

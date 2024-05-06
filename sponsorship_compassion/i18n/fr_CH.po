@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Compassion Odoo 14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 06:06+0000\n"
+"POT-Creation-Date: 2024-05-23 11:06+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -152,6 +152,11 @@ msgstr "Assistant de mise en Hold d'enfant"
 #: model:ir.model,name:sponsorship_compassion.model_child_pictures_download_wizard
 msgid "Child Picture Download Wizard"
 msgstr "Child Picture Download Wizard"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Child Sponsorship"
+msgstr "Parrainage"
 
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_release
@@ -1592,6 +1597,11 @@ msgstr "Parrainages gagnés"
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__swp
 msgid "Write&Pray"
 msgstr "Write&Pray"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Write&Pray Sponsorship"
+msgstr "Parrainage Write&Pray"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form

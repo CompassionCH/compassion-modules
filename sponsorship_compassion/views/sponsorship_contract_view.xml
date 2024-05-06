@@ -231,13 +231,16 @@
           help="Last 3 months"
         />
                 <separator />
-                <filter string="Child Sponsorship" name="type_sponsorship"
-                        domain="[('type', '=', 'S')]"
-                />
-                <filter string="Write&amp;Pray Sponsorship"
-                        name="type_write_pray"
-                        domain="[('type', '=', 'SWP')]"
-                />
+                <filter
+          string="Child Sponsorship"
+          name="type_sponsorship"
+          domain="[('type', '=', 'S')]"
+        />
+                <filter
+          string="Write&amp;Pray Sponsorship"
+          name="type_write_pray"
+          domain="[('type', '=', 'SWP')]"
+        />
             </filter>
             <filter name="payment_mode" position="before">
                 <filter
