@@ -11,3 +11,5 @@ access_translator_competence,Access on translator competence,model_translation_u
 access_admin_translator_competence,Full access on translator competence,model_translation_user_skill,group_manager,1,1,1,1
 access_translation_competence,Read access on translation competence,model_translation_competence,group_user,1,0,0,0
 access_admin_translation_competence_user,Full access on translation competence,model_translation_competence,group_manager,1,1,1,1
+access_model_sbc_reply_to_comments_wizard,Full access to reply to comments,model_sbc_reply_to_comments_wizard,group_manager,1,1,1,1
+access_model_sbc_reply_to_issue_wizard,Full access to reply to issue,model_sbc_reply_to_issue_wizard,group_manager,1,1,1,1

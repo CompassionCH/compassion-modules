@@ -14,10 +14,8 @@
                         </tree>
                     </field>
                 </group>
-                <group>
-                    <field name="answer"/>
-                    <p class="text-muted">Your reply will be added in an automatic email with greetings.</p>
-                </group>
+                <field name="answer"/>
+                <p style="color: #686868;">Your reply will be added in an <b>automatic email with greetings</b>.</p>
                 <footer>
                     <button name="send_reply" string="Send reply" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
