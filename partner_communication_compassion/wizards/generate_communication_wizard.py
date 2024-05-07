@@ -53,11 +53,15 @@ class GenerateCommunicationWizard(models.TransientModel):
                 if wizard.partner_source == "send_gifts_to":
                     partners = wizard.sponsorship_ids.mapped(lambda s: s.send_gifts_to)
                 else:
-                    partners = wizard.sponsorship_ids.mapped(lambda s: getattr(s, wizard.partner_source))
+                    partners = wizard.sponsorship_ids.mapped(
+                        lambda s, _w=wizard: getattr(s, _w.partner_source)
+                    )
 
                 # Calculate progress as a percentage of communications sent to partners
                 num_partners = len(partners)
-                wizard.progress = float(len(wizard.communication_ids)) / (num_partners or 1) * 100
+                wizard.progress = (
+                    float(len(wizard.communication_ids)) / (num_partners or 1) * 100
+                )
 
         # Process remaining wizards explicitly without repeating
         remaining_wizards = self - s_wizards

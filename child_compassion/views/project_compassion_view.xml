@@ -484,19 +484,19 @@
         <field name="model">compassion.project.ile</field>
         <field name="arch" type="xml">
             <tree string="Project Lifecycle Events">
-                <field name="create_date"/>
-                <field name="date"/>
-                <field name="type"/>
-                <field name="project_id" string="FCP"/>
+                <field name="create_date" />
+                <field name="date" />
+                <field name="type" />
+                <field name="project_id" string="FCP" />
                 <!-- <field name="suspension_start_date"/> -->
-                <field name="suspension_end_date"/>
-                <field name="suspension_reason_ids"/>
-                <field name="hold_cdsp_funds"/>
-                <field name="hold_csp_funds"/>
-                <field name="hold_gifts"/>
-                <field name="hold_s2b_letters"/>
-                <field name="hold_b2s_letters"/>
-                <field name="hold_child_updates"/>
+                <field name="suspension_end_date" />
+                <field name="suspension_reason_ids" />
+                <field name="hold_cdsp_funds" />
+                <field name="hold_csp_funds" />
+                <field name="hold_gifts" />
+                <field name="hold_s2b_letters" />
+                <field name="hold_b2s_letters" />
+                <field name="hold_child_updates" />
                 <!-- Add other necessary fields here -->
             </tree>
         </field>
@@ -508,13 +508,20 @@
         <field name="arch" type="xml">
             <search string="Search Project Lifecycle Events">
                 <!-- Existing search fields -->
-                <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="name" filter_domain="[('name', 'ilike', self)]" />
                 <field name="date" />
                 <!-- Default filter for suspended state -->
-                <filter string="Suspended" name="suspended" domain="[('type', '=', 'Suspension')]"/>
+                <filter
+          string="Suspended"
+          name="suspended"
+          domain="[('type', '=', 'Suspension')]"
+        />
                 <!-- Dynamic filter for projects suspended more than 2 months -->
-                <filter string="Suspended More Than 2 Months" name="suspended_more_than_2_months"
-                        domain="[('date', '&lt;', datetime.datetime.now()-relativedelta(month=2)),('project_id.status', '=', 'Suspended')]" />
+                <filter
+          string="Suspended More Than 2 Months"
+          name="suspended_more_than_2_months"
+          domain="[('date', '&lt;', datetime.datetime.now()-relativedelta(month=2)),('project_id.status', '=', 'Suspended')]"
+        />
                 <!-- Group by and other filters can be added here -->
             </search>
         </field>
@@ -524,16 +531,20 @@
         <field name="name">Lifecycle Events</field>
         <field name="res_model">compassion.project.ile</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_project_lifecycle_event_tree"/>
-        <field name="search_view_id" ref="view_compassion_project_ile_search"/>
-        <field name="context">{'search_default_suspended': 1}</field> <!-- This sets the default filter -->
+        <field name="view_id" ref="view_project_lifecycle_event_tree" />
+        <field name="search_view_id" ref="view_compassion_project_ile_search" />
+        <field
+      name="context"
+    >{'search_default_suspended': 1}</field> <!-- This sets the default filter -->
         <!-- This is where you specify the domain if you want to filter the records more-->
     </record>
 
-    <menuitem id="menu_project_lifecycle_events"
-              name="Lifecycle Events"
-              action="action_project_lifecycle_events"
-              parent="menu_field_section"
-              sequence="3"/>
+    <menuitem
+    id="menu_project_lifecycle_events"
+    name="Lifecycle Events"
+    action="action_project_lifecycle_events"
+    parent="menu_field_section"
+    sequence="3"
+  />
 
 </odoo>
