@@ -41,6 +41,7 @@
         "security/ir.model.access.csv",
         "security/access_rules.xml",
         "wizards/reply_to_comments_view.xml",
+        "wizards/reply_to_issue_view.xml",
         "data/mail_template.xml",
         "data/update_translation_priority_cron.xml",
         "data/website.xml",

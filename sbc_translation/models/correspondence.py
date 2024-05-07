@@ -331,6 +331,24 @@ class Correspondence(models.Model):
         )
         return self.write({"unread_comments": False})
 
+    def reply_to_issue(self, body_html):
+        """
+        TP API for sending to the translator a message regarding his issue.
+        """
+        self.ensure_one()
+        reply_template = self.env.ref("sbc_translation.issue_reply").sudo()
+        self.message_post_with_view(
+            reply_template,
+            partner_ids=[(4, self.new_translator_id.partner_id.id)],
+            values={
+                "reply": body_html,
+            },
+        )
+        return self.write({
+            'translation_issue': False,
+            'translation_issue_comments': False
+        })
+
     def mark_comments_read(self):
         return self.write({"unread_comments": False})
 
