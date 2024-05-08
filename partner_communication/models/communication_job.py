@@ -20,8 +20,6 @@ from jinja2 import TemplateSyntaxError
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import MissingError, QWebException, UserError
 
-# from ..wizards.generate_communication_wizard import SMS_CHAR_LIMIT, SMS_COST
-
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
@@ -167,12 +165,6 @@ class CommunicationJob(models.Model):
     #                                          "Printer Output Bin")
 
     sms_cost = fields.Float()
-    # sms_provider_id = fields.Many2one(
-    #     "sms.provider",
-    #     "SMS Provider",
-    #     default=lambda self: self.env.ref("sms_939.large_account_id", False),
-    #     readonly=False,
-    # )
 
     def _compute_ir_attachments(self):
         for job in self:
@@ -523,15 +515,11 @@ class CommunicationJob(models.Model):
         for job in self.filtered(lambda j: j.state == "pending" and j.partner_mobile):
             sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
             sms_texts.append(sms_text)
-            job.partner_id.with_context(
-                sms_provider=job.sms_provider_id
-            ).message_post_send_sms(sms_text, note_msg=job.subject)
+            job.partner_id.message_post_send_sms(sms_text, note_msg=job.subject)
             job.write(
                 {
                     "state": "done",
                     "sent_date": fields.Datetime.now(),
-                    # "sms_cost": ceil(float(len(sms_text))
-                    # // SMS_CHAR_LIMIT) * SMS_COST,
                 }
             )
             _logger.debug("SMS length: %s", len(sms_text))
