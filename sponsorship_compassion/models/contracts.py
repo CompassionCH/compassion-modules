@@ -19,6 +19,7 @@ from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from .product_names import (
     BIRTHDAY_GIFT,
@@ -1288,3 +1289,43 @@ class SponsorshipContract(models.Model):
             data_invs = gifts._build_invoices_data(contracts=contracts)
             if data_invs:
                 gifts.update_open_invoices(data_invs)
+
+    def migrate_gmc_correspondence_commitment(self):
+        """Migrate the GMC commitment to the new field."""
+        self.ensure_one()
+        onramp = OnrampConnector(self.env)
+        global_id = self.child_id.global_id
+        logger.info(
+            f"Migrating {global_id} child on {self.gmc_commitment_id} contract."
+        )
+        answer = onramp.send_message(f"beneficiaries/{global_id}/summary", "GET")
+        commitments = (
+            answer.get("content").get("Commitments")
+            if answer.get("code") == 200
+            else False
+        )
+        if commitments:
+            for commitment in commitments:
+                if commitment.get("EndDate"):
+                    logger.info(f"Commitment skipped it has an enddate {commitment}")
+                    continue
+                if commitment.get("CommitmentType") == "Sponsor":
+                    new_gmc_id = commitment.get("CommitmentID")
+                    if new_gmc_id and new_gmc_id != self.gmc_commitment_id:
+                        err_message = (
+                            f"Sponsorship {self.display_name} has a different "
+                            f"commitment_id from the one received by GMC "
+                            f"({self.gmc_commitment_id} vs {new_gmc_id})"
+                        )
+                        self.message_post(body=err_message)
+                        logger.error(err_message)
+                    partner = self.env["res.partner"].search_read(
+                        [("global_id", "=", commitment.get("SupporterID"))], ["id"]
+                    )
+                    self.gmc_payer_partner_id = (
+                        partner[0].get("id") if partner else False
+                    )
+                elif commitment.get("CommitmentType") == "Correspondent":
+                    self.gmc_correspondent_commitment_id = commitment.get(
+                        "CommitmentID"
+                    )

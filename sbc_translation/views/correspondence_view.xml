@@ -177,7 +177,7 @@
                                 </div>
                                 <div class="oe_kanban_bottom_right">
                                     <img t-att-src="kanban_image('translation.user', 'avatar', record.new_translator_id.raw_value)" t-att-alt="record.new_translator_id.value" t-att-title="record.new_translator_id.value" width="24" height="24" class="oe_kanban_avatar"/>
-                                    <a t-att-href="record.translation_url.raw_value" target="_blank"><i class="fa fa-external-link oe_kanban_avatar" role="img"/></a>
+                                    <a t-att-href="record.translation_url.raw_value" target="_blank"><i class="fa fa-external-link oe_kanban_avatar" role="img" title="Translator"/></a>
                                 </div>
                             </div>
                         </div>
