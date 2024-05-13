@@ -58,7 +58,7 @@
         "views/communication_snippet_view.xml",
         "data/default_communication.xml",
         "data/queue_job.xml",
-        "data/assets_backend.xml",
+        # "data/assets_backend.xml",
     ],
     "qweb": [],
     "demo": ["demo/demo_data.xml"],
