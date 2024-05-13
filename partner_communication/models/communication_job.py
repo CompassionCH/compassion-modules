@@ -758,12 +758,12 @@ class CommunicationJob(models.Model):
         for configs in batch_print.values():
             for config, jobs in configs.items():
                 try:
-                    with self.env.cr.savepoint():
-                        print_name = name[:3] + " " + config
-                        jobs.print_letter(print_name)
-                        jobs.write({"state": state, "sent_date": fields.Datetime.now()})
+                    print_name = name[:3] + " " + config
+                    jobs.print_letter(print_name)
+                    jobs.write({"state": state, "sent_date": fields.Datetime.now()})
                 except Exception:
-                    _logger.error("Error while printing jobs %s", [str(jobs.ids)])
+                    _logger.error(
+                        "Error while printing jobs %s", str(jobs.ids), exc_info=True)
         return self.download_data()
 
     def print_letter(self, print_name, **print_options):
@@ -822,7 +822,7 @@ class CommunicationJob(models.Model):
         printer = behaviour["printer"].with_context(lang=lang)
         if behaviour["action"] == "server" and printer:
             # Get pdf should directly send it to the printer
-            printer.print_document(report.report_name, to_print[0], **print_options)
+            printer.print_document(report, to_print[0], **print_options)
         else:
             # Store result in one communication
             # (for later download from the result wizard)
