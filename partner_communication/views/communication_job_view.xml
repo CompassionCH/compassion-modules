@@ -218,7 +218,11 @@
           name="call"
           domain="[('need_call', '!=', False), ('activity_ids', '!=', False)]"
         />
-                <separator />
+                <filter
+          string="Last 7 days sent communications"
+          name="last7days"
+          domain="[('sent_date','&lt;=',datetime.datetime.now()),('sent_date','&gt;=',datetime.datetime.now()-relativedelta(week=1))]"
+        />                <separator />
                 <filter
           string="Letters"
           name="digital"
