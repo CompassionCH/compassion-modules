@@ -252,7 +252,7 @@ class CorrespondenceTemplate(models.Model):
 
     def _generate_template_list(self, pages, header, background_list, temp_img):
         """Generate a list of template pages to be used by the PHP script"""
-        template_list, header_data, image_boxes = []
+        template_list, header_data, image_boxes = [], [], []
         for page_index, page in enumerate(pages):
             header_index = page_index % 2
             try:
