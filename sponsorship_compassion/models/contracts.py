@@ -111,10 +111,16 @@ class SponsorshipContract(models.Model):
         "compassion.project", "Project", related="child_id.project_id", readonly=False
     )
     child_name = fields.Char(
-        "Sponsored child name", related="child_id.name", readonly=True
+        "Child name", related="child_id.name", readonly=True
     )
     child_code = fields.Char(
-        "Sponsored child code", related="child_id.local_id", readonly=True, store=True
+        "Child code", related="child_id.local_id", readonly=True, store=True
+    )
+    child_age = fields.Integer(
+        "Age", related="child_id.age", readonly=True
+    )
+    child_gender = fields.Selection(
+        "Gender", related="child_id.gender", readonly=True
     )
     is_active = fields.Boolean(
         "Contract Active",
