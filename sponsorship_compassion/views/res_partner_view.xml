@@ -109,8 +109,9 @@
                   icon="fa-external-link"
                 />
                                 <field name="child_id" />
-                                <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="child_gender" />
+                                <field name="child_age" />
                                 <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
@@ -144,8 +145,9 @@
                   icon="fa-external-link"
                 />
                                 <field name="child_id" />
-                                <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="child_gender" />
+                                <field name="child_age" />
                                 <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
@@ -179,8 +181,9 @@
                   icon="fa-external-link"
                 />
                                 <field name="child_id" />
-                                <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="child_gender" />
+                                <field name="child_age" />
                                 <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
