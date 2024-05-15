@@ -71,7 +71,8 @@ class AccountStatement(models.Model):
 
     def button_post(self):
         self.invoice_ids.filtered(lambda i: i.state == "draft").action_post()
-        return super().button_post()
+        super().button_post()
+        self.with_delay()._auto_reconcile()
 
     def auto_reconcile(self):
         """Auto reconcile matching invoices through jobs to avoid timeouts"""
