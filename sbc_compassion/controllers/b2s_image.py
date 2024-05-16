@@ -28,7 +28,7 @@ def _get_data(letter, file_type=None):
     if letter.letter_format == "zip" and file_type == "pdf":
         # Force pdf usage if a zip is stored in database
         data = letter.generate_original_pdf()
-        fname = letter.file_name
+        fname = f"{letter.create_date}-{letter.file_name}"
     else:
         # Use the data type that is stored in database
         data = letter.get_image()
