@@ -763,7 +763,8 @@ class CommunicationJob(models.Model):
                     jobs.write({"state": state, "sent_date": fields.Datetime.now()})
                 except Exception:
                     _logger.error(
-                        "Error while printing jobs %s", str(jobs.ids), exc_info=True)
+                        "Error while printing jobs %s", str(jobs.ids), exc_info=True
+                    )
         return self.download_data()
 
     def print_letter(self, print_name, **print_options):

@@ -13,4 +13,6 @@ def migrate(env, version):
     )
     for contract in contracts:
         # Postpone migration one hour after, with low priority
-        contract.with_delay(eta=3600, priority=50).migrate_gmc_correspondence_commitment()
+        contract.with_delay(
+            eta=3600, priority=50
+        ).migrate_gmc_correspondence_commitment()
