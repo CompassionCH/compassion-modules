@@ -153,7 +153,15 @@ class Correspondence(models.Model):
     def process_letter(self):
         # Prepare the communication when a letter is published
         res = super().process_letter()
-        self.send_communication()
+        intro_letter = self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
+        skip = self.filtered(
+            lambda letter: not letter.letter_image
+            or (
+                intro_letter in letter.communication_type_ids
+                and not letter.sponsorship_id.send_introduction_letter
+            )
+        )
+        (self - skip).send_communication()
         return res
 
     def send_communication(self):

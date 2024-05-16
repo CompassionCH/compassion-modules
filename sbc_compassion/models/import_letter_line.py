@@ -87,6 +87,7 @@ class ImportLetterLine(models.Model):
         "sponsorship_id",
         "letter_language_id",
         "import_id.template_id",
+        "template_id",
     )
     def _compute_check_status(self):
         """At each change, check if all the fields are OK"""
