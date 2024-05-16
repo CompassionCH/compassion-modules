@@ -35,7 +35,7 @@ def _get_data(letter, file_type=None):
         if letter.letter_format == "zip":
             fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
         else:
-            fname = f"{letter.create_date}-{letter.file_name}"
+            fname = f"{letter.get_date('create_date')}-{letter.file_name}"
     return data, fname
 
 
