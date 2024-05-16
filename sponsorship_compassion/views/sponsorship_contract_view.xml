@@ -231,6 +231,9 @@
           help="Last 3 months"
         />
             </filter>
+            <filter name="payment_mode" position="before">
+                <filter name="group_type" domain="[]" context="{'group_by': 'type'}" />
+            </filter>
         </field>
     </record>
 
