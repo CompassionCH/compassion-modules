@@ -57,8 +57,11 @@ def _get_child_correspondence(partner, child):
 
 def _fill_archive(archive, letters, file_path=""):
     for letter in letters:
-        data, fname = _get_data(letter, file_type="pdf")
-        if not data:
+        try:
+            data, fname = _get_data(letter, file_type="pdf")
+            if not data:
+                raise ValueError
+        except ValueError:
             continue
         full_path = path.join(file_path, fname)
         # Create pdf, write it in archive and then remove it
