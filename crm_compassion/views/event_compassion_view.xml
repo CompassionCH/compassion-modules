@@ -185,6 +185,8 @@
                                 <field name="street" placeholder="Street..." />
                                 <br class="oe_read_only" />
                                 <field name="zip_id" />
+                                <br class="oe_read_only" />
+                                <field name="country_id" />
                             </div>
                         </group>
                     </group>
