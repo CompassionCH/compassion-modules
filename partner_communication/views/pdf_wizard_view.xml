@@ -6,14 +6,6 @@
             <form>
                 <field name="state" invisible="1" />
                 <group states="physical,both">
-                     <!-- Loading Message Displayed Conditionally -->
-                    <label
-            for="preview"
-            id="loading_message"
-            string="Preview is loading, please wait..."
-            class="pdf_loading"
-            style="color: red; display: block; text-align: center;"
-          />
                     <field name="preview" widget="image" width="500" />
                 </group>
                 <div states="digital,both">
