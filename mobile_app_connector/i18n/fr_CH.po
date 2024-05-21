@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-01 09:06+0000\n"
-"PO-Revision-Date: 2022-04-01 11:40+0200\n"
+"POT-Creation-Date: 2024-05-21 08:12+0000\n"
+"PO-Revision-Date: 2024-05-21 10:13+0200\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch3
@@ -682,8 +682,8 @@ msgstr ""
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
 msgid ""
 "% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
-"partner.id), ('state', '=', 'paid'), ('invoice_category', '!=', "
+"% set invoice = partner.env['account.move'].search([('partner_id', '=', "
+"partner.id), ('payment_state', '=', 'paid'), ('invoice_category', '!=', "
 "'sponsorship')], order='last_payment desc', limit=1)\n"
 "% if invoice:\n"
 "You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
@@ -735,12 +735,6 @@ msgid "Account Setup: User Not Found"
 msgstr "Création de compte pour l'app mobile"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:104
-#, python-format
-msgid "Account registration"
-msgstr "Inscription"
-
-#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__action_destination
 msgid "Action Destination"
 msgstr "Action Destination"
@@ -769,8 +763,9 @@ msgstr "Activate Mobile App Writings"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__active
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__active
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__active
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__state__active
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_writing__state__active
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
-#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
 msgid "Active"
 msgstr "Actif"
 
@@ -780,32 +775,29 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_state
 msgid "Activity State"
 msgstr "Status de l'Activité"
 
 #. module: mobile_app_connector
-#: selection:wp.post,post_type:0
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_type_icon
+#| msgid "Next Activity Type"
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__post_type__agendas
 msgid "Agenda"
 msgstr "Agenda"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/res_partner.py:19
-#: selection:res.partner,app_displayed_sponsorships:0
-#, python-format
-msgid "All (partner is the correspondent and/or the payer)"
-msgstr "Tous (le partenaire est le correspondant et/ou le payeur)"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/res_partner.py:20
-#: selection:res.partner,app_displayed_sponsorships:0
-#, python-format
-msgid "All + correspondence info shown to payer only."
-msgstr "Tous + correspondance montrée au payeur."
-
-#. module: mobile_app_connector
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_android
-#: selection:mobile.app.feedback,source:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__source__android
 msgid "Android"
 msgstr "Android"
 
@@ -900,16 +892,8 @@ msgid "Base: Auto-vacuum internal data"
 msgstr "Base : données internes sur l'aspiration automatique"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_birthdate_date
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_birthdate_date
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_birthdate_date
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_birthdate_date
-msgid "Birthdate"
-msgstr "Date de naissance"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:76
-#: selection:mobile.app.banner,internal_action:0
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__internal_action__blog
 #, python-format
 msgid "Blog"
 msgstr "Blog"
@@ -923,7 +907,7 @@ msgid "Body"
 msgstr "Corps"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,visibility:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__visibility__both
 msgid "Both"
 msgstr "Les deux"
 
@@ -953,38 +937,38 @@ msgid "Child Notification"
 msgstr "Notification d’enfant"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,topic:0
-#: selection:partner.communication.config,mobile_notification_topic:0
-#: selection:partner.communication.job,mobile_notification_topic:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__topic__child_notification
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_topic__child_notification
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_topic__child_notification
 msgid "Child channel"
 msgstr "Canal enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:78
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child compass"
 msgstr "Boussole de l'enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:81
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child gift"
 msgstr "Cadeau enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:84
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child letter"
 msgstr "Lettre de l’enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:86
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child page"
 msgstr "Page enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:83
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child photos"
 msgstr "Photos de l'enfant"
@@ -995,7 +979,7 @@ msgid "Child picture"
 msgstr "Photo de l’enfant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:77
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Child selector"
 msgstr "Sélecteur enfant"
@@ -1010,20 +994,6 @@ msgstr "Sélecteur d’enfants (ouvre la liste des enfants)"
 msgid "Choose private if the sponsor must be logged in to see the tile"
 msgstr ""
 "Choisissez privé si le parrain doit être connecté pour voir la vignette"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_city
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_city
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_city
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_city
-msgid "City"
-msgstr "Ville"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:411
-#, python-format
-msgid "Click here to send the template email request."
-msgstr "Cliquez ici pour envoyer une demande de création de compte."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_co3
@@ -1061,21 +1031,6 @@ msgstr "Configuration"
 #: model:ir.model,name:mobile_app_connector.model_res_partner
 msgid "Contact"
 msgstr "Contact"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/res_partner.py:23
-#: selection:res.partner,app_displayed_sponsorships:0
-#, python-format
-msgid "Correspondent (Children the partner correspond with)"
-msgstr "Correspondant (Enfants avec lesquels le partenaire correspond)"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_country_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_country_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_country_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_country_id
-msgid "Country"
-msgstr "Pays"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__create_uid
@@ -1206,12 +1161,21 @@ msgid "Device registered with Firebase Cloud Messaging"
 msgstr "Appareil enregistré auprès de Firebase Cloud Messaging"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__1_0
 msgid "Disappointing"
 msgstr "Décevant"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_move__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child_pictures__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_field_office__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_project__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_correspondence__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_crm_claim__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_partner_read__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_registration__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__display_name
@@ -1220,9 +1184,14 @@ msgstr "Décevant"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__display_name
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__display_name
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__display_name
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_product__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_template__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_recurring_contract__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner__display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__display_name
 msgid "Display Name"
@@ -1235,46 +1204,28 @@ msgid "Display On Hub"
 msgstr "Afficher sur le hub"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__has_sponsorship
-msgid "Do you currently sponsor a child?"
-msgstr "Parrainez-vous un enfant ?"
-
-#. module: mobile_app_connector
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_gi1
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi1
 msgid "Donate"
 msgstr "Faire un don"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,destination:0
-#: selection:mobile.app.banner,internal_action:0
-#: selection:partner.communication.config,mobile_notification_destination:0
-#: selection:partner.communication.job,mobile_notification_destination:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__destination__donation
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__internal_action__donation
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_destination__donation
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_destination__donation
 msgid "Donation"
 msgstr "Don"
 
 #. module: mobile_app_connector
-#: selection:wp.post,post_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__post_type__download
 msgid "Download"
 msgstr "Télécharger"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_email
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_email
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_email
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_email
-msgid "Email"
-msgstr "Courriel"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__end_date
 msgid "End Date"
 msgstr "Date de fin"
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Event donation"
-msgstr "Don d’événement"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__external_url
@@ -1283,9 +1234,14 @@ msgid "External Url"
 msgstr "Lien externe"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__5_0
 msgid "Extraordinary"
 msgstr "Extraordinaire"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,button_text:mobile_app_connector.default-welcome-screen
+msgid "Faire un don"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_feedback
@@ -1297,7 +1253,7 @@ msgid "Feedback"
 msgstr "Évaluation"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:82
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Feedback form"
 msgstr "Formulaire d'évaluation"
@@ -1313,11 +1269,6 @@ msgid "Feedbacks"
 msgstr "Évaluations"
 
 #. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_compassion_field_office
-msgid "Field Office"
-msgstr "Centre national"
-
-#. module: mobile_app_connector
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
 msgid "Find help"
 msgstr "Trouver de l’aide"
@@ -1328,17 +1279,10 @@ msgid "Firebase Registration Exists"
 msgstr "Firebase Registration Exists"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_firstname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_firstname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_firstname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_firstname
-msgid "First Name"
-msgstr "Prénom"
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "First payment"
-msgstr "Premier paiement"
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_feedback__activity_type_icon
+#| msgid "FontAwesome icon name"
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__icon
@@ -1356,7 +1300,12 @@ msgid "Force the hub of sponsor to refresh"
 msgstr "Forcer le hub du parrain à se rafraîchir"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:80
+#: model:ir.model,name:mobile_app_connector.model_compassion_project
+msgid "Frontline Church Partner"
+msgstr ""
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Fund donation"
 msgstr "Don pour fonds"
@@ -1373,9 +1322,9 @@ msgid "General Notification"
 msgstr "Notification générale"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,topic:0
-#: selection:partner.communication.config,mobile_notification_topic:0
-#: selection:partner.communication.job,mobile_notification_topic:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__topic__general_notification
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_topic__general_notification
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_topic__general_notification
 msgid "General channel"
 msgstr "Canal général"
 
@@ -1416,7 +1365,7 @@ msgstr ""
 "${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__4_0
 msgid "Great"
 msgstr "Super"
 
@@ -1430,11 +1379,6 @@ msgstr "Super"
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
 msgid "Group By"
 msgstr "Grouper par"
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Group visit"
-msgstr "Visite de groupe"
 
 #. module: mobile_app_connector
 #: model:mail.template,body_html:mobile_app_connector.email_template_user_not_found
@@ -1452,17 +1396,12 @@ msgid "Help"
 msgstr "Aide"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,priority:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__priority__high
 msgid "High"
 msgstr "Haute"
 
 #. module: mobile_app_connector
-#: model:mobile.app.banner,name:mobile_app_connector.default-welcome-screen
-msgid "Hope stronger than poverty"
-msgstr "Un espoir plus fort que la pauvreté"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_feedback.py:98
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:0
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__improve_app
 #, python-format
 msgid "How can we improve the app"
@@ -1479,7 +1418,16 @@ msgid "Hub mobile app"
 msgstr "Hub app mobile"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_move__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child_pictures__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_field_office__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_project__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_correspondence__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_crm_claim__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_partner_read__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_registration__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__id
@@ -1489,19 +1437,34 @@ msgstr "Hub app mobile"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_product__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_template__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_recurring_contract__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_config_settings__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner__id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category__id
 msgid "ID"
 msgstr "ID"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_product_product__image_icon
 #: model:ir.model.fields,field_description:mobile_app_connector.field_product_template__image_icon
 msgid "Icon Mobile App"
 msgstr "Icone app mobile"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_feedback__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__image_url
@@ -1519,7 +1482,7 @@ msgstr ""
 "enfants au lieu de l’enfant individuel)"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,destination_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__destination_type__internal
 msgid "Internal"
 msgstr "Interne"
 
@@ -1527,11 +1490,6 @@ msgstr "Interne"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__internal_action
 msgid "Internal Action"
 msgstr "Action interne"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_account_invoice
-msgid "Invoice"
-msgstr "Facture"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__is_expired
@@ -1545,8 +1503,9 @@ msgstr "Est une prière"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_account_move
-msgid "Journal Entries"
-msgstr "Pièces comptables"
+#| msgid "Journal Entries"
+msgid "Journal Entry"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__json_messages
@@ -1559,18 +1518,23 @@ msgid "Lang"
 msgstr "Langue"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_lang
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__language
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_lang
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_lang
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_lang
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__lang
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
 msgid "Language"
 msgstr "Langue"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_move____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_child_pictures____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_field_office____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_compassion_project____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_correspondence____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_crm_claim____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_partner_read____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_registration____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback____last_update
@@ -1580,21 +1544,18 @@ msgstr "Langue"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing____last_update
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form____last_update
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter____last_update
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_product____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_product_template____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_recurring_contract____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner____last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post____last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category____last_update
 msgid "Last Modified on"
 msgstr "Dernière Modification le"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_lastname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_lastname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_lastname
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_lastname
-msgid "Last Name"
-msgstr "Nom de famille"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__last_refresh_date
@@ -1628,20 +1589,20 @@ msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,destination:0
 #: model:ir.model,name:mobile_app_connector.model_correspondence
-#: selection:partner.communication.config,mobile_notification_destination:0
-#: selection:partner.communication.job,mobile_notification_destination:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__destination__letter
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_destination__letter
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_destination__letter
 msgid "Letter"
 msgstr "Lettre"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,internal_action:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__internal_action__letter
 msgid "Letter writing"
 msgstr "Rédaction de lettres"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:79
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Letters hub"
 msgstr "Hub Lettres"
@@ -1663,7 +1624,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:75
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_mi1
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_MI1
 #, python-format
@@ -1676,12 +1637,12 @@ msgid "Login overlay (redirects to login)"
 msgstr "Connexion (redirige vers le login)"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,priority:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__priority__low
 msgid "Low"
 msgstr "Faible"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:309
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:0
 #, python-format
 msgid "Mail delivery error"
 msgstr "Erreur lors de l'envoi de l'e-mail"
@@ -1724,17 +1685,12 @@ msgid "Mobile App FAQ"
 msgstr "FAQ App Mobile"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_feedback.py:105
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:0
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_feedback
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_feedback
 #, python-format
 msgid "Mobile App Feedback"
 msgstr "Feedback App"
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Mobile App Registration"
-msgstr "Inscription app mobile"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_writing
@@ -1748,13 +1704,17 @@ msgid "Mobile app messages"
 msgstr "Messages d’application mobile"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_bank_statement_line__mobile_notification_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_account_move__mobile_notification_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_account_payment__mobile_notification_id
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_communication_job_form
 msgid "Mobile notification"
 msgstr "Notification mobile"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_account_bank_statement_line__mobile_notification_id
 #: model:ir.model.fields,help:mobile_app_connector.field_account_move__mobile_notification_id
+#: model:ir.model.fields,help:mobile_app_connector.field_account_payment__mobile_notification_id
 msgid "Mobile notification sent for a donation confirmation"
 msgstr "Notification envoyée pour une confirmation de don"
 
@@ -1770,9 +1730,10 @@ msgid "Model"
 msgstr "Modèle"
 
 #. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Muskathlon registration"
-msgstr "Inscription au Muskathlon"
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__my_activity_date_deadline
+#| msgid "Next Activity Deadline"
+msgid "My Activity Deadline"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_co4
@@ -1788,22 +1749,16 @@ msgid "My Community (opens the project page)"
 msgstr "Ma communauté (ouvre la page du projet)"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,destination:0
-#: selection:partner.communication.config,mobile_notification_destination:0
-#: selection:partner.communication.job,mobile_notification_destination:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__destination__myhub
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_destination__myhub
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_destination__myhub
 msgid "My Hub"
 msgstr "Mon Hub"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,internal_action:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__internal_action__pray
 msgid "My prayers"
 msgstr "Mes prières"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:419
-#, python-format
-msgid "MyCompassion"
-msgstr "MyCompassion"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__display_name
@@ -1813,12 +1768,20 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_compassion_field_office
+#, fuzzy
+#| msgid "Field Office"
+msgid "National Office"
+msgstr "Centre national"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__needs_refresh
 msgid "Needs Refresh"
 msgstr "Besoin d’actualisation"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__state__new
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_writing__state__new
 msgid "New"
 msgstr "Nouveau"
 
@@ -1828,14 +1791,9 @@ msgid "New Photo"
 msgstr "Nouvelle photo"
 
 #. module: mobile_app_connector
-#: selection:wp.post,post_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__post_type__posts
 msgid "News"
 msgstr "News"
-
-#. module: mobile_app_connector
-#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
-msgid "Next"
-msgstr "Suivant"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__activity_date_deadline
@@ -1853,36 +1811,31 @@ msgid "Next Activity Type"
 msgstr "Type d'Activités à Venir"
 
 #. module: mobile_app_connector
-#: selection:registration.base.form,has_sponsorship:0
-msgid "No"
-msgstr "Non"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:292
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:0
 #, python-format
 msgid "No email entered"
 msgstr "E-mail manquant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:299
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:0
 #, python-format
 msgid "No such account"
 msgstr "Ce compte n'existe pas"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__0_0
 msgid "None"
 msgstr "Aucun"
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,topic:0
-#: selection:partner.communication.config,mobile_notification_topic:0
-#: selection:partner.communication.job,mobile_notification_topic:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__topic__spam
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_topic__spam
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_topic__spam
 msgid "None (bypass user's preferences)"
 msgstr "Aucun (contourner les préférences de l’utilisateur)"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,priority:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__priority__normal
 msgid "Normal"
 msgstr "Normale"
 
@@ -1897,17 +1850,22 @@ msgid "Notification to send to Firebase Cloud Messaging"
 msgstr "Notification à envoyer à Firebase Cloud Messaging"
 
 #. module: mobile_app_connector
+#: model:mobile.app.banner,name:mobile_app_connector.default-welcome-screen
+msgid "Noël, un cadeau pour chaque enfant"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
 msgid "ONLINE"
 msgstr "EN LIGNE"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,mode:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__mode__many
 msgid "One tile per record"
 msgstr "Une vignette par enregistrement"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,destination_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__destination_type__external
 msgid "Open in web browser"
 msgstr "Ouvrir dans le navigateur"
 
@@ -1917,33 +1875,26 @@ msgid "Order Weight"
 msgstr "Priorité (poids)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_privacy_statement_agreement__origin_signature
-msgid "Origin Signature"
-msgstr "Signature d’origine"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/request.py:81
+#: code:addons/mobile_app_connector/models/request.py:0
 #, python-format
 msgid "Original request from %s %s "
 msgstr "Demande initiale de %s %s "
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,activity_state:0
-msgid "Overdue"
-msgstr "Retard"
-
-#. module: mobile_app_connector
-#: selection:wp.post,tile_subtype:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__tile_subtype__pr2
 msgid "PR2"
 msgstr "PR2"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_id
+#: model:mobile.app.banner,body:mobile_app_connector.default-welcome-screen
+msgid ""
+"Partagez la joie de Noël avec votre filleul-e et avec les enfants vivant "
+"dans l’extrême pauvreté."
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__partner_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_messages__partner_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_id
 msgid "Partner"
 msgstr "Partenaire"
 
@@ -1954,24 +1905,11 @@ msgid "Pay now"
 msgstr "Activer mon parrainage"
 
 #. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_payment_transaction
-msgid "Payment Transaction"
-msgstr "Transaction"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_banner.py:80
-#: code:addons/mobile_app_connector/models/mobile_writing.py:65
+#: code:addons/mobile_app_connector/models/mobile_banner.py:0
+#: code:addons/mobile_app_connector/models/mobile_writing.py:0
 #, python-format
 msgid "Period is not valid"
 msgstr "La période n’est pas valide"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_phone
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_phone
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_phone
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_phone
-msgid "Phone"
-msgstr "Téléphone"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,title:mobile_app_connector.tile_ch2
@@ -1985,15 +1923,10 @@ msgid "Photos overlay (opens the photos of child)"
 msgstr "Photos (ouvre les photos de l'enfant)"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/compassion_correspondence.py:249
+#: code:addons/mobile_app_connector/models/compassion_correspondence.py:0
 #, python-format
 msgid "Physical letters cannot be displayed."
 msgstr "Les lettres physiques ne peuvent pas être affichées."
-
-#. module: mobile_app_connector
-#: selection:mobile.app.feedback,activity_state:0
-msgid "Planned"
-msgstr "Planifié"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__position
@@ -2167,10 +2100,11 @@ msgstr ""
 "rêves pour sa vie."
 
 #. module: mobile_app_connector
-#: selection:firebase.notification,destination:0
-#: selection:partner.communication.config,mobile_notification_destination:0
-#: selection:partner.communication.job,mobile_notification_destination:0
-#: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__firebase_notification__destination__prayer
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_config__mobile_notification_destination__prayer
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__partner_communication_job__mobile_notification_destination__prayer
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__tile_type__prayer
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post_category__default_tile_type__prayer
 msgid "Prayer"
 msgstr "Prière"
 
@@ -2185,11 +2119,6 @@ msgid "Prayer Title"
 msgstr "Titre de la prière"
 
 #. module: mobile_app_connector
-#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
-msgid "Prev"
-msgstr "Préc."
-
-#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__print_count
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__print_count
 msgid "Print Count"
@@ -2202,12 +2131,7 @@ msgid "Priority"
 msgstr "Priorité"
 
 #. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_privacy_statement_agreement
-msgid "Privacy Statement Agreement"
-msgstr "Accord sur la déclaration de confidentialité"
-
-#. module: mobile_app_connector
-#: selection:mobile.app.tile,visibility:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__visibility__private
 msgid "Private"
 msgstr "Privé"
 
@@ -2222,23 +2146,18 @@ msgid "Product Template"
 msgstr "Modèle d'article"
 
 #. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_compassion_project
-msgid "Project Geolocation Point"
-msgstr "Point de géolocalisation du projet"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:85
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Project page"
 msgstr "Page du projet"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,visibility:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__visibility__public
 msgid "Public"
 msgstr "Publique"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,state:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__state__read
 msgid "Read"
 msgstr "Lire"
 
@@ -2296,7 +2215,13 @@ msgid "Refresh Wordpress Posts"
 msgstr "Refresh Wordpress Posts"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.feedback,state:0
+#: code:addons/mobile_app_connector/models/account_move.py:0
+#, python-format
+msgid "Removed mobile donation as no payment was received"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__state__replied
 msgid "Replied"
 msgstr "Répondu"
 
@@ -2321,12 +2246,7 @@ msgid "S2B Template"
 msgstr "Modèle S2B"
 
 #. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "SMS Sponsorship"
-msgstr "Parrainage SMS"
-
-#. module: mobile_app_connector
-#: selection:wp.post,tile_subtype:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__tile_subtype__st_t1
 msgid "ST_T1"
 msgstr "ST_T1"
 
@@ -2365,22 +2285,10 @@ msgid "Show in Mobile App"
 msgstr "Afficher dans l'app"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__source
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__source
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__source
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__source
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__source
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
 msgid "Source"
 msgstr "Origine"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,help:mobile_app_connector.field_cms_form_res_users__source
-#: model:ir.model.fields,help:mobile_app_connector.field_registration_base_form__source
-#: model:ir.model.fields,help:mobile_app_connector.field_registration_not_supporter__source
-#: model:ir.model.fields,help:mobile_app_connector.field_registration_supporter_form__source
-msgid "Source for registration"
-msgstr "Source d’inscription"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_compassion_child
@@ -2388,10 +2296,10 @@ msgid "Sponsored Child"
 msgstr "Enfant parrainé"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_res_partner__app_displayed_sponsorships
-#: model:ir.model.fields,field_description:mobile_app_connector.field_res_users__app_displayed_sponsorships
-msgid "Sponsorships displayed in the app"
-msgstr "Parrainages affichés dans l’application"
+#: code:addons/mobile_app_connector/models/account_move.py:0
+#, python-format
+msgid "Sponsorship invoice used for mobile app donation."
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__star
@@ -2405,13 +2313,9 @@ msgid "Start Date"
 msgstr "Date de début"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_state_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__state
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__state
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__state
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_state_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_state_id
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_state_id
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
 msgid "State"
 msgstr "État"
@@ -2444,22 +2348,10 @@ msgstr ""
 "Blogs et prières (ouvre la news et affiche le reste du contenu au-dessous)"
 
 #. module: mobile_app_connector
-#: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post__tile_type__story
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__wp_post_category__default_tile_type__story
 msgid "Story"
 msgstr "Histoire"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_street
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_street
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_street
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_street
-msgid "Street"
-msgstr "Rue"
-
-#. module: mobile_app_connector
-#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
-msgid "Submit"
-msgstr "Soumettre"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__subtype_ids
@@ -2470,12 +2362,6 @@ msgstr "Sous-types"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing__template_ids
 msgid "Templates"
 msgstr "Modèles"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__gtc_accept
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__gtc_accept
-msgid "Terms and conditions"
-msgstr "Conditions générales"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_18
@@ -2505,23 +2391,13 @@ msgid "Thank You"
 msgstr "Merci"
 
 #. module: mobile_app_connector
-#: model:mobile.app.banner,body:mobile_app_connector.default-welcome-screen
-msgid ""
-"Thank you for downloading the Compassion app! Feel free to send us your "
-"feedback to help us improve it."
-msgstr ""
-"Merci d'avoir téléchargé l'app de Compassion! N'hésitez pas à nous faire "
-"part de vos retours afin de nous aider à l'améliorer."
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:200
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid "Thank you for your generosity!"
 msgstr "Merci pour votre générosité !"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:254
-#: code:addons/mobile_app_connector/models/account_invoice.py:265
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid "The product %s was not found"
 msgstr "Le produit %s n'a pas été trouvé"
@@ -2535,7 +2411,7 @@ msgstr ""
 "mobile."
 
 #. module: mobile_app_connector
-#: sql_constraint:wp.post.category:0
+#: model:ir.model.constraint,message:mobile_app_connector.constraint_wp_post_category_name_unique
 msgid "This category already exists"
 msgstr "Cette catégorie existe déjà"
 
@@ -2545,20 +2421,12 @@ msgid "This defines how to process related data"
 msgstr "Cela définit comment traiter les données associées"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:121
-#: code:addons/mobile_app_connector/forms/registration_form.py:311
-#: code:addons/mobile_app_connector/forms/registration_form.py:403
-#, python-format
-msgid "This email is already linked to an account."
-msgstr "Cet e-mail est déjà utilisé."
-
-#. module: mobile_app_connector
-#: sql_constraint:wp.post:0
+#: model:ir.model.constraint,message:mobile_app_connector.constraint_wp_post_wp_unique
 msgid "This post already exists"
 msgstr "Cet article existe déjà"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:95
+#: code:addons/mobile_app_connector/models/wordpress_post.py:0
 #, python-format
 msgid ""
 "This post was disabled probably because it doesn't have a content. Please "
@@ -2569,12 +2437,12 @@ msgstr ""
 "d’affichage dans l’application mobile."
 
 #. module: mobile_app_connector
-#: sql_constraint:mobile.app.tile.subtype:0
+#: model:ir.model.constraint,message:mobile_app_connector.constraint_mobile_app_tile_subtype_code_unique
 msgid "This subtype already exists"
 msgstr "Ce sous-type existe déjà"
 
 #. module: mobile_app_connector
-#: sql_constraint:mobile.app.tile.type:0
+#: model:ir.model.constraint,message:mobile_app_connector.constraint_mobile_app_tile_type_code_unique
 msgid "This tile type already exists"
 msgstr "Ce type de vignette existe déjà"
 
@@ -2634,27 +2502,13 @@ msgid "Time and weather"
 msgstr "Heure et météo"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_title
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner__name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile__title
 #: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config__mobile_notification_title
 #: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job__mobile_notification_title
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_title
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_title
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_title
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__name
 msgid "Title"
 msgstr "Titre"
-
-#. module: mobile_app_connector
-#: model:mobile.app.banner,button_text:mobile_app_connector.default-welcome-screen
-msgid "To the news"
-msgstr "Vers les nouvelles"
-
-#. module: mobile_app_connector
-#: selection:mobile.app.feedback,activity_state:0
-msgid "Today"
-msgstr "Aujourd'hui"
 
 #. module: mobile_app_connector
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -2679,23 +2533,29 @@ msgid "Type"
 msgstr "Type"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_feedback__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post__url
 msgid "URL"
 msgstr "URL"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.tile,mode:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_tile__mode__one
 msgid "Unique tile"
 msgstr "Une seule tuile"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__state__unread
 #: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_app_feedback_search
-#: selection:mobile.app.feedback,state:0
 msgid "Unread"
 msgstr "Non lu"
 
 #. module: mobile_app_connector
-#: selection:mobile.app.banner,state:0 selection:mobile.app.writing,state:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_banner__state__used
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_writing__state__used
 msgid "Used"
 msgstr "Utilisée"
 
@@ -2705,13 +2565,7 @@ msgid "Users"
 msgstr "Utilisateurs"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:112
-#, python-format
-msgid "Verify your e-mail address"
-msgstr "Vérifiez votre adresse e-mail"
-
-#. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__3_0
 msgid "Very well"
 msgstr "Très bien"
 
@@ -2730,23 +2584,13 @@ msgid "Visibility"
 msgstr "Visibilité"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:94
+#: code:addons/mobile_app_connector/models/wordpress_post.py:0
 #, python-format
 msgid "Warning"
 msgstr "Avertissement"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:427
-#, python-format
-msgid ""
-"We couldn't find your sponsorships. Please contact us for setting up your "
-"account."
-msgstr ""
-"Nous n'avons pas pu associer automatiquement vos parrainages à cette adresse "
-"e-mail. Merci de prendre contact avec nous pour la création de votre compte."
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:307
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:0
 #, python-format
 msgid "We sent you the reset instructions."
 msgstr "Instructions envoyées par e-mail."
@@ -2769,32 +2613,12 @@ msgid "Weather"
 msgstr "Météo"
 
 #. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Website My Account"
-msgstr ""
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Website new gift"
-msgstr ""
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Website new letter"
-msgstr "Nouvelle lettre site web"
-
-#. module: mobile_app_connector
-#: selection:privacy.statement.agreement,origin_signature:0
-msgid "Website new sponsorship"
-msgstr "Nouveau parrainage site web"
-
-#. module: mobile_app_connector
-#: selection:mobile.app.feedback,star:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__star__2_0
 msgid "Well"
 msgstr "Bien"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_feedback.py:95
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:0
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback__name
 #, python-format
 msgid "What did you like"
@@ -2830,7 +2654,7 @@ msgid "Wordpress Posts"
 msgstr "Articles Wordpress"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/tools/wp_requests.py:36
+#: code:addons/mobile_app_connector/tools/wp_requests.py:0
 #, python-format
 msgid "Wordpress authentication failed !"
 msgstr "L’authentification Wordpress a échoué !"
@@ -2867,18 +2691,13 @@ msgid "Writings"
 msgstr "Écrits"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/res_users.py:27
+#: code:addons/mobile_app_connector/models/res_users.py:0
 #, python-format
 msgid "Wrong user or password"
 msgstr "Utilisateur ou mot de passe incorrect"
 
 #. module: mobile_app_connector
-#: selection:registration.base.form,has_sponsorship:0
-msgid "Yes"
-msgstr "Oui"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:114
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid ""
 "You cannot pay your sponsorship with gifts at the same time. Please make two "
@@ -2888,7 +2707,7 @@ msgstr ""
 "Veuillez faire deux dons distincts."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:199
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid "You gave CHF %s.- for %s"
 msgstr "Vous avez donné CHF %s.- pour %s"
@@ -2912,58 +2731,25 @@ msgid "You're changing ${ctx['objects'].get('his')} life"
 msgstr "Vous changez ${ctx['objects'].get('sa')} vie"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_feedback.py:120
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:0
 #, python-format
 msgid "Your Mobile App Feedback"
 msgstr "Votre feedback sur l'application mobile"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:194
-#, python-format
-msgid ""
-"Your account has been successfully created, you will now receive an email to "
-"finalize your registration."
-msgstr ""
-"Votre compte a été créé avec succès, vous allez recevoir un e-mail pour "
-"finaliser votre inscription."
-
-#. module: mobile_app_connector
-#: model_terms:ir.ui.view,arch_db:mobile_app_connector.mobile_registration_success
-msgid ""
-"Your account was successfully created.\n"
-"                            <br/>\n"
-"                            <br/>\n"
-"                            You must now setup your password. Please verify "
-"your e-mail address to finalize your registration."
-msgstr ""
-"Votre compte a été créé avec succès.\n"
-"                            <br/>\n"
-"                            <br/>\n"
-"                            Vous devez maintenant configurer votre mot de "
-"passe. Veuillez vérifier votre adresse e-mail pour finaliser votre "
-"inscription."
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/mobile_feedback.py:93
+#: code:addons/mobile_app_connector/models/mobile_feedback.py:0
 #, python-format
 msgid "Your feedback from the app"
 msgstr "Vos observations faites depuis l'application"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:271
-#: code:addons/mobile_app_connector/forms/registration_form.py:344
-#, python-format
-msgid "Your personal data"
-msgstr "Vos données personnelles"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/request.py:86
+#: code:addons/mobile_app_connector/models/request.py:0
 #, python-format
 msgid "Your question was well received"
 msgstr "Merci, nous vous répondrons dans les plus brefs délais."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:131
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid ""
 "Your sponsorship payment doesn't match any expected payment. Please reach to "
@@ -2973,7 +2759,7 @@ msgstr ""
 "Veuillez contacter notre équipe pour vérifier ce qui est dû."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/app_tile_type.py:74
+#: code:addons/mobile_app_connector/models/app_tile_type.py:0
 #, python-format
 msgid "Youtube"
 msgstr "Youtube"
@@ -2986,60 +2772,31 @@ msgstr ""
 "vidéo)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users__partner_zip
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form__partner_zip
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter__partner_zip
-#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form__partner_zip
-msgid "Zip"
-msgstr "Code postal"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_cms_form_res_users
-msgid "cms.form.res.users"
-msgstr "cms.form.res.users"
-
-#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__param_1
 msgid "first parameter"
 msgstr "premier paramètre"
 
 #. module: mobile_app_connector
 #: model:mobile.app.banner,image_url:mobile_app_connector.default-welcome-screen
-msgid "https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg"
-msgstr "https://compassion.ch/medias/banners/app/app_banner_1.jpg"
+msgid "https://compassion.ch/medias/banners/app/app_banner_9_en.jpg"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,external_url:mobile_app_connector.default-welcome-screen
+msgid "https://impact.compassion.ch/"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_ios
-#: selection:mobile.app.feedback,source:0
+#: model:ir.model.fields.selection,name:mobile_app_connector.selection__mobile_app_feedback__source__ios
 msgid "iOS"
 msgstr "iOS"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:423
-#, python-format
-msgid "my mobile app"
-msgstr "l'application mobile"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:185
+#: code:addons/mobile_app_connector/models/account_move.py:0
 #, python-format
 msgid "one of our fund"
 msgstr "l’un de nos fonds"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_registration_base_form
-msgid "registration.base.form"
-msgstr "registration.base.form"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_registration_not_supporter
-msgid "registration.not.supporter"
-msgstr "registration.not.supporter"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_registration_supporter_form
-msgid "registration.supporter.form"
-msgstr "registration.supporter.form"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type__param_2
@@ -3066,3 +2823,204 @@ msgstr "tile_2"
 #: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype__default_records_filter
 msgid "will use the filtered function on the associated records"
 msgstr "utilisera la fonction filtrée sur les enregistrements associés"
+
+#, python-format
+#~ msgid "Account registration"
+#~ msgstr "Inscription"
+
+#, python-format
+#~ msgid "All (partner is the correspondent and/or the payer)"
+#~ msgstr "Tous (le partenaire est le correspondant et/ou le payeur)"
+
+#, python-format
+#~ msgid "All + correspondence info shown to payer only."
+#~ msgstr "Tous + correspondance montrée au payeur."
+
+#~ msgid "Birthdate"
+#~ msgstr "Date de naissance"
+
+#~ msgid "City"
+#~ msgstr "Ville"
+
+#, python-format
+#~ msgid "Click here to send the template email request."
+#~ msgstr "Cliquez ici pour envoyer une demande de création de compte."
+
+#, python-format
+#~ msgid "Correspondent (Children the partner correspond with)"
+#~ msgstr "Correspondant (Enfants avec lesquels le partenaire correspond)"
+
+#~ msgid "Country"
+#~ msgstr "Pays"
+
+#~ msgid "Do you currently sponsor a child?"
+#~ msgstr "Parrainez-vous un enfant ?"
+
+#~ msgid "Email"
+#~ msgstr "Courriel"
+
+#~ msgid "Event donation"
+#~ msgstr "Don d’événement"
+
+#~ msgid "First Name"
+#~ msgstr "Prénom"
+
+#~ msgid "First payment"
+#~ msgstr "Premier paiement"
+
+#~ msgid "Group visit"
+#~ msgstr "Visite de groupe"
+
+#~ msgid "Hope stronger than poverty"
+#~ msgstr "Un espoir plus fort que la pauvreté"
+
+#~ msgid "Invoice"
+#~ msgstr "Facture"
+
+#~ msgid "Last Name"
+#~ msgstr "Nom de famille"
+
+#~ msgid "Mobile App Registration"
+#~ msgstr "Inscription app mobile"
+
+#~ msgid "Muskathlon registration"
+#~ msgstr "Inscription au Muskathlon"
+
+#, python-format
+#~ msgid "MyCompassion"
+#~ msgstr "MyCompassion"
+
+#~ msgid "Next"
+#~ msgstr "Suivant"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Origin Signature"
+#~ msgstr "Signature d’origine"
+
+#~ msgid "Overdue"
+#~ msgstr "Retard"
+
+#~ msgid "Payment Transaction"
+#~ msgstr "Transaction"
+
+#~ msgid "Phone"
+#~ msgstr "Téléphone"
+
+#~ msgid "Planned"
+#~ msgstr "Planifié"
+
+#~ msgid "Prev"
+#~ msgstr "Préc."
+
+#~ msgid "Privacy Statement Agreement"
+#~ msgstr "Accord sur la déclaration de confidentialité"
+
+#~ msgid "Project Geolocation Point"
+#~ msgstr "Point de géolocalisation du projet"
+
+#~ msgid "SMS Sponsorship"
+#~ msgstr "Parrainage SMS"
+
+#~ msgid "Source for registration"
+#~ msgstr "Source d’inscription"
+
+#~ msgid "Sponsorships displayed in the app"
+#~ msgstr "Parrainages affichés dans l’application"
+
+#~ msgid "Street"
+#~ msgstr "Rue"
+
+#~ msgid "Submit"
+#~ msgstr "Soumettre"
+
+#~ msgid "Terms and conditions"
+#~ msgstr "Conditions générales"
+
+#~ msgid ""
+#~ "Thank you for downloading the Compassion app! Feel free to send us your "
+#~ "feedback to help us improve it."
+#~ msgstr ""
+#~ "Merci d'avoir téléchargé l'app de Compassion! N'hésitez pas à nous faire "
+#~ "part de vos retours afin de nous aider à l'améliorer."
+
+#, python-format
+#~ msgid "This email is already linked to an account."
+#~ msgstr "Cet e-mail est déjà utilisé."
+
+#~ msgid "To the news"
+#~ msgstr "Vers les nouvelles"
+
+#~ msgid "Today"
+#~ msgstr "Aujourd'hui"
+
+#, python-format
+#~ msgid "Verify your e-mail address"
+#~ msgstr "Vérifiez votre adresse e-mail"
+
+#, python-format
+#~ msgid ""
+#~ "We couldn't find your sponsorships. Please contact us for setting up your "
+#~ "account."
+#~ msgstr ""
+#~ "Nous n'avons pas pu associer automatiquement vos parrainages à cette "
+#~ "adresse e-mail. Merci de prendre contact avec nous pour la création de "
+#~ "votre compte."
+
+#~ msgid "Website new letter"
+#~ msgstr "Nouvelle lettre site web"
+
+#~ msgid "Website new sponsorship"
+#~ msgstr "Nouveau parrainage site web"
+
+#~ msgid "Yes"
+#~ msgstr "Oui"
+
+#, python-format
+#~ msgid ""
+#~ "Your account has been successfully created, you will now receive an email "
+#~ "to finalize your registration."
+#~ msgstr ""
+#~ "Votre compte a été créé avec succès, vous allez recevoir un e-mail pour "
+#~ "finaliser votre inscription."
+
+#~ msgid ""
+#~ "Your account was successfully created.\n"
+#~ "                            <br/>\n"
+#~ "                            <br/>\n"
+#~ "                            You must now setup your password. Please "
+#~ "verify your e-mail address to finalize your registration."
+#~ msgstr ""
+#~ "Votre compte a été créé avec succès.\n"
+#~ "                            <br/>\n"
+#~ "                            <br/>\n"
+#~ "                            Vous devez maintenant configurer votre mot de "
+#~ "passe. Veuillez vérifier votre adresse e-mail pour finaliser votre "
+#~ "inscription."
+
+#, python-format
+#~ msgid "Your personal data"
+#~ msgstr "Vos données personnelles"
+
+#~ msgid "Zip"
+#~ msgstr "Code postal"
+
+#~ msgid "cms.form.res.users"
+#~ msgstr "cms.form.res.users"
+
+#~ msgid "https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg"
+#~ msgstr "https://compassion.ch/medias/banners/app/app_banner_1.jpg"
+
+#, python-format
+#~ msgid "my mobile app"
+#~ msgstr "l'application mobile"
+
+#~ msgid "registration.base.form"
+#~ msgstr "registration.base.form"
+
+#~ msgid "registration.not.supporter"
+#~ msgstr "registration.not.supporter"
+
+#~ msgid "registration.supporter.form"
+#~ msgstr "registration.supporter.form"
