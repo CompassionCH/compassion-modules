@@ -172,6 +172,7 @@ class SponsorshipContract(models.Model):
         ],
         required=True,
         default="O",
+        string="Sponsorship type",
     )
     group_freq = fields.Char(
         string="Payment frequency", compute="_compute_frequency", readonly=True
