@@ -50,10 +50,10 @@
 
         <t t-jquery="td.cell_payment_ref" t-operation="after">
             <td class="cell_additional_ref">
-<!--                <t t-if="state.st_line.payment_ref">-->
-<!--                    <i t-esc="state.st_line.payment_ref"/>-->
-<!--                </t>-->
-                Additional ref placeholder
+                <t t-if="state.st_line.additional_ref">
+                    <i t-esc="state.st_line.additional_ref"/>
+                </t>
+<!--                Additional ref placeholder-->
             </td>
         </t>
     </t>
@@ -112,10 +112,10 @@
 
         <t t-jquery="td.cell_payment_ref" t-operation="after">
             <td class="cell_additional_ref">
-<!--                <t t-if="line.payment_ref">-->
-<!--                    <i t-esc="line.payment_ref"/>-->
-<!--                </t>-->
-                Additional ref placeholder
+                <t t-if="line.additional_ref">
+                    <i t-esc="line.additional_ref"/>
+                </t>
+<!--                Additional ref placeholder-->
             </td>
         </t>
     </t>
