@@ -21,28 +21,104 @@
     >Open Partner</button>
     </t>
 
-    <!-- Add BVR ref if found in line label -->
+        <!-- Add BVR ref if found in line label -->
     <t t-extend="reconciliation.line">
-        <t t-jquery="td.cell_label" t-operation="inner">
-            <t t-if="state.st_line.name" t-esc="state.st_line.name" />
-            <t t-if="state.st_line.amount_currency_str"> (<t
-          t-esc="state.st_line.amount_currency_str"
-        />)</t>
-            <t t-if="state.st_line.ref">
-                <br />
-                <t t-esc="state.st_line.ref" />
-            </t>
-            <t t-if="state.st_line.note"><i
-          t-esc="state.st_line.note"
-          style="float:right;"
-        /></t>
+        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
+        <t t-jquery="td.cell_label" t-operation="replace"></t>
+
+        <t t-jquery="td.cell_due_date" t-operation="after">
+            <td class="cell_name">
+                <t t-if="state.st_line.name" t-esc="state.st_line.name"/>
+            </td>
         </t>
 
-        <!-- Add sponsor reference -->
-        <t t-jquery="span.partner_name span" t-operation="before">
-            (<t t-esc="state.st_line.partner_ref" />)
+        <t t-jquery="td.cell_name" t-operation="after">
+            <td class="cell_ref">
+                <t t-if="state.st_line.ref">
+                    <t t-esc="state.st_line.ref"/>
+                </t>
+            </td>
         </t>
-  </t>
+
+        <t t-jquery="td.cell_ref" t-operation="after">
+            <td class="cell_payment_ref">
+                <t t-if="state.st_line.payment_ref">
+                    <t t-esc="state.st_line.payment_ref"/>
+                </t>
+            </td>
+        </t>
+
+        <t t-jquery="td.cell_payment_ref" t-operation="after">
+            <td class="cell_additional_ref">
+<!--                <t t-if="state.st_line.payment_ref">-->
+<!--                    <i t-esc="state.st_line.payment_ref"/>-->
+<!--                </t>-->
+                Additional ref placeholder
+            </td>
+        </t>
+    </t>
+
+    <t t-extend="reconciliation.line.balance">
+        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
+        <t t-jquery="td.cell_label" t-operation="replace"></t>
+
+        <t t-jquery="td.cell_due_date" t-operation="after">
+            <td class="cell_name">
+                Open Balance
+            </td>
+        </t>
+
+        <t t-jquery="td.cell_name" t-operation="after">
+            <td class="cell_ref"></td>
+        </t>
+
+        <t t-jquery="td.cell_ref" t-operation="after">
+            <td class="cell_payment_ref"></td>
+        </t>
+
+        <t t-jquery="td.cell_payment_ref" t-operation="after">
+            <td class="cell_additional_ref"></td>
+        </t>
+    </t>
+
+    <t t-extend="reconciliation.line.mv_line">
+        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
+        <t t-jquery="td.cell_label" t-operation="replace"></t>
+
+        <t t-jquery="td.cell_due_date" t-operation="after">
+            <td class="cell_name">
+                <t t-if="line.name" t-esc="line.name"/>
+            </td>
+        </t>
+
+        <t t-jquery="td.cell_name" t-operation="after">
+            <td class="cell_ref">
+                <t t-if="line.ref?.indexOf(' - ') !== -1">
+                    <t t-esc="line.ref.split(' - ')[0]"/>
+                </t>
+                <t t-elif="line.ref">
+                    <t t-esc="line.ref"/>
+                </t>
+            </td>
+        </t>
+
+        <t t-jquery="td.cell_ref" t-operation="after">
+            <td class="cell_payment_ref">
+                <t t-if="line.ref?.indexOf(' - ') !== -1">
+                    <t t-esc="line.ref.split(' - ')[1]"/>
+                </t>
+            </td>
+        </t>
+
+        <t t-jquery="td.cell_payment_ref" t-operation="after">
+            <td class="cell_additional_ref">
+<!--                <t t-if="line.payment_ref">-->
+<!--                    <i t-esc="line.payment_ref"/>-->
+<!--                </t>-->
+                Additional ref placeholder
+            </td>
+        </t>
+    </t>
 
     <t t-extend="reconciliation.line.create">
         <t t-jquery="tr.create_account_id" t-operation="after">
@@ -71,14 +147,6 @@
             </tr>
         </t>
 
-    </t>
-
-    <t t-extend="bank_statement_reconciliation_statement_line_details">
-
-        <t t-jquery="table.details > tr:nth-child(2)" t-operation="after">
-            <tr t-if="line.communication_partner_name"><td>Partner name</td><td
-        ><t t-esc="line.communication_partner_name" /></td></tr>
-        </t>
     </t>
 
 </templates>

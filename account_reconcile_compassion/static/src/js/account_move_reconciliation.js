@@ -414,6 +414,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       "force_tax_included",
       "analytic_tag_ids",
       "avoid_thankyou_letter",
+      "additional_ref",
     ],
 
     createProposition: function (handle) {
