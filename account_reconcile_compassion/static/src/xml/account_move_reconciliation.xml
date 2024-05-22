@@ -2,23 +2,17 @@
 <templates xml:space="preserve">
 
     <t t-name="AccountReconciliationCompassion">
-        <button
-      class="oe_account_recon_reconcile_fund oe_button oe_highlight"
-      href="javascript:void(0)"
-      disabled=""
-    >Reconcile + Put in Fund</button>
-        <button
-      class="oe_account_recon_reconcile_split oe_button oe_highlight"
-      href="javascript:void(0)"
-      disabled=""
-    >Split Payment + Reconcile</button>
+        <button class="oe_account_recon_reconcile_fund oe_button oe_highlight"
+                href="javascript:void(0)"
+                disabled="">Reconcile + Put in Fund</button>
+        <button class="oe_account_recon_reconcile_split oe_button oe_highlight"
+                href="javascript:void(0)"
+                disabled="">Split Payment + Reconcile</button>
     </t>
 
     <t t-name="AccountReconciliationOpenPartner">
-        <button
-      class="oe_account_recon_open_partner oe_button"
-      href="javascript:void(0)"
-    >Open Partner</button>
+        <button class="oe_account_recon_open_partner oe_button"
+                href="javascript:void(0)">Open Partner</button>
     </t>
 
         <!-- Add BVR ref if found in line label -->
@@ -53,7 +47,6 @@
                 <t t-if="state.st_line.additional_ref">
                     <i t-esc="state.st_line.additional_ref"/>
                 </t>
-<!--                Additional ref placeholder-->
             </td>
         </t>
     </t>
@@ -115,7 +108,6 @@
                 <t t-if="line.additional_ref">
                     <i t-esc="line.additional_ref"/>
                 </t>
-<!--                Additional ref placeholder-->
             </td>
         </t>
     </t>
@@ -130,10 +122,6 @@
                 <td class="o_td_label">Sponsorship</td>
                 <td class="o_td_field" />
             </tr>
-<!--            <tr class="create_user_id">-->
-<!--                <td class="o_td_label">Ambassador</td>-->
-<!--                <td class="o_td_field"></td>-->
-<!--            </tr>-->
         </t>
 
         <t t-jquery="tr.create_amount" t-operation="after">
@@ -148,5 +136,4 @@
         </t>
 
     </t>
-
 </templates>
