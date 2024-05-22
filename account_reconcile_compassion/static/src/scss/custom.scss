@@ -16,8 +16,12 @@
       max-height: 300px;
     }
 
-    .cell_name, .cell_ref {
-      width: 120px;
+    .cell_name {
+      max-width: 350px;
+    }
+
+    .cell_ref {
+      width: 200px;
     }
 
     .cell_payment_ref {
@@ -26,6 +30,10 @@
 
     .cell_additional_ref {
       width: auto;
+    }
+
+    .cell_left, .cell_right {
+      width: 150px;
     }
   }
 }
