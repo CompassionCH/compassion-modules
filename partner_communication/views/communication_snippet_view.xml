@@ -29,10 +29,16 @@
             </tree>
         </field>
     </record>
+    <record model="ir.actions.act_window" id="action_communication_snippet">
+        <field name="name">Text Snippets</field>
+        <field name="res_model">communication.snippet</field>
+        <field name="view_mode">tree,form</field>
+    </record>
     <menuitem
     id="communication_snippet_menu"
     name="Communication Snippet"
-    parent="partner_communication.menu_communication_config"
+    parent="menu_communication_settings_root"
+    action="action_communication_snippet"
     sequence="10"
   />
 </odoo>

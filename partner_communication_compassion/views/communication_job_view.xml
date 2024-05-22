@@ -62,6 +62,12 @@
     name="Communication Rules"
     sequence="3"
   />
+    <menuitem
+    id="partner_communication.communication_snippet_menu"
+    parent="menu_donation"
+    name="Communication Snippet"
+    sequence="4"
+  />
 
     <!-- Add Emails entry in Sponsorship Settings-->
     <menuitem
