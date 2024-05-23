@@ -320,7 +320,7 @@
                             </group>
                         </page>
                         <page string="Third party letter">
-                            <field name="tpl_item_ids"/>
+                            <field name="tpl_item_ids" />
                         </page>
                     </notebook>
                 </sheet>
