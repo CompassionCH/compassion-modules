@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Compassion Odoo 14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-23 11:06+0000\n"
+"POT-Creation-Date: 2024-05-23 11:56+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -37,6 +37,11 @@ msgstr "Aktive Patenschaften"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__description
 msgid "Additional comments"
 msgstr "Zusätzliche Kommentare"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_age
+msgid "Age"
+msgstr "Alter"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__res_partner__portal_sponsorships__all
@@ -157,9 +162,19 @@ msgid "Child Sponsorship"
 msgstr "Patenschaft"
 
 #. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_code
+msgid "Child code"
+msgstr "Kinder Ref."
+
+#. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_release
 msgid "Child hold expired"
 msgstr "Kindersicherung ist abgelaufen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_name
+msgid "Child name"
+msgstr "Kinder Name"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__child_code
@@ -515,6 +530,11 @@ msgstr "Fonds-Spende"
 #, python-format
 msgid "GMC returned an error :"
 msgstr "GMC hat einen Fehler zurückgegeben:"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_gender
+msgid "Gender"
+msgstr "Geschlecht"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__o
@@ -1289,16 +1309,6 @@ msgid "Sponsored child :"
 msgstr "Patenkind:"
 
 #. module: sponsorship_compassion
-#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_code
-msgid "Sponsored child code"
-msgstr "Code für gesponsertes Kind"
-
-#. module: sponsorship_compassion
-#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_name
-msgid "Sponsored child name"
-msgstr "Name des Patenkindes"
-
-#. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sponsored_child_ids
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sponsored_child_ids
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
@@ -1662,3 +1672,9 @@ msgstr "jede"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sub_sponsorship_id
 msgid "sub sponsorship"
 msgstr "SUB-Patenschaft"
+
+#~ msgid "Sponsored child code"
+#~ msgstr "Code für gesponsertes Kind"
+
+#~ msgid "Sponsored child name"
+#~ msgstr "Name des Patenkindes"
