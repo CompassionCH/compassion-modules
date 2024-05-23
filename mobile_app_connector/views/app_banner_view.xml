@@ -1,0 +1,111 @@
+<odoo>
+    <record model="ir.ui.view" id="mobile_app_banner_form">
+        <field name="name">mobile.app.banner.form</field>
+        <field name="model">mobile.app.banner</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="destination_type" />
+                            <field
+                name="internal_action"
+                attrs="{'invisible': [('destination_type', '=', 'External')]}"
+              />
+                            <field
+                name="external_url"
+                attrs="{'invisible': [('destination_type', '=', 'Internal')]}"
+              />
+                        </group>
+                        <group>
+                            <field name="date_start" />
+                            <field name="date_stop" />
+                            <field name="active" />
+                            <field name="print_count" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="body" />
+                        <field name="fund_type" />
+                        <field name="button_text" />
+                        <field name="image_url" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mobile_app_banner_tree">
+        <field name="name">mobile.app.banner.tree</field>
+        <field name="model">mobile.app.banner</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="date_start" />
+                <field name="date_stop" />
+                <field name="print_count" />
+                <field name="destination_type" />
+                <field name="internal_action" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mobile_app_banner_search">
+        <field name="name">app.banner.search</field>
+        <field name="model">mobile.app.banner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="state" />
+                <field name="destination_type" />
+                <field name="internal_action" />
+                <separator />
+                <filter
+          name="archived"
+          string="Archived"
+          domain="[('active', '=', False)]"
+        />
+                <group expand="0" string="Group By">
+                    <filter
+            string="Status"
+            name="group_state"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
+                    <filter
+            string="Destination type"
+            name="group_dest"
+            domain="[]"
+            context="{'group_by':'destination_type'}"
+          />
+                    <filter
+            string="Action type"
+            name="group_action"
+            domain="[]"
+            context="{'group_by':'internal_action'}"
+          />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobile_app_banner" model="ir.actions.act_window">
+        <field name="name">Banners</field>
+        <field name="res_model">mobile.app.banner</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for app banners -->
+    <menuitem
+    id="menu_mobile_app_banner"
+    name="Banners"
+    parent="menu_mobile_app_hub"
+    action="action_mobile_app_banner"
+  />
+
+</odoo>

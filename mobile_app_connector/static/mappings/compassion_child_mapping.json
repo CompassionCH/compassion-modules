@@ -1,0 +1,121 @@
+{
+  "name": "mobile_app_child",
+  "model": "compassion.child",
+  "mapping": {
+    "Age": {
+      "field": "age"
+    },
+    "benData": {
+      "to_json_conversion": false
+    },
+    "BeneficiaryGlobalId": {
+      "field": "global_id"
+    },
+    "bio": {
+      "field": "description_en"
+    },
+    "BirthDate": {
+      "field": "birthdate"
+    },
+    "Id": {
+      "field": "id"
+    },
+    "Latitude": {
+      "field": "project_id.gps_latitude",
+      "search_relational_record": true
+    },
+    "Longitude": {
+      "field": "project_id.gps_longitude",
+      "search_relational_record": true
+    },
+    "NeedId": {
+      "field": "id"
+    },
+    "NeedKey": {
+      "field": "local_id"
+    },
+    "ChildNeedKey": {
+      "field": "local_id"
+    },
+    "CommunityDescription": {
+      "to_json_conversion": false
+    },
+    "Country": {
+      "field": "project_id.country_id",
+      "to_json_conversion": "odoo_value.name"
+    },
+    "CountryCode": {
+      "field": "project_id.country_id",
+      "to_json_conversion": "odoo_value.code"
+    },
+    "directdebitflag": {
+      "to_json_conversion": false
+    },
+    "Email": {
+      "to_json_conversion": false
+    },
+    "FirstName": {
+      "field": "firstname"
+    },
+    "FullBodyImageURL": {
+      "field": "image_url"
+    },
+    "FullName": {
+      "field": "name"
+    },
+    "Gender": {
+      "field": "gender"
+    },
+    "IcpId": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true
+    },
+    "image": {
+      "to_json_conversion": false
+    },
+    "ImageUrl": {
+      "field": "image_url"
+    },
+    "ImageURL": {
+      "field": "image_url"
+    },
+    "Name": {
+      "field": "preferred_name"
+    },
+    "PreferredName": {
+      "field": "preferred_name"
+    },
+    "ProjectName": {
+      "field": "project_id.name",
+      "search_relational_record": true
+    },
+    "sponsorBBID": {
+      "to_json_conversion": false
+    },
+    "sponsorYearOfBirth": {
+      "to_json_conversion": false
+    },
+    "sponsorshipplusflag": {
+      "to_json_conversion": false
+    },
+    "SupporterGroupId": {
+      "field": "sponsor_id.id",
+      "search_relational_record": true
+    },
+    "SupporterId": {
+      "field": "sponsor_id.id",
+      "search_relational_record": true
+    },
+    "SupporterName": {
+      "field": "sponsor_id.name",
+      "search_relational_record": true
+    },
+    "timeTaken": {
+      "to_json_conversion": false
+    },
+    "UpdatedpreferredName": {
+      "field": "sponsor_id.preferred_name",
+      "search_relational_record": true
+    }
+  }
+}

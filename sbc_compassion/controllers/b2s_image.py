@@ -9,7 +9,8 @@
 ##############################################################################
 import logging
 from datetime import datetime
-from os import path, remove
+from io import BytesIO
+from os import path
 from zipfile import ZipFile
 
 from werkzeug.datastructures import Headers
@@ -35,7 +36,7 @@ def _get_data(letter, file_type=None):
         if letter.letter_format == "zip":
             fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
         else:
-            fname = letter.file_name
+            fname = f"{letter.get_date('create_date')}-{letter.file_name}"
     return data, fname
 
 
@@ -55,17 +56,17 @@ def _get_child_correspondence(partner, child):
     )
 
 
-def _fill_archive(archive, letters, file_path=""):
-    for letter in letters:
-        data, fname = _get_data(letter, file_type="pdf")
-        if not data:
-            continue
-        full_path = path.join(file_path, fname)
-        # Create pdf, write it in archive and then remove it
-        with open(fname, "wb") as file:
-            file.write(data)
-        archive.write(fname, full_path)
-        remove(fname)
+def _fill_archive(buffer, letters, file_path=""):
+    with ZipFile(buffer, "a") as archive:
+        for letter in letters:
+            try:
+                data, fname = _get_data(letter, file_type="pdf")
+                if not data:
+                    raise ValueError
+            except ValueError:
+                continue
+            full_path = path.join(file_path, fname)
+            archive.writestr(full_path, data)
 
 
 class RestController(http.Controller):
@@ -99,12 +100,12 @@ class RestController(http.Controller):
     # pylint: disable=redefined-builtin
     def handler_b2s_images(self, child_id=None, **parameters):
         partner = request.env.user.partner_id
+        zip_buffer = BytesIO()
         if child_id:  # We want to download a single child correspondence
             child = request.env["compassion.child"].browse(int(child_id))
             letters = _get_child_correspondence(partner, child)
             archive_name = f"{child.preferred_name}_correspondence.zip"
-            with ZipFile(archive_name, "w") as archive:
-                _fill_archive(archive, letters)
+            _fill_archive(zip_buffer, letters)
         else:  # We want to download all children correspondence
             children = (
                 (
@@ -116,16 +117,13 @@ class RestController(http.Controller):
                 .sorted("preferred_name")
             )
             archive_name = "children_correspondence.zip"
-            with ZipFile(archive_name, "w") as archive:
-                for child in children:
-                    letters = _get_child_correspondence(partner, child)
-                    file_path = f"{child.preferred_name}_{child.local_id}"
-                    _fill_archive(archive, letters, file_path)
+            for child in children:
+                letters = _get_child_correspondence(partner, child)
+                file_path = f"{child.preferred_name}_{child.local_id}"
+                _fill_archive(zip_buffer, letters, file_path)
 
-        # Get binary content of the archive, then delete the latter
-        with open(archive_name, "rb") as archive:
-            zip_data = archive.read()
-        remove(archive_name)
+        zip_buffer.seek(0)
+        zip_data = zip_buffer.read()
 
         return request.make_response(
             zip_data,

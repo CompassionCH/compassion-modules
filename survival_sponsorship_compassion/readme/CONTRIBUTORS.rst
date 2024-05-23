@@ -1,1 +1,0 @@
-* Simon Gonzalez <sgonzalez@ikmail.com>

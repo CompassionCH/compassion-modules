@@ -1,0 +1,45 @@
+{
+  "name": "mobile_app_from_letter",
+  "model": "correspondence",
+  "mapping": {
+    "CorrespondenceID": {
+      "field": "id"
+    },
+    "Date": {
+      "field": "status_date"
+    },
+    "FileID": {
+      "field": "id"
+    },
+    "FileName": {
+      "field": "file_name"
+    },
+    "Message": {
+      "field": "original_text"
+    },
+    "MessageFrom": {
+      "to_json_conversion": false
+    },
+    "Need": {
+      "field": "child_id.local_id",
+      "search_relational_record": true
+    },
+    "Supportergroup": {
+      "to_json_conversion": false
+    },
+    "supporterId": {
+      "field": "partner_id.id",
+      "search_relational_record": true
+    },
+    "pathextension": {
+      "field": "letter_format"
+    },
+    "base64string": {
+      "field": "letter_image",
+      "to_json_conversion": false
+    },
+    "Type": {
+      "to_json_conversion": 1
+    }
+  }
+}

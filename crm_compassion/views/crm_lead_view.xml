@@ -70,7 +70,6 @@
                <progressbar
           field="activity_state"
           colors='{"planned": "success", "today": "warning", "overdue": "danger"}'
-          sum_field="planned_sponsorships"
           help="."
         />
             </xpath>

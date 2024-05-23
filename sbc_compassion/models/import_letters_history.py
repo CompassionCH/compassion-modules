@@ -14,7 +14,6 @@ between the database and the mail.
 import base64
 import io
 import logging
-import traceback
 
 import fitz
 from PIL import Image
@@ -197,12 +196,12 @@ class ImportLettersHistory(models.Model):
 
         self.ensure_one()
         self.state = "pending"
-        logger.info("Letters import started...")
+        self.env.user.notify_info("Letters import started...")
 
         for current_file, nb_files_to_import, filename in generator():
             logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
 
-        logger.info("Letters import completed !")
+        self.env.user.notify_success("Letters import completed !")
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
@@ -275,7 +274,10 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
+            message = f"Couldn't import file {file_name}"
+            self.env.user.notify_danger(message)
             logger.error(
-                f"Couldn't import file {file_name} : \n{traceback.format_exc()}"
+                message,
+                exc_info=True,
             )
             return

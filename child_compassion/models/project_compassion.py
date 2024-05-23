@@ -609,7 +609,7 @@ class CompassionProject(models.Model):
                     + "&lon="
                     + str(project.gps_longitude)
                     + "&appid="
-                    + tools.config.get("openweathermap_api_key")
+                    + tools.config.get("openweathermap_api_key", "")
                 ).json()
                 if json["cod"] != 200:
                     logging.error("Could not retrieve weather info.")

@@ -42,14 +42,23 @@
                             states="Global Partner translation queue"/>
                     <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
                             states="Published to Global Partner,Received in the system"/>
+
                     <button name="resubmit_to_translation" type="object"
                         string="Return to translation"
                         attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+
                     <button name="%(sbc_translation.reply_to_comments_wizard)d"
                             type="action" string="Reply to comments"
                         class="oe_highlight"
                         attrs="{'invisible': [('unread_comments', '!=', True)]}"
                         context="{'default_paragraph_ids': paragraph_ids}"/>
+
+                    <button name="%(sbc_translation.reply_to_issue_wizard)d"
+                            type="action" string="Reply to issue"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('translation_issue', '==', False)]}"
+                        context="{'default_translation_issue': translation_issue, 'default_translation_issue_comments': translation_issue_comments}"/>
+
                     <button name="open_full_view" type="object" string="Open full view"/>
                 </header>
                 <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
@@ -168,7 +177,7 @@
                                 </div>
                                 <div class="oe_kanban_bottom_right">
                                     <img t-att-src="kanban_image('translation.user', 'avatar', record.new_translator_id.raw_value)" t-att-alt="record.new_translator_id.value" t-att-title="record.new_translator_id.value" width="24" height="24" class="oe_kanban_avatar"/>
-                                    <a t-att-href="record.translation_url.raw_value" target="_blank"><i class="fa fa-external-link oe_kanban_avatar" role="img"/></a>
+                                    <a t-att-href="record.translation_url.raw_value" target="_blank"><i class="fa fa-external-link oe_kanban_avatar" role="img" title="Translator"/></a>
                                 </div>
                             </div>
                         </div>

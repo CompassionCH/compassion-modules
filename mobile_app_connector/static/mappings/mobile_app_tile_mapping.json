@@ -1,0 +1,35 @@
+{
+  "name": "mobile_app_tile",
+  "model": "mobile.app.tile",
+  "mapping": {
+    "Body": {
+      "field": "body"
+    },
+    "ActionText": {
+      "field": "action_text"
+    },
+    "Title": {
+      "field": "title"
+    },
+    "SubType": {
+      "field": "subtype_id.code"
+    },
+    "SortOrder": {
+      "field": "view_order"
+    },
+    "ActionDestination": {
+      "field": "action_destination"
+    },
+    "Type": {
+      "field": "subtype_id.type_id",
+      "to_json_conversion": "odoo_value.code",
+      "search_relational_record": true
+    },
+    "IsAutomaticOrdering": {
+      "field": "is_automatic_ordering"
+    },
+    "OrderDate": {
+      "field": "create_date"
+    }
+  }
+}

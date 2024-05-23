@@ -1,0 +1,393 @@
+{
+  "name": "mobile_app_project",
+  "model": "compassion.project",
+  "mapping": {
+    "AddressStreet": {
+      "field": "street"
+    },
+    "AirportDistance": {
+      "field": "closest_airport_distance"
+    },
+    "AirportPreferredTransportation": {
+      "field": "transport_mode_to_airport"
+    },
+    "AirportTravelTime": {
+      "field": "time_to_airport"
+    },
+    "AllocatedSurvivalSlots": {
+      "to_json_conversion": false
+    },
+    "AnnualPrimarySchoolCostLocalCurrency": {
+      "field": "annual_primary_school_cost"
+    },
+    "AnnualSecondarySchoolCostLocalCurrency": {
+      "field": "annual_secondary_school_cost"
+    },
+    "AvailableForVisits": {
+      "field": "available_for_visits"
+    },
+    "AverageCoolestTemperature": {
+      "field": "average_coolest_temperature"
+    },
+    "AverageWarmestTemperature": {
+      "field": "average_warmest_temperature"
+    },
+    "ChildDevelopmentCenterName": {
+      "field": "child_center_original_name"
+    },
+    "ChildDevelopmentCenterNameLocalLanguage": {
+      "field": "preferred_lang_id.name",
+      "search_relational_record": true
+    },
+    "ChurchMinistry": {
+      "field": "ministry_ids.name",
+      "search_relational_record": true
+    },
+    "City": {
+      "field": "city"
+    },
+    "Climate": {
+      "field": "community_climate"
+    },
+    "ClosestMajorCityEnglish": {
+      "field": "closest_city"
+    },
+    "Cluster": {
+      "field": "cluster"
+    },
+    "CognitiveActivities0To5": {
+      "field": "cognitive_activity_babies_ids.name",
+      "search_relational_record": true
+    },
+    "CognitiveActivities12Plus": {
+      "field": "cognitive_activity_ados_ids.name",
+      "search_relational_record": true
+    },
+    "CognitiveActivities6To11": {
+      "field": "cognitive_activity_kids_ids.name",
+      "search_relational_record": true
+    },
+    "CommunityInvolvement": {
+      "to_json_conversion": false
+    },
+    "Community_Name": {
+      "field": "community_name"
+    },
+    "CompassionConnectEnabled": {
+      "to_json_conversion": false
+    },
+    "ComputersForBeneficiaryUse": {
+      "field": "nb_child_computers"
+    },
+    "ComputersForStaffUse": {
+      "field": "nb_staff_computers"
+    },
+    "CoolestMonth": {
+      "field": "coolest_month"
+    },
+    "Country": {
+      "field": "country_id.name",
+      "search_relational_record": true
+    },
+    "CountryDivision": {
+      "field": "state_province"
+    },
+    "Country_Name": {
+      "to_json_conversion": false
+    },
+    "CulturalRitualsAndCustoms": {
+      "field": "cultural_rituals"
+    },
+    "CurrentStageInQavahProcess": {
+      "to_json_conversion": false
+    },
+    "Denomination": {
+      "field": "church_denomination"
+    },
+    "EconomicNeedDescription": {
+      "field": "economic_needs"
+    },
+    "EducationalNeedDescription": {
+      "field": "education_needs"
+    },
+    "ElectricalPowerAvailability": {
+      "field": "electrical_power"
+    },
+    "Facilities": {
+      "field": "facility_ids.name",
+      "search_relational_record": true
+    },
+    "FacilityOwnershipStatus": {
+      "field": "church_ownership"
+    },
+    "FamilyMonthlyIncome": {
+      "field": "monthly_income"
+    },
+    "FieldOffice_Country": {
+      "field": "field_office_id.country",
+      "search_relational_record": true
+    },
+    "FieldOffice_Name": {
+      "field": "field_office_id.name",
+      "search_relational_record": true
+    },
+    "FieldOffice_RegionName": {
+      "field": "field_office_id.region",
+      "search_relational_record": true
+    },
+    "FirstLetterWritingMonth": {
+      "field": "first_scheduled_letter"
+    },
+    "FirstPartnershipAgreementSignedDate": {
+      "to_json_conversion": false
+    },
+    "FloorArea": {
+      "to_json_conversion": false
+    },
+    "FoundationDate": {
+      "field": "church_foundation_date"
+    },
+    "GPSLatitude": {
+      "field": "gps_latitude"
+    },
+    "GPSLongitude": {
+      "field": "gps_longitude"
+    },
+    "HarvestMonths": {
+      "field": "harvest_month_ids.name",
+      "search_relational_record": true
+    },
+    "HealthContextNeeds": {
+      "field": "health_needs"
+    },
+    "HomeBasedSponsorshipBeneficiaries": {
+      "to_json_conversion": false
+    },
+    "HomeFloor": {
+      "field": "typical_floor_material"
+    },
+    "HomeRoof": {
+      "field": "typical_roof_material"
+    },
+    "HomeWall": {
+      "field": "typical_wall_material"
+    },
+    "HungerMonths": {
+      "field": "hunger_month_ids.name",
+      "search_relational_record": true
+    },
+    "ICPStatus": {
+      "field": "status"
+    },
+    "ICP_ID": {
+      "field": "fcp_id"
+    },
+    "ICP_Name": {
+      "field": "local_church_name"
+    },
+    "ICP_NameNonLatin": {
+      "field": "local_church_original_name"
+    },
+    "ImplementedProgram": {
+      "field": "implemented_program_ids.name",
+      "search_relational_record": true
+    },
+    "InterestedGlobalPartnerName": {
+      "field": "interested_partner_ids.name",
+      "search_relational_record": true
+    },
+    "InternationalDenominationAffiliation": {
+      "field": "international_affiliation"
+    },
+    "InternetAccess": {
+      "field": "church_internet_access"
+    },
+    "IsParticipatingInQavahProcess": {
+      "to_json_conversion": false
+    },
+    "LastReviewedDate": {
+      "field": "last_reviewed_date"
+    },
+    "Latitude": {
+      "field": "gps_latitude"
+    },
+    "Longitude": {
+      "field": "gps_longitude"
+    },
+    "LocaleType": {
+      "field": "community_locale"
+    },
+    "MajorRevision_RevisedValues": {
+      "to_json_conversion": false
+    },
+    "MobileInternetAccess": {
+      "field": "mobile_device_ids.value",
+      "search_relational_record": true
+    },
+    "MonthSchoolYearBegins": {
+      "field": "school_year_begins"
+    },
+    "NumberOfActiveMembers": {
+      "field": "number_church_members"
+    },
+    "NumberOfClassrooms": {
+      "field": "nb_classrooms"
+    },
+    "NumberOfLatrines": {
+      "field": "nb_latrines"
+    },
+    "NumberOfSponsorshipBeneficiaries": {
+      "field": "nb_cdsp_kids"
+    },
+    "NumberOfSurvivalBeneficiaries": {
+      "to_json_conversion": false
+    },
+    "OnSiteInternetQuality": {
+      "to_json_conversion": false
+    },
+    "PhysicalActivities0To5": {
+      "field": "physical_activity_babies_ids.name",
+      "search_relational_record": true
+    },
+    "PhysicalActivities12Plus": {
+      "field": "physical_activity_ados_ids.name",
+      "search_relational_record": true
+    },
+    "PhysicalActivities6To11": {
+      "field": "physical_activity_kids_ids.name",
+      "search_relational_record": true
+    },
+    "PlantingMonths": {
+      "field": "planting_month_ids.name",
+      "search_relational_record": true
+    },
+    "Population": {
+      "field": "community_population"
+    },
+    "PostalCode": {
+      "field": "zip_code"
+    },
+    "PreferredLanguage": {
+      "field": "preferred_lang_id.name",
+      "search_relational_record": true
+    },
+    "PrimaryDiet": {
+      "field": "primary_diet_ids.name",
+      "search_relational_record": true
+    },
+    "PrimaryEthnicGroup": {
+      "field": "primary_ethnic_group_name"
+    },
+    "PrimaryLanguage": {
+      "field": "primary_language_id.name",
+      "search_relational_record": true
+    },
+    "PrimaryOccupation": {
+      "field": "primary_adults_occupation_ids.value",
+      "search_relational_record": true
+    },
+    "ProgramBreakReason": {
+      "to_json_conversion": false
+    },
+    "ProgramBreakStartDate": {
+      "to_json_conversion": false
+    },
+    "ProgramEndDate": {
+      "field": "program_end_date"
+    },
+    "ProgramStartDate": {
+      "field": "program_start_date"
+    },
+    "ProgramsOfInterest": {
+      "field": "interested_program_ids.name",
+      "search_relational_record": true
+    },
+    "ProjectActivitiesForFamilies": {
+      "to_json_conversion": false
+    },
+    "RainyMonths": {
+      "field": "rainy_month_ids.name",
+      "search_relational_record": true
+    },
+    "SchoolCostPaidByICP": {
+      "field": "school_cost_paid_ids.value",
+      "search_relational_record": true
+    },
+    "SecondLetterWritingMonth": {
+      "field": "second_scheduled_letter"
+    },
+    "SocialMedia": {
+      "field": "social_media_site"
+    },
+    "SocialNeedsDescription": {
+      "field": "social_needs"
+    },
+    "SocioEmotionalActivities0To5": {
+      "field": "socio_activity_babies_ids.value",
+      "search_relational_record": true
+    },
+    "SocioEmotionalActivities12Plus": {
+      "field": "socio_activity_ados_ids.value",
+      "search_relational_record": true
+    },
+    "SocioEmotionalActivities6To11": {
+      "field": "socio_activity_kids_ids.value",
+      "search_relational_record": true
+    },
+    "SourceKitName": {
+      "to_json_conversion": false
+    },
+    "SpiritualActivities0To5": {
+      "field": "spiritual_activity_babies_ids.value",
+      "search_relational_record": true
+    },
+    "SpiritualActivities12Plus": {
+      "field": "spiritual_activity_ados_ids.value",
+      "search_relational_record": true
+    },
+    "SpiritualActivities6To11": {
+      "field": "spiritual_activity_kids_ids.value",
+      "search_relational_record": true
+    },
+    "Terrain": {
+      "field": "community_terrain"
+    },
+    "Territory": {
+      "field": "territory"
+    },
+    "TranslationCompletedFields": {
+      "to_json_conversion": false
+    },
+    "TranslationRequiredFields": {
+      "to_json_conversion": false
+    },
+    "TranslationStatus": {
+      "to_json_conversion": false
+    },
+    "TravelTimeToMedicalServices": {
+      "field": "time_to_medical_facility"
+    },
+    "UnemploymentRate": {
+      "field": "unemployment_rate"
+    },
+    "UtilitiesOnSite": {
+      "field": "utility_ids.name",
+      "search_relational_record": true
+    },
+    "WarmestMonth": {
+      "field": "warmest_month"
+    },
+    "Website": {
+      "field": "website"
+    },
+    "WeeklyChildAttendance": {
+      "field": "weekly_child_attendance"
+    },
+    "icpbio": {
+      "to_json_conversion": false
+    },
+    "icpbioInHtml": {
+      "to_json_conversion": false
+    }
+  }
+}

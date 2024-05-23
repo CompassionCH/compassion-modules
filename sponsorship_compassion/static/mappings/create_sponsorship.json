@@ -74,9 +74,7 @@
     "CorrespondentGlobalPartnerID": {
       "to_json_conversion": "gpid"
     },
-    "IsSponsorCorrespondent": {
-      "to_json_conversion": "True"
-    },
+    "IsSponsorCorrespondent": "fully_managed",
     "SponsorGlobalPartnerID": {
       "to_json_conversion": "gpid"
     },

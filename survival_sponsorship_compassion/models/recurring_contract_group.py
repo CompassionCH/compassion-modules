@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models
+from odoo import models
 
 
 class RecurringContractGroup(models.Model):
@@ -18,8 +18,7 @@ class RecurringContractGroup(models.Model):
         super()._compute_contains_sponsorship()
         for group in self:
             sponsorships = group.mapped("contract_ids").filtered(
-                lambda s: s.type == "CSP" and s.state not in (
-                    "terminated", "cancelled")
+                lambda s: s.type == "CSP" and s.state not in ("terminated", "cancelled")
             )
             if sponsorships:
                 group.contains_sponsorship = True

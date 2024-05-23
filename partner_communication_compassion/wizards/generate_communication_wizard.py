@@ -41,21 +41,33 @@ class GenerateCommunicationWizard(models.TransientModel):
     model_id = fields.Many2one(domain=[], readonly=False, required=True)
 
     def _compute_progress(self):
+        # Filter wizards related to "recurring.contract"
         s_wizards = self.filtered(lambda w: w.res_model == "recurring.contract")
-        for wizard in s_wizards:
-            if wizard.scheduled_date:
-                wizard.progress = 1
-            elif wizard.partner_source == "send_gifts_to":
-                partners = self.env["res.partner"]
-                for sponsorship in wizard.sponsorship_ids:
-                    partners += sponsorship.mapped(sponsorship.send_gifts_to)
-            else:
-                partners = wizard.sponsorship_ids.mapped(wizard.partner_source)
 
-            wizard.progress = float(len(wizard.communication_ids) * 100) // (
-                len(partners) or 1
-            )
-        super(GenerateCommunicationWizard, self - s_wizards)._compute_progress()
+        for wizard in s_wizards:
+            # If a scheduled date is set, set progress to 100% directly
+            if wizard.scheduled_date:
+                wizard.progress = 100
+            else:
+                # Retrieve partners based on the specified partner source
+                if wizard.partner_source == "send_gifts_to":
+                    partners = wizard.sponsorship_ids.mapped(lambda s: s.send_gifts_to)
+                else:
+                    partners = wizard.sponsorship_ids.mapped(
+                        lambda s, _w=wizard: getattr(s, _w.partner_source)
+                    )
+
+                # Calculate progress as a percentage of communications sent to partners
+                num_partners = len(partners)
+                wizard.progress = (
+                    float(len(wizard.communication_ids)) / (num_partners or 1) * 100
+                )
+
+        # Process remaining wizards explicitly without repeating
+        remaining_wizards = self - s_wizards
+
+        for wizard in remaining_wizards:
+            super(GenerateCommunicationWizard, wizard)._compute_progress()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

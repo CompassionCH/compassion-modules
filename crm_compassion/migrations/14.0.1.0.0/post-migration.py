@@ -20,9 +20,9 @@ def migrate(env, version):
         """
     UPDATE res_partner
     SET ambassador_receipt_send_mode = 'none'
-    WHERE a.mail_copy_when_donation = false
     FROM advocate_details a
-    WHERE a.partner_id = res_partner.id""",
+    WHERE a.mail_copy_when_donation = false
+    AND a.partner_id = res_partner.id""",
     )
     config = env.ref("crm_compassion.config_event_standard")
     events = env["crm.event.compassion"].search(
