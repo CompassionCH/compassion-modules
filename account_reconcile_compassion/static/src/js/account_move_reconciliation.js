@@ -469,10 +469,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           console.log('gift_child_code: ', child_code);
           console.log('gift_line.partner_id: ', line.partner_id);
 
-          var gift_commitment_number = line.st_line.payment_ref.substring(19, 21);
-          if (gift_commitment_number.charAt(0) == 0) {
-              gift_commitment_number = gift_commitment_number[1];
-          } else if (gift_commitment_number == '00') {
+          var gift_commitment_number_ref_key = line.st_line.payment_ref.substring(19, 21);
+          var gift_commitment_number = gift_commitment_number_ref_key.replace(/^0+/, '');
+          if (gift_commitment_number === '') {
               gift_commitment_number = false;
           }
           console.log('gift_gift_commitment_number: ', gift_commitment_number);
@@ -521,6 +520,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           method: "product_changed",
           args: [values.product_id.id, self.statement.statement_id],
         }).then(function (changes) {
+          console.log('changes:', changes);
           if (changes) {
             if (changes.account_id) values.account_id = changes.account_id;
             if (changes.tax_id) values.tax_id = changes.tax_id;

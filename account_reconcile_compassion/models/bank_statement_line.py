@@ -152,7 +152,7 @@ class BankStatementLine(models.Model):
                 else:
                     invoice.write({"ref": ref})
                 self.write({"ref": ref})
-                return True
+                raise UserError(_("Invoice already exists with ref: ") + ref)
 
             # Setup a new invoice if no existing invoice is found
             invoice = self.env["account.move"].create(
