@@ -13,14 +13,26 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
   var _t = core._t;
 
   statement_action.StatementAction.include({
-    // Restrict displayed lines, for better performance. (10 is the default in parent module)
-    // config: _.extend(
-    //     {},
-    //     statement_action.StatementAction.prototype.config,
-    //     {
-    //         defaultDisplayQty: 10
-    //     }
-    // ),
+    // Event which allows to modify fields programmatically The
+    // update_proposition event handled by _onAction uses the target of the
+    // event to get the handle, which won't be available if the event is
+    // triggered programmatically. Therefore the handle is passed in data
+    custom_events: _.extend(
+        {},
+        statement_action.StatementAction.prototype.custom_events,
+        {
+            update_proposition_programmatically: "_onUpdatePropositionProgrammatically",
+        }
+    ),
+
+    _onUpdatePropositionProgrammatically: function (event) {
+        var self = this;
+        var handle = event.data.data.handle;
+        var line = this.model.getLine(handle);
+        this.model.updateProposition(handle, event.data.data).then(function () {
+            self._getWidget(handle).update(line);
+        });
+    },
 
     // BUG FIX in module reconciliation_widget when some lines are not visible.
     // Code copied from there.
@@ -164,11 +176,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                 ["state", "!=", "draft"],
               ],
             },
-            //                    {
-            //                        relation: "res.partner",
-            //                        type: "many2one",
-            //                        name: "user_id",
-            //                    },
             {
               type: "char",
               name: "comment",
@@ -192,9 +199,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             sponsorship_id: {
               string: _t("Sponsorship"),
             },
-            //                    user_id: {
-            //                        string: _t("Ambassador"),
-            //                    },
             comment: {
               string: _t("Gift instructions"),
             },
@@ -301,15 +305,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             }
           );
 
-          //                    self.fields.user_id = new relational_fields.FieldMany2One(
-          //                        self,
-          //                        "user_id",
-          //                        record,
-          //                        {
-          //                            mode: "edit",
-          //                        }
-          //                    );
-
           self.fields.comment = new basic_fields.FieldChar(
             self,
             "comment",
@@ -374,7 +369,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           self.fields.sponsorship_id.appendTo(
             $create.find(".create_sponsorship_id .o_td_field")
           );
-          //                    self.fields.user_id.appendTo($create.find(".create_user_id .o_td_field"));
           self.fields.comment.appendTo(
             $create.find(".create_comment .o_td_field")
           );
@@ -404,7 +398,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
     quickCreateFields: [
       "product_id",
       "sponsorship_id",
-      //            "user_id",
       "comment",
       "account_id",
       "amount",
@@ -414,68 +407,96 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       "force_tax_included",
       "analytic_tag_ids",
       "avoid_thankyou_letter",
-      "additional_ref",
     ],
 
     createProposition: function (handle) {
       var self = this;
       var line = this.getLine(handle);
 
+      var gift_ref_key = line.st_line.payment_ref[21];
+      var gift_default_code = {
+        '1': 'gift_birthday',
+        '2': 'gift_gen',
+        '3': 'gift_family',
+        '4': 'gift_project',
+        '5': 'gift_graduation',
+      };
+
+      if (gift_ref_key in gift_default_code) {
+        var gift_ref_default_code = gift_default_code[gift_ref_key];
+      } else {
+        var gift_ref_default_code = false;
+      }
+
+      console.log('gift_ref_key: ', gift_ref_key);
+      console.log('gift_ref_default_code: ', gift_ref_default_code);
+
       // Try to prefill fields from the customer payment
-      var line_name = line.st_line.name;
-      if (line_name) {
-        var child_gift_match = line_name.match(/\[.+\]/);
-        if (child_gift_match) {
+      if (gift_ref_default_code) {
           // Search gift product
-          var gift_name = line_name.replace(child_gift_match[0], "");
-          rpc
-            .query({
+          rpc.query({
               model: "product.product",
               method: "search",
-              args: [[["name", "like", gift_name]]],
-            })
-            .then(function (product_ids) {
-              if (product_ids !== "undefined" && product_ids.length > 0) {
-                // This emits a custom event handled by
-                // _onUpdatePropositionProgrammaticaly()
-                // It is done this way because only StatementAction
-                // has access to the mode for updating the data and
-                // the renderer for refreshing the interface
-                self.trigger_up("update_proposition_programmaticaly", {
-                  data: {
-                    product_id: {
-                      id: product_ids[0],
-                    },
-                    handle: handle,
-                  },
-                });
-              }
+              args: [[["default_code", "ilike", gift_ref_default_code]]],
+            }).then(function (product_ids) {
+              console.log('product_ids: ', product_ids);
+                if (product_ids !== "undefined" && product_ids.length > 0) {
+                    // This emits a custom event handled by
+                    // _onUpdatePropositionProgrammatically()
+                    // It is done this way because only StatementAction
+                    // has access to the mode for updating the data and
+                    // the renderer for refreshing the interface
+                    self.trigger_up("update_proposition_programmatically", {
+                        data: {
+                            product_id: {
+                                id: product_ids[0],
+                            },
+                            handle: handle,
+                        },
+                    });
+                }
             });
 
+          var additional_ref = line.st_line.additional_ref;
+          if (additional_ref) {
+              var child_code = additional_ref.match(/\(.+\)/)[0]
+                .replace("[", "")
+                .replace("]", "")
+                .match(/\w+/)[0];
+          } else {
+             var child_code = false;
+          }
+          console.log('gift_child_code: ', child_code);
+          console.log('gift_line.partner_id: ', line.partner_id);
+
+          var gift_commitment_number = line.st_line.payment_ref.substring(19, 21);
+          if (gift_commitment_number.charAt(0) == 0) {
+              gift_commitment_number = gift_commitment_number[1];
+          } else if (gift_commitment_number == '00') {
+              gift_commitment_number = false;
+          }
+          console.log('gift_gift_commitment_number: ', gift_commitment_number);
+
           // Search sponsorship
-          var child_code = child_gift_match[0]
-            .replace("[", "")
-            .replace("]", "")
-            .match(/\w+/)[0];
-          rpc
-            .query({
+          rpc.query({
               model: "recurring.contract",
               method: "search",
               args: [
                 [
+                  "|",
                   ["child_code", "like", child_code],
+                  ["commitment_number", "=", gift_commitment_number],
                   "|",
                   ["correspondent_id", "=", line.partner_id],
                   ["partner_id", "=", line.partner_id],
                 ],
               ],
-            })
-            .then(function (sponsorship_ids) {
+            }).then(function (sponsorship_ids) {
               if (
                 typeof sponsorship_ids !== "undefined" &&
                 sponsorship_ids.length > 0
               ) {
-                self.trigger_up("update_proposition_programmaticaly", {
+                self.trigger_up("update_proposition_programmatically", {
                   data: {
                     sponsorship_id: {
                       id: sponsorship_ids[0],
@@ -485,7 +506,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                 });
               }
             });
-        }
       }
 
       return this._super(handle);
@@ -579,7 +599,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       result.sponsorship_id = prop.sponsorship_id
         ? prop.sponsorship_id.id
         : null;
-      //            result.user_id = prop.user_id ? prop.user_id.id : null;
       result.comment = prop.comment;
       result.avoid_thankyou_letter = prop.avoid_thankyou_letter
         ? prop.avoid_thankyou_letter

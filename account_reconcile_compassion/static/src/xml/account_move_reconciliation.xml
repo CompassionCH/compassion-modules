@@ -86,8 +86,8 @@
 
         <t t-jquery="td.cell_name" t-operation="after">
             <td class="cell_ref">
-                <t t-if="line.ref?.indexOf(' - ') !== -1">
-                    <t t-esc="line.ref.split(' - ')[0]"/>
+                <t t-if="line.ref and line.ref?.indexOf(' - ') !== -1">
+                    <t t-esc="line.ref?.split(' - ')[0]"/>
                 </t>
                 <t t-elif="line.ref">
                     <t t-esc="line.ref"/>
@@ -97,8 +97,8 @@
 
         <t t-jquery="td.cell_ref" t-operation="after">
             <td class="cell_payment_ref">
-                <t t-if="line.ref?.indexOf(' - ') !== -1">
-                    <t t-esc="line.ref.split(' - ')[1]"/>
+                <t t-if="line.ref and line.ref?.indexOf(' - ') !== -1">
+                    <t t-esc="line.ref?.split(' - ')[1]"/>
                 </t>
             </td>
         </t>
@@ -115,22 +115,39 @@
     <t t-extend="reconciliation.line.create">
         <t t-jquery="tr.create_account_id" t-operation="after">
             <tr class="create_product_id">
-                <td class="o_td_label">Product</td>
+                <td class="o_td_label">
+                    <label class="o_form_label">Product</label>
+                </td>
                 <td class="o_td_field" />
             </tr>
            <tr class="create_sponsorship_id">
-                <td class="o_td_label">Sponsorship</td>
+               <td class="o_td_label">
+                   <label class="o_form_label">Sponsorship</label>
+               </td>
+                <td class="o_td_field" />
+            </tr>
+        </t>
+
+        <t t-jquery="tr.create_tax_id" t-operation="replace">
+            <tr class="create_analytic_tag_ids">
+                <td class="o_td_label">
+                    <label class="o_form_label">Analytic Tags</label>
+                </td>
                 <td class="o_td_field" />
             </tr>
         </t>
 
         <t t-jquery="tr.create_amount" t-operation="after">
             <tr class="create_comment">
-                <td class="o_td_label">Gift instructions</td>
+                <td class="o_td_label">
+                    <label class="o_form_label">Gift instructions</label>
+                </td>
                 <td class="o_td_field" />
             </tr>
             <tr class="create_avoid_thankyou_letter">
-                <td class="o_td_label">Disable thank you letter</td>
+                <td class="o_td_label">
+                    <label class="o_form_label">Disable thank you letter</label>
+                </td>
                 <td class="o_td_field" />
             </tr>
         </t>
