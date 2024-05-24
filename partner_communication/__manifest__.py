@@ -38,6 +38,7 @@
         "base_report_to_printer",  # OCA/report-print-send
         "contacts",
         "queue_job",  # OCA/queue
+        "mass_mailing_sms",  # OCA/queue
         "utm",
     ],
     "external_dependencies": {"python": ["wand"]},
