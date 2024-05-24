@@ -25,7 +25,7 @@ class RestController(http.Controller):
             raise BadRequest()
 
         correspondence = request.env["correspondence"].browse(int(object_id))
-        binary = correspondence and correspondence.get_image() or correspondence.create_text_boxes()
+        binary = correspondence and correspondence.get_image()
 
         if not binary:
             raise NotFound()
