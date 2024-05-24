@@ -18,4 +18,34 @@
             </field>
         </field>
     </record>
+    <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.select</field>
+        <field name="model">recurring.contract</field>
+        <field
+      name="inherit_id"
+      ref="recurring_contract.view_recurring_contract_filter"
+    />
+        <field name="arch" type="xml">
+            <filter name="type_write_pray" position="after">
+                <filter
+          string="Survival Sponsorship"
+          name="type_survival"
+          domain="[('type', '=', 'CSP')]"
+        />
+            </filter>
+        </field>
+    </record>
+    <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.tree</field>
+        <field name="model">recurring.contract</field>
+        <field
+      name="inherit_id"
+      ref="recurring_contract.view_recurring_contract_tree"
+    />
+        <field name="arch" type="xml">
+            <field name="child_code" position="after">
+                <field name="csp_country" />
+            </field>
+        </field>
+    </record>
 </odoo>

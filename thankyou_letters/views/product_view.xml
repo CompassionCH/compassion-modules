@@ -11,7 +11,7 @@
                 <field name="thanks_name" />
                 <field
           name="partner_communication_config"
-          domain="[('model', '=', 'account.invoice.line')]"
+          domain="[('model', '=', 'account.move.line')]"
           attrs="{'invisible': [('requires_thankyou', '=', False)]}"
         />
                 <field name="success_story_id" />

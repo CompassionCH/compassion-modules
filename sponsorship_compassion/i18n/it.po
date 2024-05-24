@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Compassion Odoo 14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 06:06+0000\n"
+"POT-Creation-Date: 2024-05-23 11:56+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -37,6 +37,11 @@ msgstr "Sponsorizzazioni attive"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__description
 msgid "Additional comments"
 msgstr "Commenti aggiuntivi"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_age
+msgid "Age"
+msgstr "Età"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__res_partner__portal_sponsorships__all
@@ -153,9 +158,24 @@ msgid "Child Picture Download Wizard"
 msgstr "Scaricamento guidato di immagini per bambini"
 
 #. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Child Sponsorship"
+msgstr "Sostegno"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_code
+msgid "Child code"
+msgstr "Codice Bambino"
+
+#. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_release
 msgid "Child hold expired"
 msgstr "La presa in carico del bambino è scaduta"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_name
+msgid "Child name"
+msgstr "Bambino nome"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__child_code
@@ -511,6 +531,11 @@ msgstr "Donazione di fondi"
 #, python-format
 msgid "GMC returned an error :"
 msgstr "GMC ha restituito un errore :"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_gender
+msgid "Gender"
+msgstr "Genere"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__o
@@ -1286,16 +1311,6 @@ msgid "Sponsored child :"
 msgstr "Bambino sponsorizzato :"
 
 #. module: sponsorship_compassion
-#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_code
-msgid "Sponsored child code"
-msgstr "Codice bambino sponsorizzato"
-
-#. module: sponsorship_compassion
-#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_name
-msgid "Sponsored child name"
-msgstr "Nome del bambino sponsorizzato"
-
-#. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sponsored_child_ids
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sponsored_child_ids
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
@@ -1596,6 +1611,11 @@ msgid "Write&Pray"
 msgstr "Write&Pray"
 
 #. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Write&Pray Sponsorship"
+msgstr "Write&Pray"
+
+#. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
 msgid "You can download an archive file from here."
 msgstr "Puoi scaricare un file di archivio da qui."
@@ -1655,3 +1675,9 @@ msgstr "ogni"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sub_sponsorship_id
 msgid "sub sponsorship"
 msgstr "Sostegno SUB"
+
+#~ msgid "Sponsored child code"
+#~ msgstr "Codice bambino sponsorizzato"
+
+#~ msgid "Sponsored child name"
+#~ msgstr "Nome del bambino sponsorizzato"

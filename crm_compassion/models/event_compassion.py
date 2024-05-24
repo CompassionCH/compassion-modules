@@ -140,6 +140,7 @@ class EventCompassion(models.Model):
         default=lambda self: self.env.company,
         readonly=False,
     )
+    country_id = fields.Many2one("res.country", "Country", readonly=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
