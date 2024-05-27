@@ -1,7 +1,7 @@
 .openerp
-  .oe_bank_statement_reconciliation
-  .oe_bank_statement_reconciliation_line
-  .partner_name {
+.oe_bank_statement_reconciliation
+.oe_bank_statement_reconciliation_line
+.partner_name {
   cursor: pointer;
 }
 
@@ -15,5 +15,32 @@
     &[data-mode="create"] > .create {
       max-height: 300px;
     }
+
+    .cell_name {
+      width: 350px;
+    }
+
+    .cell_ref {
+      width: 200px;
+    }
+
+    .cell_payment_ref {
+      width: 220px;
+    }
+
+    .cell_additional_ref {
+      width: auto;
+    }
+
+    .cell_left, .cell_right {
+      width: 150px;
+    }
   }
+}
+
+.o_reconciliation .o_reconciliation_line table.accounting_view .cell_name,
+.o_reconciliation .o_reconciliation_line table.accounting_view .cell_ref,
+.o_reconciliation .o_reconciliation_line table.accounting_view .cell_payment_ref,
+.o_reconciliation .o_reconciliation_line table.accounting_view .cell_additional_ref {
+  box-shadow: 0 1px 0 #EAEAEA;
 }

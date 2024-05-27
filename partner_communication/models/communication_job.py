@@ -511,7 +511,7 @@ class CommunicationJob(models.Model):
         :return: list of sms_texts
         """
         link_pattern = re.compile(r'<a href="([^<>]*)">([^<]*)</a>')
-        sms_medium_id = self.env.ref("sms_sponsorship.utm_medium_sms").id
+        sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
         sms_texts = []
         for job in self.filtered(lambda j: j.state == "pending" and j.partner_mobile):
             sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
