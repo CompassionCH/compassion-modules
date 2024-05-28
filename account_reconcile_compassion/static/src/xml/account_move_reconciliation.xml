@@ -2,34 +2,40 @@
 <templates xml:space="preserve">
 
     <t t-name="AccountReconciliationCompassion">
-        <button class="oe_account_recon_reconcile_fund oe_button oe_highlight"
-                href="javascript:void(0)"
-                disabled="">Reconcile + Put in Fund</button>
-        <button class="oe_account_recon_reconcile_split oe_button oe_highlight"
-                href="javascript:void(0)"
-                disabled="">Split Payment + Reconcile</button>
+        <button
+      class="oe_account_recon_reconcile_fund oe_button oe_highlight"
+      href="javascript:void(0)"
+      disabled=""
+    >Reconcile + Put in Fund</button>
+        <button
+      class="oe_account_recon_reconcile_split oe_button oe_highlight"
+      href="javascript:void(0)"
+      disabled=""
+    >Split Payment + Reconcile</button>
     </t>
 
     <t t-name="AccountReconciliationOpenPartner">
-        <button class="oe_account_recon_open_partner oe_button"
-                href="javascript:void(0)">Open Partner</button>
+        <button
+      class="oe_account_recon_open_partner oe_button"
+      href="javascript:void(0)"
+    >Open Partner</button>
     </t>
 
         <!-- Add BVR ref if found in line label -->
     <t t-extend="reconciliation.line">
-        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
-        <t t-jquery="td.cell_label" t-operation="replace"></t>
+        <t t-jquery="td.cell_analytic_account" t-operation="replace" />
+        <t t-jquery="td.cell_label" t-operation="replace" />
 
         <t t-jquery="td.cell_due_date" t-operation="after">
             <td class="cell_name">
-                <t t-if="state.st_line.name" t-esc="state.st_line.name"/>
+                <t t-if="state.st_line.name" t-esc="state.st_line.name" />
             </td>
         </t>
 
         <t t-jquery="td.cell_name" t-operation="after">
             <td class="cell_ref">
                 <t t-if="state.st_line.ref">
-                    <t t-esc="state.st_line.ref"/>
+                    <t t-esc="state.st_line.ref" />
                 </t>
             </td>
         </t>
@@ -37,7 +43,7 @@
         <t t-jquery="td.cell_ref" t-operation="after">
             <td class="cell_payment_ref">
                 <t t-if="state.st_line.payment_ref">
-                    <t t-esc="state.st_line.payment_ref"/>
+                    <t t-esc="state.st_line.payment_ref" />
                 </t>
             </td>
         </t>
@@ -45,15 +51,15 @@
         <t t-jquery="td.cell_payment_ref" t-operation="after">
             <td class="cell_additional_ref">
                 <t t-if="state.st_line.additional_ref">
-                    <i t-esc="state.st_line.additional_ref"/>
+                    <i t-esc="state.st_line.additional_ref" />
                 </t>
             </td>
         </t>
     </t>
 
     <t t-extend="reconciliation.line.balance">
-        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
-        <t t-jquery="td.cell_label" t-operation="replace"></t>
+        <t t-jquery="td.cell_analytic_account" t-operation="replace" />
+        <t t-jquery="td.cell_label" t-operation="replace" />
 
         <t t-jquery="td.cell_due_date" t-operation="after">
             <td class="cell_name">
@@ -62,35 +68,35 @@
         </t>
 
         <t t-jquery="td.cell_name" t-operation="after">
-            <td class="cell_ref"></td>
+            <td class="cell_ref" />
         </t>
 
         <t t-jquery="td.cell_ref" t-operation="after">
-            <td class="cell_payment_ref"></td>
+            <td class="cell_payment_ref" />
         </t>
 
         <t t-jquery="td.cell_payment_ref" t-operation="after">
-            <td class="cell_additional_ref"></td>
+            <td class="cell_additional_ref" />
         </t>
     </t>
 
     <t t-extend="reconciliation.line.mv_line">
-        <t t-jquery="td.cell_analytic_account" t-operation="replace"></t>
-        <t t-jquery="td.cell_label" t-operation="replace"></t>
+        <t t-jquery="td.cell_analytic_account" t-operation="replace" />
+        <t t-jquery="td.cell_label" t-operation="replace" />
 
         <t t-jquery="td.cell_due_date" t-operation="after">
             <td class="cell_name">
-                <t t-if="line.name" t-esc="line.name"/>
+                <t t-if="line.name" t-esc="line.name" />
             </td>
         </t>
 
         <t t-jquery="td.cell_name" t-operation="after">
             <td class="cell_ref">
                 <t t-if="line.ref and line.ref?.indexOf(' - ') !== -1">
-                    <t t-esc="line.ref?.split(' - ')[0]"/>
+                    <t t-esc="line.ref?.split(' - ')[0]" />
                 </t>
                 <t t-elif="line.ref">
-                    <t t-esc="line.ref"/>
+                    <t t-esc="line.ref" />
                 </t>
             </td>
         </t>
@@ -98,7 +104,7 @@
         <t t-jquery="td.cell_ref" t-operation="after">
             <td class="cell_payment_ref">
                 <t t-if="line.ref and line.ref?.indexOf(' - ') !== -1">
-                    <t t-esc="line.ref?.split(' - ')[1]"/>
+                    <t t-esc="line.ref?.split(' - ')[1]" />
                 </t>
             </td>
         </t>
@@ -106,7 +112,7 @@
         <t t-jquery="td.cell_payment_ref" t-operation="after">
             <td class="cell_additional_ref">
                 <t t-if="line.additional_ref">
-                    <i t-esc="line.additional_ref"/>
+                    <i t-esc="line.additional_ref" />
                 </t>
             </td>
         </t>

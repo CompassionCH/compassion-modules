@@ -922,30 +922,37 @@ class Correspondence(models.Model):
             original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
             english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
             translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
-            nb_paragraphs = max(len(original_boxes), len(english_boxes), len(translated_boxes))
+            nb_paragraphs = max(
+                len(original_boxes), len(english_boxes), len(translated_boxes)
+            )
 
             for i in range(nb_paragraphs):
                 original_text = original_boxes[i] if len(original_boxes) > i else ""
                 english_text = english_boxes[i] if len(english_boxes) > i else ""
-                translated_text = translated_boxes[i] if len(translated_boxes) > i else ""
+                translated_text = (
+                    translated_boxes[i] if len(translated_boxes) > i else ""
+                )
 
                 if i in existing_paragraphs:
-                    existing_paragraphs[i].write({
-                        "original_text": original_text,
-                        "english_text": english_text,
-                        "translated_text": translated_text,
-                    })
+                    existing_paragraphs[i].write(
+                        {
+                            "original_text": original_text,
+                            "english_text": english_text,
+                            "translated_text": translated_text,
+                        }
+                    )
                 else:
-                    paragraphs.create({
-                        "page_id": page.id,
-                        "original_text": original_text,
-                        "english_text": english_text,
-                        "translated_text": translated_text,
-                        "sequence": i,
-                    })
+                    paragraphs.create(
+                        {
+                            "page_id": page.id,
+                            "original_text": original_text,
+                            "english_text": english_text,
+                            "translated_text": translated_text,
+                            "sequence": i,
+                        }
+                    )
 
         return paragraphs
-
 
     ##########################################################################
     #                            PRIVATE METHODS                             #
