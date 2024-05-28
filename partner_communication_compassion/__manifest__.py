@@ -57,6 +57,7 @@
         "views/correspondence_view.xml",
         "views/res_country_view.xml",
         "views/generate_communication_wizard_view.xml",
+        "views/project_compassion_view.xml",
     ],
     "demo": [],
     "installable": True,

@@ -18,4 +18,5 @@ from . import (
     partner_communication,
     res_country,
     res_partner,
+    compassion_project,
 )
