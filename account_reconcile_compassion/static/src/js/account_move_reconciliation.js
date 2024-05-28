@@ -477,20 +477,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             }
           });
 
-        var additional_ref = line.st_line.additional_ref;
-        if (additional_ref) {
-          var child_code = additional_ref
-            .match(/\(.+\)/)[0]
-            .replace("[", "")
-            .replace("]", "")
-            .match(/\w+/)[0];
-        } else {
-          var child_code = false;
-        }
-
-        var gift_commitment_number_ref_key = line.st_line.payment_ref.substring(
-          19,
-          21
+              var gift_commitment_number_ref_key = line
+                  .st_line.payment_ref.substring(19, 21
         );
         var gift_commitment_number = gift_commitment_number_ref_key.replace(
           /^0+/,
@@ -500,19 +488,23 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           gift_commitment_number = false;
         }
 
-        // Search sponsorship
-        rpc
-          .query({
-            model: "recurring.contract",
-            method: "search",
-            args: [
-              [
-                "|",
-                ["child_code", "like", child_code],
-                ["commitment_number", "=", gift_commitment_number],
-                "|",
-                ["correspondent_id", "=", line.partner_id],
-                ["partner_id", "=", line.partner_id],
+              // Search sponsorship
+              rpc.query({
+                  model: "recurring.contract",
+                  method: "search",
+                  args: [
+                      [
+                          ["commitment_number",
+                              "=",
+                              gift_commitment_number
+                          ],
+                          "|",
+                          ["correspondent_id",
+                              "=", line
+                              .partner_id
+                          ],
+                          ["partner_id", "=",
+                              line.partner_id],
               ],
             ],
           })
