@@ -577,18 +577,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function(require) {
                   }
               });
 
-              var additional_ref = line.st_line
-                  .additional_ref;
-              if (additional_ref) {
-                  var child_code = additional_ref.match(
-                          /\(.+\)/)[0]
-                      .replace("[", "")
-                      .replace("]", "")
-                      .match(/\w+/)[0];
-              } else {
-                  var child_code = false;
-              }
-
               var gift_commitment_number_ref_key = line
                   .st_line.payment_ref.substring(19, 21);
               var gift_commitment_number =
@@ -604,11 +592,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function(require) {
                   method: "search",
                   args: [
                       [
-                          "|",
-                          ["child_code",
-                              "like",
-                              child_code
-                          ],
                           ["commitment_number",
                               "=",
                               gift_commitment_number
