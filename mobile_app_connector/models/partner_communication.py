@@ -73,11 +73,11 @@ class CommunicationJob(models.Model):
             mobile_notif = job.env["firebase.notification"].create(
                 {
                     "title": template._render_template(
-                        job.mobile_notification_title, res_object._name, res_object.id
-                    ),
+                        job.mobile_notification_title, res_object._name, res_object.ids
+                    )[res_object.id],
                     "body": template._render_template(
-                        job.mobile_notification_body, res_object._name, res_object.id
-                    ),
+                        job.mobile_notification_body, res_object._name, res_object.ids
+                    )[res_object.id],
                     "destination": job.mobile_notification_destination,
                     "topic": job.mobile_notification_topic,
                     "partner_ids": [(4, job.partner_id.id)],
