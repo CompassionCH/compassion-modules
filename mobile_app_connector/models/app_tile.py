@@ -218,11 +218,11 @@ class AppTile(models.Model):
             self.ensure_one()
             template_obj = self.env["mail.template"].with_context(objects=records)
             res = {
-                "Title": template_obj._render_template(self.title, self._name, self.ids),
-                "Body": template_obj._render_template(self.body, self._name, self.ids),
+                "Title": template_obj._render_template(self.title, self._name, self.ids)[0],
+                "Body": template_obj._render_template(self.body, self._name, self.ids)[0],
                 "ActionText": template_obj._render_template(
                     self.action_text, self._name, self.ids
-                ),
+                )[0],
                 "SortOrder": self.view_order,
                 "IsAutomaticOrdering": self.is_automatic_ordering,
             }
@@ -231,10 +231,10 @@ class AppTile(models.Model):
                 res["PrayerPoint"] = {
                     "Body": template_obj._render_template(
                         self.prayer_body, self._name, self.ids
-                    ),
+                    )[0],
                     "Title": template_obj._render_template(
                         self.prayer_title, self._name, self.ids
-                    ),
+                    )[0],
                 }
 
             if hasattr(records, "get_app_json"):
