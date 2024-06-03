@@ -148,14 +148,15 @@ class CrmClaim(models.Model):
             "date": msg.get("date"),  # Get the time of the sending of the mail
             "alias_id": alias.id,
             "categ_id": category_id,
-            "subject": subject,
+            "name": subject,
             "email_from": msg.get("from"),
         }
 
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
             partner = match_obj.match_values_to_partner(
-                {"email": email_normalize(defaults["email_from"])}
+                {"email": email_normalize(defaults["email_from"])},
+                match_create=False
             )
             if partner:
                 defaults["partner_id"] = partner.id
