@@ -157,8 +157,7 @@ class CrmClaim(models.Model):
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
             partner = match_obj.match_values_to_partner(
-                {"email": email_normalize(defaults["email_from"])},
-                match_create=False
+                {"email": email_normalize(defaults["email_from"])}, match_create=False
             )
             if partner:
                 defaults["partner_id"] = partner.id

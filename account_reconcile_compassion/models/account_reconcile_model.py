@@ -7,8 +7,7 @@ class AccountReconcileModel(models.Model):
     _inherit = "account.reconcile.model"
 
     avoid_thankyou_letter = fields.Boolean(
-        default=True,
-        help="Check to disable thank you letter for donation"
+        default=True, help="Check to disable thank you letter for donation"
     )
     comment = fields.Char("Gift instructions", readonly=False)
     sponsorship_id = fields.Many2one(
@@ -27,7 +26,6 @@ class AccountReconcileModel(models.Model):
     def _avoid_thankyou_letter(self):
         for line in self.line_ids:
             line.avoid_thankyou_letter = self.avoid_thankyou_letter
-            print('avoid_thankyou_letter', line.avoid_thankyou_letter)
 
     @api.model
     def product_changed(self, product_id, statement_id):
@@ -117,7 +115,7 @@ class AccountReconcileModel(models.Model):
 
 
 class AccountReconcileModelLine(models.Model):
-    _inherit = 'account.reconcile.model.line'
+    _inherit = "account.reconcile.model.line"
 
     product_id = fields.Many2one("product.product", "Product", readonly=False)
     avoid_thankyou_letter = fields.Boolean(

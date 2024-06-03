@@ -485,25 +485,21 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           });
 
         var gift_commitment_number_ref_key = payment_ref.substring(19, 21);
-        var gift_commitment_number = parseInt(gift_commitment_number_ref_key).toString()
+        var gift_commitment_number = parseInt(
+          gift_commitment_number_ref_key
+        ).toString();
 
-              // Search sponsorship
-              rpc.query({
-                  model: "recurring.contract",
-                  method: "search",
-                  args: [
-                      [
-                          ["commitment_number",
-                              "=",
-                              gift_commitment_number
-                          ],
-                          "|",
-                          ["correspondent_id",
-                              "=", line
-                              .partner_id
-                          ],
-                          ["partner_id", "=",
-                              line.partner_id],
+        // Search sponsorship
+        rpc
+          .query({
+            model: "recurring.contract",
+            method: "search",
+            args: [
+              [
+                ["commitment_number", "=", gift_commitment_number],
+                "|",
+                ["correspondent_id", "=", line.partner_id],
+                ["partner_id", "=", line.partner_id],
               ],
             ],
           })
@@ -560,57 +556,58 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
 
     // Copy from the original function, I did not find a better way to do this
     quickCreateProposition: function (handle, reconcileModelId) {
-        var line = this.getLine(handle);
-        var reconcileModel = _.find(this.reconcileModels, function (r) {
-            return r.id === reconcileModelId;
-        });
-        var fields = [
-            "product_id", // product_id added from the original fields list
-            "account_id",
-            "amount",
-            "amount_type",
-            "analytic_account_id",
-            "journal_id",
-            "label",
-            "force_tax_included",
-            "tax_ids",
-            "analytic_tag_ids",
-            "to_check",
-            "amount_string",
-            "decimal_separator",
-        ];
-        this._blurProposition(handle);
-        let focus = null;
-        const defs = [];
-        for (const reconcileModelLineIndex in reconcileModel.line_ids) {
-            const reconcileModelLine = reconcileModel.line_ids[reconcileModelLineIndex];
-            if (reconcileModelLineIndex === "0") {
-                focus = this._formatQuickCreate(
-                    line,
-                    _.pick(reconcileModelLine, fields),
-                    reconcileModel
-                );
-                focus.reconcileModelId = reconcileModelId;
-                line.reconciliation_proposition.push(focus);
-            } else {
-                defs.push(
-                    this._computeLine(line).then(() => {
-                        const second_focus = this._formatQuickCreate(
-                            line,
-                            _.pick(reconcileModelLine, fields),
-                            reconcileModel
-                        );
-                        second_focus.reconcileModelId = reconcileModelId;
-                        line.reconciliation_proposition.push(second_focus);
-                        this._computeReconcileModels(handle, reconcileModelId);
-                    })
-                );
-            }
+      var line = this.getLine(handle);
+      var reconcileModel = _.find(this.reconcileModels, function (r) {
+        return r.id === reconcileModelId;
+      });
+      var fields = [
+        "product_id", // product_id added from the original fields list
+        "account_id",
+        "amount",
+        "amount_type",
+        "analytic_account_id",
+        "journal_id",
+        "label",
+        "force_tax_included",
+        "tax_ids",
+        "analytic_tag_ids",
+        "to_check",
+        "amount_string",
+        "decimal_separator",
+      ];
+      this._blurProposition(handle);
+      let focus = null;
+      const defs = [];
+      for (const reconcileModelLineIndex in reconcileModel.line_ids) {
+        const reconcileModelLine =
+          reconcileModel.line_ids[reconcileModelLineIndex];
+        if (reconcileModelLineIndex === "0") {
+          focus = this._formatQuickCreate(
+            line,
+            _.pick(reconcileModelLine, fields),
+            reconcileModel
+          );
+          focus.reconcileModelId = reconcileModelId;
+          line.reconciliation_proposition.push(focus);
+        } else {
+          defs.push(
+            this._computeLine(line).then(() => {
+              const second_focus = this._formatQuickCreate(
+                line,
+                _.pick(reconcileModelLine, fields),
+                reconcileModel
+              );
+              second_focus.reconcileModelId = reconcileModelId;
+              line.reconciliation_proposition.push(second_focus);
+              this._computeReconcileModels(handle, reconcileModelId);
+            })
+          );
         }
-        return Promise.all(defs).then(() => {
-            line.createForm = _.pick(focus, this.quickCreateFields);
-            return this._computeLine(line);
-        });
+      }
+      return Promise.all(defs).then(() => {
+        line.createForm = _.pick(focus, this.quickCreateFields);
+        return this._computeLine(line);
+      });
     },
 
     // Add product_id to the QuickCreate prop

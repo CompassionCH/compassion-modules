@@ -218,8 +218,12 @@ class AppTile(models.Model):
             self.ensure_one()
             template_obj = self.env["mail.template"].with_context(objects=records)
             res = {
-                "Title": template_obj._render_template(self.title, self._name, self.ids)[self.id],
-                "Body": template_obj._render_template(self.body, self._name, self.ids)[self.id],
+                "Title": template_obj._render_template(
+                    self.title, self._name, self.ids
+                )[self.id],
+                "Body": template_obj._render_template(self.body, self._name, self.ids)[
+                    self.id
+                ],
                 "ActionText": template_obj._render_template(
                     self.action_text, self._name, self.ids
                 )[self.id],
