@@ -821,19 +821,18 @@ class CommunicationJob(models.Model):
         for job in self:
             if job.attachment_ids:
                 try:
-                    with self.env.cr.savepoint():
-                        # Print letter
-                        print_name = name[:3] + " " + (job.subject or "")
-                        # output_tray = job.print_letter(print_name)["output_tray"]
-                        job.print_letter(print_name)
+                    # Print letter
+                    print_name = name[:3] + " " + (job.subject or "")
+                    output_tray = job.print_letter(print_name)["output_tray"]
+                    job.print_letter(print_name)
 
-                        # Print attachments in the same output_tray
-                        job.attachment_ids.print_attachments(
-                            # output_tray=output_tray,
-                        )
-                        job.write({"state": state, "sent_date": fields.Datetime.now()})
+                    # Print attachments in the same output_tray
+                    job.attachment_ids.print_attachments(
+                        output_tray=output_tray,
+                    )
+                    job.write({"state": state, "sent_date": fields.Datetime.now()})
                 except Exception:
-                    _logger.error("Error printing job %s", [job.id])
+                    _logger.error("Error printing job %s", [job.id], exc_info=True)
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += job
 
@@ -882,24 +881,24 @@ class CommunicationJob(models.Model):
         print_options["doc_format"] = report.report_type
         print_options["action"] = behaviour["action"]
 
-        # TODO Migrate this code when printing.tray functionalities are migrated to 14.0
-        # # The get the print options in the following order of priority:
-        # # - partner.communication.job (only for output bin)
-        # # - partner.communication.config
-        # # - ir.actions.report (behaviour: which can be specific for the user
-        # currently logged in)
-        # def get_first(source):
-        #     return next((v for v in source if v), False)
-        #
-        # print_options["output_tray"] = get_first((
-        #     self[:1].printer_output_tray_id.system_name,
-        #     config_lang.printer_output_tray_id.system_name,
-        #     behaviour["output_tray"]
-        # ))
-        # print_options["input_tray"] = get_first((
-        #     config_lang.printer_input_tray_id.system_name,
-        #     behaviour["input_tray"]
-        # ))
+        # The get the print options in the following order of priority:
+        # - partner.communication.job (only for output bin)
+        # - partner.communication.config
+        # - ir.actions.report
+        # (behaviour: which can be specific for the user currently logged in)
+        def get_first(source):
+            return next((v for v in source if v), False)
+
+        print_options["output_tray"] = get_first(
+            (
+                self[:1].printer_output_tray_id.system_name,
+                config_lang.printer_output_tray_id.system_name,
+                behaviour["output_tray"],
+            )
+        )
+        print_options["input_tray"] = get_first(
+            (config_lang.printer_input_tray_id.system_name, behaviour["input_tray"])
+        )
 
         to_print = report._render_qweb_pdf(self.ids)
         printer = behaviour["printer"].with_context(lang=lang)

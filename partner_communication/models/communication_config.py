@@ -36,8 +36,8 @@ class CommunicationDefaults(models.AbstractModel):
         domain=[("model", "=", "partner.communication.job")],
         readonly=False,
     )
-    # printer_input_tray_id = fields.Many2one("printing.tray.input", "Paper Source")
-    # printer_output_tray_id = fields.Many2one("printing.tray.output", "Output Bin")
+    printer_input_tray_id = fields.Many2one("printing.tray.input", "Paper Source")
+    printer_output_tray_id = fields.Many2one("printing.tray.output", "Output Bin")
 
     @api.model
     def get_need_call(self):

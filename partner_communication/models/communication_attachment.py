@@ -113,7 +113,7 @@ class CommunicationAttachment(models.Model):
                     print_options["output_tray"] = output_tray
                 printer.with_context(
                     print_name=self.env.user.name[:3] + " " + attachment.name,
-                ).print_document(attachment.report_name, data, **print_options)
+                ).print_document(attachment.report_id, data, **print_options)
             else:
                 attachment.printed_pdf_data = base64.b64encode(data)
         return True
