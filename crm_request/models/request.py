@@ -59,12 +59,13 @@ class CrmClaim(models.Model):
             )
             message = request.incoming_message_id = messages[:1]
             request.incoming_message = message.body
+            from_email = message.email_from or message.author_id.email or ""
             request.quoted_reply = f"""
                 <blockquote style="padding-right:0px;padding-left:5px;
                     border-left-color: #000; margin-left:5px;
                     margin-right:0px;border-left-width: 2px; border-left-style:solid"
                 >
-                    From: {message.email_from.replace('<', '(').replace('>', ')')}<br/>
+                    From: {from_email.replace('<', '(').replace('>', ')')}<br/>
                     Date: {message.date}<br/>
                     Subject: {message.subject}<br/>
                     {message.body}
