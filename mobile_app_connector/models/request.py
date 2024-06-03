@@ -59,7 +59,7 @@ class CrmClaim(models.Model):
         claim = self.sudo().create(
             {
                 "email_from": email,
-                "name": question,
+                "name": f"Mobile APP - request from {partner.name}",
                 "categ_id": self.env["crm.claim.category"]
                 .sudo()
                 .search([("name", "=", source)])
@@ -72,6 +72,7 @@ class CrmClaim(models.Model):
         claim.message_post(
             body=question,
             subject=_("Original request from %s %s ") % (firstname, lastname),
+            author_id=partner.id,
         )
         if partner.exists():
             self.sudo().create_email_for_interaction_resume(subject, question, partner)

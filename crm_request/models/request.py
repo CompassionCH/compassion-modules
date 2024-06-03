@@ -96,6 +96,7 @@ class CrmClaim(models.Model):
             "default_template_id": template_id,
             "default_composition_mode": "comment",
             "default_partner_ids": [(4, self.partner_id.id)],
+            "default_subject": self.name,
             "use_email_alias": self.reply_to or self.email_from,
             "mark_so_as_sent": True,
             "salutation_language": self.language,
