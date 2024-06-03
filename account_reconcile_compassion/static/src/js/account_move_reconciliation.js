@@ -434,8 +434,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
     createProposition: function (handle) {
       var self = this;
       var line = this.getLine(handle);
+      var payment_ref = line.st_line.payment_ref;
 
-      var gift_ref_key = line.st_line.payment_ref[21];
+      var gift_ref_key = payment_ref[21];
       var gift_default_code = {
         1: "gift_birthday",
         2: "gift_gen",
@@ -444,10 +445,10 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
         5: "gift_graduation",
       };
 
+      var gift_ref_default_code = false;
+
       if (gift_ref_key in gift_default_code) {
-        var gift_ref_default_code = gift_default_code[gift_ref_key];
-      } else {
-        var gift_ref_default_code = false;
+        gift_ref_default_code = gift_default_code[gift_ref_key];
       }
 
       // Try to prefill fields from the customer payment
@@ -477,16 +478,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             }
           });
 
-              var gift_commitment_number_ref_key = line
-                  .st_line.payment_ref.substring(19, 21
-        );
-        var gift_commitment_number = gift_commitment_number_ref_key.replace(
-          /^0+/,
-          ""
-        );
-        if (gift_commitment_number === "") {
-          gift_commitment_number = false;
-        }
+        var gift_commitment_number_ref_key = payment_ref.substring(19, 21);
+        var gift_commitment_number = parseInt(gift_commitment_number_ref_key).toString()
 
               // Search sponsorship
               rpc.query({
@@ -541,8 +534,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           if (changes) {
             if (changes.account_id) values.account_id = changes.account_id;
             if (changes.tax_id) values.tax_id = changes.tax_id;
-            if (changes.analytic_id)
-              values.analytic_account_id = changes.analytic_id;
+            if (changes.analytic_account_id)
+              values.analytic_account_id = changes.analytic_account_id;
             if (changes.analytic_tag_ids) {
               // Replace analytic tags as the parent method doesn't support several tags added
               var line = self.getLine(handle);
@@ -561,44 +554,57 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
 
     // Copy from the original function, I did not find a better way to do this
     quickCreateProposition: function (handle, reconcileModelId) {
-      var line = this.getLine(handle);
-      var reconcileModel = _.find(this.reconcileModels, function (r) {
-        return r.id === reconcileModelId;
-      });
-      var fields = [
-        // CHANGE:  product_id added from the original fields list
-        "product_id",
-        "account_id",
-        "amount",
-        "amount_type",
-        "analytic_account_id",
-        "journal_id",
-        "label",
-        "force_tax_included",
-        "tax_id",
-        "analytic_tag_ids",
-      ];
-      this._blurProposition(handle);
-
-      var focus = this._formatQuickCreate(line, _.pick(reconcileModel, fields));
-      focus.reconcileModelId = reconcileModelId;
-      line.reconciliation_proposition.push(focus);
-
-      if (reconcileModel.has_second_line) {
-        var second = {};
-        _.each(fields, function (key) {
-          second[key] =
-            "second_" + key in reconcileModel
-              ? reconcileModel["second_" + key]
-              : reconcileModel[key];
+        var line = this.getLine(handle);
+        var reconcileModel = _.find(this.reconcileModels, function (r) {
+            return r.id === reconcileModelId;
         });
-        focus = this._formatQuickCreate(line, second);
-        focus.reconcileModelId = reconcileModelId;
-        line.reconciliation_proposition.push(focus);
-        this._computeReconcileModels(handle, reconcileModelId);
-      }
-      line.createForm = _.pick(focus, this.quickCreateFields);
-      return this._computeLine(line);
+        var fields = [
+            "product_id", // product_id added from the original fields list
+            "account_id",
+            "amount",
+            "amount_type",
+            "analytic_account_id",
+            "journal_id",
+            "label",
+            "force_tax_included",
+            "tax_ids",
+            "analytic_tag_ids",
+            "to_check",
+            "amount_string",
+            "decimal_separator",
+        ];
+        this._blurProposition(handle);
+        let focus = null;
+        const defs = [];
+        for (const reconcileModelLineIndex in reconcileModel.line_ids) {
+            const reconcileModelLine = reconcileModel.line_ids[reconcileModelLineIndex];
+            if (reconcileModelLineIndex === "0") {
+                focus = this._formatQuickCreate(
+                    line,
+                    _.pick(reconcileModelLine, fields),
+                    reconcileModel
+                );
+                focus.reconcileModelId = reconcileModelId;
+                line.reconciliation_proposition.push(focus);
+            } else {
+                defs.push(
+                    this._computeLine(line).then(() => {
+                        const second_focus = this._formatQuickCreate(
+                            line,
+                            _.pick(reconcileModelLine, fields),
+                            reconcileModel
+                        );
+                        second_focus.reconcileModelId = reconcileModelId;
+                        line.reconciliation_proposition.push(second_focus);
+                        this._computeReconcileModels(handle, reconcileModelId);
+                    })
+                );
+            }
+        }
+        return Promise.all(defs).then(() => {
+            line.createForm = _.pick(focus, this.quickCreateFields);
+            return this._computeLine(line);
+        });
     },
 
     // Add product_id to the QuickCreate prop

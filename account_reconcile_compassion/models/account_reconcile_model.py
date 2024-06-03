@@ -6,13 +6,13 @@ from odoo import api, fields, models
 class AccountReconcileModel(models.Model):
     _inherit = "account.reconcile.model"
 
-    product_id = fields.Many2one("product.product", "Product", readonly=False)
+    avoid_thankyou_letter = fields.Boolean(
+        default=True,
+        help="Check to disable thank you letter for donation"
+    )
     comment = fields.Char("Gift instructions", readonly=False)
     sponsorship_id = fields.Many2one(
         "recurring.contract", "Sponsorship", readonly=False
-    )
-    avoid_thankyou_letter = fields.Boolean(
-        default=True, help="Check to disable thank you letter for donation"
     )
     only_this_month = fields.Boolean(
         default=False, help="Check to search only from the start of the month"
@@ -22,6 +22,12 @@ class AccountReconcileModel(models.Model):
     def _uncheck_only_this_month(self):
         if self.past_months_limit and self.only_this_month:
             self.only_this_month = False
+
+    @api.onchange("avoid_thankyou_letter")
+    def _avoid_thankyou_letter(self):
+        for line in self.line_ids:
+            line.avoid_thankyou_letter = self.avoid_thankyou_letter
+            print('avoid_thankyou_letter', line.avoid_thankyou_letter)
 
     @api.model
     def product_changed(self, product_id, statement_id):
@@ -108,3 +114,23 @@ class AccountReconcileModel(models.Model):
             query = query.replace(" AND aml.date >= %(aml_date_limit)s", "")
 
         return query, params
+
+
+class AccountReconcileModelLine(models.Model):
+    _inherit = 'account.reconcile.model.line'
+
+    product_id = fields.Many2one("product.product", "Product", readonly=False)
+    avoid_thankyou_letter = fields.Boolean(
+        default="self.model_id.avoid_thankyou_letter",
+        readonly=True,
+    )
+
+    @api.onchange("product_id")
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.account_id = self.product_id.property_account_income_id
+            self.analytic_tag_ids = (
+                self.env["account.analytic.default"]
+                .account_get(self.product_id.id, company_id=self.env.company.id)
+                .analytic_tag_ids.ids
+            )
