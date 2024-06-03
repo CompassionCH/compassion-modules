@@ -441,7 +441,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       } else {
         payment_ref = false;
       }
-      console.log('payment_ref: ', payment_ref)
 
       var gift_ref_key = payment_ref[21];
       var gift_default_code = {
