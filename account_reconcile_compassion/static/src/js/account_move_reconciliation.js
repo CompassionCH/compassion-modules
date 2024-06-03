@@ -436,6 +436,12 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       var line = this.getLine(handle);
       var payment_ref = line.st_line.payment_ref;
 
+      if (payment_ref.trim().match(/^\d{27}$/)) {
+        payment_ref = payment_ref.trim();
+      } else {
+        payment_ref = false;
+      }
+
       var gift_ref_key = payment_ref[21];
       var gift_default_code = {
         1: "gift_birthday",
