@@ -220,6 +220,7 @@ class CorrespondenceS2bGenerator(models.Model):
                     ]
                 letters += letters.create(vals)
 
+            letters.create_text_boxes()
             self.letter_ids = letters
 
             # If the operation succeeds, notify the user
