@@ -823,8 +823,8 @@ class CommunicationJob(models.Model):
                 try:
                     # Print letter
                     print_name = name[:3] + " " + (job.subject or "")
-                    output_tray = job.print_letter(print_name)["output_tray"]
-                    job.print_letter(print_name)
+                    print_options = job.print_letter(print_name)
+                    output_tray = print_options["output_tray"]
 
                     # Print attachments in the same output_tray
                     job.attachment_ids.print_attachments(
