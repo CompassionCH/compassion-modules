@@ -324,7 +324,9 @@
         <field name="res_model">recurring.contract</field>
         <field name="view_mode">tree,kanban,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
-        <field name="context">{'default_type':'S'}</field>
+        <field
+      name="context"
+    >{'default_type':'S', 'search_default_draft': 1, 'search_default_waiting': 1, 'search_default_active': 1}</field>
     </record>
 
     <!-- Put Invoicing section in Accounting/Customers Menu -->
