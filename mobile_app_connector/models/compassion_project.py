@@ -52,10 +52,10 @@ class CompassionProject(models.Model):
             "Tornado": "Storm",
         }
         return {
-            "ChildWeather": mapping[self.current_weather],
+            "ChildWeather": mapping.get(self.current_weather, "Clear"),
             "ChildTemperature": self.current_temperature,
             # the following fields are not used but prevent app crashes
-            "UserWeather": mapping[self.current_weather],
+            "UserWeather": mapping.get(self.current_weather, "Clear"),
             "UserTemperature": self.current_temperature,
         }
 
