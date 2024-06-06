@@ -234,6 +234,12 @@ class AccountMove(models.Model):
         # Use external URL for payment links
         return self.env["ir.config_parameter"].sudo().get_param("web.external.url")
 
+    def _notify_get_action_link(self, link_type, **kwargs):
+        # Avoids the notifications to point to external url
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        link = super()._notify_get_action_link(link_type, **kwargs)
+        return link.replace(self.get_base_url(), base_url)
+
 
 class DonationDataWrapper:
     def __init__(self, json, env):
