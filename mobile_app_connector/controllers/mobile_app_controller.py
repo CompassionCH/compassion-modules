@@ -308,7 +308,7 @@ class RestController(http.Controller):
                     "currency_id": move.currency_id.id,
                     "partner_id": move.partner_id.id,
                     "amount_max": move.amount_residual,
-                    "description": move.payment_reference,
+                    "description": move.mapped("invoice_line_ids.product_id.name"),
                 }
             )
         )
