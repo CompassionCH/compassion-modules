@@ -214,7 +214,7 @@ class CrmClaim(models.Model):
         if "mail_server_id" in kwargs and not self.env.context.get("keep_stage"):
             resolved_stage = self.env.ref("crm_claim.stage_claim2")
             self.write({"stage_id": resolved_stage.id})
-        return result
+        return result.id
 
     @api.onchange("partner_id")
     def onchange_partner_id(self):
