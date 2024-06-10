@@ -78,7 +78,7 @@ class IrActionsServer(models.Model):
                     vals["auto_send"] = self.auto_send
                 delay = datetime.now() + timedelta(minutes=3)
                 self.with_delay(eta=delay).create_communication_job(vals)
-        return True
+        return {}
 
     def create_communication_job(self, vals):
         return self.env["partner.communication.job"].create(vals)
