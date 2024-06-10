@@ -32,23 +32,23 @@ class IrActionsServer(models.Model):
         return self.env["partner.communication.job"].send_mode_select()
 
     @api.model
-    def _run_action_communication(self, action, eval_context=None):
+    def _run_action_communication(self, eval_context=None):
         if (
-            not action.config_id
+            not self.config_id
             or not self._context.get("active_id")
-            or self._is_recompute(action)
+            or self._is_recompute()
         ):
             return False
 
-        model_name = action.model_name
+        model_name = self.model_name
         if "records" in eval_context:
             for raw_record in eval_context["records"]:
-                is_self = action.partner_field == "self"
-                partner = raw_record if is_self else raw_record[action.partner_field]
+                is_self = self.partner_field == "self"
+                partner = raw_record if is_self else raw_record[self.partner_field]
                 children = eval_context["records"]
                 records = self.env[model_name].search(
                     [
-                        (action.partner_field, "=", partner.id),
+                        (self.partner_field, "=", partner.id),
                         ("id", "in", children.ids),
                     ]
                 )
@@ -59,7 +59,7 @@ class IrActionsServer(models.Model):
                         ("method_name", "=", "create_communication_job"),
                         ("model_name", "=", self._name),
                         ("func_string", "like", f"'partner_id': {partner.id}"),
-                        ("func_string", "like", f"'config_id': {action.config_id.id}"),
+                        ("func_string", "like", f"'config_id': {self.config_id.id}"),
                     ]
                 )
                 if existing_job:
@@ -70,7 +70,7 @@ class IrActionsServer(models.Model):
                     vals = {
                         "partner_id": partner.id,
                         "object_ids": records.ids,
-                        "config_id": action.config_id.id,
+                        "config_id": self.config_id.id,
                     }
                 if self.send_mode:
                     vals["send_mode"] = self.send_mode
