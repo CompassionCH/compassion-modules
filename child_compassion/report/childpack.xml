@@ -151,7 +151,7 @@
             }
             .local_id {
                 position: absolute;
-                margin-top: 42mm;
+                margin-top: 36mm;
                 margin-left: 60mm;
                 width: 108mm;
                 writing-mode:vertical-rl;
