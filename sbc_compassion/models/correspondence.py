@@ -222,11 +222,6 @@ class Correspondence(models.Model):
     final_letter_url = fields.Char()
     import_id = fields.Many2one("import.letters.history", readonly=False)
     translator = fields.Char()
-    translator_id = fields.Many2one(  # TODO remove me after migration
-        "res.partner",
-        "Local translator",
-        readonly=True,
-    )
     email = fields.Char(related="partner_id.email")
     sponsorship_state = fields.Selection(
         related="sponsorship_id.state", string="Sponsorship state", readonly=True
@@ -916,41 +911,52 @@ class Correspondence(models.Model):
             from_correspondence_text=True
         )
 
-        for page in self.mapped("page_ids"):
-            existing_paragraphs = {para.sequence: para for para in page.paragraph_ids}
+        for page in self.page_ids:
+            # Check if there is any non-empty text
+            if page.original_text or page.english_text or page.translated_text:
+                # Split the text boxes
+                original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
+                english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
+                translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
+                nb_paragraphs = max(len(original_boxes), len(english_boxes), len(translated_boxes))
 
-            original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
-            english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
-            translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
-            nb_paragraphs = max(
-                len(original_boxes), len(english_boxes), len(translated_boxes)
-            )
+                # Initialize a flag to check if there are changes
+                data_changed = False
 
-            for i in range(nb_paragraphs):
-                original_text = original_boxes[i] if len(original_boxes) > i else ""
-                english_text = english_boxes[i] if len(english_boxes) > i else ""
-                translated_text = (
-                    translated_boxes[i] if len(translated_boxes) > i else ""
-                )
+                # Compare existing paragraphs with new data
+                for i in range(nb_paragraphs):
+                    original_text = original_boxes[i] if len(original_boxes) > i else ""
+                    english_text = english_boxes[i] if len(english_boxes) > i else ""
+                    translated_text = translated_boxes[i] if len(translated_boxes) > i else ""
 
-                if i in existing_paragraphs:
-                    existing_paragraphs[i].write(
-                        {
-                            "original_text": original_text,
-                            "english_text": english_text,
-                            "translated_text": translated_text,
-                        }
-                    )
-                else:
-                    paragraphs.create(
-                        {
-                            "page_id": page.id,
-                            "original_text": original_text,
-                            "english_text": english_text,
-                            "translated_text": translated_text,
-                            "sequence": i,
-                        }
-                    )
+                    # Compare new data with existing data
+                    if i < len(page.paragraph_ids):
+                        para = page.paragraph_ids[i]
+                        if (para.original_text != original_text or
+                            para.english_text != english_text or
+                            para.translated_text != translated_text):
+                            data_changed = True
+                            break
+                    else:
+                        if original_text or english_text or translated_text:
+                            data_changed = True
+                            break
+
+                if data_changed:
+                    # Unlink existing paragraphs if new data is different
+                    page.paragraph_ids.unlink()
+
+                    # Create new paragraphs
+                    for i in range(nb_paragraphs):
+                        paragraphs.create(
+                            {
+                                "page_id": page.id,
+                                "original_text": original_boxes[i] if len(original_boxes) > i else "",
+                                "english_text": english_boxes[i] if len(english_boxes) > i else "",
+                                "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
+                                "sequence": i,
+                            }
+                        )
 
         return paragraphs
 
