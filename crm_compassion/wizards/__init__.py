@@ -11,7 +11,5 @@
 from . import (
     child_hold_wizard,
     demand_settings,
-    partner_log_interaction_wizard,
-    partner_log_other_interaction_wizard,
     portal_wizard,
 )

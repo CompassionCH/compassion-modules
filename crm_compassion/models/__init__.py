@@ -20,7 +20,6 @@ from . import (
     crm_lead,
     demand_planning,
     event_compassion,
-    interaction_resume,
     mail_activity,
     mail_mail,
     mail_tracking_email,

@@ -18,22 +18,6 @@ from odoo.addons.partner_communication.models.communication_config import (
 class Partner(models.Model):
     _inherit = "res.partner"
 
-    interaction_resume_ids = fields.One2many(
-        "interaction.resume", "partner_id", "Interaction resume", readonly=False
-    )
-
-    # Do not clutter the mail thread with emails that can be seen in
-    # interaction resume
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [
-            ("model", "=", self._name),
-            ("subtype_id", "in", [self.env.ref("mail.mt_note").id]),
-        ],
-        auto_join=True,
-    )
     ambassador_receipt_send_mode = fields.Selection(
         CommunicationConfig.get_delivery_preferences,
         default="digital_only",
@@ -90,45 +74,6 @@ class Partner(models.Model):
                     ("active", "=", False),
                 ]
             )
-
-    def open_interaction(self, full_resume=False):
-        """
-        Populates data for interaction resume and open the view
-        :return: action opening the view
-        """
-        self.ensure_one()
-        self.env["interaction.resume"].populate_resume(self.id, full_resume)
-        partners_with_same_email_ids = (
-            self.env["res.partner"]
-            .search(
-                [
-                    ("email", "!=", False),
-                    ("email", "=", self.email),
-                    ("id", "not in", self.ids),
-                ]
-            )
-            .ids
-        )
-        return {
-            "name": _("Interaction resume"),
-            "type": "ir.actions.act_window",
-            "res_model": "interaction.resume",
-            "view_type": "form",
-            "view_mode": "tree,form",
-            "domain": [
-                (
-                    "partner_id",
-                    "in",
-                    self.ids
-                    + partners_with_same_email_ids
-                    + self.mapped("other_contact_ids").ids,
-                )
-            ],
-            "target": "current",
-        }
-
-    def open_interaction_full(self):
-        return self.open_interaction(full_resume=True)
 
     def log_call(self):
         """Prepare crm.phonecall creation."""

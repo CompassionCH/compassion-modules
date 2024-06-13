@@ -1,0 +1,20 @@
+<odoo>
+    <record id="res_partner_view_form" model="ir.ui.view">
+        <field name="name">res.partner.interaction.resume.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']">
+                <button
+          name="open_interaction"
+          string="Interaction Resume"
+          type="object"
+          class="oe_stat_button"
+          icon="fa-comments"
+        />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
