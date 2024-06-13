@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+partner_log_other_interaction,Full access on partner_log_other_interaction,model_partner_log_other_interaction,base.group_user,1,1,1,1
+partner_log_other_interaction_wizard,Full access on partner_log_other_interaction_wizard,model_partner_log_other_interaction_wizard,base.group_user,1,1,1,1
+access_interaction_resume,access_interaction_resume,model_interaction_resume,base.group_user,1,1,1,1
+access_sms,access_sms_users,model_sms_sms,base.group_user,1,0,0,0

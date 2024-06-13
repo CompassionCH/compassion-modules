@@ -9,7 +9,11 @@
                 <sheet>
                     <field name="partner_id" invisible="1" />
                     <group>
-                        <field name="other_type" />
+                        <field name="communication_type" />
+                        <field
+              name="other_type"
+              attrs="{'invisible': [('communication_type', '!=', 'Other')], 'required': [('communication_type', '=', 'Other')]}"
+            />
                         <field name="direction" />
                         <field name="date" />
                     </group>
@@ -21,7 +25,7 @@
                 <footer>
                     <button
             name="log_interaction"
-            string="Log other"
+            string="Log interaction"
             type="object"
             class="oe_highlight"
           />
@@ -31,7 +35,7 @@
     </record>
 
     <record id="log_other_interaction_form_view" model="ir.ui.view">
-        <field name="name">log other interaction form view</field>
+        <field name="name">log interaction form view</field>
         <field name="model">partner.log.other.interaction</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -45,27 +49,29 @@
                         </group>
                         <group>
                             <field name="date" />
-                            <field name="other_type" />
+                            <field name="communication_type" />
+                            <field
+                name="other_type"
+                attrs="{'invisible': [('communication_type', '!=', 'Other')], 'required': [('communication_type', '=', 'Other')]}"
+              />
                             <field name="direction" />
                         </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field
-            name="message_follower_ids"
-            widget="mail_followers"
-          />
-                    <field name="activity_ids" widget="mail_activity" />
-                    <field name="message_ids" widget="mail_thread" />
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
     </record>
     <record model="ir.actions.act_window" id="action_log_other_interaction">
-        <field name="name">Log other interaction</field>
+        <field name="name">Log interaction</field>
         <field name="binding_model_id" ref="model_res_partner" />
         <field name="binding_view_types">form</field>
         <field name="res_model">partner.log.other.interaction.wizard</field>
         <field name="target">new</field>
+        <field name="view_mode">form</field>
     </record>
 </odoo>

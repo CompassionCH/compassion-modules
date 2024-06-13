@@ -36,13 +36,13 @@
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "partner_communication",
-        "crm_phonecall",  # OCA/connector-telephony
+        "crm_phonecall",  # OCA/crm
+        "base_phone",  # OCA/connector-telephony
     ],
     "external_dependencies": {"python": ["phonenumbers"]},
     "data": [
         "security/ir.model.access.csv",
         "views/call_wizard_view.xml",
-        "views/crm_phone_view.xml",
         "views/communication_job.xml",
     ],
     "qweb": [],
