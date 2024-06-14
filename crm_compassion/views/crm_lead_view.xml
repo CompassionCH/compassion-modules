@@ -11,6 +11,9 @@
         <field name="priority">25</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="widget">many2one</attribute>
+            </xpath>
             <label for="expected_revenue" position="before">
                 <label for="planned_sponsorships" /><h2><field
             name="planned_sponsorships"
@@ -31,7 +34,7 @@
                             <field name="start_date" />
                             <field name="partner_id" />
                             <field name="zip_id" />
-                            <field name="user_id" />
+                            <field name="user_id" widget="many2one"/>
                             <field name="total_income" sum="Total" />
                             <field name="total_expense" sum="Total" />
                             <field name="planned_sponsorships" sum="Total" />
