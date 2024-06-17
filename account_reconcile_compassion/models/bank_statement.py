@@ -4,12 +4,14 @@
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #    @author: Nicolas Badoux <n.badoux@hotmail.com>
+#    @author: Noé Berdoz <nberdoz@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from odoo import fields, models
+from odoo import _, fields, models
+from odoo.exceptions import UserError
 
 
 class AccountStatement(models.Model):
@@ -73,6 +75,31 @@ class AccountStatement(models.Model):
         self.invoice_ids.filtered(lambda i: i.state == "draft").action_post()
         super().button_post()
         self.with_delay()._auto_reconcile()
+
+    def button_validate(self):
+        """
+        Override to skip PDF generation for bank statements.
+        PDF generation was producing excessively large files.
+        To re-enable account bank statements PDF generation, this logic should be
+        refactored and implemented as needed.
+        """
+        if any(
+            statement.state != "posted" or not statement.all_lines_reconciled
+            for statement in self
+        ):
+            raise UserError(
+                _(
+                    "All the account entries lines must be processed in order to "
+                    "validate the statement."
+                )
+            )
+
+        for statement in self:
+            # Chatter.
+            statement.message_post(body=_("Statement %s confirmed.", statement.name))
+
+        self._check_balance_end_real_same_as_computed()
+        self.write({"state": "confirm", "date_done": fields.Datetime.now()})
 
     def auto_reconcile(self):
         """Auto reconcile matching invoices through jobs to avoid timeouts"""
