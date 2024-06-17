@@ -60,6 +60,11 @@
                      }
                 </attribute>
             </xpath>
+            <xpath
+        expr="//field[@name='line_ids']/tree"
+      >
+                <field name="user_id" invisible="1"/>
+            </xpath>
         </field>
     </record>
 
