@@ -156,6 +156,13 @@ class CommunicationJob(models.Model):
         domain=[("report_id", "!=", False)],
         readonly=False,
     )
+    ir_attachment_tmp = fields.Many2many(
+        "ir.attachment",
+        string="Attachments",
+        compute="_compute_void",
+        inverse="_inverse_ir_attachment_tmp",
+        readonly=False,
+    )
     printed_pdf_data = fields.Binary(
         help="Technical field used when the report was not sent to printer "
         "but to client in order to download the result afterwards."
@@ -220,6 +227,17 @@ class CommunicationJob(models.Model):
             job.attachment_ids.filtered(
                 lambda a, job=job: a.attachment_id not in job.ir_attachment_ids
             ).unlink()
+
+    def _compute_void(self):
+        pass
+
+    def _inverse_ir_attachment_tmp(self):
+        for job in self:
+            for attachment in job.ir_attachment_tmp:
+                attachment.report_id = self.env.ref(
+                    "partner_communication.report_a4_no_margin"
+                )
+            job.ir_attachment_ids += job.ir_attachment_tmp
 
     @api.depends("partner_id", "object_ids")
     def _compute_company(self):
