@@ -61,7 +61,7 @@ class SubSponsorshipWizard(models.TransientModel):
 
         if self.child_id:
             return {
-                "name": sub_contract.name,
+                "name": sub_contract.display_name,
                 "type": "ir.actions.act_window",
                 "view_mode": "form",
                 "res_model": "recurring.contract",
