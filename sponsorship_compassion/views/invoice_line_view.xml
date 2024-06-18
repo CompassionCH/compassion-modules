@@ -34,7 +34,7 @@
             <xpath expr="//tree/field[@name='name']" position="after">
                 <field
           name="contract_id"
-          domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ['waiting', 'active'])]"
+          domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ['waiting', 'active', 'terminated'])]"
           options="{'create_edit':false,'field_color': 'state', 'search_more':true,
                                      'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"
         /> <!-- ('correspondent_id', '=', parent.partner_id),-->
