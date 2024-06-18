@@ -34,10 +34,10 @@
             <xpath expr="//tree/field[@name='name']" position="after">
                 <field
           name="contract_id"
-          domain="['|',('correspondent_id', '=', parent.partner_id),('partner_id', '=', parent.partner_id), ('state', 'in', ['waiting', 'active', 'terminated'])]"
+          domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ['waiting', 'active'])]"
           options="{'create_edit':false,'field_color': 'state', 'search_more':true,
                                      'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"
-        />
+        /> <!-- ('correspondent_id', '=', parent.partner_id),-->
             </xpath>
             <xpath
         expr="//form/sheet/notebook/page[@id='aml_tab']/field/tree/field[@name='partner_id']"
