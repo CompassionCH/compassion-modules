@@ -8,9 +8,9 @@
 #
 ##############################################################################
 from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 from odoo import models
-from odoo.tools.safe_eval import datetime
 
 
 class PartnerCommunicationJob(models.Model):
