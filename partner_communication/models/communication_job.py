@@ -234,10 +234,13 @@ class CommunicationJob(models.Model):
     def _inverse_ir_attachment_tmp(self):
         for job in self:
             for attachment in job.ir_attachment_tmp:
-                attachment.report_id = self.env.ref(
-                    "partner_communication.report_a4_no_margin"
-                )
-            job.ir_attachment_ids += job.ir_attachment_tmp
+               attachment.write({
+                    'res_model': 'partner.communication.job',
+                    'res_id': job.id,
+                    'report_id': self.env.ref("partner_communication.report_a4_no_margin").id,
+                })
+            job.ir_attachment_ids = [(4, attachment.id) for attachment in job.ir_attachment_tmp]
+            self._inverse_ir_attachments()
 
     @api.depends("partner_id", "object_ids")
     def _compute_company(self):
