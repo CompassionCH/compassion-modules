@@ -497,6 +497,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             args: [
               [
                 ["commitment_number", "=", gift_commitment_number],
+                ["type", "in", ["S", "SC", "SWP"]],
                 "|",
                 ["correspondent_id", "=", line.partner_id],
                 ["partner_id", "=", line.partner_id],
