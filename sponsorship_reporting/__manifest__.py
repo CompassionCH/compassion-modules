@@ -39,6 +39,7 @@
         "sponsorship_sub_management",  # CompassionCH/compassion-modules
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/sponsorships_evolution_reports_view.xml",
         "views/end_sponsorships_report_view.xml",
         "views/new_sponsorships_report_view.xml",
