@@ -34,7 +34,7 @@
                             <field name="start_date" />
                             <field name="partner_id" />
                             <field name="zip_id" />
-                            <field name="user_id" widget="many2one"/>
+                            <field name="user_id" widget="many2one" />
                             <field name="total_income" sum="Total" />
                             <field name="total_expense" sum="Total" />
                             <field name="planned_sponsorships" sum="Total" />

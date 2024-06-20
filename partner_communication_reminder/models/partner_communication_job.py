@@ -7,8 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from dateutil.relativedelta import relativedelta
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import models
 

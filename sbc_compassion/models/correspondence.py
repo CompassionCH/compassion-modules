@@ -918,7 +918,9 @@ class Correspondence(models.Model):
                 original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
                 english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
                 translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
-                nb_paragraphs = max(len(original_boxes), len(english_boxes), len(translated_boxes))
+                nb_paragraphs = max(
+                    len(original_boxes), len(english_boxes), len(translated_boxes)
+                )
 
                 # Initialize a flag to check if there are changes
                 data_changed = False
@@ -927,14 +929,18 @@ class Correspondence(models.Model):
                 for i in range(nb_paragraphs):
                     original_text = original_boxes[i] if len(original_boxes) > i else ""
                     english_text = english_boxes[i] if len(english_boxes) > i else ""
-                    translated_text = translated_boxes[i] if len(translated_boxes) > i else ""
+                    translated_text = (
+                        translated_boxes[i] if len(translated_boxes) > i else ""
+                    )
 
                     # Compare new data with existing data
                     if i < len(page.paragraph_ids):
                         para = page.paragraph_ids[i]
-                        if (para.original_text != original_text or
-                            para.english_text != english_text or
-                            para.translated_text != translated_text):
+                        if (
+                            para.original_text != original_text
+                            or para.english_text != english_text
+                            or para.translated_text != translated_text
+                        ):
                             data_changed = True
                             break
                     else:
@@ -951,9 +957,15 @@ class Correspondence(models.Model):
                         paragraphs.create(
                             {
                                 "page_id": page.id,
-                                "original_text": original_boxes[i] if len(original_boxes) > i else "",
-                                "english_text": english_boxes[i] if len(english_boxes) > i else "",
-                                "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
+                                "original_text": original_boxes[i]
+                                if len(original_boxes) > i
+                                else "",
+                                "english_text": english_boxes[i]
+                                if len(english_boxes) > i
+                                else "",
+                                "translated_text": translated_boxes[i]
+                                if len(translated_boxes) > i
+                                else "",
                                 "sequence": i,
                             }
                         )

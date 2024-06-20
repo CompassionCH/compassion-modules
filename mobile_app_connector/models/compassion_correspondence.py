@@ -152,8 +152,10 @@ class CompassionCorrespondence(models.Model):
                 )
             ]
         english = self.env.ref("advanced_translation.lang_compassion_english").id
-        domain = [('child_id.local_id', '=', child_local_id),
-                  ('state', 'not in', ['draft','cancelled'])]
+        domain = [
+            ("child_id.local_id", "=", child_local_id),
+            ("state", "not in", ["draft", "cancelled"]),
+        ]
         gen = (
             self.env["correspondence.s2b.generator"]
             .sudo()

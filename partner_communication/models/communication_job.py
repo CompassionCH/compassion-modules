@@ -234,12 +234,18 @@ class CommunicationJob(models.Model):
     def _inverse_ir_attachment_tmp(self):
         for job in self:
             for attachment in job.ir_attachment_tmp:
-               attachment.write({
-                    'res_model': 'partner.communication.job',
-                    'res_id': job.id,
-                    'report_id': self.env.ref("partner_communication.report_a4_no_margin").id,
-                })
-            job.ir_attachment_ids = [(4, attachment.id) for attachment in job.ir_attachment_tmp]
+                attachment.write(
+                    {
+                        "res_model": "partner.communication.job",
+                        "res_id": job.id,
+                        "report_id": self.env.ref(
+                            "partner_communication.report_a4_no_margin"
+                        ).id,
+                    }
+                )
+            job.ir_attachment_ids = [
+                (4, attachment.id) for attachment in job.ir_attachment_tmp
+            ]
             self._inverse_ir_attachments()
 
     @api.depends("partner_id", "object_ids")
@@ -534,7 +540,9 @@ class CommunicationJob(models.Model):
         link_pattern = re.compile(r'<a href="([^<>]*)">([^<]*)</a>')
         sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
         sms_texts = []
-        for job in self.filtered(lambda j: j.state == "pending" and j.partner_id.mobile):
+        for job in self.filtered(
+            lambda j: j.state == "pending" and j.partner_id.mobile
+        ):
             sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
             sms_texts.append(sms_text)
             job.partner_id.message_post_send_sms(sms_text, note_msg=job.subject)

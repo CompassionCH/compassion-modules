@@ -146,7 +146,9 @@ class AccountMove(models.Model):
                     "move_type": "out_invoice",
                     "invoice_date": fields.Date.today(),
                     "payment_mode_id": False,  # We don't know yet how it will be paid
-                    "payment_reference": _("Mobile APP donation") + "-" + wrapper.source
+                    "payment_reference": _("Mobile APP donation")
+                    + "-"
+                    + wrapper.source,
                 }
             )
             invoice.action_post()
