@@ -239,7 +239,7 @@ class CommunicationJob(models.Model):
                         "res_model": "partner.communication.job",
                         "res_id": job.id,
                         "report_id": self.env.ref(
-                            "partner_communication.report_a4_no_margin"
+                            "partner_communication.report_a4_communication"
                         ).id,
                     }
                 )
