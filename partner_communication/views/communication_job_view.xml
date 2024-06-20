@@ -139,6 +139,12 @@
               context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}"
               mode="kanban"
             />
+                        <field
+              name="ir_attachment_tmp"
+              widget="many2many_binary"
+              string=' '
+              class="oe_edit_only"
+            />
                     </group>
                 </sheet>
                 <div class="oe_chatter">
