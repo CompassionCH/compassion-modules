@@ -178,18 +178,19 @@ class Correspondence(models.Model):
         """
         # We shouldn't send communication to terminated contracts
         # We should also delete pending communication for those terminated contracts
+        final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
         if self.env.context.get("force_send"):
             eligible_letters = self
         else:
             eligible_letters = self.filtered(
                 lambda letter: letter.sponsorship_id.state == "active"
+                or final_letter in letter.communication_type_ids
             )
             (self - eligible_letters).mapped("communication_id").filtered(
                 lambda c: c.state != "done"
             ).unlink()
 
         partners = eligible_letters.mapped("partner_id")
-        final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
         module = "partner_communication_compassion."
         first_letter_template = self.env.ref(module + "config_onboarding_first_letter")
         final_template = self.env.ref(module + "child_letter_final_config")
