@@ -244,7 +244,7 @@ class CommunicationJob(models.Model):
                     }
                 )
             job.ir_attachment_ids = [
-                (6, attachment.id) for attachment in job.ir_attachment_tmp
+                (4, attachment.id) for attachment in job.ir_attachment_tmp
             ]
             self._inverse_ir_attachments()
 
