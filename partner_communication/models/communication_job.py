@@ -877,6 +877,14 @@ class CommunicationJob(models.Model):
                     )
         return self.download_data()
 
+    def _notify_get_reply_to(
+        self, default=None, records=None, company=None, doc_names=None
+    ):
+        res = dict.fromkeys(self.ids)
+        for job in self:
+            res[job.id] = job.email_template_id.reply_to
+        return res
+
     def print_letter(self, print_name, **print_options):
         """
         Sends the communication to the printer.

@@ -116,6 +116,16 @@ class CrmClaim(models.Model):
             "context": ctx,
         }
 
+    def _notify_get_reply_to(
+        self, default=None, records=None, company=None, doc_names=None
+    ):
+        res = dict.fromkeys(self.ids)
+        for claim in self:
+            res[claim.id] = (
+                claim.categ_id.template_id.reply_to or claim.alias_id.display_name
+            )
+        return res
+
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         stage_ids = stages._search([("active", "=", True)], order=order)
