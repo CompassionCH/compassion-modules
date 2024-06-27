@@ -527,14 +527,7 @@ class Correspondence(models.Model):
 
     def get_translated_elements(self):
         res = []
-        for page in self.page_ids:
-            if res:
-                res.append(
-                    {
-                        "type": "pageBreak",
-                        "id": page.id,
-                    }
-                )
+        for i, page in enumerate(self.page_ids):
             for paragraph in page.paragraph_ids:
                 res.append(
                     {
@@ -543,8 +536,15 @@ class Correspondence(models.Model):
                         "content": paragraph.translated_text,
                         "comments": paragraph.comments,
                         "source": paragraph.english_text
-                        or paragraph.original_text
-                        or "",
+                                  or paragraph.original_text
+                                  or "",
+                    }
+                )
+            if i < len(self.page_ids) - 1:
+                res.append(
+                    {
+                        "type": "pageBreak",
+                        "id": page.id,
                     }
                 )
         return res
