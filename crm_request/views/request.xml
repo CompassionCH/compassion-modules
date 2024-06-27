@@ -140,6 +140,9 @@
                         </group>
                     </group>
                     <group>
+                        <field name="description" attrs="{'invisible': [('description', '=', False)]}"/>
+                    </group>
+                    <group>
                         <group groups="base.group_user" string="Reporter">
                             <field name="partner_id" string="Partner" />
                             <field name="partner_phone" />
