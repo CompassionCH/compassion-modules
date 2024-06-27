@@ -719,7 +719,7 @@ class CommunicationJob(models.Model):
                     )()
                     if binaries and isinstance(binaries, dict):
                         for name, data in list(binaries.items()):
-                            attachment_obj.create(
+                            attachment_id = attachment_obj.create(
                                 {
                                     "name": name,
                                     "communication_id": job.id,
@@ -727,6 +727,7 @@ class CommunicationJob(models.Model):
                                     "data": data[1],
                                 }
                             )
+                            self.attachment_ids += attachment_id
                 except Exception:
                     _logger.error("Error during attachment creation", exc_info=True)
                     job.env.clear()
@@ -738,6 +739,7 @@ class CommunicationJob(models.Model):
                             }
                         )
                     failed += job
+        self._compute_ir_attachments()
         return failed
 
     def preview_pdf(self):
