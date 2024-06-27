@@ -164,7 +164,11 @@ class RestController(http.Controller):
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
     @http.route(
-        ["/no_json/correspondence/get_preview"],
+        [
+            "/de_DE/no_json/correspondence/get_preview",
+            "/it_IT/no_json/correspondence/get_preview",
+            "/no_json/correspondence/get_preview",
+        ],
         auth="user",
         methods=["POST"],
         type="http",
