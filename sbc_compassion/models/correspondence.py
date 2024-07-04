@@ -299,6 +299,7 @@ class Correspondence(models.Model):
             ("Supporter Letter", _("Supporter Letter")),
         ]
 
+    @api.depends("sponsorship_id", "communication_type_ids")
     def _compute_name(self):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
