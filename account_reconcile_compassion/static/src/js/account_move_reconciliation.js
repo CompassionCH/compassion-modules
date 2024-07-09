@@ -635,6 +635,15 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
         : null;
       return result;
     },
+
+    removeProposition: function (handle, id) {
+      // T1585 Prevent unsetting the partner when removing a line
+      var line = this.getLine(handle);
+      if (line.partner_id && line.st_line.has_no_partner) {
+        line.st_line.has_no_partner = false;
+      }
+      return this._super(handle, id);
+    }
   });
 
   return {
