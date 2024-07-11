@@ -81,7 +81,3 @@ class CrmLead(models.Model):
         for lead in self:
             if not lead.name and lead.partner_id and lead.partner_id.name:
                 lead.name = lead.partner_id.name
-
-    @api.model
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        return super(CrmLead, self)._search(args, offset, limit, order, count, access_rights_uid)
