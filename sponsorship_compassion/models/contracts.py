@@ -487,10 +487,11 @@ class SponsorshipContract(models.Model):
 
     def _compute_is_direct_debit(self):
         dd_modes = self.env["account.payment.mode"].search(
-            ["|",
-             ("payment_method_code", "like", "%direct_debit"),
-             ("payment_method_code", "like", "%dd"),
-             ]
+            [
+                "|",
+                ("payment_method_code", "like", "%direct_debit"),
+                ("payment_method_code", "like", "%dd"),
+            ]
         )
         for contract in self:
             contract.is_direct_debit = contract.payment_mode_id in dd_modes

@@ -652,6 +652,8 @@ class Correspondence(models.Model):
                 # Avoid to publish twice a same letter
                 is_published = is_published and letter.state != published_state
                 if is_published or letter.state != published_state:
+                    if letter._will_erase_text(vals):
+                        vals.pop("page_ids", False)
                     letter.write(vals)
             else:
                 if "id" in vals:
@@ -985,3 +987,48 @@ class Correspondence(models.Model):
             user_id=user_id,
             note=f"Letter has {state}",
         )
+
+    def _will_erase_text(self, letter_vals):
+        """T1602 Checks if the text will be erased when saving the letter.
+        GMC sends back empty text content but we don't want to erase the text on
+        our side.
+
+        Args:
+            letter_vals: A dictionary containing correspondence values like
+            {'page_ids': [(0, 0, {'english_text': 'example'}]}.
+
+        Returns:
+            True if the text will be erased, False otherwise.
+        """
+        self.ensure_one()
+        if any((self.english_text, self.original_text, self.translated_text)):
+            return not self._has_text(letter_vals)
+        return False
+
+    @api.model
+    def _has_text(self, letter_vals):
+        """Checks if any text key has a non-empty value in the provided data.
+
+        Args:
+            letter_vals: A dictionary containing correspondence values like
+            {'page_ids': [(0, 0, {'english_text': 'example'}]}.
+
+        Returns:
+            True if any of the text keys has a non-empty value, False otherwise.
+        """
+        # Check for text in top level keys
+        if not isinstance(letter_vals, dict):
+            return False
+        if (
+            letter_vals.get("original_text")
+            or letter_vals.get("english_text")
+            or letter_vals.get("translated_text")
+        ):
+            return True
+
+        # Check for text in nested dictionaries
+        for item in letter_vals.get("page_ids", []):
+            if isinstance(item, tuple) and len(item) == 3 and self._has_text(item[2]):
+                return True
+
+        return False

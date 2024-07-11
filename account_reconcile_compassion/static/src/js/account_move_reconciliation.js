@@ -643,7 +643,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
         line.st_line.has_no_partner = false;
       }
       return this._super(handle, id);
-    }
+    },
   });
 
   return {
