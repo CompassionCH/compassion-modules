@@ -10,7 +10,7 @@
 
 import datetime
 
-from odoo import api, fields, models, SUPERUSER_ID
+from odoo import SUPERUSER_ID, api, fields, models
 
 
 class CrmLead(models.Model):
@@ -84,26 +84,34 @@ class CrmLead(models.Model):
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
-        team_id = self._context.get('default_team_id')
+        team_id = self._context.get("default_team_id")
 
         # default behavior of parent
         if team_id:
-            search_domain = ['|',
-                             ('id', 'in', stages.ids),
-                             '|',
-                             ('team_id', '=', False),
-                             ('team_id', '=', team_id)]
+            search_domain = [
+                "|",
+                ("id", "in", stages.ids),
+                "|",
+                ("team_id", "=", False),
+                ("team_id", "=", team_id),
+            ]
         else:
-            search_domain = ['|',
-                             ('id', 'in', stages.ids),
-                             ('team_id', '=', False)]
+            search_domain = ["|", ("id", "in", stages.ids), ("team_id", "=", False)]
 
         # if the domain contains team_id filters, add them to the search domain
-        team_id_domain = [cond for cond in domain if hasattr(cond, "__getitem__") and cond[0] == "team_id"]
+        team_id_domain = [
+            cond
+            for cond in domain
+            if hasattr(cond, "__getitem__") and cond[0] == "team_id"
+        ]
         if len(team_id_domain) > 0:
-            search_domain = ['|',
-                             *search_domain,
-                             *(['|'] * (len(team_id_domain) - 1) + team_id_domain)]
+            search_domain = [
+                "|",
+                *search_domain,
+                *(["|"] * (len(team_id_domain) - 1) + team_id_domain),
+            ]
 
-        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        stage_ids = stages._search(
+            search_domain, order=order, access_rights_uid=SUPERUSER_ID
+        )
         return stages.browse(stage_ids)
