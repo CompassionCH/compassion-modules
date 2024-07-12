@@ -100,7 +100,7 @@
 
     <!-- CRM Leads View  -->
     <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
-        <field name="domain">[]</field>
+        <field name="domain">['|', '&amp;', ('active', '=', True), ('active', '=', False), ('probability', '=', 0)]</field>
     </record>
 
     <!-- CRM Pipeline View  -->
