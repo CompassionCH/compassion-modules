@@ -119,6 +119,12 @@
                         domain="[('probability', '&lt;', 100)]"
                         help="Open Opportunities"/>
             </filter>
+
+            <filter name="open_opportunities" position="after">
+                <filter string="Followed Opportunities" name="followed_opportunities"
+                        domain="['|', ('message_is_follower', '=', True), ('user_id', '=', uid)]"
+                        help="Followed Opportunities"/>
+            </filter>
         </field>
     </record>
 </odoo>
