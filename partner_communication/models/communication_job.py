@@ -727,7 +727,7 @@ class CommunicationJob(models.Model):
                                     "data": data[1],
                                 }
                             )
-                            self.attachment_ids += attachment_id
+                            job.attachment_ids += attachment_id
                 except Exception:
                     _logger.error("Error during attachment creation", exc_info=True)
                     job.env.clear()
