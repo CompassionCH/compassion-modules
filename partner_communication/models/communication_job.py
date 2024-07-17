@@ -607,7 +607,6 @@ class CommunicationJob(models.Model):
         failed = self.set_attachments()
         for job in self - failed:
             lang = self.env.context.get("lang_preview", job.partner_id.lang)
-
             template_id = job.email_template_id
 
             if not template_id and job.config_id:
@@ -628,7 +627,6 @@ class CommunicationJob(models.Model):
                             "state": job.state if job.state != "failure" else "pending",
                         }
                     )
-
                 except (
                     MissingError,
                     UserError,
