@@ -611,9 +611,7 @@ class CommunicationJob(models.Model):
 
             if not template_id and job.config_id:
                 template_id = job.config_id.email_template_id
-                job.write({
-                    "email_template_id": template_id
-                })
+                job.write({"email_template_id": template_id})
 
             if template_id and job.object_ids:
                 try:
