@@ -20,9 +20,6 @@ from jinja2 import TemplateSyntaxError
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import MissingError, QWebException, UserError
 
-
-import traceback
-
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
@@ -471,9 +468,6 @@ class CommunicationJob(models.Model):
     ##########################################################################
     def send(self):
         """Executes the job."""
-
-        return
-
         todo = self.filtered(
             lambda j: j.state == "pending"
             and not (j.need_call == "before_sending" and j.activity_ids)
@@ -543,9 +537,6 @@ class CommunicationJob(models.Model):
         Sends communication jobs with SMS 939 service.
         :return: list of sms_texts
         """
-
-        return
-
         link_pattern = re.compile(r'<a href="([^<>]*)">([^<]*)</a>')
         sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
         sms_texts = []
@@ -648,7 +639,6 @@ class CommunicationJob(models.Model):
                         f"Failed to generate communication {str(e)}",
                         exc_info=True,
                     )
-                    tb = traceback.format_exc()
                     job.env.clear()
                     if job.state == "pending":
                         job.write(
@@ -817,9 +807,6 @@ class CommunicationJob(models.Model):
         :return: state of the communication depending if the e-mail was
                  successfully sent or not.
         """
-
-        return
-
         self.ensure_one()
         partner = self.partner_id
         # Send by e-mail
@@ -861,9 +848,6 @@ class CommunicationJob(models.Model):
         return "done"
 
     def _print_report(self):
-
-        return
-
         name = self.env.user.name
         origin = self.env.context.get("origin")
         state = "done"
@@ -922,9 +906,6 @@ class CommunicationJob(models.Model):
                               printing
         :return: output_tray used to print letter
         """
-
-        return
-
         lang = list(set(self.mapped("partner_id.lang")))
         if len(lang) > 1:
             raise UserError(_("Cannot print multiple langs at the same time."))
@@ -979,10 +960,3 @@ class CommunicationJob(models.Model):
             self[:1].printed_pdf_data = base64.b64encode(to_print[0])
 
         return print_options
-
-
-
-
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        toto = self.browse(1418116)
-        return super(CommunicationJob, self)._search(args, offset, limit, order, count, access_rights_uid)
