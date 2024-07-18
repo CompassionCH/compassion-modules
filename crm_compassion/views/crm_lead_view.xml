@@ -115,15 +115,21 @@
         <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
         <field name="arch" type="xml">
             <filter name="open_opportunities" position="replace">
-                <filter string="Open Opportunities" name="open_opportunities"
-                        domain="[('probability', '&lt;', 100)]"
-                        help="Open Opportunities"/>
+                <filter
+          string="Open Opportunities"
+          name="open_opportunities"
+          domain="[('probability', '&lt;', 100)]"
+          help="Open Opportunities"
+        />
             </filter>
 
             <filter name="open_opportunities" position="after">
-                <filter string="Followed Opportunities" name="followed_opportunities"
-                        domain="['|', ('message_is_follower', '=', True), ('user_id', '=', uid)]"
-                        help="Followed Opportunities"/>
+                <filter
+          string="Followed Opportunities"
+          name="followed_opportunities"
+          domain="['|', ('message_is_follower', '=', True), ('user_id', '=', uid)]"
+          help="Followed Opportunities"
+        />
             </filter>
         </field>
     </record>
