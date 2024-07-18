@@ -97,4 +97,40 @@
             </xpath>
         </field>
     </record>
+
+    <!-- CRM Leads View  -->
+    <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
+        <field name="domain">[]</field>
+    </record>
+
+    <!-- CRM Pipeline View  -->
+    <record model="ir.actions.act_window" id="crm.crm_lead_all_leads">
+        <field name="domain">[]</field>
+    </record>
+
+    <record id="view_crm_case_pipeline_filter_custom" model="ir.ui.view">
+        <field name="name">Pipeline filters</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">15</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
+        <field name="arch" type="xml">
+            <filter name="open_opportunities" position="replace">
+                <filter
+          string="Open Opportunities"
+          name="open_opportunities"
+          domain="[('probability', '&lt;', 100)]"
+          help="Open Opportunities"
+        />
+            </filter>
+
+            <filter name="open_opportunities" position="after">
+                <filter
+          string="Followed Opportunities"
+          name="followed_opportunities"
+          domain="['|', ('message_is_follower', '=', True), ('user_id', '=', uid)]"
+          help="Followed Opportunities"
+        />
+            </filter>
+        </field>
+    </record>
 </odoo>
