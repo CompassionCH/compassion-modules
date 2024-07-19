@@ -277,7 +277,7 @@ class ResPartner(models.Model):
         tree_view_id = self.env.ref("account.view_move_line_tree").id
         form_view_id = self.env.ref("account.view_move_line_form").id
         action = {
-            "name": _("1050 move lines"),
+            "name": _("Unreconciled Items"),
             "type": "ir.actions.act_window",
             "view_mode": "tree",
             "res_model": "account.move.line",
