@@ -8,8 +8,9 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2024 Compassion CH (https://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Noé Berdoz <nberdoz@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +23,7 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
@@ -40,6 +41,7 @@
         "queue_job",  # OCA/queue
         "mass_mailing_sms",  # OCA/queue
         "utm",
+        "mail",
     ],
     "external_dependencies": {"python": ["wand"]},
     "data": [
