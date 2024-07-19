@@ -28,6 +28,9 @@ def _sanitize_subject(subject):
     # Remove all line breaks (newlines, carriage returns)
     subject = re.sub(r"[\r\n]+", " ", subject)
 
+    # Remove extra whitespace
+    subject = subject.strip()
+
     # Encode the subject to ensure RFC 2822 compliance
     header = Header(subject, "utf-8")
     sanitized_subject = str(header)
