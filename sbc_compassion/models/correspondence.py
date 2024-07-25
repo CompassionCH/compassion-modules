@@ -243,6 +243,11 @@ class Correspondence(models.Model):
             "kit_identifier",
             "unique(kit_identifier)",
             _("The kit id already exists in database."),
+        ),
+        (
+            "uuid",
+            "unique(uuid)",
+            _("The uuid already exists in database."),
         )
     ]
     # Lock
