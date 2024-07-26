@@ -114,4 +114,6 @@ class CrmLead(models.Model):
         stage_ids = stages._search(
             search_domain, order=order, access_rights_uid=SUPERUSER_ID
         )
-        return stages.browse(stage_ids)
+        return stages.browse(stage_ids) + super(CrmLead, self)._read_group_stage_ids(
+            stages, domain, order
+        )
