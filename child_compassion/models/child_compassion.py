@@ -285,8 +285,8 @@ class CompassionChild(models.Model):
         readonly=False,
     )
     household_id = fields.Many2one("compassion.household", "Household", readonly=True)
-    portrait = fields.Image(related="pictures_ids.headshot")
-    fullshot = fields.Image(related="pictures_ids.fullshot")
+    portrait = fields.Image(compute="_compute_portrait")
+    fullshot = fields.Image(compute="_compute_fullshot")
     child_disaster_impact_ids = fields.One2many(
         "child.disaster.impact", "child_id", "Child Disaster Impact", readonly=True
     )
@@ -348,6 +348,16 @@ class CompassionChild(models.Model):
     def _compute_available(self):
         for child in self:
             child.is_available = child.state in self._available_states()
+
+    @api.depends("pictures_ids")
+    def _compute_portrait(self):
+        for child in self:
+            child.portrait = child.pictures_ids.sorted()[0].headshot
+
+    @api.depends("pictures_ids")
+    def _compute_fullshot(self):
+        for child in self:
+            child.fullshot = child.pictures_ids.sorted()[0].fullshot
 
     @api.model
     def _available_states(self):
