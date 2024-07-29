@@ -550,15 +550,3 @@ class ResPartner(models.Model):
             if data_invs:
                 invoices.update_open_invoices(data_invs)
 
-    def _search(
-        self,
-        args,
-        offset=0,
-        limit=None,
-        order=None,
-        count=False,
-        access_rights_uid=None,
-    ):
-        return super(ResPartner, self)._search(
-            args, offset, limit, order, count, access_rights_uid
-        )
