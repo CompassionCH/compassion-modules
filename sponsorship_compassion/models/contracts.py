@@ -1184,7 +1184,9 @@ class SponsorshipContract(models.Model):
 
                 # Check contract is active or terminated recently.
                 if contract.state == "cancelled" and not bypass_state:
-                    raise UserError(f"The contract {contract.display_name} is not active.")
+                    raise UserError(
+                        f"The contract {contract.display_name} is not active."
+                    )
                 if (
                     contract.state == "terminated"
                     and contract.end_date
@@ -1193,7 +1195,9 @@ class SponsorshipContract(models.Model):
                     limit = invoice.invoice_date - relativedelta(days=180)
                     ended_since = contract.end_date
                     if ended_since.date() < limit:
-                        raise UserError(f"The contract {contract.display_name} is not active.")
+                        raise UserError(
+                            f"The contract {contract.display_name} is not active."
+                        )
 
                 # Activate gift related contracts (if any)
                 if "S" in contract.type:
