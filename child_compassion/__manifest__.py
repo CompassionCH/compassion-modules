@@ -104,6 +104,7 @@
         "report/childpack.xml",
         "report/external_layout.xml",
         "views/print_childpack_view.xml",
+        "views/print_childpicture_view.xml",
     ],
     "demo": [],
     "installable": True,
