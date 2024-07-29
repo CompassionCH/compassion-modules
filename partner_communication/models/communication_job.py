@@ -607,9 +607,15 @@ class CommunicationJob(models.Model):
         failed = self.set_attachments()
         for job in self - failed:
             lang = self.env.context.get("lang_preview", job.partner_id.lang)
-            if job.email_template_id and job.object_ids:
+            template_id = job.email_template_id
+
+            if not template_id and job.config_id:
+                template_id = job.config_id.email_template_id
+                job.write({"email_template_id": template_id})
+
+            if template_id and job.object_ids:
                 try:
-                    fields = job.email_template_id.with_context(
+                    fields = template_id.with_context(
                         template_preview_lang=lang
                     ).generate_email(job.ids, ["body_html", "subject"])
                     job.write(
