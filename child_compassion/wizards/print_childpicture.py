@@ -9,7 +9,7 @@
 ##############################################################################
 import base64
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class PrintChildPicture(models.TransientModel):
@@ -32,7 +32,7 @@ class PrintChildPicture(models.TransientModel):
             .with_context(async_mode=False)
         )
         for child in children:
-                child.get_infos()
+            child.get_infos()
         return children
 
     def get_report(self):
@@ -50,9 +50,7 @@ class PrintChildPicture(models.TransientModel):
         report_ref = self.env.ref(report_name)
         if self.pdf:
             name = children.local_id if len(children) == 1 else "childpicture"
-            self.pdf_name = (
-                f"{name}_{data['type'].split('_')[-1]}.pdf"
-            )
+            self.pdf_name = f"{name}_{data['type'].split('_')[-1]}.pdf"
             pdf_data = report_ref.with_context(
                 must_skip_send_to_printer=True
             )._render_qweb_pdf(children.ids, data=data)
