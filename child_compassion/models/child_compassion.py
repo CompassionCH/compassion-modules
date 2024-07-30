@@ -353,13 +353,13 @@ class CompassionChild(models.Model):
     def _compute_portrait(self):
         for child in self:
             if child.pictures_ids:
-                child.portrait = child.pictures_ids.sorted()[0].headshot
+                child.portrait = child.pictures_ids.sorted()[:1].headshot
 
     @api.depends("pictures_ids")
     def _compute_fullshot(self):
         for child in self:
             if child.pictures_ids:
-                child.fullshot = child.pictures_ids.sorted()[0].fullshot
+                child.fullshot = child.pictures_ids.sorted()[:1].fullshot
 
     @api.model
     def _available_states(self):
