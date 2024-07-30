@@ -97,9 +97,11 @@ class CrmLead(models.Model):
             search_domain = [
                 *(["|"] * (len(team_id_domain) - 1) + team_id_domain),
             ]
-            res += stages.browse(stages._search(
-                search_domain, order=order, access_rights_uid=SUPERUSER_ID
-            ))
+            res += stages.browse(
+                stages._search(
+                    search_domain, order=order, access_rights_uid=SUPERUSER_ID
+                )
+            )
 
             # Order is lost by the merge and empty stages are pushed back, so we need
             # to sort them.
