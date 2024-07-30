@@ -10,7 +10,7 @@
 
 import datetime
 
-from odoo import api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 
 
 class CrmLead(models.Model):
@@ -81,3 +81,30 @@ class CrmLead(models.Model):
         for lead in self:
             if not lead.name and lead.partner_id and lead.partner_id.name:
                 lead.name = lead.partner_id.name
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        res = super()._read_group_stage_ids(stages, domain, order)
+
+        # if the domain contains team_id filters, add them to the search domain
+        team_id_domain = [
+            cond
+            for cond in domain
+            if hasattr(cond, "__getitem__") and cond[0] == "team_id"
+        ]
+
+        if len(team_id_domain) > 0:
+            search_domain = [
+                *(["|"] * (len(team_id_domain) - 1) + team_id_domain),
+            ]
+            res += stages.browse(
+                stages._search(
+                    search_domain, order=order, access_rights_uid=SUPERUSER_ID
+                )
+            )
+
+            # Order is lost by the merge and empty stages are pushed back, so we need
+            # to sort them.
+            res = res.sorted()
+
+        return res
