@@ -101,6 +101,8 @@ class CrmLead(models.Model):
                 search_domain, order=order, access_rights_uid=SUPERUSER_ID
             ))
 
-        # Order is lost by the merge and empty stages are pushed back, so we need
-        # to sort them.
-        return res.sorted()
+            # Order is lost by the merge and empty stages are pushed back, so we need
+            # to sort them.
+            res = res.sorted()
+
+        return res
