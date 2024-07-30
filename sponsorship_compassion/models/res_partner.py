@@ -150,6 +150,7 @@ class ResPartner(models.Model):
                     ("reconciled", "=", False),
                     ("account_id.reconcile", "=", True),
                     ("account_id.code", "=", "1050"),
+                    ("parent_state", "=", "posted"),
                 ]
             )
             partner.receivable_items = move_line_obj.search_count(
@@ -276,7 +277,7 @@ class ResPartner(models.Model):
         tree_view_id = self.env.ref("account.view_move_line_tree").id
         form_view_id = self.env.ref("account.view_move_line_form").id
         action = {
-            "name": _("1050 move lines"),
+            "name": _("Unreconciled Items"),
             "type": "ir.actions.act_window",
             "view_mode": "tree",
             "res_model": "account.move.line",
@@ -284,7 +285,7 @@ class ResPartner(models.Model):
             "views": [(tree_view_id, "tree"), (form_view_id, "form")],
             "target": "current",
             "context": self.with_context(
-                search_default_partner_id=self.ids
+                search_default_partner_id=self.ids, search_default_posted=1
             ).env.context,
         }
         return action
@@ -308,14 +309,10 @@ class ResPartner(models.Model):
         }
 
     def unreconciled_transaction_items(self):
-        return self.with_context(
-            search_default_unreconciled=1
-        ).receivable_transaction_items()
-
-    def receivable_transaction_items(self):
         account_ids = self.env["account.account"].search([("code", "=", "1050")]).ids
+
         return self.with_context(
-            search_default_account_id=account_ids[0]
+            search_default_unreconciled=1, search_default_account_id=account_ids[0]
         ).show_move_lines()
 
     def open_contracts(self):
@@ -552,3 +549,4 @@ class ResPartner(models.Model):
             data_invs = invoices._build_invoices_data(payment_term_id=payment_term_id)
             if data_invs:
                 invoices.update_open_invoices(data_invs)
+
