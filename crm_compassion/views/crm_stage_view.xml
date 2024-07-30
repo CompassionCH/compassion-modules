@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- CRM Stage Search View -->
+    <record id="crm_stage_search_view" model="ir.ui.view">
+        <field name="name">crm.stage.search.inherit</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_lead_stage_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_won']" position="after">
+                <field name="is_lost" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- CRM Stage Tree View -->
+    <record id="crm_stage_tree_view" model="ir.ui.view">
+        <field name="name">crm.stage.tree.inherit</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_won']" position="after">
+                <field name="is_lost" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- CRM Stage Form View -->
+    <record id="crm_stage_form_view" model="ir.ui.view">
+        <field name="name">crm.stage.form.inherit</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_won']" position="after">
+                <field name="is_lost" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

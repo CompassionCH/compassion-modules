@@ -44,9 +44,16 @@
                     </field>
                 </page>
             </xpath>
+
+            <xpath expr="//field[@name='active']" position="after">
+                <field name="is_lost" invisible="1"/>
+            </xpath>
+
+            <xpath expr="(//widget[@name='web_ribbon'])[1]" position="attributes">
+                <attribute name="attrs">{'invisible': [('is_lost', '=', False)]}</attribute>
+            </xpath>
         </field>
     </record>
-
 
     <!-- Opportunities Tree View -->
     <record model="ir.ui.view" id="crm_case_tree_view_oppor_spons1">
@@ -100,7 +107,7 @@
 
     <!-- CRM Leads View  -->
     <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
-        <field name="domain">['|', '&amp;', ('active', '=', True), ('active', '=', False), ('probability', '=', 0)]</field>
+        <field name="domain">[]</field>
     </record>
 
     <!-- CRM Pipeline View  -->
@@ -130,6 +137,9 @@
           domain="['|', ('message_is_follower', '=', True), ('user_id', '=', uid)]"
           help="Followed Opportunities"
         />
+            </filter>
+            <filter name="lost" position="replace">
+                <filter string="Lost" name="lost" domain="[('is_lost', '=', True)]" />
             </filter>
         </field>
     </record>

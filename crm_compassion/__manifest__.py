@@ -61,6 +61,7 @@
         "views/calendar_view.xml",
         "views/contract_origin_view.xml",
         "views/crm_lead_view.xml",
+        "views/crm_stage_view.xml",
         "views/demand_planning_settings.xml",
         "views/demand_planning.xml",
         "views/demand_weekly_revision.xml",

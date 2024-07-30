@@ -18,6 +18,7 @@ from . import (
     contract_group,
     contract_origin,
     crm_lead,
+    crm_stage,
     demand_planning,
     event_compassion,
     mail_activity,

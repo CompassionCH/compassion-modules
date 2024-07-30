@@ -25,6 +25,7 @@ class CrmLead(models.Model):
     event_ids = fields.One2many(
         "crm.event.compassion", "lead_id", "Events", readonly=False
     )
+    is_lost = fields.Boolean(related="stage_id.is_lost")
 
     def create_event(self):
         self.ensure_one()
@@ -49,6 +50,20 @@ class CrmLead(models.Model):
                 "default_lead_id": self.id,
             },
         }
+
+
+    # WHAT TO DO HEEERRRREEEE
+    #def action_set_lost(self, **additional_values):
+    #    lost_properties = {
+    #        'probability': 0,
+    #        'automated_probability': 0,
+    #    }
+
+
+    #    if additional_values:
+    #        self.write(dict(additional_values))
+    #    return self.write()
+
 
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
@@ -108,3 +123,11 @@ class CrmLead(models.Model):
             res = res.sorted()
 
         return res
+
+    @api.depends(lambda self: ['tag_ids', 'stage_id', 'team_id'] + self._pls_get_safe_fields())
+    def _compute_probabilities(self):
+        for lead in self:
+            if lead.stage_id.is_lost:
+                lead.probability = 0
+                return
+            super()._compute_probabilities()
