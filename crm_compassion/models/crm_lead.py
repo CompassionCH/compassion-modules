@@ -51,19 +51,17 @@ class CrmLead(models.Model):
             },
         }
 
+    def action_set_lost(self, **additional_values):
+        lost_properties = {
+            'probability': 0,
+            'automated_probability': 0,
+        }
+        if additional_values:
+            lost_properties.update(dict(additional_values))
 
-    # WHAT TO DO HEEERRRREEEE
-    #def action_set_lost(self, **additional_values):
-    #    lost_properties = {
-    #        'probability': 0,
-    #        'automated_probability': 0,
-    #    }
+        result = self.write(dict(additional_values))
 
-
-    #    if additional_values:
-    #        self.write(dict(additional_values))
-    #    return self.write()
-
+        return result
 
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
