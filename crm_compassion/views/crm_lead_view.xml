@@ -45,19 +45,7 @@
                 </page>
             </xpath>
 
-            <xpath expr="//field[@name='active']" position="after">
-                <field name="is_lost" invisible="1" />
-            </xpath>
-
-            <xpath
-        expr="(//widget[@name='web_ribbon'])[1]"
-        position="attributes"
-      >
-                <attribute
-          name="attrs"
-        >{'invisible': [('is_lost', '=', False)]}</attribute>
-            </xpath>
-
+            <!--
             <xpath
         expr="//button[@name='action_set_lost']"
         position="attributes"
@@ -71,6 +59,7 @@
       >
                 <attribute name="attrs">{'invisible': True}</attribute>
             </xpath>
+            -->
         </field>
     </record>
 
@@ -126,12 +115,12 @@
 
     <!-- CRM Leads View  -->
     <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
-        <field name="domain">[]</field>
+        <field name="domain">['|', '&amp;', ('active', '=', True), ('active', '=', False), ('probability', '=', 0)]</field>
     </record>
 
     <!-- CRM Pipeline View  -->
     <record model="ir.actions.act_window" id="crm.crm_lead_all_leads">
-        <field name="domain">[]</field>
+        <field name="domain">['|', '&amp;', ('active', '=', True), ('active', '=', False), ('probability', '=', 0)]</field>
     </record>
 
     <record id="view_crm_case_pipeline_filter_custom" model="ir.ui.view">
@@ -157,17 +146,12 @@
           help="Followed Opportunities"
         />
             </filter>
-            <filter name="lost" position="replace">
-                <filter
-          string="Lost"
-          name="lost"
-          domain="[('is_lost', '=', True)]"
-        />
-            </filter>
         </field>
     </record>
 
+    <!--
         <record id="crm.action_mark_as_lost" model="ir.actions.server">
             <field name="binding_model_id" eval="False" />
         </record>
+    -->
 </odoo>
