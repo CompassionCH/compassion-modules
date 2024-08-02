@@ -3,6 +3,7 @@ from odoo import fields, models
 
 class ReplyToIssue(models.TransientModel):
     _name = "sbc.reply.to.issue.wizard"
+    _description = "Reply to issue wizard"
 
     translation_issue = fields.Selection(
         selection="forward_get_translation_issue_list",
