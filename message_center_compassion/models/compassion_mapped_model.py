@@ -104,7 +104,7 @@ class CompassionMappedModel(models.AbstractModel):
                         )
                         data.update(json_spec.from_json(sub_data))
                     else:
-                        data.update(json_spec.from_json(json_value))
+                        data.update(json_spec.from_json(json_value, ("child_id", "=", json_spec.mapping_id.id)))
                     break  # break from attempts if successful
             res.append(data)
         return res[0] if len(res) == 1 and not isinstance(res[0], tuple) else res

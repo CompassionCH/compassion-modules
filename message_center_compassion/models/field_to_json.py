@@ -168,7 +168,7 @@ class FieldToJson(models.Model):
 
         return res
 
-    def from_json(self, json_value):
+    def from_json(self, json_value, filter=None):
         """
         Converts the JSON value to Odoo field value.
         :param json_value: JSON representation of the field
@@ -200,7 +200,7 @@ class FieldToJson(models.Model):
                 },
             )
         if self.relational_field or self.sub_mapping_id:
-            converted_value = self._json_to_relational_value(converted_value)
+            converted_value = self._json_to_relational_value(converted_value, filter)
             if converted_value == "deep_relation":
                 # We cannot handle data for a complex relational field
                 # (only one descendent).
@@ -212,7 +212,7 @@ class FieldToJson(models.Model):
                 return {}
         return {field_name: converted_value}
 
-    def _json_to_relational_value(self, value):
+    def _json_to_relational_value(self, value, filter=None):
         """
         Converts a received JSON value into valid data for a relational record
         Example of output:
@@ -249,17 +249,22 @@ class FieldToJson(models.Model):
                     # In that case we receive several values for the relation record
                     # and use one value in particular to find a matching record.
                     search_val = val.get(search_field)
-                records = (
-                    relational_model.search(
-                        [
-                            "|",
-                            (search_field, "=", search_val),
-                            (search_field, "=ilike", str(search_val)),
-                        ]
-                    )
-                    if search_val
-                    else relational_model
-                )
+
+                if search_val:
+                    search_arguments = [
+                                "|",
+                                (search_field, "=", search_val),
+                                (search_field, "=ilike", str(search_val)),
+                            ]
+
+                    if filter:
+                        search_arguments.extend(["&", filter])
+
+                    records = relational_model.search(search_arguments)
+
+                else:
+                    records = relational_model
+
                 if self.relational_field_id.ttype == "many2one":
                     record = records[:1]  # Only take one relation
                     if not record and self.allow_relational_creation:

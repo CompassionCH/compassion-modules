@@ -42,6 +42,8 @@ def major_revision(child, revised_values):
             }
         )
 
+    # archive revisions ???
+
 
 class CompassionChild(models.Model):
     """Add fields for retrieving values for communications.
