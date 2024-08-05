@@ -68,3 +68,9 @@ class AccountReconciliationWidget(models.AbstractModel):
         return super()._prepare_move_lines(
             move_lines, target_currency, target_date, recs_count
         )
+
+    @api.model
+    def process_bank_statement_line(self, st_line_ids, data):
+        # Execute a job to speedup the interface. The returned data is not used anyway.
+        super().with_delay().process_bank_statement_line(st_line_ids, data)
+        return {}
