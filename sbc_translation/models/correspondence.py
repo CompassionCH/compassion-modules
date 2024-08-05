@@ -475,8 +475,8 @@ class Correspondence(models.Model):
             # Send to GMC
             self.sudo().create_commkit()
         else:
-            # Recompose the letter image and process letter
-            self.sudo().with_context(force_publish=True).process_letter()
+            # Recompose the letter image
+            self.compose_letter_button()
 
     def list_letters(self):
         """API call to fetch letters to translate"""
