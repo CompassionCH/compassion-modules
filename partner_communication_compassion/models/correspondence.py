@@ -14,13 +14,9 @@ from functools import reduce
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 from odoo.addons.sbc_compassion.models.correspondence import DEFAULT_LETTER_DPI
-from odoo.addons.sbc_compassion.models.correspondence_page import (
-    BOX_SEPARATOR,
-    PAGE_SEPARATOR,
-)
 
 _logger = logging.getLogger(__name__)
 
@@ -56,7 +52,6 @@ class Correspondence(models.Model):
         tracking=True,
     )
     zip_file = fields.Binary()
-    has_valid_language = fields.Boolean(compute="_compute_valid_language", store=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -68,32 +63,6 @@ class Correspondence(models.Model):
                 letter.letter_format = "zip"
             else:
                 super(Correspondence, letter)._compute_letter_format()
-
-    @api.depends(
-        "supporter_languages_ids",
-        "page_ids",
-        "page_ids.translated_text",
-        "translation_language_id",
-    )
-    def _compute_valid_language(self):
-        """Detect if text is written in the language corresponding to the
-        language_id"""
-        for letter in self:
-            letter.has_valid_language = False
-            if letter.translated_text and letter.translation_language_id:
-                s = (
-                    letter.translated_text.strip(" \t\n\r.")
-                    .replace(BOX_SEPARATOR, "")
-                    .replace(PAGE_SEPARATOR, "")
-                )
-                if s:
-                    # find the language of text argument
-                    lang = self.env["langdetect"].detect_language(
-                        letter.translated_text
-                    )
-                    letter.has_valid_language = (
-                        lang and lang in letter.supporter_languages_ids
-                    )
 
     def _compute_preferred_dpi(self):
         """Compute DPI based on letter delivery preference"""
@@ -153,15 +122,7 @@ class Correspondence(models.Model):
     def process_letter(self):
         # Prepare the communication when a letter is published
         res = super().process_letter()
-        intro_letter = self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
-        skip = self.filtered(
-            lambda letter: not letter.letter_image
-            or (
-                intro_letter in letter.communication_type_ids
-                and not letter.sponsorship_id.send_introduction_letter
-            )
-        )
-        (self - skip).send_communication()
+        self.send_communication()
         return res
 
     def send_communication(self):
@@ -182,7 +143,17 @@ class Correspondence(models.Model):
         if self.env.context.get("force_send"):
             eligible_letters = self
         else:
-            eligible_letters = self.filtered(
+            intro_letter = self.env.ref(
+                "sbc_compassion.correspondence_type_new_sponsor"
+            )
+            skip = self.filtered(
+                lambda letter: not letter.letter_image
+                or (
+                    intro_letter in letter.communication_type_ids
+                    and not letter.sponsorship_id.send_introduction_letter
+                )
+            )
+            eligible_letters = (self - skip).filtered(
                 lambda letter: letter.sponsorship_id.state == "active"
                 or final_letter in letter.communication_type_ids
             )
