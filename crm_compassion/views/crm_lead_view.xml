@@ -44,22 +44,6 @@
                     </field>
                 </page>
             </xpath>
-
-            <!--
-            <xpath
-        expr="//button[@name='action_set_lost']"
-        position="attributes"
-      >
-                <attribute name="attrs">{'invisible': True}</attribute>
-            </xpath>
-
-            <xpath
-        expr="//button[@name='%(crm.crm_lead_lost_action)d']"
-        position="attributes"
-      >
-                <attribute name="attrs">{'invisible': True}</attribute>
-            </xpath>
-            -->
         </field>
     </record>
 
@@ -148,10 +132,4 @@
             </filter>
         </field>
     </record>
-
-    <!--
-        <record id="crm.action_mark_as_lost" model="ir.actions.server">
-            <field name="binding_model_id" eval="False" />
-        </record>
-    -->
 </odoo>

@@ -53,14 +53,12 @@ class CrmLead(models.Model):
     def write(self, vals):
         updated_stage_id = vals.get('stage_id')
 
-        is_lost = False
-
         if updated_stage_id:
             stage = self.env['crm.stage'].browse(updated_stage_id)
-            if not self._is_lost() and stage.is_lost:
-                vals.update({'active': False, 'probability': 0}) # put default lost_reason ???
-                is_lost = True
-            elif self._is_lost() and not stage.is_lost:
+            is_lost = not self.active and self.probability == 0
+            if not is_lost and stage.is_lost:
+                vals.update({'active': False, 'probability': 0})
+            elif is_lost and not stage.is_lost:
                 vals.update({'active': True, 'lost_reason': False})
                 lead_probabilities = self._pls_get_naive_bayes_probabilities()
                 if self.id in lead_probabilities:
@@ -69,24 +67,6 @@ class CrmLead(models.Model):
                         vals.update({'probability': lead_probabilities[self.id]})
 
         super().write(vals)
-
-        if is_lost:
-            action_values = self.env.ref('crm.crm_lead_lost_action').sudo().read()[0]
-            action_values.update({'context': self.env.context})
-            return action_values
-
-
-    #def action_set_lost(self, **additional_values):
-    #    lost_properties = {
-    #        'probability': 0,
-    #        'automated_probability': 0,
-    #    }
-    #    if additional_values:
-    #        lost_properties.update(dict(additional_values))
-
-    #    result = self.write(dict(additional_values))
-
-    #    return result
 
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
@@ -147,19 +127,7 @@ class CrmLead(models.Model):
 
         return res
 
-    def _is_lost(self):
-        self.ensure_one()
-        return not self.active and self.probability == 0
-
     def search(self, args, offset=0, limit=None, order=None, count=False):
         return super().search(args, offset, limit, order, count)
-
-    #@api.depends(lambda self: ['tag_ids', 'stage_id', 'team_id'] + self._pls_get_safe_fields())
-    #def _compute_probabilities(self):
-    #    for lead in self:
-    #        if lead.stage_id.is_lost:
-    #            lead.probability = 0
-    #            return
-    #        super()._compute_probabilities()
 
 
