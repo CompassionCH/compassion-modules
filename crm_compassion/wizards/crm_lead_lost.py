@@ -1,6 +1,14 @@
-# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Nicolas Praz <npraz@compassion.ch>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class CrmLeadLost(models.TransientModel):
