@@ -297,7 +297,7 @@ class HouseholdMembers(models.Model):
             ("Godmother", _("godmother")),
             ("Sister", _("sister")),
             ("Beneficiary - Female", "Participant - Female"),
-            ("Beneficiary - Female", "Participant - Female"),
+            ("Participant - Female", "Participant - Female"),
         ]
 
     @api.model

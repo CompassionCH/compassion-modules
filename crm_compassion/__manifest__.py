@@ -30,7 +30,7 @@
 {
     "name": "Compassion - Events",
     "summary": "Compassion Events and Opportunities",
-    "version": "14.0.1.1.0",
+    "version": "14.0.1.2.0",
     "development_status": "Beta",
     "category": "Customer Relationship Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
@@ -68,9 +68,6 @@
         "views/field_view.xml",
         "views/global_childpool_view.xml",
         "views/hold_view.xml",
-        "views/interaction_resume_view.xml",
-        "views/partner_log_interaction_wizard_view.xml",
-        "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
     ],

@@ -229,6 +229,7 @@ class Correspondence(models.Model):
     is_final_letter = fields.Boolean(compute="_compute_is_final_letter")
     generator_id = fields.Many2one("correspondence.s2b.generator", readonly=False)
     resubmit_id = fields.Integer(default=1)
+    has_valid_language = fields.Boolean(compute="_compute_valid_language", store=True)
 
     # Letter remote access
     ######################
@@ -412,6 +413,32 @@ class Correspondence(models.Model):
                 letter.child_id.project_id.field_office_id.spoken_language_ids
                 + letter.child_id.project_id.field_office_id.translated_language_ids
             )
+
+    @api.depends(
+        "supporter_languages_ids",
+        "page_ids",
+        "page_ids.translated_text",
+        "translation_language_id",
+    )
+    def _compute_valid_language(self):
+        """Detect if text is written in the language corresponding to the
+        language_id"""
+        for letter in self:
+            letter.has_valid_language = False
+            if letter.translated_text and letter.translation_language_id:
+                s = (
+                    letter.translated_text.strip(" \t\n\r.")
+                    .replace(BOX_SEPARATOR, "")
+                    .replace(PAGE_SEPARATOR, "")
+                )
+                if s:
+                    # find the language of text argument
+                    lang = self.env["langdetect"].detect_language(
+                        letter.translated_text
+                    )
+                    letter.has_valid_language = (
+                        lang and lang in letter.supporter_languages_ids
+                    )
 
     ##########################################################################
     #                              ORM METHODS                               #

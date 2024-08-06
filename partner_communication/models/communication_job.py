@@ -20,6 +20,8 @@ from jinja2 import TemplateSyntaxError
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import MissingError, QWebException, UserError
 
+from odoo.addons.phone_validation.tools import phone_validation
+
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
@@ -545,7 +547,26 @@ class CommunicationJob(models.Model):
         ):
             sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
             sms_texts.append(sms_text)
-            job.partner_id.message_post_send_sms(sms_text, note_msg=job.subject)
+            sanitize_res = phone_validation.phone_sanitize_numbers_w_record(
+                [job.partner_id.mobile], job.partner_id
+            )
+            sanitized_numbers = [
+                info["sanitized"] for info in sanitize_res.values() if info["sanitized"]
+            ]
+            invalid_numbers = [
+                number for number, info in sanitize_res.items() if info["code"]
+            ]
+            if invalid_numbers:
+                raise UserError(
+                    _("Invalid phone numbers: %s") % ", ".join(invalid_numbers)
+                )
+            self.env["sms.sms"].create(
+                {
+                    "number": sanitized_numbers[0],
+                    "body": sms_text,
+                    "partner_id": job.partner_id.id,
+                }
+            ).send()
             job.write(
                 {
                     "state": "done",
