@@ -30,7 +30,7 @@
 {
     "name": "Compassion - Events",
     "summary": "Compassion Events and Opportunities",
-    "version": "14.0.1.2.0",
+    "version": "14.0.1.3.0",
     "development_status": "Beta",
     "category": "Customer Relationship Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
@@ -71,6 +71,7 @@
         "views/hold_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
+        "wizards/crm_lead_lost_views.xml"
     ],
     "qweb": ["static/src/xml/kanban_colors.xml"],
 }

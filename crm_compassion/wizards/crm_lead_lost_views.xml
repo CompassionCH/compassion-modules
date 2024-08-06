@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="crm_lead_lost_view_form_inherit" model="ir.ui.view">
+            <field name="name">crm.lead.lost.form.inherit</field>
+            <field name="model">crm.lead.lost</field>
+            <field name="inherit_id" ref="crm.crm_lead_lost_view_form" />
+            <field name="arch" type="xml">
+                <field name="lost_reason_id" position="after">
+                    <field name="lost_stage_id" options="{'no_create_edit': True}" domain="[('is_lost', '=', True) ]"/>
+                </field>
+            </field>
+        </record>
+</odoo>

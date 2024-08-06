@@ -12,4 +12,5 @@ from . import (
     child_hold_wizard,
     demand_settings,
     portal_wizard,
+    crm_lead_lost
 )

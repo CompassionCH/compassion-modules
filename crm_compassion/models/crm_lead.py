@@ -126,8 +126,3 @@ class CrmLead(models.Model):
             res = res.sorted()
 
         return res
-
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        return super().search(args, offset, limit, order, count)
-
-
