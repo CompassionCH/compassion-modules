@@ -122,7 +122,9 @@ class MappedModel(models.AbstractModel):
                                         [
                                             ("lang", "=", lang.lang_id.code),
                                             ("src", "=ilike", english_val),
-                                        ]
+                                            ("name", "ilike", t_field.model),
+                                        ],
+                                        limit=1,
                                     ).value = new_translation
                             else:
                                 # Write the value inside the correct relation
@@ -142,7 +144,13 @@ class MappedModel(models.AbstractModel):
         domain_parts = []
         for f_name, t_field in self._get_ir_translated_fields().items():
             if t_field.ttype == "selection":
-                field_names = self.mapped(t_field.name)
+                try:
+                    field_names = self.mapped(t_field.name)
+                except KeyError:
+                    try:
+                        field_names = self.mapped(f_name)
+                    except KeyError:
+                        continue
                 f_sel = t_field.selection_ids.filtered(
                     lambda selection, field_names=field_names: selection.value
                     in field_names
