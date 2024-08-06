@@ -127,7 +127,6 @@
                             <field name="email_from" widget="email" />
                         </group>
                     </group>
-
                     <group string="Request">
                         <group>
                             <field name="team_id" />
@@ -148,8 +147,6 @@
                             <field name="priority" widget="priority" />
                         </group>
                     </group>
-
-
                     <group>
                         <field
               name="description"
