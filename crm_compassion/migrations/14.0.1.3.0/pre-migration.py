@@ -9,5 +9,5 @@ def migrate(env, version):
         UPDATE crm_stage
         SET is_lost = TRUE
         WHERE LOWER(name) LIKE '%lost%';
-        """
+        """,
     )

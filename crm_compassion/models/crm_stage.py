@@ -14,7 +14,7 @@ from odoo import fields, models
 class CrmStage(models.Model):
     _inherit = "crm.stage"
 
-    is_lost = fields.Boolean('Is Lost Stage?', default=False)
+    is_lost = fields.Boolean("Is Lost Stage?", default=False)
 
     _sql_constraints = [
         (

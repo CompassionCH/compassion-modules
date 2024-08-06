@@ -51,20 +51,20 @@ class CrmLead(models.Model):
         }
 
     def write(self, vals):
-        updated_stage_id = vals.get('stage_id')
+        updated_stage_id = vals.get("stage_id")
 
         if updated_stage_id:
-            stage = self.env['crm.stage'].browse(updated_stage_id)
+            stage = self.env["crm.stage"].browse(updated_stage_id)
             is_lost = not self.active and self.probability == 0
             if not is_lost and stage.is_lost:
-                vals.update({'active': False, 'probability': 0})
+                vals.update({"active": False, "probability": 0})
             elif is_lost and not stage.is_lost:
-                vals.update({'active': True, 'lost_reason': False})
+                vals.update({"active": True, "lost_reason": False})
                 lead_probabilities = self._pls_get_naive_bayes_probabilities()
                 if self.id in lead_probabilities:
-                    vals.update({'automated_probability': lead_probabilities[self.id]})
+                    vals.update({"automated_probability": lead_probabilities[self.id]})
                     if self.is_automated_probability:
-                        vals.update({'probability': lead_probabilities[self.id]})
+                        vals.update({"probability": lead_probabilities[self.id]})
 
         super().write(vals)
 

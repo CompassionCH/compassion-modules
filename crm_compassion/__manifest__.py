@@ -71,7 +71,7 @@
         "views/hold_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
-        "wizards/crm_lead_lost_views.xml"
+        "wizards/crm_lead_lost_views.xml",
     ],
     "qweb": ["static/src/xml/kanban_colors.xml"],
 }
