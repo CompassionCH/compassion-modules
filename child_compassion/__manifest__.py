@@ -103,6 +103,7 @@
         "data/queue_job.xml",
         "report/childpack.xml",
         "report/external_layout.xml",
+        "report/child_picture.xml",
         "views/print_childpack_view.xml",
         "views/print_childpicture_view.xml",
     ],

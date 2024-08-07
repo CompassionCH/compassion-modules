@@ -46,7 +46,7 @@ class PrintChildPicture(models.TransientModel):
             "is_pdf": self.pdf,
             "type": "partner_communication_compassion.child_picture",
         }
-        report_name = "partner_communication_compassion.report_child_picture"
+        report_name = "child_compassion.report_child_picture"
         report_ref = self.env.ref(report_name)
         if self.pdf:
             name = children.local_id if len(children) == 1 else "childpicture"
