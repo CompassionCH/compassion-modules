@@ -84,14 +84,13 @@ class RestController(http.Controller):
         headers = request.httprequest.headers
         self._validate_headers(headers)
         correspondence_obj = request.env["correspondence"].sudo()
-
-        correspondence = correspondence_obj.search([("uuid", "=", id)]) # ACTUALLY IS THISSSS -> uuid passed NOT UNIQUE
+        correspondence = correspondence_obj.search([("uuid", "=", id)])
         if not correspondence:
             raise NotFound()
         correspondence.email_read = datetime.now()
         disposition = disposition if disposition else "attachment"
         content_type = "application/" + (
-            "zip" if correspondence.letter_format == "zip" else "pdf" # THISSSSS
+            "zip" if correspondence.letter_format == "zip" else "pdf"
         )
         data, fname = _get_data(correspondence, type)
         headers = Headers([("Content-Disposition", f"{disposition}; filename={fname}")])

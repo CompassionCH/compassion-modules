@@ -15,8 +15,6 @@ import os.path
 import subprocess
 import tempfile
 
-import traceback
-
 from odoo import fields, models
 from odoo.tools import config
 
@@ -189,9 +187,6 @@ class CorrespondenceTemplate(models.Model):
                 text_list.append([temp_img[-1].name, t_type])
 
         for image in image_data:
-            if len(image) == 0:
-                continue
-
             ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
             ifile.write(base64.b64decode(image))
             ifile.flush()
@@ -241,10 +236,7 @@ class CorrespondenceTemplate(models.Model):
             os.remove(pdf_file.name)
         except FileNotFoundError:
             _logger.error("Cannot read PDF made by FPDF.")
-            print(traceback.format_exc())
             res = False
-        except:
-            a = -1
         return res
 
     # path of the FPDF folder

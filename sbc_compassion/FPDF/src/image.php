@@ -34,8 +34,7 @@ class Image
 
         /* We resize images only downward, never upward. If we need to rescale one down,
            we look for the smallest ratio (originalSize / maxSize) to scale the image */
-
-        $factor = ($this->width == 0 || $this->height == 0) ? 1 : min(min(1, $maxWidth / $this->width), $maxHeight / $this->height);
+        $factor = min(min(1, $maxWidth / $this->width), $maxHeight / $this->height);
         // We compute the actual width and length of the image
         $width = (int)($this->width * $factor);
         $height = (int)($this->height * $factor);
