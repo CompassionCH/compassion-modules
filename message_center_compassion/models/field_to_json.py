@@ -168,7 +168,7 @@ class FieldToJson(models.Model):
 
         return res
 
-    def from_json(self, json_value, filter=None):
+    def from_json(self, json_value, data_filter=None):
         """
         Converts the JSON value to Odoo field value.
         :param json_value: JSON representation of the field
@@ -200,7 +200,7 @@ class FieldToJson(models.Model):
                 },
             )
         if self.relational_field or self.sub_mapping_id:
-            converted_value = self._json_to_relational_value(converted_value, filter)
+            converted_value = self._json_to_relational_value(converted_value, data_filter)
             if converted_value == "deep_relation":
                 # We cannot handle data for a complex relational field
                 # (only one descendent).
@@ -212,7 +212,7 @@ class FieldToJson(models.Model):
                 return {}
         return {field_name: converted_value}
 
-    def _json_to_relational_value(self, value, filter=None):
+    def _json_to_relational_value(self, value, data_filter=None):
         """
         Converts a received JSON value into valid data for a relational record
         Example of output:
@@ -257,8 +257,8 @@ class FieldToJson(models.Model):
                                 (search_field, "=ilike", str(search_val)),
                             ]
 
-                    if filter:
-                        search_arguments.extend(["&", filter])
+                    if data_filter:
+                        search_arguments[:0] = ["&", data_filter]
 
                     records = relational_model.search(search_arguments)
 
@@ -276,7 +276,8 @@ class FieldToJson(models.Model):
                     if not records and self.allow_relational_creation:
                         to_create.append(val)
                         continue
-                    orm_vals.extend([(4, rid) for rid in records.ids])
+                    orm_operation = 4 if self.relational_write_mode == "overwrite" else 4
+                    orm_vals.extend([(orm_operation , rid) for rid in records.ids])
                     if to_update:
                         orm_vals.extend([(1, rid, val) for rid in records.ids])
         else:

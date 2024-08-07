@@ -473,7 +473,7 @@ class CompassionChild(models.Model):
             child = self.search([("global_id", "=", global_id)])
             if child:
                 child_ids.append(child.id)
-                child._major_revision(self.json_to_data(child_data))
+                child._major_revision(self.json_to_data(child_data, data_filter=("child_id", "=", child.id)))
         return child_ids
 
     @api.model
