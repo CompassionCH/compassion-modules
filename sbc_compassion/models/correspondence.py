@@ -248,7 +248,7 @@ class Correspondence(models.Model):
             "uuid",
             "unique(uuid)",
             _("The uuid already exists in database."),
-        )
+        ),
     ]
     # Lock
     #######
