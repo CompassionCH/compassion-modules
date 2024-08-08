@@ -25,8 +25,7 @@ class CrmRequest(models.Model):
                         "email": claim.email_from or claim.partner_id.email,
                         "communication_type": "Support",
                         "subject": message.subject,
-                        "body": html2plaintext(message.body).replace("\n\n", "\n")[:200]
-                        + "...",
+                        "body": html2plaintext(message.body).replace("\n\n", "\n"),
                         "has_attachment": bool(message.attachment_ids),
                         "tracking_status": message.mail_tracking_ids[:1].state,
                     }

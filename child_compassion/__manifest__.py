@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Children",
-    "version": "14.0.1.1.0",
+    "version": "14.0.1.2.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -103,7 +103,9 @@
         "data/queue_job.xml",
         "report/childpack.xml",
         "report/external_layout.xml",
+        "report/child_picture.xml",
         "views/print_childpack_view.xml",
+        "views/print_childpicture_view.xml",
     ],
     "demo": [],
     "installable": True,

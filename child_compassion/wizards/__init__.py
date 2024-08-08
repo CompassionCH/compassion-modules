@@ -7,4 +7,5 @@ from . import (
     print_childpack,
     project_description,
     staff_notification_settings,
+    print_childpicture,
 )

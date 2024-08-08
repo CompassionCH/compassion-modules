@@ -19,7 +19,7 @@ class MailingTrace(models.Model):
         if self.mass_mailing_id.body_html:
             re_pattern = re.compile(r"(\n)+")
             res = html2plaintext(self.mass_mailing_id.body_html)
-            res = re_pattern.sub("\n", res)[:200] + "..."
+            res = re_pattern.sub("\n", res)
         return res
 
     def _get_interaction_data(self, partner_id):

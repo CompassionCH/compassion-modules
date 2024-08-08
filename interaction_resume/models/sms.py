@@ -20,7 +20,7 @@ class Sms(models.Model):
                 "date": rec.create_date,
                 "communication_type": "SMS",
                 "body": rec.body,
-                "subject": rec.body[:50] + "..." if len(rec.body) > 50 else rec.body,
+                "subject": "SMS",
                 "tracking_status": rec.state,
             }
             for rec in self

@@ -20,7 +20,8 @@
     model="compassion.child"
     string="Child Picture"
     report_type="qweb-pdf"
-    name="partner_communication_compassion.child_picture"
+    name="child_compassion.child_picture"
+    menu="False"
   />
     <record id="report_child_picture" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_child_picture" />

@@ -12,6 +12,10 @@ class PartnerCommunication(models.Model):
         "sms": "SMS",
     }
 
+    def _get_interaction_partner_domain(self, partner):
+        domain = super()._get_interaction_partner_domain(partner)
+        return domain + [("state", "=", "done")]
+
     def _get_interaction_data(self, partner_id):
         default_comm = self.env.ref("partner_communication.default_communication")
         return [
@@ -20,7 +24,7 @@ class PartnerCommunication(models.Model):
                 "res_model": self._name,
                 "res_id": rec.id,
                 "direction": "out",
-                "date": rec.date,
+                "date": rec.sent_date,
                 "email": rec.partner_id.email,
                 "communication_type": self.COMMUNICATION_TYPE_MAPPING.get(
                     rec.send_mode, "Other"
@@ -28,8 +32,7 @@ class PartnerCommunication(models.Model):
                 "subject": rec.config_id.name
                 if rec.config_id != default_comm or not rec.subject
                 else rec.subject,
-                "body": html2plaintext(rec.body_html).replace("\n\n", "\n")[:200]
-                + "...",
+                "body": html2plaintext(rec.body_html).replace("\n\n", "\n"),
                 "has_attachment": bool(rec.attachment_ids),
                 "tracking_status": rec.email_id.mail_tracking_ids[:1].state or "sent",
             }
