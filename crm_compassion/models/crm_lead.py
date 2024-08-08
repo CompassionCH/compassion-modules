@@ -66,7 +66,7 @@ class CrmLead(models.Model):
                     if self.is_automated_probability:
                         vals.update({"probability": lead_probabilities[self.id]})
 
-        super().write(vals)
+        return super().write(vals)
 
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
