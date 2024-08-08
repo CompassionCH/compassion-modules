@@ -23,7 +23,7 @@ class OtherInteractions(models.Model):
                 "direction": rec.direction,
                 "date": rec.date,
                 "communication_type": rec.communication_type,
-                "body": html2plaintext(rec.body).replace("\n\n", "\n")[:200] + "...",
+                "body": html2plaintext(rec.body).replace("\n\n", "\n"),
                 "subject": rec.subject,
                 "other_type": rec.other_type,
             }
