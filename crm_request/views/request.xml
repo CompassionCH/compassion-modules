@@ -119,7 +119,15 @@
                     <h1>
                         <field name="name" />
                     </h1>
+
                     <group>
+                        <group groups="base.group_user" string="Reporter">
+                            <field name="partner_id" string="Partner" />
+                            <field name="partner_phone" />
+                            <field name="email_from" widget="email" />
+                        </group>
+                    </group>
+                    <group string="Request">
                         <group>
                             <field name="team_id" />
                             <field
@@ -144,13 +152,6 @@
               name="description"
               attrs="{'invisible': [('description', '=', False)]}"
             />
-                    </group>
-                    <group>
-                        <group groups="base.group_user" string="Reporter">
-                            <field name="partner_id" string="Partner" />
-                            <field name="partner_phone" />
-                            <field name="email_from" widget="email" />
-                        </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
