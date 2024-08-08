@@ -96,7 +96,7 @@ class PartnerCommunication(models.Model):
             children = self.get_objects().mapped("child_id")
         pdf = self._get_pdf_from_data(
             {"doc_ids": children.ids},
-            self.env.ref("partner_communication_compassion.report_child_picture"),
+            self.env.ref("child_compassion.report_child_picture"),
         )
         name = children.get_list("local_id", 1, _("pictures")) + ".pdf"
         res[name] = ("partner_communication_compassion.child_picture", pdf)
