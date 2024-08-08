@@ -230,7 +230,7 @@ class FieldToJson(models.Model):
         orm_vals = [(5, 0, 0)] if self.relational_write_mode == "overwrite" else []
         to_create = []
         search_field = self.search_key or field.name
-        if self.search_relational_record:
+        if self.search_relational_record and self.relational_write_mode != "overwrite":
             # Lookup for records that match the values received
             values = value if isinstance(value, list) else [value]
             for val in values:
@@ -276,8 +276,7 @@ class FieldToJson(models.Model):
                     if not records and self.allow_relational_creation:
                         to_create.append(val)
                         continue
-                    orm_operation = 4 if self.relational_write_mode == "overwrite" else 4
-                    orm_vals.extend([(orm_operation , rid) for rid in records.ids])
+                    orm_vals.extend([(4 , rid) for rid in records.ids])
                     if to_update:
                         orm_vals.extend([(1, rid, val) for rid in records.ids])
         else:
