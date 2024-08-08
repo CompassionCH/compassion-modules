@@ -378,9 +378,13 @@ class Correspondence(models.Model):
         paragraph_index = 0
         current_page = self.page_ids[page_index]
         if not translator_id:
-            translator_id = (
-                self.env["translation.user"].search([("user_id", "=", self.env.uid)]).id
-            )
+            # Don't overwrite current translator if any.
+            if self.new_translator_id:
+                translator_id = self.new_translator_id
+            else:
+                translator_id = (
+                    self.env["translation.user"].search([("user_id", "=", self.env.uid)]).id
+                )
         letter_vals = {
             "new_translator_id": translator_id,
             "translation_status": "in progress",
