@@ -549,4 +549,3 @@ class ResPartner(models.Model):
             data_invs = invoices._build_invoices_data(payment_term_id=payment_term_id)
             if data_invs:
                 invoices.update_open_invoices(data_invs)
-
