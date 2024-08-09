@@ -23,24 +23,45 @@ class ResPartner(models.Model):
         "protection charter.",
         tracking=True,
     )
+    signed_child_protection_agreement = fields.Binary(
+        attachment=True,
+    )
+    signed_child_protection_agreement_name = fields.Char(
+        compute="_compute_signed_child_protection_agreement_name"
+    )
     criminal_record = fields.Binary(
         attachment=True,
     )
     criminal_record_name = fields.Char(compute="_compute_criminal_record_name")
     criminal_record_date = fields.Date(tracking=True)
+    background_check = fields.Binary(
+        attachment=True,
+    )
+    background_check_name = fields.Char(compute="_compute_background_check_name")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    def _compute_signed_child_protection_agreement_name(self):
+        for partner in self:
+            partner.signed_child_protection_agreement_name = partner._get_file_name(
+                partner.with_context(bin_size=False).signed_child_protection_agreement,
+                "Child agreement",
+            )
+
     def _compute_criminal_record_name(self):
         for partner in self:
-            if partner.criminal_record:
-                ftype = guess_mimetype(
-                    partner.with_context(bin_size=False).criminal_record
-                )
-                partner.criminal_record_name = f"Criminal record {partner.name}{ftype}"
-            else:
-                partner.criminal_record_name = False
+            partner.criminal_record_name = partner._get_file_name(
+                partner.with_context(bin_size=False).criminal_record,
+                "Criminal record",
+            )
+
+    def _compute_background_check_name(self):
+        for partner in self:
+            partner.background_check_name = partner._get_file_name(
+                partner.with_context(bin_size=False).background_check,
+                "Background check",
+            )
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -49,3 +70,14 @@ class ResPartner(models.Model):
         if vals.get("criminal_record"):
             vals["criminal_record_date"] = fields.Date.today()
         return super().write(vals)
+
+    ##########################################################################
+    #                            PRIVATE METHODS                             #
+    ##########################################################################
+    def _get_file_name(self, file, desc):
+        self.ensure_one()
+        if file:
+            file_type = guess_mimetype(file)
+            return f"{desc} - {self.name} [{file_type}]"
+        else:
+            return False
