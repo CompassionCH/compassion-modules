@@ -19,10 +19,13 @@
             name="date_agreed_child_protection_charter"
             readonly="1"
           />
-                    <field name="signed_child_protection_agreement_name" invisible="1" />
                     <field
-            name="signed_child_protection_agreement"
-            filename="signed_child_protection_agreement_name"
+            name="child_protection_agreement_name"
+            invisible="1"
+          />
+                    <field
+            name="child_protection_agreement"
+            filename="child_protection_agreement_name"
           />
                     <field name="criminal_record_name" invisible="1" />
                     <field

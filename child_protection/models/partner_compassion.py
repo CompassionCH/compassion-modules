@@ -23,11 +23,11 @@ class ResPartner(models.Model):
         "protection charter.",
         tracking=True,
     )
-    signed_child_protection_agreement = fields.Binary(
+    child_protection_agreement = fields.Binary(
         attachment=True,
     )
-    signed_child_protection_agreement_name = fields.Char(
-        compute="_compute_signed_child_protection_agreement_name"
+    child_protection_agreement_name = fields.Char(
+        compute="_compute_child_protection_agreement_name"
     )
     criminal_record = fields.Binary(
         attachment=True,
@@ -42,11 +42,11 @@ class ResPartner(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    def _compute_signed_child_protection_agreement_name(self):
+    def _compute_child_protection_agreement_name(self):
         for partner in self:
-            partner.signed_child_protection_agreement_name = partner._get_file_name(
-                partner.with_context(bin_size=False).signed_child_protection_agreement,
-                "Child agreement",
+            partner.child_protection_agreement_name = partner._get_file_name(
+                partner.with_context(bin_size=False).child_protection_agreement,
+                "Child protection agreement",
             )
 
     def _compute_criminal_record_name(self):
