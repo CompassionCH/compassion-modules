@@ -24,9 +24,10 @@ class AssignRequestWizard(models.TransientModel):
         for lang in self.env["res.lang"].search([]):
             res += f"<h2>{lang.name}:</h2>"
             fake_claim.language = lang.code
-            res += template.with_context(
+            rendered = template.with_context(
                 lang=lang.code, salutation_language=lang.code
-            )._render_template(template.body_html, template.model, fake_claim.id)
+            )._render_template(template.body_html, template.model, [fake_claim.id])
+            res += rendered[fake_claim.id]
             res += "<br/><br/>"
         fake_claim.unlink()
         return res
