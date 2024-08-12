@@ -274,6 +274,8 @@ class ChildLifecycleEvent(models.Model):
         [
             ("Abuse", "Abuse"),
             ("Fatal Accident or Suicide", "Fatal Accident or Suicide"),
+            ("Fatal Accident", "Fatal Accident"),
+            ("Suicide", "Suicide"),
             ("Gastro-Intestinal", "Gastro-Intestinal"),
             ("Infection", "Infection"),
             ("Maternal", "Maternal"),
@@ -299,7 +301,7 @@ class ChildLifecycleEvent(models.Model):
             ("Chicken Pox", "Chicken Pox"),
             ("Chikungunya", "Chikungunya"),
             ("Cholera", "Cholera"),
-            ("Congenital Abnormalities", "Congenital Abnormalities"),
+            ("Congenital Abnormalitie   s", "Congenital Abnormalities"),
             ("Dengue", "Dengue"),
             ("Diabetes", "Diabetes"),
             ("Diarrhea", "Diarrhea"),
