@@ -5,6 +5,7 @@
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
             <tree
+        js_class="button_in_tree"
         decoration-muted="communication_type == 'Mass'"
         decoration-info="communication_type in ['Phone', 'SMS']"
         decoration-danger="direction == 'in' and communication_type not in ['Mass', 'Phone', 'SMS']"

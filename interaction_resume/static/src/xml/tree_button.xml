@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template id="template" xml:space="preserve">
+    <t t-extend="ListView.buttons" t-name="button_near_create.buttons">
+        <t t-jquery="div.o_list_buttons" t-operation="append">
+            <button class="btn btn-primary btn-refresh" type="object" icon="fa-refresh">Refresh</button>
+        </t>
+    </t>
+</template>
