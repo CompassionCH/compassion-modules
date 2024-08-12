@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import fields, models
 
 TRACKING_STATUS_MAPPING = {
     "open": "sent",
