@@ -9,7 +9,8 @@
 ##############################################################################
 import logging
 import traceback
-from datetime import date, datetime
+from datetime import date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
