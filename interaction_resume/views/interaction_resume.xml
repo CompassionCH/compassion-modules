@@ -15,26 +15,6 @@
         delete="0"
         limit="1000"
       >
-                <header>
-                    <button
-            name="refresh"
-            string="Refresh"
-            type="object"
-            icon="fa-refresh"
-          />
-                    <button
-            name="fetch_more"
-            string="Fetch more..."
-            type="object"
-            icon="fa-plus"
-          />
-                    <button
-            name="%(action_log_other_interaction)d"
-            string="Log interaction"
-            type="action"
-            icon="fa-plus"
-          />
-                </header>
                 <button
           name="out"
           icon="fa-arrow-up"
