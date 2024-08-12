@@ -168,7 +168,7 @@ class FieldToJson(models.Model):
 
         return res
 
-    def from_json(self, json_value, data_filter=None):
+    def from_json(self, json_value):
         """
         Converts the JSON value to Odoo field value.
         :param json_value: JSON representation of the field
@@ -200,7 +200,7 @@ class FieldToJson(models.Model):
                 },
             )
         if self.relational_field or self.sub_mapping_id:
-            converted_value = self._json_to_relational_value(converted_value, data_filter)
+            converted_value = self._json_to_relational_value(converted_value)
             if converted_value == "deep_relation":
                 # We cannot handle data for a complex relational field
                 # (only one descendent).
@@ -212,7 +212,7 @@ class FieldToJson(models.Model):
                 return {}
         return {field_name: converted_value}
 
-    def _json_to_relational_value(self, value, data_filter=None):
+    def _json_to_relational_value(self, value):
         """
         Converts a received JSON value into valid data for a relational record
         Example of output:
@@ -230,7 +230,7 @@ class FieldToJson(models.Model):
         orm_vals = [(5, 0, 0)] if self.relational_write_mode == "overwrite" else []
         to_create = []
         search_field = self.search_key or field.name
-        if self.search_relational_record and self.relational_write_mode != "overwrite":
+        if self.search_relational_record:
             # Lookup for records that match the values received
             values = value if isinstance(value, list) else [value]
             for val in values:
@@ -256,9 +256,6 @@ class FieldToJson(models.Model):
                                 (search_field, "=", search_val),
                                 (search_field, "=ilike", str(search_val)),
                             ]
-
-                    if data_filter:
-                        search_arguments[:0] = ["&", data_filter]
 
                     records = relational_model.search(search_arguments)
 

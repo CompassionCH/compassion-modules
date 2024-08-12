@@ -152,8 +152,8 @@ class GenericChild(models.AbstractModel):
         self._load_image(True, False)
 
     @api.model
-    def json_to_data(self, json, mapping_name=None, data_filter=None):
-        odoo_data = super().json_to_data(json, mapping_name, data_filter)
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(json, mapping_name)
 
         # Put firstname in preferred_name if not defined
         preferred_name = odoo_data.get("preferred_name")

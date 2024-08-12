@@ -73,7 +73,7 @@ class CompassionMappedModel(models.AbstractModel):
         return result[0] if len(result) == 1 else result
 
     @api.model
-    def json_to_data(self, json, mapping_name=None, data_filter=None):
+    def json_to_data(self, json, mapping_name=None):
         """
         Function to convert JSON into odoo record values.
 
@@ -104,7 +104,7 @@ class CompassionMappedModel(models.AbstractModel):
                         )
                         data.update(json_spec.from_json(sub_data))
                     else:
-                        data.update(json_spec.from_json(json_value, data_filter))
+                        data.update(json_spec.from_json(json_value))
                     break  # break from attempts if successful
             res.append(data)
         return res[0] if len(res) == 1 and not isinstance(res[0], tuple) else res
