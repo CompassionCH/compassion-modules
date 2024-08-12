@@ -249,19 +249,17 @@ class FieldToJson(models.Model):
                     # In that case we receive several values for the relation record
                     # and use one value in particular to find a matching record.
                     search_val = val.get(search_field)
-
-                if search_val:
-                    search_arguments = [
-                                "|",
-                                (search_field, "=", search_val),
-                                (search_field, "=ilike", str(search_val)),
-                            ]
-
-                    records = relational_model.search(search_arguments)
-
-                else:
-                    records = relational_model
-
+                records = (
+                    relational_model.search(
+                        [
+                            "|",
+                            (search_field, "=", search_val),
+                            (search_field, "=ilike", str(search_val)),
+                        ]
+                    )
+                    if search_val
+                    else relational_model
+                )
                 if self.relational_field_id.ttype == "many2one":
                     record = records[:1]  # Only take one relation
                     if not record and self.allow_relational_creation:
@@ -273,7 +271,7 @@ class FieldToJson(models.Model):
                     if not records and self.allow_relational_creation:
                         to_create.append(val)
                         continue
-                    orm_vals.extend([(4 , rid) for rid in records.ids])
+                    orm_vals.extend([(4, rid) for rid in records.ids])
                     if to_update:
                         orm_vals.extend([(1, rid, val) for rid in records.ids])
         else:
