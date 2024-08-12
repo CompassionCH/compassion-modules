@@ -2,9 +2,6 @@
 <template id="template" xml:space="preserve">
     <t t-extend="ListView.buttons" t-name="button_near_create.buttons">
         <t t-jquery="div.o_list_buttons" t-operation="prepend">
-            <button class="btn btn-primary btn-refresh" type="object" icon="fa-refresh">Refresh</button>
-            <button class="btn btn-primary btn-fetch-more" type="object" icon="fa-plus">Fetch more...</button>
-            <button class="btn btn-primary btn-log-interaction" type="action" icon="fa-plus">Log interaction</button>
             <button
         class="btn btn-primary btn-refresh"
         type="object"
