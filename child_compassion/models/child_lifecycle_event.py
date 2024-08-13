@@ -301,7 +301,7 @@ class ChildLifecycleEvent(models.Model):
             ("Chicken Pox", "Chicken Pox"),
             ("Chikungunya", "Chikungunya"),
             ("Cholera", "Cholera"),
-            ("Congenital Abnormalitie   s", "Congenital Abnormalities"),
+            ("Congenital Abnormalities", "Congenital Abnormalities"),
             ("Dengue", "Dengue"),
             ("Diabetes", "Diabetes"),
             ("Diarrhea", "Diarrhea"),
