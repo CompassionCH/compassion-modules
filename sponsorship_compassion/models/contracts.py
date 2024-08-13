@@ -530,6 +530,8 @@ class SponsorshipContract(models.Model):
         correspondent_id = vals.get("correspondent_id")
         if correspondent_id and correspondent_id != partner_id:
             partner_ids.append(correspondent_id)
+        if not correspondent_id:
+            vals["correspondent_id"] = partner_id
         if partner_ids:
             other_nums = self.search(
                 [
