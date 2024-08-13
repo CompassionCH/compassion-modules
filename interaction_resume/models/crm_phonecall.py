@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import models
 
 TRACKING_STATUS_MAPPING = {
     "open": "sent",
@@ -11,10 +11,6 @@ TRACKING_STATUS_MAPPING = {
 class CrmPhonecall(models.Model):
     _inherit = ["crm.phonecall", "interaction.source"]
     _name = "crm.phonecall"
-
-    communication_id = fields.Many2one(
-        "partner.communication.job", "Communication", readonly=False
-    )
 
     def _get_interaction_data(self, partner_id):
         direction_mapping = {"inbound": "in", "outbound": "out"}
