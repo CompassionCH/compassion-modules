@@ -99,7 +99,7 @@ class PartnerCommunication(models.Model):
             self.env.ref("child_compassion.report_child_picture"),
         )
         name = children.get_list("local_id", 1, _("pictures")) + ".pdf"
-        res[name] = ("partner_communication_compassion.child_picture", pdf)
+        res[name] = ("child_compassion.child_picture", pdf)
         return res
 
     def _convert_pdf(self, pdf_data):
