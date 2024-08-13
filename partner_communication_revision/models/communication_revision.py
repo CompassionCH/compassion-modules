@@ -46,7 +46,7 @@ def safe_replace(original, to_replace, replacement):
 
 class CommunicationRevision(models.Model):
     _name = "partner.communication.revision"
-    _inherit = "mail.thread"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _rec_name = "config_id"
     _description = "Communication template revision"
     _order = "config_id asc,revision_number desc"
