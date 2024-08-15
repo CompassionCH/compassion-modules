@@ -12,6 +12,10 @@ class CrmPhonecall(models.Model):
     _inherit = ["crm.phonecall", "interaction.source"]
     _name = "crm.phonecall"
 
+    def _get_interaction_partner_domain(self, partner):
+        domain = super()._get_interaction_partner_domain(partner)
+        return domain + [("state", "=", "done")]
+
     def _get_interaction_data(self, partner_id):
         direction_mapping = {"inbound": "in", "outbound": "out"}
         return [

@@ -18,6 +18,10 @@
         "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/interaction_resume.xml",
+        "static/src/xml/assets.xml",
+    ],
+    "qweb": [
+        "static/src/xml/tree_button.xml",
     ],
     "external_dependencies": {
         "python": [],

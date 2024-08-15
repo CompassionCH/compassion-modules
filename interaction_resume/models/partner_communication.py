@@ -38,3 +38,9 @@ class PartnerCommunication(models.Model):
             }
             for rec in self
         ]
+
+    def send(self):
+        res = super().send()
+        # Refresh the interactions after sending the communication
+        self.mapped("partner_id").with_delay().fetch_interactions()
+        return res
