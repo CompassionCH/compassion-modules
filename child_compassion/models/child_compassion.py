@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 import traceback
-from datetime import date, datetime
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 
@@ -447,10 +447,6 @@ class CompassionChild(models.Model):
         holds.release_hold()
         return res
 
-    def unlink_job(self):
-        """Small wrapper to unlink only released children."""
-        return self.filtered(lambda c: c.state == "R").unlink()
-
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -701,17 +697,6 @@ class CompassionChild(models.Model):
         to_release.write({"sponsor_id": False, "state": state, "hold_id": False})
         # Check if it was a depart and retrieve lifecycle event
         to_release.get_lifecycle_event()
-
-        # the children will be deleted when we reach their expiration date
-        postpone = 60 * 60 * 24 * 7  # One week by default
-        today = datetime.today()
-        for child in to_release.filtered(lambda c: not c.has_been_sponsored):
-            if child.hold_expiration:
-                expire = child.hold_expiration
-                postpone = (expire - today).total_seconds() + 60
-
-            child.with_delay(eta=postpone).unlink_job()
-
         return True
 
     def child_departed(self):

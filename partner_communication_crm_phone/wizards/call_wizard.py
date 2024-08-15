@@ -47,7 +47,6 @@ class CallWizard(models.TransientModel):
             "state": state,
             "description": self.comments,
             "name": communication.config_id.name,
-            "communication_id": communication_id,
             "partner_id": communication.partner_id.id,
         }
         if state == "done":

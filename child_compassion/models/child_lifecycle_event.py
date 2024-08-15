@@ -274,6 +274,8 @@ class ChildLifecycleEvent(models.Model):
         [
             ("Abuse", "Abuse"),
             ("Fatal Accident or Suicide", "Fatal Accident or Suicide"),
+            ("Fatal Accident", "Fatal Accident"),
+            ("Suicide", "Suicide"),
             ("Gastro-Intestinal", "Gastro-Intestinal"),
             ("Infection", "Infection"),
             ("Maternal", "Maternal"),
