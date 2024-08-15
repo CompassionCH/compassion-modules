@@ -107,7 +107,7 @@
     "PreferredName": "preferred_name",
     "RevisedValues": {
       "field": "revised_value_ids.name",
-      "search_relational_record": true
+      "search_relational_record": false
     },
     "SponsorshipStatus": "sponsorship_status",
     "SponsoredStatus": "sponsorship_status",
