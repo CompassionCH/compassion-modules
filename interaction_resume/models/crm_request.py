@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import models, api
 from odoo.tools.mail import html2plaintext
 
 
@@ -44,3 +44,9 @@ class CrmRequest(models.Model):
             ("partner_id", "in", partner.other_contact_ids.ids),
             ("email_from", "=", partner.email),
         ]
+
+    @api.returns('mail.message', lambda value: value.id)
+    def message_post(self, **kwargs):
+        res = super().message_post(**kwargs)
+        self.partner_id.with_delay().fetch_interactions()
+        return res
