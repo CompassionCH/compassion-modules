@@ -216,7 +216,7 @@ class CrmClaim(models.Model):
         in_leave.write({"stage_id": stage_new, "user_id": False})
         return result
 
-    @api.returns('mail.message', lambda value: value.id)
+    @api.returns("mail.message", lambda value: value.id)
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
         to the supporter but not if it's an automatic answer.

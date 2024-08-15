@@ -88,5 +88,8 @@ class GenerateGiftWizard(models.TransientModel):
         if not invoicer:
             invoicer = self.env["recurring.invoicer"].create({})
         return self.contract_id.group_id._build_invoice_gen_data(
-            invoicing_date=invoicing_date, invoicer=invoicer, contract=self.contract_id, gift_wizard=self
+            invoicing_date=invoicing_date,
+            invoicer=invoicer,
+            contract=self.contract_id,
+            gift_wizard=self,
         )
