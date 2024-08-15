@@ -993,7 +993,7 @@ class SponsorshipContract(models.Model):
         Terminate related gift contracts and sync with GMC.
         """
         departure = self.env.ref("sponsorship_compassion.end_reason_depart")
-        for sponsorship in self:
+        for sponsorship in self: # self was not the instance of the sponsorship, wanted ????
             gift_contract_lines = self.env["recurring.contract.line"].search(
                 [("sponsorship_id", "=", sponsorship.id)]
             )

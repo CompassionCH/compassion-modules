@@ -38,11 +38,11 @@ class ContractGroup(models.Model):
                 and s.state not in ("terminated", "cancelled")
             )
 
-    def _generate_invoices(self, invoicer):
+    def _generate_invoices(self, invoicer, contract_id=None):
         # Exclude gifts from regular generation
         super(
             ContractGroup, self.with_context(open_invoices_sponsorship_only=True)
-        )._generate_invoices(invoicer)
+        )._generate_invoices(invoicer, contract_id)
         # We don't generate gift if the contract isn't active
         contracts = self.mapped("contract_ids").filtered(lambda c: c.state == "active")
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
