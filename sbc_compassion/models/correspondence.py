@@ -234,7 +234,7 @@ class Correspondence(models.Model):
     # Letter remote access
     ######################
     uuid = fields.Char(required=True, default=lambda self: self._get_uuid())
-    read_url = fields.Char()
+    read_url = fields.Char(compute="_compute_read_url", store=True)
 
     # 5. SQL Constraints
     ####################
@@ -444,6 +444,11 @@ class Correspondence(models.Model):
                     letter.has_valid_language = (
                         lang and lang in letter.supporter_languages_ids
                     )
+
+    @api.depends("uuid")
+    def _compute_read_url(self):
+        for letter in self:
+            letter.read_url = f"{letter.get_base_url()}/b2s_image?id={letter.uuid}"
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -735,8 +740,6 @@ class Correspondence(models.Model):
             self.env["ir.config_parameter"].sudo().get_param("web.external.url", "")
         )
         self.download_attach_letter_image(letter_type="final_letter_url")
-        for letter in self:
-            letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
         return True
 
     def download_attach_letter_image(self, letter_type="final_letter_url"):
@@ -1006,6 +1009,10 @@ class Correspondence(models.Model):
                         )
 
         return paragraphs
+
+    def get_base_url(self):
+        # Use external URL for letter access
+        return self.env["ir.config_parameter"].sudo().get_param("web.external.url", "")
 
     ##########################################################################
     #                            PRIVATE METHODS                             #
