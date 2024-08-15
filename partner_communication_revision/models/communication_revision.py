@@ -91,14 +91,12 @@ class CommunicationRevision(models.Model):
         "Responsible",
         domain=[("share", "=", False)],
         tracking=True,
-        readonly=False,
     )
     correction_user_id = fields.Many2one(
         "res.users",
         "Corrector",
         domain=[("share", "=", False)],
         tracking=True,
-        readonly=False,
     )
     update_user_id = fields.Many2one(
         "res.users", "Modified by", default=lambda self: self.env.uid, readonly=True
@@ -134,8 +132,7 @@ class CommunicationRevision(models.Model):
         string="Loops",
         readonly=False,
     )
-    is_proposer = fields.Boolean(compute="_compute_allowed")
-    is_corrector = fields.Boolean(compute="_compute_allowed")
+    is_editor = fields.Boolean(compute="_compute_is_editor")
     display_name = fields.Char(compute="_compute_display_name")
     active_revision_id = fields.Many2one(
         comodel_name="partner.communication.revision.history",
@@ -205,12 +202,11 @@ class CommunicationRevision(models.Model):
                 )
         return True
 
-    def _compute_allowed(self):
+    def _compute_is_editor(self):
         user = self.env.user
         admin = self.env.ref("base.group_erp_manager") in user.groups_id
         for rev in self:
-            rev.is_proposer = user == rev.user_id or admin
-            rev.is_corrector = user == rev.correction_user_id or admin
+            rev.is_editor = user in (rev.user_id, rev.correction_user_id) or admin
 
     def _compute_display_name(self):
         for rev in self:

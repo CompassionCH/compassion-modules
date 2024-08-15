@@ -86,8 +86,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="is_proposer" invisible="1" />
-                    <field name="is_corrector" invisible="1" />
+                    <field name="is_editor" invisible="1" />
                     <field name="is_old_version" invisible="1" />
                     <field name="state" widget="statusbar" />
                     <!-- Proposition to submit -->
@@ -96,7 +95,7 @@
             name="submit_proposition"
             string="Submit proposition"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_proposer', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_editor', '=', False)]}"
           />
 
                     <!-- Proposition to Approve / Corrections to submit-->
@@ -105,7 +104,7 @@
             name="validate_proposition"
             string="Validate proposition"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
             confirm="This will approve the proposition text."
           />
                     <button
@@ -113,7 +112,7 @@
             name="submit_correction"
             string="Submit corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
           />
 
                     <!-- Corrections to Approve / New Proposition -->
@@ -122,7 +121,7 @@
             name="validate_correction"
             string="Approve corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
             confirm="This will approve the corrections."
           />
                     <button
@@ -130,14 +129,14 @@
             name="edit_correction"
             string="Edit corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
             confirm="This will discard your original proposition and allow you to edit further the corrected text."
           />
                     <button
             type="object"
             name="discard_correction"
             string="Discard corrections"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
             confirm="This will discard corrections and let you start over your proposition."
           />
 
@@ -146,7 +145,7 @@
             type="object"
             name="cancel_approve"
             string="Cancel approval"
-            attrs="{'invisible': ['|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'approved'), '&amp;', ('is_editor', '=', False),('is_editor', '=', False)]}"
           />
 
                     <button
@@ -187,13 +186,13 @@
                         <group>
                             <field
                 name="user_id"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': [('state', '!=', 'pending')]}"
               />
                         </group>
                         <group>
                             <field
                 name="correction_user_id"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': [('is_proposer', '=', False)]}"
+                attrs="{'required': [('state', '=', 'pending')]}"
               />
                         </group>
                     </group>
@@ -201,11 +200,11 @@
                         <group>
                             <field
                 name="subject"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
               />
                             <field
                 name="proposition_text"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
               />
                         </group>
                         <group
@@ -213,12 +212,12 @@
             >
                             <field
                 name="subject_correction"
-                attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}"
+                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
                 states="pending,submit,corrected"
               />
                             <field
                 name="proposition_correction"
-                attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}"
+                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
                 states="pending,submit,corrected"
               />
                         </group>
