@@ -17,7 +17,6 @@
                     <field
             string="Date agreed"
             name="date_agreed_child_protection_charter"
-            readonly="1"
           />
                     <field name="criminal_record_name" invisible="1" />
                     <field
