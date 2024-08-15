@@ -240,7 +240,8 @@ class ResPartner(models.Model):
         notify = functools.reduce(
             lambda prev, val: prev or val in vals, notify_vals, False
         )
-        if notify and not self.env.context.get("no_upsert"):
+
+        if notify and self.global_id and not self.env.context.get("no_upsert"):
             self.upsert_constituent()
 
         self._updt_invoices_rp(vals)
