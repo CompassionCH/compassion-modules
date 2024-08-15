@@ -1,4 +1,4 @@
-from odoo import models, api
+from odoo import api, models
 from odoo.tools.mail import html2plaintext
 
 
