@@ -63,3 +63,10 @@ class ContractGroup(models.Model):
                 "analytic_account_id"
             ] = contract_line.contract_id.origin_id.analytic_id.id
         return res
+
+    def _get_partner_for_contract(self, contract):
+        return (
+            super(ContractGroup, self)._get_partner_for_contract(contract)
+            if not contract.send_gifts_to
+            else contract[contract.send_gifts_to]
+        )
