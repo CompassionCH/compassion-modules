@@ -37,8 +37,10 @@ class InteractionSource(models.AbstractModel):
             "|",
             "|",
             ("partner_id", "=", partner.id),
-            ("partner_id.email", "=", partner.email),
             ("partner_id", "in", partner.other_contact_ids.ids),
+            "&",
+            ("partner_id.email", "!=", False),
+            ("partner_id.email", "=", partner.email),
         ]
 
     def _get_interaction_data(self, partner_id):
