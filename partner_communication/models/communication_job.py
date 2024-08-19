@@ -94,7 +94,7 @@ class CommunicationJob(models.Model):
         readonly=False,
         index=True,
     )
-    model = fields.Char(related="config_id.model", store=True, index=True)
+    model = fields.Char(related="config_id.model_id.model", store=True, index=True)
     partner_id = fields.Many2one(
         "res.partner",
         "Send to",
