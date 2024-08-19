@@ -4,6 +4,13 @@
         <field name="model">partner.communication.revision.preview</field>
         <field name="arch" type="xml">
             <form>
+                <!-- Reroute close window button click to the discard button  -->
+                <script>
+                    $('header > button.close').on('click', function (event) {
+                        $('footer > button[name="close"]').click();
+                        event.preventDefault();
+                    });
+                </script>
                 <field name="state" invisible="1" />
                 <field name="model" invisible="1" />
                 <h3>Preview of <field

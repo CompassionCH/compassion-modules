@@ -46,7 +46,7 @@ class MailMail(models.Model):
     @api.model_create_multi
     def create(self, values_list):
         for values in values_list:
-            if "subject" in values:
+            if "subject" in values and values["subject"]:
                 values["subject"] = _sanitize_subject(values["subject"])
 
         return super().create(values_list)
