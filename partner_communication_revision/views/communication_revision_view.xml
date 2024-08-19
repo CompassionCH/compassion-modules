@@ -38,7 +38,7 @@
                             <field
                 name="body_html"
                 widget="ace"
-                attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"
+                attrs="{'readonly': [('raw_template_edit_mode','!=',True)]}"
               />
                         </group>
                     </group>
