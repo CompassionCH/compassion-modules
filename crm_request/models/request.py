@@ -166,8 +166,8 @@ class CrmClaim(models.Model):
 
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
-            partner = match_obj.match_values_to_partner(
-                {"email": email_normalize(defaults["email_from"])}, match_create=False
+            partner = match_obj._match_email(
+                {"email": email_normalize(defaults["email_from"])}
             )
             if partner:
                 defaults["partner_id"] = partner.id
@@ -216,7 +216,7 @@ class CrmClaim(models.Model):
         in_leave.write({"stage_id": stage_new, "user_id": False})
         return result
 
-    @api.returns('mail.message', lambda value: value.id)
+    @api.returns("mail.message", lambda value: value.id)
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
         to the supporter but not if it's an automatic answer.
