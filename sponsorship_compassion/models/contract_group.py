@@ -70,3 +70,38 @@ class ContractGroup(models.Model):
             if not contract.send_gifts_to
             else contract[contract.send_gifts_to]
         )
+
+    def _should_skip_invoice_generation(self, invoicing_date, contract=None):
+        self.ensure_one()
+
+        if contract is None:
+            return super()._should_skip_invoice_generation(invoicing_date)
+
+        search_filter = [
+            ("state", "!=", "cancel"),
+            ("invoice_date_due", "=", invoicing_date),
+            ("partner_id", "=", self.partner_id.id),
+            ("move_type", "=", "out_invoice"),
+            ("line_ids.contract_id", "=", contract.id),
+            (
+                "line_ids.product_id",
+                "in",
+                contract.product_ids.ids,
+            ),
+        ]
+
+        existing_invoices = self.env["account.move"].search_count(search_filter)
+
+        is_sub_proposal = contract.source_id.id == 554
+
+        # If invoices come from sub proposal, ignore group suspension to also generate
+        # already paid invoices
+        if is_sub_proposal:
+            return bool(existing_invoices)
+        else:
+            is_suspended = (
+                self.invoice_suspended_until
+                and self.invoice_suspended_until > invoicing_date
+            )
+            return bool(existing_invoices) or is_suspended
+
