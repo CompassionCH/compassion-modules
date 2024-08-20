@@ -480,7 +480,8 @@ class SponsorshipContract(models.Model):
         # Fund-suspended projects are also excluded
         # Correspondence and gift contracts are also excluded
         valid_contracts = self.filtered(
-            lambda s: s.type in ("S", "O") and not s.child_id.project_id.hold_cdsp_funds
+            lambda s: s.type not in ("SC", "SWP", "G")
+            and not s.child_id.project_id.hold_cdsp_funds
         )
         invoices = super(SponsorshipContract, valid_contracts)._filter_due_invoices()
         return invoices.filtered(lambda i: i.invoice_category != "gift")

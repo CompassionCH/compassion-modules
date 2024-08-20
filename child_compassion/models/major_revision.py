@@ -85,6 +85,7 @@ class MajorRevision(models.Model):
             "Last Name": "lastname",
             "Planned Completion Date": "completion_date",
             "Preferred Name": "preferred_name",
+            "Local Grade Level": "local_grade_level",
         }
 
     def get_field_value(self):
