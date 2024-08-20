@@ -66,7 +66,7 @@ class ContractGroup(models.Model):
 
     def _get_partner_for_contract(self, contract):
         return (
-            super()._get_partner_for_contract(contract)
+            super(ContractGroup, self)._get_partner_for_contract(contract)
             if not contract.send_gifts_to
             else contract[contract.send_gifts_to]
         )
