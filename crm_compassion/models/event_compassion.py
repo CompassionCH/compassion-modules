@@ -389,6 +389,7 @@ class EventCompassion(models.Model):
                 "default_company_id": self.company_id.id,
                 "search_default_account_id": self.analytic_id.id,
             },
+            "domain": [("id", "in", self.expense_line_ids.ids)],
         }
 
     def show_income(self):
