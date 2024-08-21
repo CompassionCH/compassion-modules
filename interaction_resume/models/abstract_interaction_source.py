@@ -22,6 +22,8 @@ class InteractionSource(models.AbstractModel):
         @param until:
         """
         search_domain = self._get_interaction_partner_domain(partner)
+        if not search_domain:
+            return True
         records = self.search(
             [
                 *search_domain,

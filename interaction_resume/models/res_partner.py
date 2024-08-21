@@ -7,6 +7,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime as dt
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, fields, models
@@ -63,7 +65,11 @@ class Partner(models.Model):
         self.ensure_one()
         # Each page shows interactions for one year
         years_to_fetch = 1
-        until = fields.Datetime.now() - relativedelta(years=page * years_to_fetch)
+        years = page * years_to_fetch
+        # Do not fetch invalid negative years interactions
+        if years > dt.now().year:
+            return True
+        until = fields.Datetime.now() - relativedelta(years=years)
         since = until - relativedelta(years=years_to_fetch)
         models = [
             "partner.communication.job",
