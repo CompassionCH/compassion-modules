@@ -35,6 +35,12 @@ class CrmRequest(models.Model):
         return res
 
     def _get_interaction_partner_domain(self, partner):
+        if not partner.email:
+            return [
+                "|",
+                ("partner_id", "=", partner.id),
+                ("partner_id", "in", partner.other_contact_ids.ids),
+            ]
         return [
             "|",
             "|",

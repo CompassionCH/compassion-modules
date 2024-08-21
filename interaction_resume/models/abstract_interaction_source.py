@@ -22,6 +22,8 @@ class InteractionSource(models.AbstractModel):
         @param until:
         """
         search_domain = self._get_interaction_partner_domain(partner)
+        if not search_domain:
+            return True
         records = self.search(
             [
                 *search_domain,
@@ -33,6 +35,12 @@ class InteractionSource(models.AbstractModel):
         return True
 
     def _get_interaction_partner_domain(self, partner):
+        if not partner.email:
+            return [
+                "|",
+                ("partner_id", "=", partner.id),
+                ("partner_id", "in", partner.other_contact_ids.ids),
+            ]
         return [
             "|",
             "|",
