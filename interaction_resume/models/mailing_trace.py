@@ -45,4 +45,5 @@ class MailingTrace(models.Model):
     def _get_interaction_partner_domain(self, partner):
         return [
             ("email", "=", partner.email),
+            ("email", "!=", False),
         ]
