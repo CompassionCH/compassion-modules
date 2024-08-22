@@ -17,10 +17,13 @@ class ResPartnerMatch(models.AbstractModel):
     def _match_email(self, vals):
         # Redefine email rule to include aliases in search
         email = vals["email"].strip()
-        return self.env["res.partner"].search(
+        partner = self.env["res.partner"].search(
             [
+                "|",
                 "|",
                 ("email", "=ilike", email),
                 ("email_alias_ids.email", "=ilike", email),
+                ("other_contact_ids.email", "=ilike", email),
             ]
         )
+        return partner
