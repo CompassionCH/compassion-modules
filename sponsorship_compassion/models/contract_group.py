@@ -92,7 +92,7 @@ class ContractGroup(models.Model):
 
         existing_invoices = self.env["account.move"].search_count(search_filter)
 
-        is_sub_proposal = contract.parent_id.child_id
+        is_sub_proposal = contract.parent_id.child_id and not contract.invoice_line_ids
 
         # If invoices come from sub proposal, ignore group suspension to also generate
         # already paid invoices
