@@ -354,6 +354,8 @@ class CompassionChild(models.Model):
         for child in self:
             if child.pictures_ids:
                 child.portrait = child.pictures_ids.sorted()[:1].headshot
+            else:
+                child.portrait = False
 
     @api.depends("pictures_ids")
     def _compute_fullshot(self):
