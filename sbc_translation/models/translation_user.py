@@ -58,7 +58,8 @@ class TranslationUser(models.Model):
         for translator in self:
             translator.nb_translated_letters_this_year = len(
                 translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date.year == fields.Datetime.now().year
+                    lambda it: it.translate_date and
+                    it.translate_date.year == fields.Datetime.now().year
                 )
             )
 
