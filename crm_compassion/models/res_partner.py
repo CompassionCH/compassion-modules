@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import _, fields, models
+from odoo import api, fields, models
 
 from odoo.addons.partner_communication.models.communication_config import (
     CommunicationConfig,
@@ -26,6 +26,12 @@ class Partner(models.Model):
         compute="_compute_receive_ambassador_receipts",
         inverse="_inverse_receive_ambassador_receipts",
     )
+
+    @api.constrains("email")
+    def _check_email_mass_mailing_contacts(self):
+        for partner in self:
+            if not partner.email and partner.sudo().mass_mailing_contact_ids:
+                self.sudo().mass_mailing_contact_ids.unlink()
 
     def _compute_receive_ambassador_receipts(self):
         for partner in self:
