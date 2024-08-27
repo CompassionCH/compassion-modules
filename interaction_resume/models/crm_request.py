@@ -11,6 +11,7 @@ class CrmRequest(models.Model):
         for claim in self:
             messages = claim.message_ids.filtered(
                 lambda m: m.message_type in ("email", "comment")
+                and (m.author_id.id == partner_id or partner_id in m.partner_ids.ids)
             )
             res.extend(
                 [
