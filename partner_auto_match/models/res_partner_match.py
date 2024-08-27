@@ -55,7 +55,7 @@ class ResPartnerMatch(models.AbstractModel):
                 continue
 
         # Postprocess partner (either update or create it depending on context options)
-        if len(partner) == 1 and match_update:
+        if partner and len(partner) == 1 and match_update:
             self.update_partner(partner, vals)
         if not partner and match_create:
             partner = self._create_partner(vals)
@@ -107,7 +107,7 @@ class ResPartnerMatch(models.AbstractModel):
     @api.model
     def _preprocess_vals(self, vals):
         """Transform, if needed and before matching, the infos received"""
-        pass
+        vals["name"] = vals["name"].strip(' -')
 
     @api.model
     def _process_update_vals(self, partner, vals):
@@ -186,3 +186,4 @@ class ResPartnerMatch(models.AbstractModel):
             "lang",
             "title",
         ]
+
