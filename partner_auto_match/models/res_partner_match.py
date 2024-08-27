@@ -107,7 +107,7 @@ class ResPartnerMatch(models.AbstractModel):
     @api.model
     def _preprocess_vals(self, vals):
         """Transform, if needed and before matching, the infos received"""
-        vals["name"] = vals["name"].strip(' -')
+        vals["name"] = vals["name"].strip(" -")
 
     @api.model
     def _process_update_vals(self, partner, vals):
@@ -186,4 +186,3 @@ class ResPartnerMatch(models.AbstractModel):
             "lang",
             "title",
         ]
-
