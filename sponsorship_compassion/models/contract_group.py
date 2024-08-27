@@ -64,12 +64,10 @@ class ContractGroup(models.Model):
             ] = contract_line.contract_id.origin_id.analytic_id.id
         return res
 
-    def _get_partner_for_contract(self, contract):
-        return (
-            super(ContractGroup, self)._get_partner_for_contract(contract)
-            if not contract.send_gifts_to
-            else contract[contract.send_gifts_to]
-        )
+    def _get_partner_for_contract(self, contract, gift_wizard=False):
+        if gift_wizard and contract.send_gifts_to:
+            return contract[contract.send_gifts_to]
+        return super()._get_partner_for_contract(contract, gift_wizard)
 
     def _should_skip_invoice_generation(self, invoicing_date, contract=None):
         self.ensure_one()
