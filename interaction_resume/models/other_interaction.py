@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import models, fields
 from odoo.tools import html2plaintext
 
 
@@ -7,12 +7,33 @@ class OtherInteractions(models.Model):
     _inherit = [
         "mail.activity.mixin",
         "mail.thread",
-        "partner.log.other.interaction.wizard",
         "interaction.source",
     ]
     _description = "Logging for other interactions"
     _rec_name = "subject"
-    _transient = False
+
+    partner_id = fields.Many2one(
+        "res.partner", "Partner", default=lambda self: self.env.context.get("active_id")
+    )
+    subject = fields.Char(required=True)
+    communication_type = fields.Selection(
+        [
+            ("Paper", "Paper"),
+            ("Phone", "Phone"),
+            ("SMS", "SMS"),
+            ("Email", "Email"),
+            ("Mass", "Mass Mailing"),
+            ("Other", "Other"),
+            ("Support", "Support"),
+        ],
+        required=True,
+    )
+    other_type = fields.Char()
+    date = fields.Datetime(default=fields.Datetime.now)
+    direction = fields.Selection(
+        [("in", "Incoming"), ("out", "Outgoing")], required=True
+    )
+    body = fields.Html()
 
     def _get_interaction_data(self, partner_id):
         return [
