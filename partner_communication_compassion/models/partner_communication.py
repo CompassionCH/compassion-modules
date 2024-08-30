@@ -35,23 +35,22 @@ class PartnerCommunication(models.Model):
         report = "partner_communication.a4_communication"
         if letters is None:
             letters = self.get_objects()
-        if self.send_mode == "physical":
-            for letter in letters:
-                try:
-                    attachments[letter.file_name] = [
-                        report,
-                        self._convert_pdf(letter.letter_image),
-                    ]
-                except MissingError:
-                    _logger.warning("Missing letter image", exc_info=True)
-                    self.send_mode = False
-                    self.auto_send = False
-                    self.message_post(
-                        body=_("The letter image is missing!"),
-                        subject=_("Missing letter"),
-                    )
-                    continue
-        else:
+        for letter in letters:
+            try:
+                attachments[letter.file_name] = [
+                    report,
+                    self._convert_pdf(letter.letter_image),
+                ]
+            except MissingError:
+                _logger.warning("Missing letter image", exc_info=True)
+                self.send_mode = False
+                self.auto_send = False
+                self.message_post(
+                    body=_("The letter image is missing!"),
+                    subject=_("Missing letter"),
+                )
+                continue
+        if self.send_mode != "physical":
             # Attach directly a zip in the letters
             letters.attach_zip()
         return attachments
