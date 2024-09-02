@@ -31,10 +31,13 @@
                 </group>
             </xpath>
             <xpath
-                expr="/form/sheet//div[hasclass('o_row')]/field[@name='parent_id']"
-                position="before"
-            >
-                <label for="parent_id" class="oe_edit_only">Related Company</label>
+        expr="/form/sheet//div[hasclass('o_row')]/field[@name='parent_id']"
+        position="before"
+      >
+                <label
+            for="parent_id"
+            class="oe_edit_only"
+          >Related Company</label>
             </xpath>
         </field>
     </record>
