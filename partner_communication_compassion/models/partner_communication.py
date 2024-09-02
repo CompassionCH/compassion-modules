@@ -26,7 +26,7 @@ class PartnerCommunication(models.Model):
 
     def get_correspondence_attachments(self, letters=None):
         """
-        Include PDF of letters if the send_mode is to print the letters.
+        Include PDF of letters.
         :return: dict {attachment_name: [report_name, pdf_data]}
         """
         self.ensure_one()
@@ -50,9 +50,6 @@ class PartnerCommunication(models.Model):
                     subject=_("Missing letter"),
                 )
                 continue
-        if self.send_mode != "physical":
-            # Attach directly a zip in the letters
-            letters.attach_zip()
         return attachments
 
     def final_letter_attachment(self):
