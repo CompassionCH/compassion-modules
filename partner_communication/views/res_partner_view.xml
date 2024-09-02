@@ -35,9 +35,9 @@
         position="before"
       >
                 <label
-            for="parent_id"
-            class="oe_edit_only"
-          >Related Company</label>
+          for="parent_id"
+          class="oe_edit_only"
+        >Related Company</label>
             </xpath>
         </field>
     </record>
