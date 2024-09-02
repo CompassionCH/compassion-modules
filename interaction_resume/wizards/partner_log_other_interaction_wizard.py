@@ -1,32 +1,11 @@
-from odoo import _, fields, models
+from odoo import _, models
 
 
 class LogOtherInteractionWizard(models.TransientModel):
     _name = "partner.log.other.interaction.wizard"
+    _inherit = "partner.log.other.interaction"
     _description = "Logging wizard for other interactions"
-
-    partner_id = fields.Many2one(
-        "res.partner", "Partner", default=lambda self: self.env.context.get("active_id")
-    )
-    subject = fields.Char(required=True)
-    communication_type = fields.Selection(
-        [
-            ("Paper", "Paper"),
-            ("Phone", "Phone"),
-            ("SMS", "SMS"),
-            ("Email", "Email"),
-            ("Mass", "Mass Mailing"),
-            ("Other", "Other"),
-            ("Support", "Support"),
-        ],
-        required=True,
-    )
-    other_type = fields.Char()
-    date = fields.Datetime(default=fields.Datetime.now)
-    direction = fields.Selection(
-        [("in", "Incoming"), ("out", "Outgoing")], required=True
-    )
-    body = fields.Html()
+    _transient = True
 
     def log_interaction(self):
         data = {
