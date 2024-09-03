@@ -215,7 +215,7 @@ class Correspondence(models.Model):
         needed and upload to translation platform."""
         for letter in self:
             if (
-                (letter.beneficiary_language_ids & letter.supporter_languages_ids)
+                (letter.original_language_id in letter.supporter_languages_ids)
                 or letter.has_valid_language
                 or self.env.context.get("force_publish")
             ):
