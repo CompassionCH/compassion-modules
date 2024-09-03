@@ -26,20 +26,12 @@
                     <group>
                         <group>
                             <field
-                name="raw_template_edit_mode"
-                invisible="1"
-              />
-                            <field
                 name="proposition_text"
                 groups="base.group_erp_manager"
               />
                         </group>
                         <group>
-                            <field
-                name="body_html"
-                widget="ace"
-                attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"
-              />
+                            <field name="body_html" widget="ace" />
                         </group>
                     </group>
                 </sheet>
