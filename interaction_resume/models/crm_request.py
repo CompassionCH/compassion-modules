@@ -9,6 +9,22 @@ class CrmRequest(models.Model):
     def _get_interaction_data(self, partner_id):
         res = []
         for claim in self:
+            if claim.description:
+                res.append(
+                    {
+                        "partner_id": partner_id,
+                        "res_model": self._name,
+                        "res_id": claim.id,
+                        "direction": "in",
+                        "date": claim.create_date,
+                        "email": claim.email_from or claim.partner_id.email,
+                        "communication_type": "Support",
+                        "subject": claim.name,
+                        "body": html2plaintext(claim.description).replace("\n\n", "\n"),
+                        "has_attachment": bool(claim.message_attachment_count),
+                        "tracking_status": "delivered",
+                    }
+                )
             messages = claim.message_ids.filtered(
                 lambda m: m.message_type in ("email", "comment")
                 and (m.author_id.id == partner_id or partner_id in m.partner_ids.ids)

@@ -736,9 +736,6 @@ class Correspondence(models.Model):
 
     def process_letter(self):
         """Method called when new B2S letter is Published."""
-        base_url = (
-            self.env["ir.config_parameter"].sudo().get_param("web.external.url", "")
-        )
         self.download_attach_letter_image(letter_type="final_letter_url")
         return True
 

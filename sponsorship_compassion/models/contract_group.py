@@ -102,4 +102,3 @@ class ContractGroup(models.Model):
                 and self.invoice_suspended_until > invoicing_date
             )
             return bool(existing_invoices) or is_suspended
-
