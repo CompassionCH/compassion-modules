@@ -736,7 +736,7 @@ class Correspondence(models.Model):
 
     def process_letter(self):
         """Method called when new B2S letter is Published."""
-        # If the letter's source language is known by the sponsor, we can send the original letter without any translation
+        # If the letter's source language is known by the sponsor, send the original letter without any translation
         letter_type = "final_letter_url"
         if self.original_language_id in self.supporter_languages_ids:
             letter_type = "original_letter_url"
