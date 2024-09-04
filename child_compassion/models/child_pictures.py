@@ -129,8 +129,10 @@ class ChildPictures(models.Model):
         )
 
         # The last picture is most probably one that could be the same.
-        same_pics = (pics[0].fullshot == reference.fullshot
-                     and pics[0].headshot == reference.headshot)
+        same_pics = (
+            pics[0].fullshot == reference.fullshot
+            and pics[0].headshot == reference.headshot
+        )
 
         return same_urls or same_pics
 
