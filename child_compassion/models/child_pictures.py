@@ -43,6 +43,14 @@ class ChildPictures(models.Model):
     hname = fields.Char(compute="_compute_filename")
     _error_msg = "Image cannot be fetched: No image url available"
 
+    _sql_constraints = [
+        (
+            "unique_picture_per_child",
+            "UNIQUE(child_id,image_url)",
+            "You cannot set two identical images for the same child.",
+        )
+    ]
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -95,8 +103,8 @@ class ChildPictures(models.Model):
         # Find if same pictures already exist
         same_pictures = pictures._find_same_picture()
         if same_pictures:
-            # That case is not likely to happens, it means that the url has
-            #  changed, while the picture stay unchanged.
+            # Either the url is unchanged, or the url has
+            # changed but the picture is the same as the last.
             pictures.child_id.message_post(
                 body=_("The picture was the same"), subject=_("Picture update")
             )
@@ -113,13 +121,18 @@ class ChildPictures(models.Model):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
         pics = reference.search(
-            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)], limit=1
-        )  # The last picture is most probably one that could be the same.
-        same_pics = pics.filtered(
-            lambda record: record.fullshot == reference.fullshot
-            and record.headshot == reference.headshot
+            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)]
         )
-        return same_pics
+
+        same_urls = pics.filtered(
+            lambda record: record.image_url == reference.image_url
+        )
+
+        # The last picture is most probably one that could be the same.
+        same_pics = (pics[0].fullshot == reference.fullshot
+                     and pics[0].headshot == reference.headshot)
+
+        return same_urls or same_pics
 
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
         """Gets a picture from Compassion webservice"""
