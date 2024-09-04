@@ -72,8 +72,13 @@ class EmailComposeMessage(models.TransientModel):
                 }
             )
         )
+
         # Fetch template values.
-        wizard.write(
-            wizard.onchange_template_id(template.id, "mass_mail", False, False)["value"]
-        )
-        return wizard.get_mail_values(res_ids)
+        write_data = wizard.onchange_template_id(
+            template.id, "mass_mail", False, False
+        )["value"]
+        values = wizard.get_mail_values(res_ids)
+
+        wizard.write(write_data)
+
+        return values

@@ -84,7 +84,6 @@ class CommunicationRevision(models.Model):
     body_html = fields.Html(
         compute="_compute_body_html", inverse="_inverse_body_html", sanitize=False
     )
-    raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one(
         "res.users",
@@ -573,7 +572,6 @@ class CommunicationRevision(models.Model):
 
     def reload_text(self):
         self.keyword_ids.unlink()
-        self.raw_template_edit_mode = False
         if self.body_html:
             self.with_context(no_update=True).simplified_text = self._simplify_text()
 
