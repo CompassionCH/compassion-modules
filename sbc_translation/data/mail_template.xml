@@ -47,9 +47,6 @@
     </template>
 
     <template id="comments_reply">
-        <p>Dear <span t-field="object.new_translator_id.partner_id.name" />,</p>
-        <p
-    >You have just received a reply to your comments on the translation:</p>
         <p t-raw="reply" />
         <hr />
         <table>
