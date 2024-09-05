@@ -8,11 +8,15 @@
 #
 ##############################################################################
 import logging
+import json
+import datetime
 from random import randint
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.http import request
+
+import xml.etree.ElementTree as ET
 
 _logger = logging.getLogger(__name__)
 
@@ -395,7 +399,9 @@ class Correspondence(models.Model):
                 translator_id = self.new_translator_id
             else:
                 translator_id = (
-                    self.env["translation.user"].search([("user_id", "=", self.env.uid)]).id
+                    self.env["translation.user"]
+                    .search([("user_id", "=", self.env.uid)])
+                    .id
                 )
         letter_vals = {
             "new_translator_id": translator_id,
@@ -437,15 +443,131 @@ class Correspondence(models.Model):
                 letter_vals["unread_comments"] = True
 
         if len(comments_updates) > 0:
-            html = self.env["ir.qweb"]._render(
-                "sbc_translation.translation_comments_update",
-                {"comments": comments_updates},
-            )
-
-            self._message_log(body=html)
+            # Don't fail the update for a chatter issue.
+            try:
+                self._update_or_add_chatter_comments(comments_updates)
+            except Exception as e:
+                _logger.error("Failed to post chatter message", e)
 
         self.write(letter_vals)
         return True
+
+    def _update_or_add_chatter_comments(self, comments_updates):
+        self.ensure_one()
+
+        # Don't merge a message after this many hours.
+        message_merge_max_elapsed_time_hours = 4
+
+        # Don't filter by user_id or time here to keep order and not merge if someone
+        # else edited since last chatter update.
+        last_message = self.env["mail.message"].search(
+            [
+                ("res_id", "=", self.id),
+                ("model", "=", self._name),
+            ],
+            order="create_date DESC",
+            limit=1,
+        )
+
+        merged_updates = None
+        if (
+            last_message
+            and last_message.create_uid.id == self.env.user.id
+            and last_message.write_date
+            < datetime.datetime.now()
+            + datetime.timedelta(hours=message_merge_max_elapsed_time_hours)
+        ):
+            last_message_data = self._get_update_message_data(last_message)
+            if last_message_data is not None:
+                merged_updates = self._merge_comment_updates(
+                    last_message_data, comments_updates
+                )
+                comments_updates = merged_updates
+
+        html = self.env["ir.qweb"]._render(
+            "sbc_translation.translation_comments_update",
+            {"comments": comments_updates, "json": json.dumps(comments_updates)},
+        )
+
+        if merged_updates is not None:
+            last_message.update({"body": html})
+        else:
+            self._message_log(body=html)
+
+    @api.model
+    def _merge_comment_updates(self, last_updates, new_updates):
+        def are_same_paragraph(update1, update2):
+            return (
+                update1["page_index"] == update2["page_index"]
+                and update1["paragraph_index"] == update2["paragraph_index"]
+            )
+
+        minor_edition_size = 2
+
+        merged_updates = []
+        for new_update in new_updates:
+            old_update = next(
+                (
+                    update
+                    for update in last_updates
+                    if are_same_paragraph(update, new_update)
+                ),
+                None,
+            )
+
+            # New update.
+            if old_update is None:
+                merged_updates.append(new_update)
+
+            elif (
+                # Only added content, no information lost.
+                old_update["new"] in new_update["new"]
+                or
+                # Minor insertion/deletion
+                len(old_update["new"]) - minor_edition_size
+                <= len(new_update["new"])
+                < len(old_update["new"]) + minor_edition_size
+            ):
+                merged_updates.append({**old_update, "new": new_update["new"]})
+
+            # Merge failed. We need a new message.
+            else:
+                return None
+
+        # Add old paragraph updates which weren't changed to the new message
+        for old_update in last_updates:
+            if not any(
+                update
+                for update in merged_updates
+                if are_same_paragraph(old_update, update)
+            ):
+                merged_updates.append(old_update)
+
+        return sorted(
+            merged_updates, key=lambda u: u["page_index"] * 1000 + u["paragraph_index"]
+        )
+
+    @api.model
+    def _get_update_message_data(self, update_message):
+        if (
+            update_message
+            and update_message.body
+            and update_message.message_type == "notification"
+        ):
+            try:
+                lm_tree = ET.fromstring(update_message.body)
+            except ET.ParseError as e:
+                _logger.warning("Failed to parse message: %s", e)
+                return None
+
+            if lm_tree.get("class") == "translation-comments-update":
+                json_elem = lm_tree.find("span")
+                if json_elem is not None:
+                    last_update_txt = json_elem.text
+                    if last_update_txt:
+                        last_updates = json.loads(last_update_txt)
+                        if isinstance(last_updates, list):
+                            return last_updates
 
     def submit_translation(self, letter_elements, translator_id=None):
         """

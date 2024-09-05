@@ -8,28 +8,31 @@
     </template>
 
     <template id="translation_comments_update">
-        <p>
-            Comments updated
-        </p>
-        <ul>
-            <li t-foreach="comments" t-as="comment">
-                Page
-                <t t-esc="comment['page_index']"/>
-                paragraph
-                <t t-esc="comment['paragraph_index']"/>:
-                <span class="old"><
-            <t t-esc="comment['old']" />
-                /span>
-            <span
-                    class="o_Message_trackingValueSeparator o_Message_trackingValueItem fa fa-long-arrow-right"
-                    title="Changed"
-                    role="img"
-            />
-                <span class="new">
-                    <t t-esc="comment['new']" />
-                </span>
-            </li>
-        </ul>
+        <div class="translation-comments-update">
+            <span t-esc="json" style="display: none" />
+            <p>
+                Comments updated
+            </p>
+            <ul>
+                <li t-foreach="comments" t-as="comment">
+                    Page
+                    <t t-esc="comment['page_index']"/>
+                    paragraph
+                    <t t-esc="comment['paragraph_index']"/>:
+                    <span class="old">
+                        <t t-esc="comment['old']" />
+                    </span>
+                <span
+                        class="o_Message_trackingValueSeparator o_Message_trackingValueItem fa fa-long-arrow-right"
+                        title="Changed"
+                        role="img"
+                />
+                    <span class="new">
+                        <t t-esc="comment['new']" />
+                    </span>
+                </li>
+            </ul>
+        </div>
     </template>
 
     <template id="comments_reply">
