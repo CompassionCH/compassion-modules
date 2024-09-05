@@ -11,6 +11,7 @@ import logging
 import json
 import datetime
 from random import randint
+from difflib import SequenceMatcher
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -474,15 +475,16 @@ class Correspondence(models.Model):
             last_message
             and last_message.create_uid.id == self.env.user.id
             and last_message.write_date
-            < datetime.datetime.now()
             + datetime.timedelta(hours=message_merge_max_elapsed_time_hours)
+            > datetime.datetime.now()
         ):
             last_message_data = self._get_update_message_data(last_message)
             if last_message_data is not None:
                 merged_updates = self._merge_comment_updates(
                     last_message_data, comments_updates
                 )
-                comments_updates = merged_updates
+                if merged_updates is not None:
+                    comments_updates = merged_updates
 
         html = self.env["ir.qweb"]._render(
             "sbc_translation.translation_comments_update",
@@ -524,9 +526,8 @@ class Correspondence(models.Model):
                 old_update["new"] in new_update["new"]
                 or
                 # Minor insertion/deletion
-                len(old_update["new"]) - minor_edition_size
-                <= len(new_update["new"])
-                < len(old_update["new"]) + minor_edition_size
+                SequenceMatcher(None, old_update["new"], new_update["new"]).ratio()
+                > 0.8
             ):
                 merged_updates.append({**old_update, "new": new_update["new"]})
 
