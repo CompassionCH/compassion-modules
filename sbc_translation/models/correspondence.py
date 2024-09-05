@@ -504,7 +504,7 @@ class Correspondence(models.Model):
                 and update1["paragraph_index"] == update2["paragraph_index"]
             )
 
-        minor_edition_size = 2
+        merge_min_similarity = 0.8
 
         merged_updates = []
         for new_update in new_updates:
@@ -527,7 +527,7 @@ class Correspondence(models.Model):
                 or
                 # Minor insertion/deletion
                 SequenceMatcher(None, old_update["new"], new_update["new"]).ratio()
-                > 0.8
+                > merge_min_similarity
             ):
                 merged_updates.append({**old_update, "new": new_update["new"]})
 
