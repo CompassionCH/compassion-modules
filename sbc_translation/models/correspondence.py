@@ -458,6 +458,9 @@ class Correspondence(models.Model):
 
         # Don't merge a message after this many hours.
         message_merge_max_elapsed_time_hours = 4
+        # Force merge if the elapsed time since last update is smaller than this many
+        # seconds.
+        message_force_merge_max_elapsed_time_seconds = 30
 
         # Don't filter by user_id or time here to keep order and not merge if someone
         # else edited since last chatter update.
@@ -480,8 +483,15 @@ class Correspondence(models.Model):
         ):
             last_message_data = self._get_update_message_data(last_message)
             if last_message_data is not None:
+                force_merge = (
+                    last_message.write_date
+                    + datetime.timedelta(
+                        seconds=message_force_merge_max_elapsed_time_seconds
+                    )
+                    > datetime.datetime.now()
+                )
                 merged_updates = self._merge_comment_updates(
-                    last_message_data, comments_updates
+                    last_message_data, comments_updates, force_merge
                 )
                 if merged_updates is not None:
                     comments_updates = merged_updates
@@ -497,7 +507,7 @@ class Correspondence(models.Model):
             self._message_log(body=html)
 
     @api.model
-    def _merge_comment_updates(self, last_updates, new_updates):
+    def _merge_comment_updates(self, last_updates, new_updates, force_merge=False):
         def are_same_paragraph(update1, update2):
             return (
                 update1["page_index"] == update2["page_index"]
@@ -522,6 +532,8 @@ class Correspondence(models.Model):
                 merged_updates.append(new_update)
 
             elif (
+                force_merge
+                or
                 # Only added content, no information lost.
                 old_update["new"] in new_update["new"]
                 or
