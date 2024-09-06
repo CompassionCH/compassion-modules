@@ -204,7 +204,7 @@ class PDFCreator
         {
             $pagesWithoutText++;
             if($pagesWithoutText >= 4) {
-                if ($this->utils->overflowTemplate != false) {
+                if ($this->utils->overflowTemplate) {
                     // Try to push remaining text on overflow page
                     $this->InsertOverflowPages($pdf);
                 } else {
