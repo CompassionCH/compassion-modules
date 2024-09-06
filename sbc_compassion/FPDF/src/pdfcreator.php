@@ -37,8 +37,6 @@ class PDFCreator
                                     // through the available boxes.
 	protected $overflowPage;        // Will be set when overflow occurs. Holds the overflown texts from the current page.  => array[Text]
 
-    protected $overflowTemplate;
-
     /**
     *
     */
@@ -63,9 +61,9 @@ class PDFCreator
         );
 
         $this->lang = $params['lang'];
-        $this->overflowTemplate = false;
+        $overflowTemplate = false;
         if (!empty($params['overflow_template'])) {
-            $this->overflowTemplate = new Template(...$params['overflow_template']);
+            $overflowTemplate = new Template(...$params['overflow_template']);
             $this->preventOverflow = $params['prevent_overflow'];
         }
         $this->originalSize = $params['original_size'];
@@ -76,7 +74,7 @@ class PDFCreator
         {
             throw new Exception("No templates provided, cannot generate PDF");
         }
-        $this->utils = new TemplateUtils($templates, $params['original_size'], $this->overflowTemplate);
+        $this->utils = new TemplateUtils($templates, $params['original_size'], $overflowTemplate);
         $headerOnLastPage = false;
         $this->overflowPage = [];
     }
@@ -206,7 +204,7 @@ class PDFCreator
         {
             $pagesWithoutText++;
             if($pagesWithoutText >= 4) {
-                if ($this->overflowTemplate != false) {
+                if ($this->utils->overflowTemplate != false) {
                     // Try to push remaining text on overflow page
                     $this->InsertOverflowPages($pdf);
                 } else {
