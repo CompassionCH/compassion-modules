@@ -180,7 +180,7 @@ class CorrespondenceTemplate(models.Model):
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
                 txt_file = tempfile.NamedTemporaryFile(
-                    "w", prefix=t_type + "_", suffix=".txt"
+                    "w", prefix=t_type + "_", suffix=".txt", encoding="utf-8"
                 )
                 txt_file.write(txt)
                 txt_file.flush()
