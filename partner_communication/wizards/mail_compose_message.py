@@ -77,8 +77,12 @@ class EmailComposeMessage(models.TransientModel):
         write_data = wizard.onchange_template_id(
             template.id, "mass_mail", False, False
         )["value"]
-        values = wizard.get_mail_values(res_ids)
+
+        # Body would be sanitized if we write it now, breaking any embedded code and
+        # causing an error.
+        # Only usage is create_emails above and it overrides it just after.
+        del write_data["body"]
 
         wizard.write(write_data)
 
-        return values
+        return wizard.get_mail_values(res_ids)
