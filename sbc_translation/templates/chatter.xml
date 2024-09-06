@@ -16,9 +16,9 @@
             <ul>
                 <li t-foreach="comments" t-as="comment">
                     Page
-                    <t t-esc="comment['page_index']"/>
+                    <t t-esc="comment['page']"/>
                     paragraph
-                    <t t-esc="comment['paragraph_index']"/>:
+                    <t t-esc="comment['paragraph']"/>:
                     <span class="old">
                         <t t-esc="comment['old']" />
                     </span>

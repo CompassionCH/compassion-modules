@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 import json
-import datetime
+from datetime import datetime, timedelta
 from random import randint
 from difflib import SequenceMatcher
 
@@ -431,8 +431,8 @@ class Correspondence(models.Model):
                 ):
                     comments_updates.append(
                         {
-                            "page_index": page_index + 1,
-                            "paragraph_index": paragraph_index + 1,
+                            "page": page_index + 1,
+                            "paragraph": paragraph_index + 1,
                             "old": current_page.paragraph_ids[paragraph_index].comments,
                             "new": paragraph_vals["comments"],
                         }
@@ -453,18 +453,9 @@ class Correspondence(models.Model):
         self.write(letter_vals)
         return True
 
-    def _update_or_add_chatter_comments(self, comments_updates):
+    def _update_or_add_chatter_comments(self, comments, merge_seconds=30):
         self.ensure_one()
-
-        # Don't merge a message after this many hours.
-        message_merge_max_elapsed_time_hours = 4
-        # Force merge if the elapsed time since last update is smaller than this many
-        # seconds.
-        message_force_merge_max_elapsed_time_seconds = 30
-
-        # Don't filter by user_id or time here to keep order and not merge if someone
-        # else edited since last chatter update.
-        last_message = self.env["mail.message"].search(
+        message = self.env["mail.message"].search(
             [
                 ("res_id", "=", self.id),
                 ("model", "=", self._name),
@@ -472,115 +463,69 @@ class Correspondence(models.Model):
             order="create_date DESC",
             limit=1,
         )
-
-        merged_updates = None
-        if (
-            last_message
-            and last_message.create_uid.id == self.env.user.id
-            and last_message.write_date
-            + datetime.timedelta(hours=message_merge_max_elapsed_time_hours)
-            > datetime.datetime.now()
-        ):
-            last_message_data = self._get_update_message_data(last_message)
-            if last_message_data is not None:
-                force_merge = (
-                    last_message.write_date
-                    + datetime.timedelta(
-                        seconds=message_force_merge_max_elapsed_time_seconds
-                    )
-                    > datetime.datetime.now()
-                )
-                merged_updates = self._merge_comment_updates(
-                    last_message_data, comments_updates, force_merge
-                )
-                if merged_updates is not None:
-                    comments_updates = merged_updates
+        merged = None
+        if message and message.create_uid.id == self.env.user.id:
+            last_data = self._get_update_message_data(message)
+            if last_data is not None:
+                merge_limit = message.write_date + timedelta(seconds=merge_seconds)
+                force_merge = merge_limit > datetime.now()
+                merged = self._merge_comment_updates(last_data, comments, force_merge)
+                if merged is not None:
+                    comments = merged
 
         html = self.env["ir.qweb"]._render(
             "sbc_translation.translation_comments_update",
-            {"comments": comments_updates, "json": json.dumps(comments_updates)},
+            {"comments": comments, "json": json.dumps(comments)},
         )
 
-        if merged_updates is not None:
-            last_message.update({"body": html})
+        if merged is not None:
+            message.update({"body": html})
         else:
             self._message_log(body=html)
 
     @api.model
-    def _merge_comment_updates(self, last_updates, new_updates, force_merge=False):
-        def are_same_paragraph(update1, update2):
-            return (
-                update1["page_index"] == update2["page_index"]
-                and update1["paragraph_index"] == update2["paragraph_index"]
-            )
+    def _merge_comment_updates(
+        self, last_vals, new_vals, force_merge, merge_similarity=0.8
+    ):
+        def same_paragraph(u1, u2):
+            return u1["page"] == u2["page"] and u1["paragraph"] == u2["paragraph"]
 
-        merge_min_similarity = 0.8
-
-        merged_updates = []
-        for new_update in new_updates:
-            old_update = next(
-                (
-                    update
-                    for update in last_updates
-                    if are_same_paragraph(update, new_update)
-                ),
-                None,
-            )
-
-            # New update.
-            if old_update is None:
-                merged_updates.append(new_update)
-
+        updates = []
+        for new in new_vals:
+            old = next((u for u in last_vals if same_paragraph(u, new)), None)
+            if old is None:
+                updates.append(new)
             elif (
                 force_merge
-                or
-                # Only added content, no information lost.
-                old_update["new"] in new_update["new"]
-                or
-                # Minor insertion/deletion
-                SequenceMatcher(None, old_update["new"], new_update["new"]).ratio()
-                > merge_min_similarity
+                or old["new"] in new["new"]
+                or SequenceMatcher(None, old["new"], new["new"]).ratio()
+                > merge_similarity
             ):
-                merged_updates.append({**old_update, "new": new_update["new"]})
-
-            # Merge failed. We need a new message.
+                updates.append({**old, "new": new["new"]})
             else:
-                return None
+                return None  # Merge failed. We need a new message.
 
         # Add old paragraph updates which weren't changed to the new message
-        for old_update in last_updates:
-            if not any(
-                update
-                for update in merged_updates
-                if are_same_paragraph(old_update, update)
-            ):
-                merged_updates.append(old_update)
-
-        return sorted(
-            merged_updates, key=lambda u: u["page_index"] * 1000 + u["paragraph_index"]
-        )
+        for old_update in last_vals:
+            if not any(u for u in updates if same_paragraph(old_update, u)):
+                updates.append(old_update)
+        return sorted(updates, key=lambda u: u["page"] * 1000 + u["paragraph"])
 
     @api.model
-    def _get_update_message_data(self, update_message):
-        if (
-            update_message
-            and update_message.body
-            and update_message.message_type == "notification"
-        ):
+    def _get_update_message_data(self, message):
+        if message and message.body and message.message_type == "notification":
             try:
-                lm_tree = ET.fromstring(update_message.body)
+                lm_tree = ET.fromstring(message.body)
             except ET.ParseError:
                 _logger.warning("Failed to parse message")
                 return None
 
             if lm_tree.get("class") == "translation-comments-update":
                 json_elem = lm_tree.find("span")
-                if json_elem is not None:
-                    last_update_txt = json_elem.text
-                    if last_update_txt:
-                        last_updates = json.loads(last_update_txt)
-                        if isinstance(last_updates, list):
-                            return last_updates
+                if json_elem is not None and json_elem.text:
+                    last_updates = json.loads(json_elem.text)
+                    if isinstance(last_updates, list):
+                        return last_updates
 
     def submit_translation(self, letter_elements, translator_id=None):
         """
