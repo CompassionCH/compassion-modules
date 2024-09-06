@@ -456,10 +456,7 @@ class Correspondence(models.Model):
     def _update_or_add_chatter_comments(self, comments, merge_seconds=30):
         self.ensure_one()
         message = self.env["mail.message"].search(
-            [
-                ("res_id", "=", self.id),
-                ("model", "=", self._name),
-            ],
+            [("res_id", "=", self.id), ("model", "=", self._name)],
             order="create_date DESC",
             limit=1,
         )
@@ -477,16 +474,13 @@ class Correspondence(models.Model):
             "sbc_translation.translation_comments_update",
             {"comments": comments, "json": json.dumps(comments)},
         )
-
         if merged is not None:
             message.update({"body": html})
         else:
             self._message_log(body=html)
 
     @api.model
-    def _merge_comment_updates(
-        self, last_vals, new_vals, force_merge, merge_similarity=0.8
-    ):
+    def _merge_comment_updates(self, last_vals, new_vals, force_merge, similarity=0.8):
         def same_paragraph(u1, u2):
             return u1["page"] == u2["page"] and u1["paragraph"] == u2["paragraph"]
 
@@ -498,8 +492,7 @@ class Correspondence(models.Model):
             elif (
                 force_merge
                 or old["new"] in new["new"]
-                or SequenceMatcher(None, old["new"], new["new"]).ratio()
-                > merge_similarity
+                or SequenceMatcher(None, old["new"], new["new"]).ratio() > similarity
             ):
                 updates.append({**old, "new": new["new"]})
             else:
@@ -519,7 +512,6 @@ class Correspondence(models.Model):
             except ET.ParseError:
                 _logger.warning("Failed to parse message")
                 return None
-
             if lm_tree.get("class") == "translation-comments-update":
                 json_elem = lm_tree.find("span")
                 if json_elem is not None and json_elem.text:
