@@ -502,7 +502,7 @@ class Correspondence(models.Model):
         for old_update in last_vals:
             if not any(u for u in updates if same_paragraph(old_update, u)):
                 updates.append(old_update)
-        return sorted(updates, key=lambda u: u["page"] * 1000 + u["paragraph"])
+        return sorted(updates, key=lambda u: (u["page"], u["paragraph"]))
 
     @api.model
     def _get_update_message_data(self, message):
