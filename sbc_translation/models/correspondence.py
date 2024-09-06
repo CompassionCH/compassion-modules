@@ -447,7 +447,7 @@ class Correspondence(models.Model):
             # Don't fail the update for a chatter issue.
             try:
                 self._update_or_add_chatter_comments(comments_updates)
-            except Exception as e:
+            except Exception:
                 _logger.error("Failed to post chatter message")
 
         self.write(letter_vals)
@@ -569,7 +569,7 @@ class Correspondence(models.Model):
         ):
             try:
                 lm_tree = ET.fromstring(update_message.body)
-            except ET.ParseError as e:
+            except ET.ParseError:
                 _logger.warning("Failed to parse message")
                 return None
 
