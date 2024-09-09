@@ -26,7 +26,7 @@ class ResLang(models.Model):
 
     name = fields.Char(size=128, translate=True)
     code_iso = fields.Char(size=128)
-    lang_id = fields.Many2one("res.lang", readonly=False)
+    lang_id = fields.Many2one("res.lang")
     translatable = fields.Boolean(help="Can be translated by GP")
 
     def search_iso639(self, iso_str):
