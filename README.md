@@ -17,6 +17,13 @@ sponsorships of its country. It connects Odoo with GMC webservices.
 <!-- prettier-ignore-start -->
 
 [//]: # (addons)
+
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[advanced_translation](advanced_translation/) | 14.0.1.0.0 |  | Advanced Translation
+
 [//]: # (end addons)
 
 <!-- prettier-ignore-end -->
