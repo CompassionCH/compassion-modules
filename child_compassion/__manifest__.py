@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Children",
-    "version": "14.0.1.2.0",
+    "version": "16.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
