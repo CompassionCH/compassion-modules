@@ -29,27 +29,19 @@
         <field name="dpi">96</field>
     </record>
 
-    <report
-    id="report_childpack_full"
-    model="compassion.child"
-    string="Full Childpack"
-    report_type="qweb-pdf"
-    name="child_compassion.childpack_full"
-    menu="False"
-  />
     <record id="report_childpack_full" model="ir.actions.report">
+        <field name="name">Full Childpack</field>
+        <field name="model">compassion.child</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">child_compassion.childpack_full</field>
         <field name="paperformat_id" ref="paperformat_childpack" />
     </record>
 
-    <report
-    id="report_childpack_small"
-    model="compassion.child"
-    string="Small Childpack"
-    report_type="qweb-pdf"
-    name="child_compassion.childpack_small"
-    menu="False"
-  />
     <record id="report_childpack_small" model="ir.actions.report">
+        <field name="name">Small Childpack</field>
+        <field name="model">compassion.child</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">child_compassion.childpack_small</field>
         <field name="paperformat_id" ref="paperformat_a4_childpack" />
     </record>
 

@@ -22,7 +22,10 @@ class ChildAssessment(models.Model):
 
     assesment_type = fields.Char()
     child_id = fields.Many2one(
-        "compassion.child", "Child", required=True, ondelete="cascade", readonly=False
+        "compassion.child",
+        "Child",
+        required=True,
+        ondelete="cascade",
     )
     date = fields.Datetime()
     age = fields.Char()

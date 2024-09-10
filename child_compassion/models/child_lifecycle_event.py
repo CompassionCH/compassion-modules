@@ -240,7 +240,6 @@ class ChildLifecycleEvent(models.Model):
     #####################
     last_attended_project = fields.Date(readonly=True)
     primary_school_finished = fields.Boolean(readonly=True)
-    # confesses_jesus_savior = fields.Boolean(readonly=True)
     final_letter_sent = fields.Boolean(readonly=True)
     sponsor_impact = fields.Char(readonly=True)
     new_situation = fields.Char(readonly=True)

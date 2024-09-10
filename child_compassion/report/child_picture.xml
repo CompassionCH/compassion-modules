@@ -15,15 +15,11 @@
         <field name="dpi">96</field>
     </record>
 
-    <report
-    id="report_child_picture"
-    model="compassion.child"
-    string="Child Picture"
-    report_type="qweb-pdf"
-    name="child_compassion.child_picture"
-    menu="False"
-  />
     <record id="report_child_picture" model="ir.actions.report">
+        <field name="name">Child Picture</field>
+        <field name="model">compassion.child</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">child_compassion.child_picture</field>
         <field name="paperformat_id" ref="paperformat_child_picture" />
     </record>
 

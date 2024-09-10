@@ -3,4 +3,7 @@ iso639-lang
 jwt
 langdetect
 pytesseract
+pyquery
 pyquerystring
+pytz
+timezonefinder

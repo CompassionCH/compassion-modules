@@ -31,13 +31,6 @@
               class="oe_stat_button"
               context="{'async_mode': False}"
             />
-                        <button
-              name="edit_translations"
-              string="Edit translations"
-              type="object"
-              icon="fa-globe"
-              class="oe_stat_button"
-            />
                     </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
@@ -115,7 +108,7 @@
                                 <group string="Reservation">
                                     <field
                     name="reservation_id"
-                    context="{'default_project_id': active_id}"
+                    context="{'default_project_id': id}"
                   />
                                 </group>
                             </group>
@@ -382,17 +375,11 @@
                         <field name="type" />
                         <field string="Lifecycle details" name="details" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Reactivation')]}"
-          >
+                    <group invisible="type != 'Reactivation'">
                         <field name="fcp_improvement_desc" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Reactivation')]}"
-          />
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Suspension')]}"
-          >
+                    <group invisible="type != 'Reactivation'" />
+                    <group invisible="type != 'Suspension'">
                         <field name="suspension_end_date" />
                         <field
               name="suspension_reason_ids"
@@ -401,19 +388,17 @@
                         <field name="extension_1" />
                         <field
               name="extension_1_reason_ids"
-              attrs="{'invisible': [('extension_1', '=', False)]}"
+              invisible="not extension_1"
               widget="many2many_tags"
             />
                         <field name="extension_2" />
                         <field
               name="extension_2_reason_ids"
-              attrs="{'invisible': [('extension_2', '=', False)]}"
+              invisible="not extension_2"
               widget="many2many_tags"
             />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Suspension')]}"
-          >
+                    <group invisible="type != 'Suspension'">
                         <field name="hold_cdsp_funds" />
                         <field name="hold_csp_funds" />
                         <field name="hold_gifts" />
@@ -421,9 +406,7 @@
                         <field name="hold_b2s_letters" />
                         <field name="hold_child_updates" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Transition')]}"
-          >
+                    <group invisible="type != 'Transition'">
                         <field
               name="transition_reason_ids"
               widget="many2many_tags"
@@ -434,12 +417,8 @@
               widget="many2many_checkboxes"
             />
                     </group>
-                    <!--<group attrs="{'invisible': [('type', '!=', 'Transition')]}">-->
-                        <!--<field name="celebration_details"/>-->
-                        <!--<field name="relationship_strengths"/>-->
-                    <!--</group>-->
                 </group>
-                <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
+                <group invisible="type != 'Suspension'">
                     <field name="suspension_detail" />
                     <field name="action_plan" />
                 </group>

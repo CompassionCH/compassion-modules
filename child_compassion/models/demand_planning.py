@@ -22,8 +22,6 @@ class DemandPlanning(models.Model):
 
     date = fields.Date(
         default=lambda self: fields.Date.today(),
-        readonly=True,
-        states={"draft": [("readonly", False)]},
         copy=False,
     )
     sent_date = fields.Datetime(readonly=True, copy=False)
@@ -41,8 +39,6 @@ class DemandPlanning(models.Model):
         "demand_id",
         string="Weekly Demands",
         default=lambda self: self._get_default_weekly_demands(),
-        readonly=True,
-        states={"draft": [("readonly", False)]},
         copy=True,
     )
 

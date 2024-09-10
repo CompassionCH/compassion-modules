@@ -13,7 +13,7 @@
           data-string="Compassion"
           string="Compassion"
           groups="message_center_compassion.group_gmc_manager"
-          logo="/message_center_compassion/static/description/icon.png"
+          logo="/child_compassion/static/description/icon.png"
         >
                     <block
             title="Compassion Connect"

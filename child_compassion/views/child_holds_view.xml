@@ -12,14 +12,14 @@
             name="update_hold"
             type="object"
             string="Send Hold"
-            states="draft"
+            invisible="state != 'draft'"
             class="oe_highlight"
           />
                     <button
             name="button_release_hold"
             type="object"
             string="Release Hold"
-            states="active"
+            invisible="state != 'active'"
           />
                 </header>
                 <sheet>
@@ -28,7 +28,7 @@
                             <field name="hold_id" />
                             <field
                 name="reservation_id"
-                attrs="{'invisible': [('reservation_id', '=', False)]}"
+                invisible="not reservation_id"
               />
                             <field name="child_id" />
                             <field name="primary_owner" />
@@ -38,7 +38,7 @@
                             <field name="type" />
                             <field
                 name="no_money_extension"
-                attrs="{'invisible': [('type', 'not in', ('No Money Hold', 'Sub Child Hold'))]}"
+                invisible="type not in ('No Money Hold', 'Sub Child Hold')"
               />
                             <field name="channel" />
                             <field name="source_code" />

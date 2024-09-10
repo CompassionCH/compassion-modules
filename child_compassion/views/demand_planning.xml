@@ -17,25 +17,26 @@
             type="object"
             string="Send Planning"
             class="oe_highlight"
-            states="draft"
+            invisible="state != 'draft'"
           />
                     <button
             name="reset"
             type="object"
             string="Reset"
-            states="error"
+            invisible="state != 'error'"
           />
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="date" />
+                            <field name="date" readonly="state != 'draft'" />
                             <field name="sent_date" />
                         </group>
                         <group colspan="2">
                             <field
                 name="weekly_demand_ids"
-                context="{'default_demand_id': active_id}"
+                readonly="state != 'draft'"
+                context="{'default_demand_id': id}"
               />
                         </group>
                     </group>
@@ -73,16 +74,10 @@
                 </group>
                 <group>
                     <group string="Demand">
-                        <field
-              name="total_demand"
-              attrs="{'readonly': [('period_locked', '=', True)]}"
-            />
+                        <field name="total_demand" readonly="period_locked" />
                     </group>
                     <group string="Resupply">
-                        <field
-              name="total_resupply"
-              attrs="{'readonly': [('period_locked', '=', True)]}"
-            />
+                        <field name="total_resupply" readonly="period_locked" />
                     </group>
                 </group>
             </form>

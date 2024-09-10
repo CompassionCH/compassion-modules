@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Children",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -58,9 +58,7 @@
         "views/gmc_message_view.xml",
         "views/compassion_reservation_view.xml",
         "views/field_office_disaster_alert_view.xml",
-        "views/compassion_settings_view.xml",
-        "views/availability_settings_view.xml",
-        "views/notification_settings_view.xml",
+        "views/res_config_settings.xml",
         "views/child_pictures_view.xml",
         "views/demand_planning.xml",
         "views/fcp_covid_status.xml",

@@ -672,7 +672,7 @@ class CompassionProject(models.Model):
         used in child description.
         """
         self._fetch_translations(self.env.ref("child_compassion.icp_details"))
-        return self.edit_translations()
+        return {}
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

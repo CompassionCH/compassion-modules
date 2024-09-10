@@ -38,7 +38,9 @@ class ProjectDescription(models.TransientModel):
     _description = "Project Description Generator"
 
     project_id = fields.Many2one(
-        "compassion.project", required=True, ondelete="cascade", readonly=False
+        "compassion.project",
+        required=True,
+        ondelete="cascade",
     )
 
     @api.model

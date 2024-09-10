@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<odoo>
+    <!-- Availability Management -->
+    <record id="availability_management_settings" model="ir.ui.view">
+        <field name="name">availability.management.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.compassion_settings"
+    />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='compassion_settings']" position='inside'>
+                <block
+          title="Default hold duration in days"
+          name="availability_management_settings"
+        >
+                    <setting id="consignment_hold_duration">
+                        <field name="consignment_hold_duration" />
+                    </setting>
+                    <setting id="no_money_hold_duration">
+                        <field name="no_money_hold_duration" />
+                    </setting>
+                    <setting id="no_money_hold_extension">
+                        <field name="no_money_hold_extension" />
+                    </setting>
+                    <setting id="sponsor_cancel_hold_duration">
+                        <field name="sponsor_cancel_hold_duration" />
+                    </setting>
+                    <setting id="sub_child_hold_duration">
+                        <field name="sub_child_hold_duration" />
+                    </setting>
+                    <setting id="e_commerce_hold_duration" help="In Minutes">
+                        <field name="e_commerce_hold_duration" />
+                    </setting>
+                    <setting id="reinstatement_hold_duration">
+                        <field name="reinstatement_hold_duration" />
+                    </setting>
+                    <setting id="reservation_duration">
+                        <field name="reservation_duration" />
+                    </setting>
+                    <setting id="reservation_hold_duration">
+                        <field name="reservation_hold_duration" />
+                    </setting>
+                </block>
+            </xpath>
+            <xpath
+        expr="//block[@name='notification_configuration']"
+        position="inside"
+      >
+                <setting id="disaster_alert_setting">
+                    <field
+            name="disaster_notify_ids"
+            widget="many2many_tags_avatar"
+          />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+     <!-- Configuration Views  Inside the Sponsorship -> Configuration Menu -->
+    <menuitem
+    id="menu_configuration"
+    parent="menu_sponsorship_root"
+    name="Configuration"
+    sequence="15"
+    groups="group_manager"
+  />
+    <menuitem
+    id="general_settings"
+    name="General Settings"
+    parent="menu_configuration"
+    sequence="1"
+    action="message_center_compassion.action_message_center_settings"
+  />
+    <menuitem
+    id="menu_communication_config"
+    name="Communication"
+    parent="menu_configuration"
+    sequence="3"
+  />
+</odoo>

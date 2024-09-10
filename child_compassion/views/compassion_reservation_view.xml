@@ -11,14 +11,14 @@
             name="send_reservation"
             type="object"
             string="Send Reservation"
-            states="draft"
+            invisible="state!='draft'"
             class="oe_highlight"
           />
                     <button
             name="cancel_reservation"
             type="object"
             string="Cancel Reservation"
-            states="active"
+            invisible="state != 'active'"
           />
                     <field name="state" widget="statusbar" />
                 </header>
@@ -46,22 +46,24 @@
                         <group>
                             <field
                 name="reservation_type"
-                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                readonly="state!='draft'"
               />
                             <field
                 name="fcp_id"
-                attrs="{'invisible': [('reservation_type', '!=', 'project')],
-                                                         'required': [('reservation_type', '=', 'project')],
-                                                         'readonly': [('state', '!=', 'draft')]}"
+                invisible="reservation_type != 'project'"
+                required="reservation_type == 'project'"
+                readonly="state!='draft'"
               />
                             <field
                 name="child_id"
-                attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('reservation_type', '!=', 'child')]}"
+                readonly="state!='draft'"
+                invisible="reservation_type != 'child'"
               />
                             <field
                 name="child_global_id"
-                attrs="{'required': [('reservation_type', '=', 'child')],
-                                                                  'readonly': [('state', '!=', 'draft')], 'invisible': [('reservation_type', '!=', 'child')]}"
+                invisible="reservation_type != 'child'"
+                readonly="state!='draft'"
+                required="reservation_type == 'child'"
               />
                             <field name="primary_owner" />
                             <field name="secondary_owner" />
@@ -75,8 +77,8 @@
                             <field name="expiration_date" />
                             <field
                 name="number_of_beneficiaries"
-                attrs="{'invisible': [('reservation_type', '=', 'child')],
-                                                                          'required': [('reservation_type', '=', 'project')]}"
+                invisible="reservation_type == 'child'"
+                required="reservation_type == 'project'"
               />
                             <field name="comments" />
                         </group>

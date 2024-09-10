@@ -535,7 +535,7 @@ class CompassionChild(models.Model):
         terms used in child description.
         """
         self._fetch_translations(self.env.ref("child_compassion.beneficiaries_details"))
-        return self.edit_translations()
+        return {}
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

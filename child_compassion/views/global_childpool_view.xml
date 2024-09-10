@@ -13,14 +13,14 @@
             string="Make a hold"
             type="object"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', False)]}"
+            invisible="not nb_selected or not all_children_available"
           />
                     <button
             name="create_reservation"
             string="Make a reservation"
             type="object"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', True)]}"
+            invisible="not nb_selected or not all_children_available"
           />
                 </header>
                 <sheet>
@@ -82,7 +82,7 @@
                   name="filter"
                   string="Apply Filter"
                   type="object"
-                  attrs="{'invisible': [('nb_selected', '=', 0)]}"
+                  invisible="not nb_selected"
                   style="margin-left: 5px"
                 />
                             </div>
@@ -172,19 +172,16 @@
                     <separator string="Search Results" />
                     <group>
                         <field name="nb_selected" />
-                        <field
-              name="nb_found"
-              attrs="{'invisible': [('nb_found', '=', 0)]}"
-            />
+                        <field name="nb_found" invisible="not nb_found" />
                         <field
               name="nb_restricted_children"
-              attrs="{'invisible': [('nb_restricted_children', '=', 0)]}"
+              invisible="not nb_restricted_children"
             />
                     </group>
-                    <div attrs="{'invisible': [('nb_found', '=', 0)]}">
+                    <div invisible="not nb_found">
                         <p style="color:red">A filter is active</p>
                     </div>
-                    <div attrs="{'invisible': [('missing_dates', '=', False)]}">
+                    <div invisible="not missing_dates">
                         <p style="color:red">Missing birthdates</p>
                         <field
               name="missing_dates"
@@ -200,19 +197,8 @@
                     <field
             name="global_child_ids"
             mode="kanban"
-            domain="[('search_view_id', '=', active_id)]"
+            domain="[('search_view_id', '=', id)]"
           >
-                        <search>
-                            <field name="is_orphan" />
-                            <group expand="0" name="group_by" string="Group By">
-                                <filter
-                  name="field_office"
-                  string="Salesperson"
-                  domain="[]"
-                  context="{'group_by' : 'field_office_ids'}"
-                />
-                            </group>
-                        </search>
                         <kanban
               default_order="field_office_id asc"
               default_group_by="gender"
@@ -324,11 +310,12 @@
                         <field name="primary_owner" />
                         <field
               name="ambassador"
-              attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"
+              invisible="channel not in ('ambassador', 'event')"
+              required="channel == 'ambassador'"
             />
                         <field
               name="secondary_owner"
-              attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"
+              invisible="channel in ('ambassador', 'event')"
             />
                         <field name="channel" />
                         <field
@@ -367,11 +354,12 @@
                         <field name="channel" />
                         <field
               name="ambassador"
-              attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"
+              invisible="channel not in ('ambassador', 'event')"
+              required="channel == 'ambassador'"
             />
                         <field
               name="secondary_owner"
-              attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"
+              invisible="channel in ('ambassador', 'event')"
             />
                         <field
               name="comments"
@@ -434,9 +422,7 @@
                         <field name="is_area_hiv_affected" />
                         <field name="is_special_needs" />
                     </group>
-                    <group
-            attrs="{'invisible': [('holding_global_partner_id', '=', False)]}"
-          >
+                    <group invisible="not holding_global_partner_id">
                         <field name="holding_global_partner_id" />
                         <field name="hold_expiration_date" />
                         <field name="source_code" />

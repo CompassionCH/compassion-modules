@@ -1,9 +1,9 @@
 from odoo.addons.message_center_compassion.tools.load_mappings import load_mapping_files
 
-from . import controllers, models, wizards
+from . import models, wizards
 
 
-def load_mappings(cr, registry):
+def load_mappings(env):
     path = "child_compassion/static/mappings/"
     files = [
         "household_member.json",
@@ -29,4 +29,4 @@ def load_mappings(cr, registry):
         "reservation_child.json",
         "reservation_project.json",
     ]
-    load_mapping_files(cr, path, files)
+    load_mapping_files(env, path, files)

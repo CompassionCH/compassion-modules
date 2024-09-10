@@ -110,13 +110,6 @@
               class="oe_stat_button"
               context="{'async_mode': False}"
             />
-                        <button
-              name="edit_translations"
-              string="Edit translations"
-              type="object"
-              icon="fa-language"
-              class="oe_stat_button"
-            />
                     </div>
                     <div class="row">
                         <div class="col-2">
@@ -161,11 +154,11 @@
                                     <field name="completion_date" />
                                     <field
                     name="completion_date_change_reason"
-                    attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"
+                    invisible="not completion_date_change_reason"
                   />
                                     <field
                     name="exit_reason"
-                    attrs="{'invisible': [('state', '!=', 'F')]}"
+                    invisible="state != 'F'"
                   />
                                     <!--newly added-->
                                     <field name="compass_id" />
@@ -186,7 +179,7 @@
                             <group>
                                 <field
                   name="lifecycle_ids"
-                  context="{'default_child_id': active_id}"
+                  context="{'default_child_id': id}"
                 >
                                     <tree>
                                         <field name="date" />
@@ -196,7 +189,7 @@
                                 </field>
                                 <field
                   name="revised_value_ids"
-                  attrs="{'invisible': [('revised_value_ids', '=', False)]}"
+                  invisible="not revised_value_ids"
                 >
                                     <tree>
                                         <field
@@ -210,7 +203,7 @@
                                 <field
                   name="assessment_ids"
                   readonly="1"
-                  attrs="{'invisible': [('assessment_ids', '=', False)]}"
+                  invisible="not assessment_ids"
                 >
                                     <tree>
                                         <field name="date" />
@@ -222,7 +215,7 @@
                                 </field>
                                 <field
                   name="child_disaster_impact_ids"
-                  attrs="{'invisible': [('child_disaster_impact_ids', '=', False)]}"
+                  invisible="not child_disaster_impact_ids"
                 >
                                     <tree>
                                         <field name="name" />
@@ -238,7 +231,7 @@
                                 </field>
                                 <field
                   name="note_ids"
-                  attrs="{'invisible': [('lifecycle_ids', '=', False)]}"
+                  invisible="not lifecycle_ids"
                 >
                                     <tree>
                                         <field name="body" />
@@ -290,27 +283,27 @@
                                     <field name="education_level" />
                                     <field
                     name="not_enrolled_reason"
-                    attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"
+                    invisible="education_level != 'Not Enrolled'"
                   />
                                     <field name="local_grade_level" />
                                     <field name="us_grade_level" />
                                     <field name="vocational_training_type" />
                                     <field
                     name="academic_performance"
-                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                    invisible="education_level == 'Not Enrolled'"
                   />
                                     <field
                     name="subject_ids"
                     widget="many2many_tags"
-                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                    invisible="education_level == 'Not Enrolled'"
                   />
                                     <field
                     name="major_course_study"
-                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                    invisible="education_level == 'Not Enrolled'"
                   />
                                     <field
                     name="university_year"
-                    attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"
+                    invisible="education_level != 'University Graduate'"
                   />
                                 </group>
                                 <group string="Health">
@@ -447,61 +440,45 @@
                         <field name="status" />
                     </group>
                     <group />
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Planned Exit')]}"
-          >
+                    <group invisible="type != 'Planned Exit'">
                         <field name="last_attended_project" />
                         <field name="primary_school_finished" />
                         <!--<field name="confesses_jesus_savior"/>-->
                         <field name="final_letter_sent" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Planned Exit')]}"
-          >
+                    <group invisible="type != 'Planned Exit'">
                         <field name="sponsor_impact" />
                         <field name="new_situation" />
                         <field name="future_hope_ids" widget="many2many_tags" />
                         <field name="family_impact" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}"
-          >
+                    <group invisible="type != 'Unplanned Exit'">
                         <field name="child_death_date" />
                         <!--<field name="child_death_circumstances"/>-->
                         <field name="death_intervention_information" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}"
-          >
+                    <group invisible="type != 'Unplanned Exit'">
                         <field name="child_death_category" />
                         <field name="child_death_subcategory" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Reinstatement')]}"
-          />
-                    <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
+                    <group invisible="type != 'Reinstatement'" />
+                    <group invisible="type != 'Transfer'">
                         <field name="old_project_id" />
                         <field name="transfer_arrival_date" />
                         <field name="other_transfer_reason" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
+                    <group invisible="type != 'Transfer'">
                         <field name="current_project" />
                         <field name="new_project" />
                         <field name="new_program" />
                         <field name="previously_active_program" />
                         <field name="new_beneficiary_local_number" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Transition')]}"
-          >
+                    <group invisible="type != 'Transition'">
                         <field name="transition_type" />
                     </group>
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Transition')]}"
-          />
-                    <group
-            attrs="{'invisible': [('type', '!=', 'Registration')]}"
-          >
+                    <group invisible="type != 'Transition'" />
+                    <group invisible="type != 'Registration'">
                     </group>
                 </group>
             </form>

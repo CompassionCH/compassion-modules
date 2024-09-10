@@ -97,7 +97,7 @@ class PrintChildpack(models.TransientModel):
             )
             pdf_data = report_ref.with_context(
                 must_skip_send_to_printer=True
-            )._render_qweb_pdf(children.ids, data=data)
+            )._render_qweb_pdf(report_name, children.ids, data=data)
             self.pdf_download = base64.encodebytes(pdf_data[0])
             self.state = "pdf"
             return {

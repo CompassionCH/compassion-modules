@@ -115,17 +115,6 @@ class MappedModel(models.AbstractModel):
                                     s_field.with_context(
                                         lang=lang.lang_id.code
                                     ).name = new_translation
-                                else:
-                                    # The selection is not stored, maybe it's
-                                    # translated in the code.
-                                    lang.env["ir.translation"].search(
-                                        [
-                                            ("lang", "=", lang.lang_id.code),
-                                            ("src", "=ilike", english_val),
-                                            ("name", "ilike", t_field.model),
-                                        ],
-                                        limit=1,
-                                    ).value = new_translation
                             else:
                                 # Write the value inside the correct relation
                                 record = translated_record
@@ -137,75 +126,14 @@ class MappedModel(models.AbstractModel):
             to_translate_manually.assign_translation()
         return True
 
-    def edit_translations(self):
-        """
-        Returns action with domain for translating all values of the record
-        """
-        domain_parts = []
-        for f_name, t_field in self._get_ir_translated_fields().items():
-            if t_field.ttype == "selection":
-                try:
-                    field_names = self.mapped(t_field.name)
-                except KeyError:
-                    try:
-                        field_names = self.mapped(f_name)
-                    except KeyError:
-                        continue
-                f_sel = t_field.selection_ids.filtered(
-                    lambda selection, field_names=field_names: selection.value
-                    in field_names
-                )
-                if f_sel:
-                    domain_parts += [
-                        [
-                            "&",
-                            ("res_id", "in", f_sel.ids),
-                            ("name", "like", "ir.model.fields.selection,"),
-                        ]
-                    ]
-                else:
-                    srcs = self.with_context(lang="en_US").mapped(f_name)
-                    if any(srcs):
-                        domain_parts.append([("src", "in", srcs)])
-            else:
-                recs = self
-                model_name, sep, final_field = f_name.rpartition(".")
-                if model_name:
-                    recs = self.mapped(model_name)
-                if recs:
-                    self.env["ir.translation"].insert_missing(
-                        self.env[recs._name]._fields[final_field], recs
-                    )
-                    domain_parts += [
-                        [
-                            "&",
-                            ("res_id", "in", recs.ids),
-                            ("name", "=ilike", f"{recs._name},%"),
-                        ]
-                    ]
-        domain = ["|"] * (len(domain_parts) - 1)
-        for d in domain_parts:
-            domain += d
-        action = {
-            "name": _("Translate"),
-            "res_model": "ir.translation",
-            "type": "ir.actions.act_window",
-            "view_mode": "tree",
-            "view_id": self.env.ref("base.view_translation_dialog_tree").id,
-            "target": "current",
-            "domain": domain,
-            "context": {},
-        }
-        return action
-
     def assign_translation(self):
         """Assign an activity for manually translating the value."""
-        # Remove previous todos
-        self.activity_unlink(["mail.mail_activity_data_todo"])
         notify_ids = (
             self.env["res.config.settings"].sudo().get_param("translate_notify_ids")
         )
-        if notify_ids:  # check if not False
+        if notify_ids and hasattr(self, "activity_schedule"):  # check if not False
+            # Remove previous todos
+            self.activity_unlink(["mail.mail_activity_data_todo"])
             for user_id in notify_ids[0][2]:
                 act_vals = {"user_id": user_id}
                 self.activity_schedule(
@@ -256,8 +184,8 @@ class MappedModel(models.AbstractModel):
         field_mappings = gmc_action.mapping_id.json_spec_ids
         for field_part in field_path:
             field_mappings = field_mappings.filtered(
-                lambda m, field_part=field_part: m.field_name == field_part
-                or m.relational_field_id.name == field_part
+                lambda m, _field_part=field_part: m.field_name == _field_part
+                or m.relational_field_id.name == _field_part
             )
             keys_to_keep = field_mappings.mapped("json_name")
             gmc_data = self._filter_gmc_data(gmc_data, keys_to_keep)
@@ -305,7 +233,7 @@ class MappedModel(models.AbstractModel):
                 for key, value in item.items():
                     if key in keys_to_keep:
                         extract[key] = value
-                    elif isinstance(value, (list, dict)):
+                    elif isinstance(value, list | dict):
                         res.extend(self._filter_gmc_data(value, keys_to_keep))
                 if extract:
                     res.append(extract)
