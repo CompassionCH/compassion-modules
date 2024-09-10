@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_compassion_project_covid_tree" model="ir.ui.view">
+        <field name="name">compassion.project.covid_update.tree</field>
+        <field name="model">compassion.project.covid_update</field>
+        <field name="arch" type="xml">
+            <tree string="FCP Re-opening Status">
+                <field name="fcp_id" />
+                <field name="update_date" />
+                <field name="re_opening_status" />
+                <field name="comments" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="open_view_project_covid_tree" model="ir.actions.act_window">
+        <field name="name">Covid status</field>
+        <field name="res_model">compassion.project.covid_update</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_compassion_project_covid_tree" />
+    </record>
+
+    <menuitem
+    id="menu_sponsorship_project_covid"
+    parent="menu_field_section"
+    name="Projects covid status"
+    action="open_view_project_covid_tree"
+    sequence="3"
+  />
+</odoo>

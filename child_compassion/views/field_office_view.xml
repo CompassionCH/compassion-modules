@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Compassion field office form view -->
+    <record id="view_compassion_field_office_form" model="ir.ui.view">
+        <field name="name">compassion.field.office.form</field>
+        <field name="model">compassion.field.office</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+              name="update_informations"
+              type="object"
+              string="get info"
+              icon="fa-refresh"
+              class="oe_stat_button"
+              context="{'async_mode': False}"
+            />
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="field_office_id" />
+                            <field name="region" />
+                            <field name="country_director" />
+                            <field name="date_start" />
+                            <field name="country_information" />
+                        </group>
+                        <group>
+                            <field name="staff_number" />
+                            <field name="country_id" />
+                            <field name="primary_language_id" />
+                            <field
+                name="spoken_language_ids"
+                widget="many2many_tags"
+              />
+                            <field
+                name="translated_language_ids"
+                widget="many2many_tags"
+              />
+                            <field
+                name="available_on_childpool"
+                groups="base.group_system"
+              />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="General Information">
+                            <group>
+                                <group string="Address">
+                                    <field name="street" />
+                                    <field name="city" />
+                                    <field name="province" />
+                                    <field name="zip_code" />
+                                </group>
+                                <group string="Contact Information">
+                                    <field name="issue_email" />
+                                    <field name="website" />
+                                    <field name="phone_number" />
+                                    <field name="social_media_site" />
+                                </group>
+                                <group>
+                                    <field
+                    name="high_risk_ids"
+                    widget="many2many_tags"
+                  />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Learning">
+                            <group>
+                                <field name="learning_image_url" />
+                                <field name="learning_summary" />
+                            </group>
+                            <field name="learning_ids">
+                                <tree>
+                                    <field name="sequence" widget="handle" />
+                                    <field name="time" />
+                                    <field name="title" />
+                                    <field name="description" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Disaster Alerts">
+                            <group>
+                                <field name="disaster_alert_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="disaster_date" />
+                                        <field name="state" />
+                                        <field name="disaster_type" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="FCP">
+                            <group>
+                                <field name="fcp_hours_week" />
+                                <field name="fcp_meal_week" />
+                                <field name="fcp_medical_check" />
+                                <field name="fcp_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="fcp_id" />
+                                        <field name="suspension" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_compassion_field_office_tree" model="ir.ui.view">
+        <field name="name">compassion.field.office.tree</field>
+        <field name="model">compassion.field.office</field>
+        <field name="arch" type="xml">
+            <tree string="project">
+                <field name="field_office_id" />
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="open_view_field_office" model="ir.actions.act_window">
+        <field name="name">Field Offices</field>
+        <field name="res_model">compassion.field.office</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+    id="menu_sponsorship_field_office"
+    parent="menu_field_section"
+    name="Field Offices"
+    action="open_view_field_office"
+    sequence="5"
+  />
+</odoo>

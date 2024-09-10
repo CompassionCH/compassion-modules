@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="gp_australia" model="compassion.global.partner">
+        <field name="name">Australia</field>
+        <field name="country_id" search="[('code', '=', 'AU')]" />
+    </record>
+    <record id="gp_canada" model="compassion.global.partner">
+        <field name="name">Canada</field>
+        <field name="country_id" search="[('code', '=', 'CA')]" />
+    </record>
+    <record id="gp_france" model="compassion.global.partner">
+        <field name="name">France</field>
+        <field name="country_id" search="[('code', '=', 'FR')]" />
+    </record>
+    <record id="gp_germany" model="compassion.global.partner">
+        <field name="name">Germany</field>
+        <field name="country_id" search="[('code', '=', 'DE')]" />
+    </record>
+    <record id="gp_italy" model="compassion.global.partner">
+        <field name="name">Italy</field>
+        <field name="country_id" search="[('code', '=', 'IT')]" />
+    </record>
+    <record id="gp_spain" model="compassion.global.partner">
+        <field name="name">Spain</field>
+        <field name="country_id" search="[('code', '=', 'ES')]" />
+    </record>
+    <record id="gp_south_korea" model="compassion.global.partner">
+        <field name="name">South Korea</field>
+        <field name="country_id" search="[('code', '=', 'KR')]" />
+    </record>
+    <record id="gp_netherlands" model="compassion.global.partner">
+        <field name="name">Netherlands</field>
+        <field name="country_id" search="[('code', '=', 'NL')]" />
+    </record>
+    <record id="gp_new_zealand" model="compassion.global.partner">
+        <field name="name">New Zealand</field>
+        <field name="country_id" search="[('code', '=', 'NZ')]" />
+    </record>
+    <record id="gp_norway" model="compassion.global.partner">
+        <field name="name">Norway</field>
+        <field name="country_id" search="[('code', '=', 'NO')]" />
+    </record>
+    <record id="gp_sweden" model="compassion.global.partner">
+        <field name="name">Sweden</field>
+        <field name="country_id" search="[('code', '=', 'SE')]" />
+    </record>
+    <record id="gp_switzerland" model="compassion.global.partner">
+        <field name="name">Switzerland</field>
+        <field name="country_id" search="[('code', '=', 'CH')]" />
+    </record>
+    <record id="gp_uk" model="compassion.global.partner">
+        <field name="name">United Kingdom</field>
+        <field name="country_id" search="[('code', '=', 'GB')]" />
+    </record>
+    <record id="gp_ireland" model="compassion.global.partner">
+        <field name="name">Ireland</field>
+        <field name="country_id" search="[('code', '=', 'IE')]" />
+    </record>
+    <record id="gp_usa" model="compassion.global.partner">
+        <field name="name">USA</field>
+        <field name="country_id" search="[('code', '=', 'US')]" />
+    </record>
+     <record id="gp_cuba" model="compassion.global.partner">
+        <field name="name">CUBA</field>
+        <field name="country_id" search="[('code', '=', 'CU')]" />
+    </record>
+    <record id="gp_seychelles" model="compassion.global.partner">
+        <field name="name">Seychelles</field>
+        <field name="country_id" search="[('code', '=', 'SC')]" />
+    </record>
+</odoo>

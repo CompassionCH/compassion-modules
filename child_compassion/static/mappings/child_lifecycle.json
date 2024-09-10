@@ -1,0 +1,45 @@
+{
+  "name": "Child Lifecycle",
+  "model": "compassion.child.ble",
+  "mapping": {
+    "DateOfDeath": "child_death_date",
+    "DeathCategory": "child_death_category",
+    "DeathSubcategory": "child_death_subcategory",
+    "EducationPlan": "education_plan",
+    "FamilyImpact": "family_impact",
+    "FutureHopes": {
+      "field": "future_hope_ids.value",
+      "search_relational_record": true,
+      "search_key": "name",
+      "from_json_conversion": "json_value and json_value.split(';')"
+    },
+    "IsFinalLetterSent": "final_letter_sent",
+    "IsPrimarySchoolComplete": "primary_school_finished",
+    "LastAttendedDate": "last_attended_project",
+    "NewSituation": "new_situation",
+    "SponsorImpact": "sponsor_impact",
+    "CurrentICP": "current_project",
+    "Status": "status",
+    "DeathInterventionInformation": "death_intervention_information",
+    "EffectiveDate": "date",
+    "BeneficiaryLifecycleEvent_ID": "global_id",
+    "ReasonForRequest": {
+      "field": "request_reason",
+      "from_json_conversion": "json_value and json_value.lower()"
+    },
+    "ExpectedArrivalDate": "transfer_arrival_date",
+    "NewBeneficiaryLocalNumber": "new_beneficiary_local_number",
+    "NewICPID": "new_project",
+    "OtherReasonForTransfer": "other_transfer_reason",
+    "BeneficiaryTransitionType": "transition_type",
+    "NewProgram": "new_program",
+    "PreviouslyActiveProgram": "previously_active_program",
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "RecordType": "type",
+    "Comments": "comments"
+  }
+}

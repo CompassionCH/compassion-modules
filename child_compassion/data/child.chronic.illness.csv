@@ -1,0 +1,12 @@
+id,name,value
+illness_asthma,Asthma,Asthma
+illness_cancer,Cancer,Cancer
+illness_cerebralpalsy,Cerebral Palsy,Cerebral palsy
+illness_cysticfibrosis,Cystic Fibrosis,Cystic fibrosis
+illness_diabetes,Diabetes,Diabetes
+illness_epilepsy,Epilepsy,Epilepsy
+illness_heardefects,Heart Defects,Heart defects
+illness_other,Other,Other
+illness_polio,Polio,Polio
+illness_scoliosis,Scoliosis,Scoliosis
+illness_spinabifida,Spina Bifida,Spina bifida

@@ -1,0 +1,25 @@
+id,name,value
+cognitive_act_art,Art And Music,Art and music
+cognitive_act_basic,Basic Life-Skill Training,Basic life-skill training
+cognitive_act_career,Career Guidance,Career guidance
+cognitive_act_computer,Computer Classes,Computer classes
+cognitive_act_contests,Contests (Age Graded),Age graded contests
+cognitive_act_creativity,Creativity Club,Creativity club
+cognitive_act_mentorship_early,Early Mentorship Programs,Early mentorship programs
+cognitive_act_stimultation_baby,Early Stimulation For Baby,Early stimulation for baby
+cognitive_act_educ_assistance,Educational Assistance,Educational assistance
+cognitive_act_educ_tous,Educational tours/trips,Educational trips
+cognitive_act_internships,Internships/job attachments,Internships
+cognitive_act_mentorship,Mentorship,Mentorship
+cognitive_act_multi_sensory_play,Multi-Sensory Play,Multi-sensory play
+cognitive_act_panel_discussion,Panel Discussion,Panel discussion
+cognitive_act_pre_literacy_games,Pre-Literacy Games,Pre-literacy games
+cognitive_act_pre_numeracy_games,Pre-Numeracy Games,Pre-numeracy games
+cognitive_act_prize_giving,Prize Giving Days,Prize giving days
+cognitive_act_remedial,Remedial Classes (Age Graded),Age graded remedial classes
+cognitive_act_science_congress,Science Congress,Science congresses
+cognitive_act_trade_fairs,Trade Fairs,Trade fairs
+cognitive_act_tutoring,Tutoring,Tutoring
+cognitive_act_vocational_ex,Vocational Training (External Institute),Vocational training
+cognitive_act_vocational_in,Vocational Training (In-Church),Vocational training
+cognitive_act_no_activities,No Activities Available at This Time,No activities available at this time

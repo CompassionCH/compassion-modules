@@ -1,0 +1,112 @@
+{
+  "name": "Disaster Alert",
+  "model": "fo.disaster.alert",
+  "mapping": {
+    "ICPDisasterImpacts": {
+      "field": "fcp_disaster_impact_ids.id",
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "project_fcp_id",
+      "sub_mapping": {
+        "name": "FCPDisasterImpactMapping",
+        "model": "fcp.disaster.impact",
+        "mapping": {
+          "Disaster_ImpactOnICPProgram": "impact_on_fcp_program",
+          "ICPDisasterImpact_ICPDisasterStatus": "field_office_impact_status",
+          "ICPDisasterImpact_ICPInfrastructureDisasterImpact": "infrastructure",
+          "ICP_ID": "project_fcp_id"
+        }
+      }
+    },
+    "BeneficiaryDisasterImpacts": {
+      "field": "child_disaster_impact_ids.id",
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "child_global_id",
+      "sub_mapping": {
+        "name": "ChildDisasterImpact",
+        "model": "child.disaster.impact",
+        "mapping": {
+          "BeneficiaryLocation": "beneficiary_location",
+          "BeneficiaryPhysicalCondition": "beneficiary_physical_condition",
+          "CaregiversDiedNumber": "caregivers_died_number",
+          "CaregiversSeriouslyInjuredNumber": "caregivers_seriously_injured_number",
+          "DisasterStatus": "disaster_status",
+          "HouseCondition": "house_condition",
+          "LostPersonalEffects": {
+            "field": "loss_ids.name",
+            "search_relational_record": true
+          },
+          "SiblingsDiedNumber": "siblings_died_number",
+          "SiblingsSeriouslyInjuredNumber": "siblings_seriously_injured_number",
+          "Beneficiary_GlobalID": "child_global_id",
+          "SponsorshipStatus": "sponsorship_status",
+          "Beneficiary_FullName": "name"
+        }
+      }
+    },
+    "DisasterCommunicationUpdates": {
+      "field": "fo_disaster_update_ids.id",
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "fodu_id",
+      "sub_mapping": {
+        "name": "FieldOfficeDisasterUpdate",
+        "model": "fo.disaster.update",
+        "mapping": {
+          "DisasterCommunicationUpdate_ID": "fodu_id",
+          "DisasterCommunicationUpdate_Name": "name",
+          "DisasterCommunicationUpdate_Summary": {
+            "field": "summary"
+          },
+          "FieldOffice_Name": {
+            "field": "fo_id.name",
+            "search_relational_record": true,
+            "allow_relational_creation": false
+          }
+        }
+      }
+    },
+    "AreaDescription": "area_description",
+    "CloseDate": "close_date",
+    "DisasterDate": "disaster_date",
+    "DisasterStatus": "state",
+    "DisasterType": "disaster_type",
+    "EstimatedBasicSuppliesNeeded": "estimated_basic_supplies_needed",
+    "EstimatedHomesDestroyed": "estimated_homes_destroyed",
+    "EstimatedLossOfLife": "estimated_loss_of_life",
+    "EstimatedLossOfLivelihood": "estimated_loss_of_livelihood",
+    "EstimatedNotAttendingProject": "estimated_not_attending_project",
+    "EstimatedRehabilitationFundsUSD": "estimated_rehabilitation_funds_usd",
+    "EstimatedReliefFundsUSD": "estimated_relief_funds_usd",
+    "EstimatedSeriousInjuries": "estimated_serious_injuries",
+    "FieldOfficeDamage": "field_office_damage",
+    "FieldOfficeImpactDescription": "field_office_impact_description",
+    "Disaster_ID": "disaster_id",
+    "ImpactDescription": "impact_description",
+    "ImpactOnICPInfrastructureDamaged": "impact_on_fcp_infrastructure_damaged",
+    "ImpactOnICPInfrastructureDestroyed": "impact_on_fcp_infrastructure_destroyed",
+    "ImpactOnICPProgramTemporarilyClosed": "impact_on_fcp_program_temporarily_closed",
+    "ImpactToFieldOfficeOperations": "impact_to_field_office_operations",
+    "IsAdditionalFundsRequested": "is_additional_funds_requested",
+    "IsCommunicationSensitive": "is_communication_sensitive",
+    "IsEstimatedDamageOverOneMillionUSD": "is_estimated_damage_over_one_million_usd",
+    "Disaster_Name": "name",
+    "ReportedLossOfLifeBeneficiaries": "reported_loss_of_life_beneficiaries",
+    "ReportedLossOfLifeCaregivers": "reported_loss_of_life_caregivers",
+    "ReportedLossOfLifeSiblings": "reported_loss_of_life_siblings",
+    "ReportedNumberBeneficiariesImpacted": "reported_number_beneficiaries_impacted",
+    "ReportedNumberOfICPsImpacted": "reported_number_of_fcps_impacted",
+    "ReportedSeriousInjuriesBeneficaries": "reported_serious_injuries_beneficiaries",
+    "ReportedSeriousInjuriesCaregivers": "reported_serious_injuries_caregivers",
+    "ReportedSeriousInjuriesSiblings": "reported_serious_injuries_siblings",
+    "ResponseDescription": "response_description",
+    "SeverityLevel": "severity_level",
+    "FieldOffice_Name": {
+      "field": "field_office_id.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "SourceKitName": "source_kit_name"
+  }
+}

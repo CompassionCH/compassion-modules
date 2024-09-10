@@ -1,0 +1,19 @@
+{
+  "name": "Demand Planning",
+  "model": "demand.planning",
+  "mapping": {
+    "GlobalPartnerWeeklyDemandRequestList": {
+      "field": "weekly_demand_ids.id",
+      "sub_mapping": {
+        "name": "WeeklyDemandCreateMapping",
+        "model": "demand.weekly.demand",
+        "mapping": {
+          "ResupplyQuantity": "total_resupply",
+          "TotalDemand": "total_demand",
+          "WeekEndDate": "week_end_date",
+          "WeekStartDate": "week_start_date"
+        }
+      }
+    }
+  }
+}

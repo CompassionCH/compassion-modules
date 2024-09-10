@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<odoo>
+    <!--Demand Planning Form View -->
+    <record id="view_demand_planning_form" model="ir.ui.view">
+        <field name="name">demand.planning.form</field>
+        <field name="model">demand.planning</field>
+        <field name="arch" type="xml">
+            <form string="Demand Planning">
+                <header>
+                    <field
+            name="state"
+            widget="statusbar"
+            statusbar_visible="draft,sent"
+          />
+                    <button
+            name="send_planning"
+            type="object"
+            string="Send Planning"
+            class="oe_highlight"
+            states="draft"
+          />
+                    <button
+            name="reset"
+            type="object"
+            string="Reset"
+            states="error"
+          />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date" />
+                            <field name="sent_date" />
+                        </group>
+                        <group colspan="2">
+                            <field
+                name="weekly_demand_ids"
+                context="{'default_demand_id': active_id}"
+              />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Demand Planning Tree View -->
+    <record id="view_demand_planning_tree" model="ir.ui.view">
+        <field name="name">demand.planning.tree</field>
+        <field name="model">demand.planning</field>
+        <field name="arch" type="xml">
+            <tree
+        decoration-primary="state=='draft'"
+        decoration-danger="state=='error'"
+      >
+                <field name="date" />
+                <field name="sent_date" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Weekly Demand Form View -->
+    <record id="view_demand_weekly_demand_form" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.form</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="arch" type="xml">
+            <form string="Weekly Demand">
+                <group>
+                    <field name="week_start_date" />
+                    <field name="week_end_date" />
+                    <field name="period_locked" />
+                </group>
+                <group>
+                    <group string="Demand">
+                        <field
+              name="total_demand"
+              attrs="{'readonly': [('period_locked', '=', True)]}"
+            />
+                    </group>
+                    <group string="Resupply">
+                        <field
+              name="total_resupply"
+              attrs="{'readonly': [('period_locked', '=', True)]}"
+            />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.tree</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="arch" type="xml">
+            <tree string="Weekly Demand" editable="bottom">
+                <field name="period_locked" />
+                <field name="week_start_date" />
+                <field name="week_end_date" />
+                <field name="total_demand" />
+                <field name="total_resupply" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action Opening the Tree View -->
+    <record id="open_view_demand_planning_form" model="ir.actions.act_window">
+        <field name="name">Demand Planning</field>
+        <field name="res_model">demand.planning</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+    id="menu_demand_planning_compassion"
+    name="Demand Planning"
+    parent="menu_configuration"
+    action="open_view_demand_planning_form"
+    sequence="2"
+  />
+</odoo>

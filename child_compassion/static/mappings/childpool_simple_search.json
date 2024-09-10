@@ -1,0 +1,31 @@
+{
+  "name": "profile_search",
+  "model": "compassion.childpool.search",
+  "mapping": {
+    "gender": {
+      "field": "gender",
+      "to_json_conversion": "odoo_value and odoo_value[0]"
+    },
+    "countries": {
+      "field": "field_office_ids.country_code",
+      "to_json_conversion": "odoo_value and ','.join(odoo_value) if isinstance(odoo_value, list) else odoo_value"
+    },
+    "minAge": "min_age",
+    "maxAge": "max_age",
+    "birthMonth": "birthday_month",
+    "birthDay": "birthday_day",
+    "birthYear": "birthday_year",
+    "name": "child_name",
+    "churchPartners": {
+      "field": "fcp_ids.fcp_id",
+      "to_json_conversion": "odoo_value and ','.join(odoo_value) if isinstance(odoo_value, list) else odoo_value"
+    },
+    "churchPartnerName": "fcp_name",
+    "hivAffectedArea": "hiv_affected_area",
+    "isOrphan": "is_orphan",
+    "hasSpecialNeeds": "has_special_needs",
+    "minDaysWaiting": "min_days_waiting",
+    "skip": "skip",
+    "take": "take"
+  }
+}

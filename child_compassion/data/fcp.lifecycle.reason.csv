@@ -1,0 +1,22 @@
+id,name,value
+icp_lifecycle_reason_protection,Child Protection Issue,child protection issue
+icp_lifecycle_reason_disaster1,Disaster Event,disaster event
+icp_lifecycle_reason_disaster2,Disaster event,disaster event
+icp_lifecycle_reason_policy,Does not comply with policies,does not comply with policies
+icp_lifecycle_reason_financial,Financial Mismanagement,financial mismanagement
+icp_lifecycle_reason_other,Other,other
+icp_lifecycle_reason_transition,Successful Transition,sucessful transition
+icp_lifecycle_accumulated_funds,Accumulated Funds,accumulated funds
+icp_lifecycle_reason_leadership,Church Leadership / Denomination Issues,church leadership / denomination issues
+icp_lifecycle_community_issue,Community Issues,community issues
+icp_lifecycle_government,Government Restriction,government restriction
+icp_lifecycle_leadership_commitment,ICP Leadership Lacks Commitment,icp leadership lacks commitment
+icp_lifecycle_management_practices,ICP Management Practices Do Not Meet PFM,icp management practices do not meet pfm
+icp_lifecycle_staffing_conflicts,ICP Staffing Conflicts / Issues,icp staffing conflicts / issues
+icp_lifecycle_fo_process,ICP is Unclear About FO Processes,icp is unclear about fo processes
+icp_lifecycle_integrity,Integrity Issues,integrity issues
+icp_lifecycle_internal_issue,Internal Issues in ICP Leadership,internal issues in icp leadership
+icp_lifecycle_legal,Legal Issues,legal issues
+icp_lifecycle_physical_work,Physical Work Environment Issues,physical work environment issues
+icp_lifecycle_program_implementation,Program Implementation Issues,program implementation issues
+icp_lifecycle_docs,Required Docs Do Not Meet Standards,required docs do not meet standards

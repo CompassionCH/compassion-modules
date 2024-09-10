@@ -1,0 +1,36 @@
+{
+  "name": "Create Hold",
+  "model": "compassion.hold",
+  "mapping": {
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "BeneficiaryState": "type",
+    "EstimatedNoMoneyYieldRate": "no_money_yield_rate",
+    "HoldEndDate": {
+      "field": "expiration_date",
+      "to_json_conversion": "fields.Datetime.from_string(odoo_value).strftime('%Y-%m-%dT%H:%M:%SZ')"
+    },
+    "HoldID": "hold_id",
+    "HoldYieldRate": "yield_rate",
+    "ReservationHoldType": "type",
+    "ReservationID": {
+      "field": "reservation_id.reservation_id",
+      "search_relational_record": true
+    },
+    "SecondaryHoldOwner": "secondary_owner",
+    "SourceCode": {
+      "field": "source_code",
+      "to_json_conversion": "('65-' + odoo_value) if odoo_value else ''"
+    },
+    "Channel_Name": "channel",
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    },
+    "HoldExpirationDate": {
+      "field": "expiration_date",
+      "from_json_conversion": "json_value.replace('T', ' ').rstrip('Z')"
+    }
+  }
+}

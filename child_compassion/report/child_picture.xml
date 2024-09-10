@@ -1,0 +1,68 @@
+<odoo>
+    <record id="paperformat_child_picture" model="report.paperformat">
+        <field name="name">Child Picture</field>
+        <field name="default" eval="True" />
+        <field name="format">custom</field>
+        <field name="page_height">153</field>
+        <field name="page_width">101</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <report
+    id="report_child_picture"
+    model="compassion.child"
+    string="Child Picture"
+    report_type="qweb-pdf"
+    name="child_compassion.child_picture"
+    menu="False"
+  />
+    <record id="report_child_picture" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_child_picture" />
+    </record>
+
+    <template id="child_picture">
+        <t t-set="disable_footer" t-value="1" />
+        <t t-set="disable_header" t-value="1" />
+        <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                            <style type="text/css">
+img {
+  width: 101mm;
+  height: 153mm;
+  object-fit: cover;
+  position: absolute;
+  left: 0mm;
+  top: 0mm;
+}
+#child-ref {
+  position: absolute;
+  top: 130mm;
+  left: 10mm;
+  right: 10mm;
+  padding: 2mm;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2mm;
+  text-align: center;
+}
+          </style>
+                            <img
+            t-attf-src="data:image/jpeg;base64,#{ o.fullshot }"
+          />
+                            <div id="child-ref">
+                                <span t-field="o.local_id" />
+                                <span> </span>
+                                <span t-field="o.preferred_name" />
+                            </div>
+                    </t>
+                </t>
+        </t>
+    </template>
+</odoo>

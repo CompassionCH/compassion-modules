@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<odoo>
+        <record id="view_gmc_message_child_tree" model="ir.ui.view">
+            <field name="name">gmc.message.child.tree</field>
+            <field name="model">gmc.message</field>
+            <field
+      name="inherit_id"
+      ref="message_center_compassion.view_gmc_message_outgoing_tree"
+    />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="child_id" />
+                </field>
+            </field>
+        </record>
+
+         <!-- Search Filters -->
+        <record id="view_gmc_message_child_filter" model="ir.ui.view">
+            <field name="name">gmc.message.child.filter</field>
+            <field name="model">gmc.message</field>
+            <field
+      name="inherit_id"
+      ref="message_center_compassion.view_gmc_message_filter"
+    />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="child_id" />
+                </field>
+            </field>
+        </record>
+</odoo>

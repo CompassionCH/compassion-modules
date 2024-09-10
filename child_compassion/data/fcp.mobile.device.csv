@@ -1,0 +1,5 @@
+id,name
+mobile_device_no,No
+mobile_device_smartphone,"Yes, through a smartphone"
+mobile_device_tablet,"Yes, through a tablet"
+mobile_device_laptop,"Yes, through a laptop"

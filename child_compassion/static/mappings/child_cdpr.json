@@ -1,0 +1,19 @@
+{
+  "name": "Child CDPR",
+  "model": "compassion.child.cdpr",
+  "mapping": {
+    "AssesmentType": "assesment_type",
+    "CognitiveOutcomeScore": "cognitive_score",
+    "CompletionDate": "date",
+    "PhysicalOutcomeScore": "physical_score",
+    "SocioEmotionalOutcomeScore": "sociological_score",
+    "SpiritualOutcomeScore": "spiritual_score",
+    "Age": "age",
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "CDPRAgeGroup": "cdpr_age_group",
+    "SourceKitName": "source_kit_name"
+  }
+}

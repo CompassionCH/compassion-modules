@@ -1,0 +1,10 @@
+id,name,value
+fo_risk_malnutrition,Malnutrition,malnutrition
+fo_risk_lack_water,Lack of Drinking Water,lack of drinking water
+fo_risk_drought,Drought,drought
+fo_risk_hiv,HIV/AIDS,hiv/aids
+fo_risk_illiteracy,Illiteracy,illiteracy
+fo_risk_malaria,Malaria,malaria
+fo_risk_abuse,Exploitation and Abuse,exploitation and abuse
+fo_risk_no_sanitation,Poor or No Sanitation,poor or no sanitation
+fo_risk_disaster,Disaster Prone Area,disaster prone area

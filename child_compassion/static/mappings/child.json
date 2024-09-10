@@ -1,0 +1,134 @@
+{
+  "name": "Compassion Child",
+  "model": "compassion.child",
+  "mapping": {
+    "LocalBeneficiaryId": "local_id",
+    "AcademicPerformance_Name": "academic_performance",
+    "ActiveProgram": "type",
+    "Age": "age",
+    "BeneficiaryHouseholdList": {
+      "field": "household_id.id",
+      "sub_mapping": "Household"
+    },
+    "BeneficiaryState": "beneficiary_state",
+    "BeneficiaryStatus": "beneficiary_state",
+    "Beneficiary_Gender": {
+      "field": "gender",
+      "from_json_conversion": "json_value[0]"
+    },
+    "Beneficiary_GlobalID": "global_id",
+    "Beneficiary_LocalID": "local_id",
+    "BirthDate": "birthdate",
+    "Birthdate": "birthdate",
+    "CDSPType": "cdsp_type",
+    "ProgramDeliveryType": "cdsp_type",
+    "ChristianActivity_Name": {
+      "field": "christian_activity_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ChronicIllness": {
+      "field": "chronic_illness_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ChronicIllness_Name": {
+      "field": "chronic_illness_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "CognitiveAgeGroup_Name": "cognitive_age_group",
+    "CompassChildID": "compass_id",
+    "CompassID": "compass_id",
+    "CorrespondenceLanguage": {
+      "field": "correspondence_language_id.name",
+      "search_relational_record": true
+    },
+    "CurrentUniversityYearOfStudy": "university_year",
+    "FavoriteProjectActivity": {
+      "field": "project_activity_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "FavoriteSchoolSubject": {
+      "field": "subject_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "FirstName": "firstname",
+    "FormalEducationLevel": "education_level",
+    "FullBodyImageURL": "image_url",
+    "FullName": "name",
+    "Gender": {
+      "field": "gender",
+      "from_json_conversion": "json_value[0]"
+    },
+    "GlobalId": "global_id",
+    "GradeLevelLocal_Name": "local_grade_level",
+    "GradeLevelUS_Name": "us_grade_level",
+    "HeightInCm": "height",
+    "HouseholdDuty_Name": {
+      "field": "duty_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ICPID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true
+    },
+    "ICP_ID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true
+    },
+    "IsHivAffectedArea": "is_area_hiv_affected",
+    "IsBirthDateEstimated": "estimated_birthdate",
+    "IsInHIVAffectedArea": "is_area_hiv_affected",
+    "IsOrphan": "is_orphan",
+    "IsSpecialNeeds": "is_special_needs",
+    "LastName": "lastname",
+    "LastPhotoDate": "last_photo_date",
+    "LastReviewDate": "last_review_date",
+    "LocalNumber": "local_id",
+    "MajorOrCourseOfStudy": "major_course_study",
+    "NameInNonLatinChar": "non_latin_name",
+    "NotEnrolledInEducationReason": "not_enrolled_reason",
+    "PhysicalDisability": {
+      "field": "physical_disability_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "PhysicalDisability_Name": {
+      "field": "physical_disability_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "PlannedCompletionDate": "completion_date",
+    "PlannedCompletionDateChangeReason": "completion_date_change_reason",
+    "PreferredName": "preferred_name",
+    "RevisedValues": {
+      "field": "revised_value_ids.name",
+      "search_relational_record": false
+    },
+    "SponsorshipStatus": "sponsorship_status",
+    "SponsoredStatus": "sponsorship_status",
+    "ThingsILike": {
+      "field": "hobby_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ThingsILikeAge1To2": {
+      "field": "hobby_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ThingsILikeToDoAge3Plus": {
+      "field": "hobby_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "TypeOfVocationalEducation": "vocational_training_type",
+    "USEquivalentGradeLevel": "us_grade_level",
+    "VocationalTrainingType_Name": "vocational_training_type",
+    "WeightInKg": "weight"
+  }
+}

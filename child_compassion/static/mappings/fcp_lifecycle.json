@@ -1,0 +1,57 @@
+{
+  "name": "Project Lifecycle",
+  "model": "compassion.project.ile",
+  "mapping": {
+    "ActionPlanGPAUse": "action_plan",
+    "ActualSuspensionEndDate": "suspension_end_date",
+    "ActualTransitionDate": "date",
+    "FutureInvolvement": {
+      "field": "future_involvement_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ICPImprovementDescription": "fcp_improvement_desc",
+    "ICPLifecycleEventType": "type",
+    "IsBeneficiaryInformationUpdatesWithheld": "is_beneficiary_information_updates_withheld",
+    "IsBeneficiaryToSupporterLettersWithheld": "hold_b2s_letters",
+    "IsGiftsWithheld": "hold_gifts",
+    "IsSponsorshipFundsWithheld": "hold_cdsp_funds",
+    "IsSuporterToBeneficiaryLettersWithheld": "hold_s2b_letters",
+    "IsSurvivalFundsWithheld": "hold_csp_funds",
+    "IsSuspensionExtendedAdditionalThirtyDays": "extension_2",
+    "IsSuspensionExtendedThirtyDays": "extension_1",
+    "IsTransitionComplete": "transition_complete",
+    "Name": "name",
+    "ProjectedTransitionDate": "projected_transition_date",
+    "ReactivationDate": "date",
+    "ReasonForFirstExtension": {
+      "field": "extension_1_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ReasonforSecondExtension": {
+      "field": "extension_2_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "SuspensionDetailsGPAUse": "suspension_detail",
+    "SuspensionReason": {
+      "field": "suspension_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "SuspensionStartDate": "date",
+    "TransitionDetailsGPAUse": "details",
+    "TransitionReason": {
+      "field": "transition_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
+    },
+    "ICPStatus": "project_status",
+    "ICP_ID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    }
+  }
+}

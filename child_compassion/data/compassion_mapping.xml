@@ -1,0 +1,66 @@
+<odoo>
+    <record id="mapping_child" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_child" />
+        <field name="name">Compassion Child</field>
+    </record>
+    <record id="mapping_hold_create" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_hold" />
+        <field name="name">Create Hold</field>
+    </record>
+    <record id="mapping_hold_release" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_hold" />
+        <field name="name">Release Hold</field>
+    </record>
+    <record id="mapping_fcp" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_project" />
+        <field name="name">Compassion Project (FCP)</field>
+    </record>
+    <record id="mapping_field_office" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_field_office" />
+        <field name="name">National Office</field>
+    </record>
+    <record id="mapping_reservation" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_reservation" />
+        <field name="name">Create Project Reservation</field>
+    </record>
+    <record id="mapping_reservation_child" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_reservation" />
+        <field name="name">Create Child Reservation</field>
+    </record>
+    <record id="mapping_reservation_cancel" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_reservation" />
+        <field name="name">Cancel Reservation</field>
+    </record>
+    <record id="mapping_child_cdpr" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_child_cdpr" />
+        <field name="name">Child CDPR</field>
+    </record>
+    <record id="mapping_household" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_household" />
+        <field name="name">Household</field>
+    </record>
+    <record id="mapping_child_note" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_child_note" />
+        <field name="name">Child Note</field>
+    </record>
+    <record id="mapping_child_lifecycle" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_child_ble" />
+        <field name="name">Child Lifecycle</field>
+    </record>
+    <record id="mapping_project_lifecycle" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_project_ile" />
+        <field name="name">Project Lifecycle</field>
+    </record>
+    <record id="mapping_fo_disaster" model="compassion.mapping">
+        <field name="model_id" ref="model_fo_disaster_alert" />
+        <field name="name">Disaster Alert</field>
+    </record>
+    <record id="mapping_fo_disaster_notif" model="compassion.mapping">
+        <field name="model_id" ref="model_fo_disaster_alert" />
+        <field name="name">Disaster Alert Notification</field>
+    </record>
+    <record id="mapping_demand_planning" model="compassion.mapping">
+        <field name="model_id" ref="model_demand_planning" />
+        <field name="name">Demand Planning</field>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+{
+  "name": "Create Child Reservation",
+  "model": "compassion.reservation",
+  "mapping": {
+    "Beneficiary_GlobalID": "child_global_id",
+    "Channel_Name": "channel",
+    "ICP_ID": "fcp_id.fcp_id",
+    "CampaignEventIdentifier": "fcp_id.fcp_id",
+    "ExpirationDate": "reservation_expiration_date",
+    "HoldExpirationDate": {
+      "field": "expiration_date",
+      "to_json_conversion": "fields.Datetime.from_string(odoo_value).strftime('%Y-%m-%dT%H:%M:%SZ')"
+    },
+    "HoldYieldRate": "yield_rate",
+    "ID": "reservation_id",
+    "IsReservationAutoApproved": "is_reservation_auto_approved",
+    "NumberOfBeneficiaries": "number_of_beneficiaries",
+    "SecondaryOwner": "secondary_owner",
+    "Reservation_ID": "reservation_id",
+    "ReservationType": {
+      "to_json_conversion": "'Sponsorship Beneficiary'"
+    },
+    "SourceCode": {
+      "to_json_conversion": "''"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Cancel Reservation",
+  "model": "compassion.reservation",
+  "mapping": {
+    "Reservation_ID": "reservation_id",
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}

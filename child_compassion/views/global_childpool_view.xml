@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Childpool search form view -->
+    <record id="view_compassion_childpool_form" model="ir.ui.view">
+        <field name="name">compassion.childpool.search.form</field>
+        <field name="model">compassion.childpool.search</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="all_children_available" invisible="1" />
+                    <button
+            name="make_a_hold"
+            string="Make a hold"
+            type="object"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', False)]}"
+          />
+                    <button
+            name="create_reservation"
+            string="Make a reservation"
+            type="object"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('nb_selected', '=', 0), ('all_children_available', '=', True)]}"
+          />
+                </header>
+                <sheet>
+                    <h1>Today I'm feeling we will sponsor new children!</h1>
+                    <separator />
+                    <group>
+                        <field
+              name="take"
+              string="How many children would that be?"
+            />
+                    </group>
+                    <notebook>
+                        <page string="I don't want to choose">
+                            <div class="oe_inline">
+                                <button
+                  name="rich_mix"
+                  string="Propose me something"
+                  type="object"
+                  class="oe_highlight"
+                />
+                                <button
+                  name="country_mix"
+                  string="I want children from all countries"
+                  type="object"
+                  class="oe_highlight"
+                  style="margin-left: 5px"
+                />
+                                <button
+                  name="take_more"
+                  type="object"
+                  string="Add children"
+                  style="margin-left: 5px"
+                />
+                            </div>
+                        </page>
+                        <page string="I have something in mind">
+                            <div class="oe_inline mb-3">
+                                <button
+                  name="do_search"
+                  string="Search"
+                  type="object"
+                  class="oe_highlight"
+                />
+                                <button
+                  name="add_search"
+                  string="Add children"
+                  type="object"
+                  class="oe_highlight"
+                  style="margin-left: 5px"
+                />
+                                <button
+                  name="do_365_mix"
+                  string="365 children"
+                  type="object"
+                  class="oe_highlight"
+                  style="margin-left: 5px"
+                />
+                                <button
+                  name="filter"
+                  string="Apply Filter"
+                  type="object"
+                  attrs="{'invisible': [('nb_selected', '=', 0)]}"
+                  style="margin-left: 5px"
+                />
+                            </div>
+                            <notebook>
+                                <page string="Common filters">
+                                    <group col="4">
+                                        <group>
+                                            <label
+                        for="state_chooser"
+                        string="Status selection"
+                      />
+                                            <div>
+                                                <field name="state_chooser" />
+                                                <button
+                          name="add_status"
+                          string="Add"
+                          type="object"
+                          class="oe_link oe_inline"
+                        />
+                                                <button
+                          name="reset_status"
+                          string="Reset"
+                          type="object"
+                          class="oe_link oe_inline"
+                        />
+                                                <field name="state_selected" />
+                                            </div>
+                                            <field name="local_id" />
+                                        </group>
+                                        <group>
+                                            <field
+                        name="field_office_ids"
+                        widget="many2many_tags"
+                      />
+                                            <field
+                        name="fcp_ids"
+                        widget="many2many_tags"
+                      />
+                                            <field name="child_name" />
+                                        </group>
+                                        <group>
+                                            <field name="gender" />
+                                            <field name="min_age" />
+                                            <field name="max_age" />
+                                        </group>
+                                        <group>
+                                            <field name="birthday_month" />
+                                            <field name="birthday_day" />
+                                            <field name="birthday_year" />
+                                        </group>
+                                    </group>
+                                </page>
+                                <page string="Other filters">
+                                    <group col="4">
+                                        <group>
+                                            <field
+                        name="holding_gp_ids"
+                        widget="many2many_tags"
+                      />
+                                            <field name="min_days_waiting" />
+                                            <field name="fcp_name" />
+                                        </group>
+                                        <group>
+                                            <field name="is_orphan" />
+                                            <field name="father_alive" />
+                                            <field name="mother_alive" />
+                                        </group>
+                                        <group>
+                                            <field name="hiv_affected_area" />
+                                            <field
+                        name="completion_date_after"
+                      />
+                                            <field
+                        name="completion_date_before"
+                      />
+                                        </group>
+                                        <group>
+                                            <field name="has_special_needs" />
+                                            <field name="chronic_illness" />
+                                            <field name="physical_disability" />
+                                        </group>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </page>
+                    </notebook>
+                    <separator string="Search Results" />
+                    <group>
+                        <field name="nb_selected" />
+                        <field
+              name="nb_found"
+              attrs="{'invisible': [('nb_found', '=', 0)]}"
+            />
+                        <field
+              name="nb_restricted_children"
+              attrs="{'invisible': [('nb_restricted_children', '=', 0)]}"
+            />
+                    </group>
+                    <div attrs="{'invisible': [('nb_found', '=', 0)]}">
+                        <p style="color:red">A filter is active</p>
+                    </div>
+                    <div attrs="{'invisible': [('missing_dates', '=', False)]}">
+                        <p style="color:red">Missing birthdates</p>
+                        <field
+              name="missing_dates"
+              style="color: red"
+              readonly="1"
+            />
+                    </div>
+                    <separator />
+                    <field name="global_child_ids" invisible="True" />
+                    <label for="global_child_ids" />
+
+                    <!-- Kanban View for the selected Children -->
+                    <field
+            name="global_child_ids"
+            mode="kanban"
+            domain="[('search_view_id', '=', active_id)]"
+          >
+                        <search>
+                            <field name="is_orphan" />
+                            <group expand="0" name="group_by" string="Group By">
+                                <filter
+                  name="field_office"
+                  string="Salesperson"
+                  domain="[]"
+                  context="{'group_by' : 'field_office_ids'}"
+                />
+                            </group>
+                        </search>
+                        <kanban
+              default_order="field_office_id asc"
+              default_group_by="gender"
+            >
+                            <field name="field_office_id" />
+                            <field name="gender" />
+                            <field name="color" />
+                            <field name="thumbnail_url" />
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div
+                    t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card"
+                    style="position: relative"
+                  >
+                                        <a
+                      name="unlink"
+                      type="object"
+                      style="position: absolute; right: 0; padding: 4px; diplay: inline-block"
+                    >X
+                                        </a>
+                                        <div class="oe_module_vignette">
+                                            <a type="open">
+                                                <img
+                          t-att-src="record.thumbnail_url.raw_value"
+                          class="oe_avatar oe_kanban_avatar_smallbox"
+                          alt="child"
+                        />
+                                            </a>
+
+                                            <div class="oe_module_desc">
+                                                <div
+                          class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_color_border"
+                        >
+                                                    <table
+                            class="oe_kanban_table"
+                          >
+                                                        <tr>
+                                                            <td
+                                class="oe_kanban_title1"
+                                align="left"
+                                valign="middle"
+                              >
+
+                                                                <h4>
+                                                                    <a
+                                    type="open"
+                                  >
+                                                                        <field
+                                      name="name"
+                                    />
+                                                                    </a>
+                                                                </h4>
+                                                                <div>Code:
+                                                                    <field
+                                    name="local_id"
+                                  />
+                                                                </div>
+                                                                <div>Status:
+                                                                    <field
+                                    name="beneficiary_state"
+                                  />
+                                                                </div>
+                                                                <div>Age:
+                                                                    <field
+                                    name="age"
+                                  />
+                                                                </div>
+                                                                <div>Priority:
+                                                                    <field
+                                    name="priority_score"
+                                  />
+                                                                </div>
+                                                                <div
+                                >Waiting since:
+                                                                    <field
+                                    name="unsponsored_since"
+                                  />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Child Hold and Reservation Wizard view -->
+    <record
+    id="view_compassion_global_child_attributes_form"
+    model="ir.ui.view"
+  >
+        <field name="name">child.hold.wizard.form</field>
+        <field name="model">child.hold.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="type" />
+                        <field name="expiration_date" />
+                        <field name="primary_owner" />
+                        <field
+              name="ambassador"
+              attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"
+            />
+                        <field
+              name="secondary_owner"
+              attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"
+            />
+                        <field name="channel" />
+                        <field
+              name="comments"
+              help="Will display the comments when child is selected for sponsorship"
+            />
+                    </group>
+                    <group string="What to do next?">
+                        <field name="return_action" />
+                    </group>
+                    <footer>
+                        <button
+              name="send"
+              string="Validate"
+              type="object"
+              class="oe_highlight"
+            />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record
+    id="view_compassion_child_reservation_wizard_form"
+    model="ir.ui.view"
+  >
+        <field name="name">child.reservation.wizard.form</field>
+        <field name="model">child.reservation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="expiration_date" />
+                        <field name="primary_owner" />
+                        <field name="channel" />
+                        <field
+              name="ambassador"
+              attrs="{'invisible': [('channel', 'not in', ['ambassador', 'event'])], 'required': [('channel', '=', 'ambassador')]}"
+            />
+                        <field
+              name="secondary_owner"
+              attrs="{'invisible': [('channel', 'in', ['ambassador', 'event'])]}"
+            />
+                        <field
+              name="comments"
+              help="Will display the comments when child is selected for sponsorship"
+            />
+                    </group>
+                    <footer>
+                        <button
+              name="send"
+              string="Validate"
+              type="object"
+              class="oe_highlight"
+            />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Global Child Form View -->
+    <record id="view_compassion_global_child_form" model="ir.ui.view">
+        <field name="name">compassion.global.child.form</field>
+        <field name="model">compassion.global.child</field>
+        <field name="arch" type="xml">
+            <form>
+                <field
+          name="portrait"
+          widget='image'
+          class="oe_left oe_avatar"
+          options='{"size": [90, 90]}'
+        />
+
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" />
+                    </h1>
+                    <field name="beneficiary_state" />
+                    <field name="sponsorship_status" />
+                </div>
+                <group>
+                    <group>
+                        <field name="preferred_name" />
+                        <field name="gender" />
+                        <field name="birthdate" />
+                        <field name="age" />
+                    </group>
+                    <group>
+                        <field name="local_id" />
+                        <field name="global_id" />
+                        <field name="project_id" />
+                        <field name="field_office_id" />
+                    </group>
+                    <group>
+                        <field name="unsponsored_since" />
+                        <field name="priority_score" />
+                        <field name="waiting_days" />
+                    </group>
+                    <group>
+                        <field name="is_orphan" />
+                        <field name="is_area_hiv_affected" />
+                        <field name="is_special_needs" />
+                    </group>
+                    <group
+            attrs="{'invisible': [('holding_global_partner_id', '=', False)]}"
+          >
+                        <field name="holding_global_partner_id" />
+                        <field name="hold_expiration_date" />
+                        <field name="source_code" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action opening the tree view -->
+    <record id="open_view_childpool" model="ir.actions.act_window">
+        <field name="name">Global Childpool</field>
+        <field name="res_model">compassion.childpool.search</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <menuitem
+    id="menu_global_pool"
+    parent="menu_pool_section"
+    name="Global Childpool"
+    action="open_view_childpool"
+    sequence="1"
+  />
+</odoo>
