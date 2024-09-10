@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion CH Message Center",
-    "version": "14.0.1.0.2",
+    "version": "16.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
