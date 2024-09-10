@@ -29,7 +29,6 @@ class FieldToJson(models.Model):
         index=True,
         required=True,
         ondelete="cascade",
-        readonly=False,
     )
     model = fields.Char(related="mapping_id.model_id.model", readonly=True)
     odoo_field = fields.Char(
@@ -84,7 +83,6 @@ class FieldToJson(models.Model):
         string="Sub mapping",
         help="This will nest a dictionary in the JSON and use given mapping"
         "to compute the value.",
-        readonly=False,
     )
     to_json_conversion = fields.Text(
         help="Python function that will convert the value for its JSON "
@@ -176,7 +174,7 @@ class FieldToJson(models.Model):
         """
         self.ensure_one()
         # Skip empty values
-        if not json_value and not isinstance(json_value, (bool, int, float)):
+        if not json_value and not isinstance(json_value, bool | int | float):
             return {}
         # Skip invalid data
         if isinstance(json_value, str) and json_value.lower() in (

@@ -47,16 +47,16 @@ class GmcMessage(models.Model):
         "several records. (ids separated by commas)",
     )
     res_name = fields.Char(compute="_compute_res_name", store=True)
-    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
+    partner_id = fields.Many2one("res.partner", "Partner")
 
-    request_id = fields.Char("Request ID", readonly=True)
+    request_id = fields.Char("Request ID")
     date = fields.Datetime(
         "Message Date", required=True, default=fields.Datetime.now, index=True
     )
     action_id = fields.Many2one(
-        "gmc.action", "GMC Message", ondelete="restrict", required=False, readonly=True
+        "gmc.action", "GMC Message", ondelete="restrict", required=False
     )
-    process_date = fields.Datetime(readonly=True, tracking=True)
+    process_date = fields.Datetime(tracking=True)
     state = fields.Selection(
         [
             ("new", _("New")),
@@ -67,15 +67,14 @@ class GmcMessage(models.Model):
             ("odoo_failure", _("Odoo Failure")),
         ],
         "State",
-        readonly=True,
         default="new",
         tracking=True,
         index=True,
     )
     failure_reason = fields.Text("Failure details", tracking=True)
-    headers = fields.Text(readonly=True)
+    headers = fields.Text()
     content = fields.Text()
-    answer = fields.Text(readonly=True)
+    answer = fields.Text()
 
     ##########################################################################
     #                             FIELDS METHODS                             #

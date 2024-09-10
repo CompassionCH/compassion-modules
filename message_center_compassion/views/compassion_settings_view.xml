@@ -7,116 +7,68 @@
         <field name="priority" eval="100" />
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div
+            <xpath expr="//form" position="inside">
+                <app
           name="compassion_settings"
-          class="app_settings_block"
           data-string="Compassion"
           string="Compassion"
-          data-key="sponsorship_compassion"
+          groups="message_center_compassion.group_gmc_manager"
+          logo="/message_center_compassion/static/description/icon.png"
         >
-                </div>
+                    <block
+            title="Compassion Connect"
+            name="gmc_connect_configuration"
+          >
+                        <setting id="connect_gpid_setting">
+                            <field name="connect_gpid" />
+                        </setting>
+                        <setting id="connect_gpname_setting">
+                            <field name="connect_gpname" />
+                        </setting>
+                        <setting id="connect_api_key_setting">
+                            <field name="connect_api_key" />
+                        </setting>
+                        <setting id="connect_client_setting">
+                            <field name="connect_client" />
+                        </setting>
+                        <setting id="connect_secret_setting">
+                            <field name="connect_secret" />
+                        </setting>
+                    </block>
+                    <block
+            title="Notification configuration"
+            name="notification_configuration"
+          >
+                        <setting
+              id="translation_setting"
+              help="Users to notify when GMC terms are untranslated"
+            >
+                            <field
+                name="translate_notify_ids"
+                widget="many2many_tags_avatar"
+              />
+                        </setting>
+                    </block>
+
+                </app>
             </xpath>
         </field>
     </record>
 
-    <record id="notification_settings" model="ir.ui.view">
-        <field name="name">staff.notification.settings.form</field>
-        <field name="model">res.config.settings</field>
-        <field name="priority" eval="100" />
+    <record model="ir.actions.act_window" id="action_message_center_settings">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
         <field
-      name="inherit_id"
-      ref="message_center_compassion.compassion_settings"
-    />
-        <field name="arch" type="xml">
-            <xpath expr="//div[@name='compassion_settings']" position='inside'>
-                <h2>Notification configuration</h2>
-                <div
-          class="row mt16 o_settings_container"
-          name="notification_configuration"
-        >
-                    <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="left_group" class="o_setting_right_pane">
-                            <div name="translate" class="row">
-                                <label
-                  for="translate_notify_ids"
-                  class="col-md-5 o_light_label"
-                />
-                                <field
-                  name="translate_notify_ids"
-                  widget="many2many_tags"
-                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="right_group" class="o_setting_right_pane" />
-                    </div>
-                </div>
-            </xpath>
-        </field>
+      name="context"
+    >{'module': 'compassion_settings', 'bin_size': False}</field>
     </record>
 
-    <record id="gmc_settings" model="ir.ui.view">
-        <field name="name">gmc.settings.form</field>
-        <field name="model">res.config.settings</field>
-        <field name="priority" eval="10" />
-        <field
-      name="inherit_id"
-      ref="message_center_compassion.compassion_settings"
-    />
-        <field name="arch" type="xml">
-            <xpath expr="//div[@name='compassion_settings']" position='inside'>
-                <h2>Compassion Connect</h2>
-                <div
-          class="row mt16 o_settings_container"
-          name="gmc_connect_configuration"
-        >
-                    <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="left_group" class="o_setting_right_pane">
-                            <div class="row">
-                                <label
-                  for="connect_gpid"
-                  class="o_light_label col-md-4"
-                />
-                                <field name="connect_gpid" />
-                            </div>
-                            <div class="row">
-                                <label
-                  for="connect_gpname"
-                  class="o_light_label col-md-4"
-                />
-                                <field name="connect_gpname" />
-                            </div>
-                            <div class="row">
-                                <label
-                  for="connect_api_key"
-                  class="o_light_label col-md-4"
-                />
-                                <field name="connect_api_key" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="right_group" class="o_setting_right_pane">
-                            <div class="row">
-                                <label
-                  for="connect_client"
-                  class="o_light_label col-md-4"
-                />
-                                <field name="connect_client" />
-                            </div>
-                            <div class="row">
-                                <label
-                  for="connect_secret"
-                  class="o_light_label col-md-4"
-                />
-                                <field name="connect_secret" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-        </field>
-    </record>
+    <menuitem
+    id="compassion_settings_menu"
+    parent="menu_message_config"
+    sequence="10"
+    action="action_message_center_settings"
+  />
 </odoo>

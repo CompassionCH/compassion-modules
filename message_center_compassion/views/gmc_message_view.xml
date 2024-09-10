@@ -43,10 +43,11 @@
         <field name="name">gmc.message.form</field>
         <field name="model">gmc.message</field>
         <field name="arch" type="xml">
-            <form string="GMC Message" create="false">
+            <form create="false">
                 <header>
                     <field
             name="state"
+            readonly="1"
             widget="statusbar"
             statusbar_visible="new,pending,success"
           />
@@ -55,20 +56,20 @@
             type="object"
             class="oe_highlight"
             string="Process Message"
-            states="new,failure,odoo_failure"
+            invisible="state not in ('new', 'failure', 'odoo_failure')"
           />
                     <button
             name="reset_message"
             type="object"
             string="Set back to New"
-            states="failure,pending"
+            invisible="state not in ('failure', 'pending')"
           />
                     <button
             name="force_success"
             type="object"
             string="Success"
             groups="base.group_erp_manager"
-            attrs="{'invisible':[('state','in',['postponed', 'success'])]}"
+            invisible="state in ('postponed', 'success')"
           />
                     <button
             name="open_related"
@@ -79,28 +80,27 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="action_id" />
+                            <field name="action_id" readonly="1" />
                             <field name="name" invisible="1" />
                         </h1>
                     </div>
                     <group>
                         <field name="direction" invisible="1" />
                         <field name="date" />
-                        <field name="process_date" />
+                        <field name="process_date" readonly="1" />
                         <field name="res_name" />
                         <field name="partner_id" />
                         <field
               name="request_id"
-              attrs="{'invisible':[('direction','=','in')]}"
-              states="pending"
+              invisible="direction == 'in' or state != 'pending'"
             />
                         <field name="failure_reason" />
                     </group>
                     <group>
                         <field name="description" colspan="4" />
-                        <field name="headers" colspan="4" />
+                        <field name="headers" colspan="4" readonly="1" />
                         <field name="content" colspan="4" />
-                        <field name="answer" colspan="4" />
+                        <field name="answer" colspan="4" readonly="1" />
                     </group>
 
                 </sheet>
@@ -116,7 +116,7 @@
         <field name="name">gmc.action.form</field>
         <field name="model">gmc.action</field>
         <field name="arch" type="xml">
-            <form string="GMC Action">
+            <form>
                 <sheet>
                     <group>
                         <group>
@@ -323,18 +323,20 @@
     id="menu_message_action"
     action="action_gmc_action"
     parent="menu_message_config"
+    sequence="20"
   />
     <menuitem
     id="menu_message_action_connect"
     action="action_gmc_action_connect"
     parent="menu_message_config"
+    sequence="30"
   />
 
     <record id="message_pool_process" model="ir.ui.view">
         <field name="name">gmc.message.process.form</field>
         <field name="model">gmc.message.process</field>
         <field name="arch" type="xml">
-            <form string="Process Messages">
+            <form>
                 <p class="oe_grey">
                     This will execute the action defined for each new message in the pool.
                 </p>

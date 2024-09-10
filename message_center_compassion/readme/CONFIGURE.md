@@ -1,17 +1,19 @@
-To configure this module, you need to:
+To configure this module, follow these steps:
 
-- add settings in .conf file of Odoo
-- connect_url = \<url to entry point of GMC Onramp\>
-- connect_api_key = \<api key for using GMC messages services\>
-- connect_client = \<username for token requests\>
-- connect_secret = \<password for token requests\>
-- connect_token_server = \<base URL of token server\>
-- connect_token_cert = \<comma-separated list of full URLs of the public
-  keys of the token server\>
+1. **Odoo Configuration**:
+   - Add the following settings in the `.conf` file of Odoo:
+     - `connect_url`: URL to the entry point of GMC Onramp
+     - `connect_token_server`: Base URL of the token server
+     - `connect_token_cert`: Comma-separated list of full URLs of the public keys of the token server
 
-To allow incoming messages you must setup a user with required access
-rights and with login = \<username sent by GMC in tokens\> and password
-= \<password sent by GMC in tokens\>
+2. **Odoo Settings**:
+   - Navigate to `Settings -> General Settings -> Compassion -> Message Center` and set the following:
+     - `connect_gpid`: Your GPA ID for using GMC message services
+     - `connect_gp_name`: Your GPA name for using GMC message services
+     - `connect_api_key`: API key for using GMC message services
+     - `connect_client`: Username for token requests
+     - `connect_secret`: Password for token requests
 
-In order to manage messages, setup a user with the "GMC Manager" access
-rights.
+3. **User Setup**:
+   - Create a user with the required access rights and set the login credentials to match those sent by GMC in tokens.
+   - Assign the "GMC Manager" access rights to users responsible for managing messages.

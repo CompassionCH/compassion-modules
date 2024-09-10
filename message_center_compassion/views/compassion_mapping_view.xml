@@ -27,19 +27,19 @@
                     <field name="relational_field" invisible="1" />
                     <field
             name="search_relational_record"
-            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+            invisible="not relational_field and not sub_mapping_id"
           />
                     <field
             name="search_key"
-            attrs="{'invisible': [('search_relational_record', '=', False), ('sub_mapping_id', '=', False)]}"
+            invisible="not search_relational_record and not sub_mapping_id"
           />
                     <field
             name="allow_relational_creation"
-            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+            invisible="not relational_field and not sub_mapping_id"
           />
                     <field
             name="relational_write_mode"
-            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+            invisible="not relational_field and not sub_mapping_id"
           />
                     <field name="sub_mapping_id" />
                     <field name="exclude_from_json" />
@@ -47,13 +47,13 @@
             name="to_json_conversion"
             widget="ace"
             options="{'mode': 'python'}"
-            attrs="{'invisible': [('sub_mapping_id', '!=', False)]}"
+            invisible="sub_mapping_id != False"
           />
                     <field
             name="from_json_conversion"
             widget="ace"
             options="{'mode': 'python'}"
-            attrs="{'invisible': [('sub_mapping_id', '!=', False)]}"
+            invisible="sub_mapping_id != False"
           />
                 </group>
             </form>

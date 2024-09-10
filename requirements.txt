@@ -1,5 +1,6 @@
 babel
 iso639-lang
+jwt
 langdetect
 pytesseract
 pyquerystring

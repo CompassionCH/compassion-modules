@@ -1,33 +1,23 @@
-##############################################################################
-#
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Yannick Vaucher, Emanuel Cino <ecino@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
+import collections.abc
 import logging
-import uuid
 from datetime import datetime
 
 import werkzeug
 
 from odoo import exceptions
 from odoo.http import (
-    AuthenticationError,
     SessionExpiredException,
 )
 from odoo.tools import config
 
-from odoo.addons.rest_json_api.http import JsonRequest
+from odoo.addons.rest_json_api.http import RestJsonDispatcher
 
 _logger = logging.getLogger(__name__)
 
 TEST_MODE = config.get("test_enable")
 
 
-class RESTJsonRequest(JsonRequest):
+class OnrampJsonDispatcher(RestJsonDispatcher):
     """Special RestJson Handler to enable custom formatted answers to
     Compassion Connect calls and error handling.
 
@@ -56,31 +46,26 @@ class RESTJsonRequest(JsonRequest):
         "RelatedRecordId":""
     }"""
 
-    def __init__(self, *args):
-        """Setup a GUID for any message and keep track of timestamp."""
-        self.uuid = str(uuid.uuid4())
-        self.timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")
-        try:
-            super().__init__(*args)
-        except Exception:
-            # We pass the error at this step to avoid sending back HTML result
-            # the error will be catched later by JsonRequest and return a
-            # json content error message
-            self.params = dict()
-            self.context = dict(self.session.context)
+    routing_type = "onramp"
 
-    def _postprocess(self, request_path, odoo_result):
-        """Add required headers."""
-        if request_path.startswith("/onramp"):
-            odoo_result.headers.append(("x-cim-RequestId", self.uuid))
+    def _get_json_headers(self):
+        # Hook for custom headers on JSON response
+        return [("x-cim-RequestId", self.request_id)]
 
-    def _custom_exception(self, exception, request_path):
-        if not request_path.startswith("/onramp"):
-            return False
+    def handle_error(self, exception: Exception) -> collections.abc.Callable:
+        """
+        Handle any exception that occurred while dispatching a request to
+        a `type='json'` route. Also handle exceptions that occurred when
+        no route matched the request path, that no fallback page could
+        be delivered and that the request ``Content-Type`` was json.
+
+        :param exception: the exception that occurred.
+        :returns: a WSGI application
+        """
         # Format the errors to conform to GMC error types
         error = {
-            "ErrorId": self.uuid,
-            "ErrorTimestamp": self.timestamp,
+            "ErrorId": self.request_id,
+            "ErrorTimestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
             "ErrorClass": "BusinessException",
             "ErrorRetryable": False,
             "ErrorModule": "REST OnRamp",
@@ -119,12 +104,12 @@ class RESTJsonRequest(JsonRequest):
                     "ErrorSubModule": "Rest OnRamp Message Validation",
                     "ErrorMethod": "Message Validation",
                     "ErrorCategory": "InputValidationError",
-                    "ErrorMessage": exception.message,
+                    "ErrorMessage": str(exception),
                 }
             )
             if not TEST_MODE:
-                _logger.error(exception.message, exc_info=True)
-        elif isinstance(exception, AuthenticationError):
+                _logger.error(str(exception), exc_info=True)
+        elif isinstance(exception, exceptions.AccessDenied):
             error.update(
                 {
                     "ErrorCode": 401,
@@ -158,4 +143,5 @@ class RESTJsonRequest(JsonRequest):
                     "ErrorMessage": "Odoo Server Error",
                 }
             )
-        return self._json_response(error=error)
+
+        return self._response(error=error)

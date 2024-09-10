@@ -23,11 +23,11 @@
                     <group>
                         <field
               name="start_date"
-              attrs="{'invisible': [('operator', 'not in', ['on', 'within'])]}"
+              invisible="operator not in ('on', 'within')"
             />
                         <field
               name="end_date"
-              attrs="{'invisible': [('operator', '!=', 'within')]}"
+              invisible="operator != 'within'"
             />
                         <field name="value" />
                     </group>

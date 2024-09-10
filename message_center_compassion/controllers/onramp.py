@@ -38,7 +38,7 @@ _logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
-    @http.route("/onramp", type="json", auth="oauth2", methods=["POST"], csrf=False)
+    @http.route("/onramp", type="onramp", auth="oauth2", methods=["POST"], csrf=False)
     def handler_onramp(self):
         headers = request.httprequest.headers
         message_type = headers["x-cim-MessageType"]
@@ -48,11 +48,7 @@ class RestController(http.Controller):
         self._validate_headers(headers)
         result = {
             "ConfirmationId": getattr(request, "uuid", str(uuid.uuid4())),
-            "Timestamp": getattr(
-                request,
-                "timestamp",
-                datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"),
-            ),
+            "Timestamp": datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"),
             "code": 200,
         }
         action_connect = (

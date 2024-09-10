@@ -1,6 +1,6 @@
-============================
-Compassion CH Message Center
-============================
+==================
+Compassion Connect
+==================
 
 .. 
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -22,12 +22,27 @@ Compassion CH Message Center
 
 |badge1| |badge2| |badge3|
 
-Message Center that offers a queue of messages that have to be sent to
-GMC and a queue of messages received from GMC.
+The Compassion Connect module for Odoo facilitates seamless integration
+with the Compassion International Connect API. This module is designed
+to manage the exchange of messages between Odoo and the Compassion
+International systems, ensuring efficient communication and data
+synchronization.
 
-This module adds a route for listening to OnRamp messages call from
-Compassion using REST message using authentification with a oauth2
-token.
+Key Features
+~~~~~~~~~~~~
+
+-  **Message Queues**: Manages queues for messages to be sent to and
+   received from Compassion International.
+-  **REST API Integration**: Adds a route for handling incoming OnRamp
+   messages from Compassion International using REST API authenticated
+   with an OAuth2 token.
+-  **Configuration Options**: Provides settings to configure connection
+   details, including API keys, client credentials, and token server
+   URLs.
+-  **User Management**: Allows setting up users with specific access
+   rights to manage incoming and outgoing messages.
+-  **Security**: Ensures secure communication with Compassion
+   International through OAuth2 authentication and token management.
 
 **Table of contents**
 
@@ -37,30 +52,61 @@ token.
 Configuration
 =============
 
-To configure this module, you need to:
+To configure this module, follow these steps:
 
--  add settings in .conf file of Odoo
--  connect_url = <url to entry point of GMC Onramp>
--  connect_api_key = <api key for using GMC messages services>
--  connect_client = <username for token requests>
--  connect_secret = <password for token requests>
--  connect_token_server = <base URL of token server>
--  connect_token_cert = <comma-separated list of full URLs of the public
-   keys of the token server>
+1. **Odoo Configuration**:
 
-To allow incoming messages you must setup a user with required access
-rights and with login = <username sent by GMC in tokens> and password =
-<password sent by GMC in tokens>
+   -  Add the following settings in the ``.conf`` file of Odoo:
 
-In order to manage messages, setup a user with the "GMC Manager" access
-rights.
+      -  ``connect_url``: URL to the entry point of GMC Onramp
+      -  ``connect_token_server``: Base URL of the token server
+      -  ``connect_token_cert``: Comma-separated list of full URLs of
+         the public keys of the token server
+
+2. **Odoo Settings**:
+
+   -  Navigate to
+      ``Settings -> General Settings -> Compassion -> Message Center``
+      and set the following:
+
+      -  ``connect_gpid``: Your GPA ID for using GMC message services
+      -  ``connect_gp_name``: Your GPA name for using GMC message
+         services
+      -  ``connect_api_key``: API key for using GMC message services
+      -  ``connect_client``: Username for token requests
+      -  ``connect_secret``: Password for token requests
+
+3. **User Setup**:
+
+   -  Create a user with the required access rights and set the login
+      credentials to match those sent by GMC in tokens.
+   -  Assign the "GMC Manager" access rights to users responsible for
+      managing messages.
 
 Usage
 =====
 
-To use this module, you need to:
+Once configured, the Compassion Connect module will handle the
+following:
 
--  Go to Message Center
+-  **Sending Messages**: Automatically queues and sends messages to
+   Compassion International. GMC Managers can view and manage the
+   outgoing message queue through the ``Message Center`` menu. They can
+   also manually trigger the sending of queued messages if needed.
+-  **Receiving Messages**: Listens for incoming messages from Compassion
+   International and processes them accordingly. GMC Managers can
+   monitor incoming messages in real-time through the
+   ``Incoming Messages`` view, where they can see the status and details
+   of each message.
+-  **Message Management**: Provides an interface for viewing and
+   managing the message queues. GMC Managers have access to the
+   ``Message Queue`` dashboard, which displays both incoming and
+   outgoing messages. They can filter, search, and sort messages based
+   on various criteria. Additionally, they can retry failed messages,
+   delete unnecessary ones, and view detailed logs for troubleshooting.
+
+This module ensures that your Odoo system stays in sync with Compassion
+International, facilitating smooth and efficient communication.
 
 Bug Tracker
 ===========

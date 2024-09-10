@@ -22,7 +22,6 @@ class CompassionMapping(models.Model):
         required=True,
         index=True,
         ondelete="cascade",
-        readonly=False,
     )
     json_spec_ids = fields.One2many(
         "compassion.field.to.json",
@@ -59,7 +58,7 @@ class CompassionMapping(models.Model):
         self.ensure_one()
         self.json_spec_ids.unlink()
         for json_name, odoo_spec in json.items():
-            if not isinstance(odoo_spec, (str, dict)):
+            if not isinstance(odoo_spec, str | dict):
                 raise UserError(
                     _(
                         "Invalid data for JSON field %s. "
