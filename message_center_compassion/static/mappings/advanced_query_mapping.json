@@ -1,0 +1,14 @@
+{
+  "name": "advanced query",
+  "model": "compassion.query.filter",
+  "mapping": {
+    "Field": {
+      "field": "field_id.id",
+      "to_json_conversion": "self.search([('field_id', '=', odoo_value)], limit=1).json_name"
+    },
+    "Operator": {
+      "field": "operator"
+    },
+    "Value": "value"
+  }
+}

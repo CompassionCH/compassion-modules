@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gmc_message,Access on gmc.message,model_gmc_message,group_gmc_user,1,1,1,0
+access_gmc_action,Read access on gmc.action,model_gmc_action,group_gmc_user,1,0,0,0
+access_gmc_action_connect,GMC manager access on gmc.action.connect,model_gmc_action_connect,group_gmc_user,1,1,1,0
+access_compassion_mapping,access_compassion_mapping,model_compassion_mapping,group_gmc_user,1,0,0,0
+access_query_operator,Access on query operators,model_compassion_query_operator,group_gmc_user,1,0,0,0
+access_compassion_field_to_json,access_compassion_field_to_json,model_compassion_field_to_json,group_gmc_user,1,0,0,0
+access_admin_gmc_message,Full access on gmc.message,model_gmc_message,group_gmc_manager,1,1,1,1
+access_admin_gmc_action,Full access on gmc.action,model_gmc_action,group_gmc_manager,1,1,1,1
+access_admin_gmc_action_connect,Full access on gmc.action.connect,model_gmc_action_connect,group_gmc_manager,1,1,1,1
+access_admin_query_operator,Full access on query operators,model_compassion_query_operator,group_gmc_manager,1,1,1,1
+access_admin_compassion_field_to_json,Full access_compassion_field_to_json,model_compassion_field_to_json,group_gmc_manager,1,1,1,1
+access_admin_compassion_mapping,Full access_compassion_mapping,model_compassion_mapping,group_gmc_manager,1,1,1,1
+access_compassion_query_filter,access_compassion_query_filter,model_compassion_query_filter,group_gmc_user,1,0,1,0
+access_compassion_gmc_message_process,access_compassion_gmc_message_process,model_gmc_message_process,group_gmc_manager,1,1,1,1
+access_import_json_mapping_wizard,access_import_json_mapping_wizard,model_import_json_mapping_wizard,group_gmc_manager,1,1,1,1

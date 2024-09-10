@@ -1,0 +1,14 @@
+<odoo>
+    <!-- Channels -->
+    <record id="channel_gmc_pool" model="queue.job.channel">
+        <field name="name">gmc_pool</field>
+        <field name="parent_id" ref="queue_job.channel_root" />
+    </record>
+
+    <!-- Job functions -->
+    <record id="process_message_job" model="queue.job.function">
+        <field name="model_id" ref="model_gmc_message" />
+        <field name="method">_process_messages</field>
+        <field name="channel_id" ref="channel_gmc_pool" />
+    </record>
+</odoo>

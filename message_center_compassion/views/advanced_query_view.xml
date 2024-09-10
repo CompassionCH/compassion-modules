@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_query_filter_form" model="ir.ui.view">
+        <field name="name">compassion.query.filter.form</field>
+        <field name="model">compassion.query.filter</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="model" invisible="1" />
+                        <field name="field_type" invisible="1" />
+                        <field name="operator" invisible="1" />
+                        <field
+              name="field_id"
+              options="{'create': False}"
+              domain="[('model', '=', model)]"
+            />
+                        <field
+              name="operator_id"
+              domain="[('field_types_supported', 'ilike', field_type)]"
+            />
+                    </group>
+                    <group>
+                        <field
+              name="start_date"
+              attrs="{'invisible': [('operator', 'not in', ['on', 'within'])]}"
+            />
+                        <field
+              name="end_date"
+              attrs="{'invisible': [('operator', '!=', 'within')]}"
+            />
+                        <field name="value" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_query_filter_tree" model="ir.ui.view">
+        <field name="name">compassion.query.filter.tree</field>
+        <field name="model">compassion.query.filter</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="field_id" />
+                <field name="operator_id" />
+                <field name="value" />
+            </tree>
+        </field>
+    </record>
+</odoo>

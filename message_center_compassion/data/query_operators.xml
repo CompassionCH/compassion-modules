@@ -1,0 +1,41 @@
+<odoo>
+    <record id="anyof" model="compassion.query.operator">
+        <field name="name">any of</field>
+        <field name="gmc_name">anyof</field>
+        <field
+      name="field_types_supported"
+    >many2one,one2many,many2many,selection</field>
+    </record>
+    <record id="between" model="compassion.query.operator">
+        <field name="name">in range</field>
+        <field name="gmc_name">between</field>
+        <field name="field_types_supported">float,integer</field>
+    </record>
+    <record id="contains" model="compassion.query.operator">
+        <field name="name">contains</field>
+        <field name="gmc_name">contains</field>
+        <field name="field_types_supported">char,text,html</field>
+    </record>
+    <record id="equalto" model="compassion.query.operator">
+        <field name="name">is equal to</field>
+        <field name="gmc_name">equalto</field>
+        <field name="field_types_supported">float,integer</field>
+    </record>
+    <record id="is" model="compassion.query.operator">
+        <field name="name">is</field>
+        <field name="gmc_name">is</field>
+        <field
+      name="field_types_supported"
+    >char,text,html,many2one,selection</field>
+    </record>
+    <record id="on" model="compassion.query.operator">
+        <field name="name">is on</field>
+        <field name="gmc_name">on</field>
+        <field name="field_types_supported">date,datetime</field>
+    </record>
+    <record id="within" model="compassion.query.operator">
+        <field name="name">is between</field>
+        <field name="gmc_name">within</field>
+        <field name="field_types_supported">date,datetime</field>
+    </record>
+</odoo>

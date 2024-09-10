@@ -1,0 +1,22 @@
+{
+  "name": "Testing res.partner mapping",
+  "model": "res.partner",
+  "mapping": {
+    "Name": {
+      "field": "name",
+      "to_json_conversion": "odoo_value.upper()",
+      "from_json_conversion": "json_value.lower()"
+    },
+    "Company": {
+      "field": "parent_id.name",
+      "search_relational_record": true
+    },
+    "SubMapping": {
+      "mapping": {
+        "Reference": {
+          "field": "ref"
+        }
+      }
+    }
+  }
+}

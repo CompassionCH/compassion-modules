@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_compassion_mapping_form" model="ir.ui.view">
+        <field name="name">compassion.mapping.form</field>
+        <field name="model">compassion.mapping</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" />
+                    <field name="model_id" />
+                    <field name="json_spec_ids" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_field_to_json_form" model="ir.ui.view">
+        <field name="name">field.to.json.form</field>
+        <field name="model">compassion.field.to.json</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="mapping_id" />
+                    <field name="model" />
+                    <field name="json_name" />
+                    <field name="odoo_field" />
+                    <field name="relational_field" invisible="1" />
+                    <field
+            name="search_relational_record"
+            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+          />
+                    <field
+            name="search_key"
+            attrs="{'invisible': [('search_relational_record', '=', False), ('sub_mapping_id', '=', False)]}"
+          />
+                    <field
+            name="allow_relational_creation"
+            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+          />
+                    <field
+            name="relational_write_mode"
+            attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"
+          />
+                    <field name="sub_mapping_id" />
+                    <field name="exclude_from_json" />
+                    <field
+            name="to_json_conversion"
+            widget="ace"
+            options="{'mode': 'python'}"
+            attrs="{'invisible': [('sub_mapping_id', '!=', False)]}"
+          />
+                    <field
+            name="from_json_conversion"
+            widget="ace"
+            options="{'mode': 'python'}"
+            attrs="{'invisible': [('sub_mapping_id', '!=', False)]}"
+          />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_field_to_json_tree" model="ir.ui.view">
+        <field name="name">field.to.json.tree</field>
+        <field name="model">compassion.field.to.json</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="json_name" />
+                <field name="odoo_field" />
+                <field name="sub_mapping_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_compassion_mapping_tree" model="ir.ui.view">
+        <field name="name">compassion.mapping.tree</field>
+        <field name="model">compassion.mapping</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="model_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_compassion_mapping_tree" model="ir.actions.act_window">
+        <field name="name">Mapping</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">compassion.mapping</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+    id="menu_compassion_mapping"
+    parent="menu_message_center"
+    name="Mapping"
+    groups="group_gmc_manager"
+    sequence="3"
+  />
+    <menuitem
+    id="menu_compassion_mapping_tree"
+    parent="menu_compassion_mapping"
+    action="action_compassion_mapping_tree"
+    sequence="1"
+  />
+</odoo>
