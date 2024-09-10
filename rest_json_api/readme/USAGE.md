@@ -1,0 +1,1 @@
+The module in itself doesn't do anything. You need to depend on it and create a controller with the type `rest_json` to use it.

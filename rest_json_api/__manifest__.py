@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "REST Json API",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -37,10 +37,9 @@
     "depends": [
         "base",
     ],
-    "external_dependencies": {"python": []},
+    "external_dependencies": {"python": ["pyquerystring"]},
     "data": [],
     "demo": [],
     "installable": True,
     "auto_install": False,
-    "post_load": "post_load",
 }

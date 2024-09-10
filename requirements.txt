@@ -2,3 +2,4 @@ babel
 iso639-lang
 langdetect
 pytesseract
+pyquerystring

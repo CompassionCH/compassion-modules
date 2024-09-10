@@ -22,7 +22,8 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[advanced_translation](advanced_translation/) | 14.0.1.0.0 |  | Advanced Translation
+[advanced_translation](advanced_translation/) | 17.0.1.0.0 |  | Advanced Translation
+[rest_json_api](rest_json_api/) | 17.0.1.0.0 |  | REST Json API
 
 [//]: # (end addons)
 

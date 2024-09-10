@@ -1,83 +1,70 @@
-import json
 import logging
 import re
 
-from werkzeug.exceptions import BadRequest
+import pyquerystring
 
-from odoo.http import JsonRequest
-from odoo.tools import date_utils
+from odoo.http import JsonRPCDispatcher
 
 _logger = logging.getLogger(__name__)
 
 
-class RestJSONRequest(JsonRequest):
+class RestJsonDispatcher(JsonRPCDispatcher):
     """
     Special RestJson Handler to accept empty JSON GET messages for
     mobile-app-api and send back results in clean JSON format
     (remove wrapper made by Odoo)
     """
 
-    def __init__(self, *args):
+    routing_type = "rest_json"
+
+    def dispatch(self, endpoint, args):
+        request = self.request.httprequest
         try:
-            # The following statement seems to have no effect but it is not the
-            # case. It prevents the *super* of emptying the stream containing
-            # the post data. Without it, we loose access to the post data.
-            # pylint: disable=pointless-statement
-            args[0].values
+            self.jsonrequest = self.request.get_json_data()
+            self.request_id = self.jsonrequest.get("id")
+            self.request.params = dict(self.jsonrequest.get("params", {}), **args)
+        except (ValueError, AttributeError):
+            # PUT The GET parameters as the parameters for the controller
+            self.jsonrequest = {}
+            self.request.params = pyquerystring.parse(
+                request.query_string.decode("utf-8")
+            )
 
-            super().__init__(*args)
-            self.params = {key: val for key, val in self.httprequest.args.items()}
-        except BadRequest as error:
-            # Put simply an empty JSON data
-            if "Invalid JSON data" in error.description:
-                self.jsonrequest = {}
-                # PUT The GET parameters as the parameters for the controller
-                self.params = {key: val for key, val in self.httprequest.values.items()}
-                self.context = dict(self.session.context)
-            else:
-                raise
-
-    def dispatch(self):
-        """Log the received message before processing it."""
         _logger.debug(
             "[%s] %s %s %s",
-            self.httprequest.environ["REQUEST_METHOD"],
-            self.httprequest.url,
-            [(k, v) for k, v in self.httprequest.headers.items()],
+            request.environ["REQUEST_METHOD"],
+            request.url,
+            [(k, v) for k, v in request.headers.items()],
             self.jsonrequest,
         )
-        return super().dispatch()
+        if self.request.db:
+            result = self.request.registry["ir.http"]._dispatch(endpoint)
+        else:
+            result = endpoint(**self.request.params)
+        return self._response(result)
 
-    def _json_response(self, result=None, error=None):
+    def _response(self, result=None, error=None):
+        status = 200
         if isinstance(error, dict) and error.get("code") == 200:
             error_message = error.get("data", {}).get("message", "")
             if error_message:
-                error_code = re.search(r"^\d{3}", error_message)  # match 3 digits (int)
+                # match 3 digits (int)
+                error_code = re.search(r"^\d{3}", error_message)
                 if error_code:
-                    error["code"] = int(error_code.group())
-                    error["http_status"] = int(error_code.group())
+                    status = int(error_code.group())
+                    error["code"] = status
+                    error["http_status"] = status
                 error["message"] = error.get("message", "") + " " + error_message
-        odoo_result = super()._json_response(result, error)
         if result is not None and error is None:
-            odoo_result.data = json.dumps(result, default=date_utils.json_default)
-        request_path = self.httprequest.environ["PATH_INFO"]
-        self._postprocess(request_path, odoo_result)
-        _logger.debug(
-            '[SEND] %s %s "%s"', odoo_result.status, odoo_result.headers, result
-        )
-        return odoo_result
+            response = result
+        else:
+            response = {
+                "error": error,
+            }
+        headers = self._get_json_headers()
+        _logger.debug('[SEND] %s %s "%s"', status, headers, result)
+        return self.request.make_json_response(response, headers=headers, status=status)
 
-    def _handle_exception(self, exception):
-        request_path = self.httprequest.environ["PATH_INFO"]
-        custom_response = self._custom_exception(exception, request_path)
-        if custom_response:
-            return custom_response
-        return super()._handle_exception(exception)
-
-    def _postprocess(self, request_path, odoo_result):
-        # Hook for custom post-processing
-        pass
-
-    def _custom_exception(self, exception, request_path):
-        # Hook for custom exception handling
-        pass
+    def _get_json_headers(self):
+        # Hook for custom headers on JSON response
+        return []
