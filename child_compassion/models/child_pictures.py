@@ -132,8 +132,12 @@ class ChildPictures(models.Model):
         return same_pics
 
     def _child_picture_already_exists(self, vals):
-        already_exists = self.search_count([("child_id", "=", vals.get('child_id')),
-                                            ("image_url", "=", vals.get('image_url'))])
+        already_exists = self.search_count(
+            [
+                ("child_id", "=", vals.get("child_id")),
+                ("image_url", "=", vals.get("image_url")),
+            ]
+        )
 
         return bool(already_exists)
 
