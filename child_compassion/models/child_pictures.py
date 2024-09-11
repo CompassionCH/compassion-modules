@@ -85,6 +85,9 @@ class ChildPictures(models.Model):
         and attach the pictures to the last case study.
         """
 
+        if self._child_picture_already_exists(vals):
+            return False
+
         pictures = super().create(vals)
         # Retrieve Headshot
         image_date = pictures._get_picture("Headshot", width=180, height=180)
@@ -121,20 +124,19 @@ class ChildPictures(models.Model):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
         pics = reference.search(
-            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)]
+            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)], limit=1
+        )  # The last picture is most probably one that could be the same.
+        same_pics = pics.filtered(
+            lambda record: record.fullshot == reference.fullshot
+            and record.headshot == reference.headshot
         )
+        return same_pics
 
-        same_urls = pics.filtered(
-            lambda record: record.image_url == reference.image_url
-        )
+    def _child_picture_already_exists(self, vals):
+        already_exists = self.search_count([("child_id", "=", vals.get('child_id')),
+                                            ("image_url", "=", vals.get('image_url'))])
 
-        # The last picture is most probably one that could be the same.
-        same_pics = (
-            pics[0].fullshot == reference.fullshot
-            and pics[0].headshot == reference.headshot
-        )
-
-        return same_urls or same_pics
+        return bool(already_exists)
 
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
         """Gets a picture from Compassion webservice"""
