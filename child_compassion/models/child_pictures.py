@@ -84,7 +84,6 @@ class ChildPictures(models.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
-
         if self._child_picture_already_exists(vals):
             return False
 
@@ -106,8 +105,8 @@ class ChildPictures(models.Model):
         # Find if same pictures already exist
         same_pictures = pictures._find_same_picture()
         if same_pictures:
-            # Either the url is unchanged, or the url has
-            # changed but the picture is the same as the last.
+            # That case is not likely to happens, it means that the url has
+            #  changed, while the picture stay unchanged.
             pictures.child_id.message_post(
                 body=_("The picture was the same"), subject=_("Picture update")
             )
