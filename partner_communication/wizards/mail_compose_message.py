@@ -82,8 +82,7 @@ class EmailComposeMessage(models.TransientModel):
         # causing an error.
         # Only usage is create_emails above and it overrides it just after.
         # We write it just after getting the mail values.
-        mail_body = write_data["body"]
-        del write_data["body"]
+        mail_body = write_data.pop("body")
         wizard.write(write_data)
         values = wizard.get_mail_values(res_ids)
         wizard.write({"body": mail_body})
