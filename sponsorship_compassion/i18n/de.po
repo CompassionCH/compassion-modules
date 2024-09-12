@@ -1,0 +1,1680 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Compassion Odoo 14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-23 11:56+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/res_partner.py:0
+#, python-format
+msgid "1050 move lines"
+msgstr "1050 Zeilen bewegen"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_contract_group
+msgid "A group of contracts"
+msgstr "Eine Gruppe von Verträgen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_activate_sponsorship
+msgid "Activate"
+msgstr "Aktiviere"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
+msgid "Active sponsorships"
+msgstr "Aktive Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__description
+msgid "Additional comments"
+msgstr "Zusätzliche Kommentare"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_age
+msgid "Age"
+msgstr "Alter"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__res_partner__portal_sponsorships__all
+msgid "All (partner is the correspondent and/or the payer)"
+msgstr "Alle (Partner ist der Korrespondent und/oder der Zahler)"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__res_partner__portal_sponsorships__all_info
+msgid "All + correspondence info shown to payer only."
+msgstr "Alle + Korrespondenzinformationen werden nur dem Zahler angezeigt."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__partner_lang
+msgid ""
+"All the emails and documents sent to this contact will be translated in this "
+"language."
+msgstr ""
+"Alle E-Mails und Dokumente, die an diesen Kontakt gesendet werden, werden in "
+"diese Sprache übersetzt."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__analytic_id
+msgid "Analytic Account"
+msgstr "Kostenstelle"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Annual"
+msgstr "Jährlich"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__birthday_invoice
+msgid "Annual birthday gift"
+msgstr "Jährliches Geburtstagsgeschenk"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__christmas_invoice
+msgid "Annual christmas gift"
+msgstr "Jährliches Weihnachtsgeschenk"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group_bvr_reference
+msgid "BVR Ref"
+msgstr "BVR Ref"
+
+#. module: sponsorship_compassion
+#: model:ir.cron,cron_name:sponsorship_compassion.recurring_invoicer_cron
+msgid "Base: Auto-vacuum internal data"
+msgstr "Basis: Auto-Vacuum für interne Daten"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Bi-annual"
+msgstr "Halbjährlich"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Bimonthly"
+msgstr "Zweimonatlich"
+
+#. module: sponsorship_compassion
+#: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_campaign
+msgid "Campaign"
+msgstr "Kampagne"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__can_make_gift
+msgid "Can Make Gift"
+msgstr "Kann Geschenk machen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__can_write_letter
+msgid "Can Write Letter"
+msgstr "Kann Brief schreiben"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Cancelled invoice lines"
+msgstr "Stornierte Rechnungszeilen"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/wizards/res_partner_merge.py:0
+#, python-format
+msgid "Cannot merge partners because active contracts exist."
+msgstr "Partner können nicht fusionieren, weil aktive Verträge bestehen."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__child_ids
+msgid "Child"
+msgstr "Bambino"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__g
+msgid "Child Gift"
+msgstr "Geschenk für Kinder"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_child_hold_wizard
+msgid "Child Hold Wizard"
+msgstr "Assistent für Kindersicherung"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_child_pictures_download_wizard
+msgid "Child Picture Download Wizard"
+msgstr "Kinderbild-Download-Assistent"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Child Sponsorship"
+msgstr "Patenschaft"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_code
+msgid "Child code"
+msgstr "Kinder Ref."
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_release
+msgid "Child hold expired"
+msgstr "Kindersicherung ist abgelaufen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_name
+msgid "Child name"
+msgstr "Kinder Name"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__child_code
+msgid "Child reference"
+msgstr "Bezug zum Kind"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_bank_statement_line__children
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move__children
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_payment__children
+msgid "Children"
+msgstr "Kinder"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_res_config_settings__christmas_inv_gen_month
+msgid ""
+"Chose the month at which the Christmas invoices will be generated. The due "
+"date will be one month after."
+msgstr ""
+"Wähle den Monat, in dem die Weihnachtsrechnungen erstellt werden sollen. Das "
+"Fälligkeitsdatum wird einen Monat später liegen."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings__christmas_inv_gen_month
+msgid "Christmas Inv Gen Month"
+msgstr "Weihnachten Inv Gen Monat"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__church_id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__church_id
+#: model:res.partner.category,name:sponsorship_compassion.res_partner_category_church
+msgid "Church"
+msgstr "Kirche"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__church_member_count
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__church_member_count
+msgid "Church Member Count"
+msgstr "Anzahl der Kirchenmitglieder"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
+msgid "Close"
+msgstr "Schliessen"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_gmc_message_commitment
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_message_sponsorship
+msgid "Commitment"
+msgstr "Commitment"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__commitment_number
+msgid "Commitment Number"
+msgstr "Verpflichtungsnummer"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfig-Einstellungen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract_global_id
+msgid "Connect global ID"
+msgstr "Globale ID verbinden"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_gmc_message_constituent
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_message_partner
+msgid "Constituent"
+msgstr "Konstituierend"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Contact with Sponsor/Ambassador"
+msgstr "Kontakt mit Sponsor/Botschafter"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Contact with sponsor/ambassador"
+msgstr "Kontakt mit Sponsor/Botschafter"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group__contains_sponsorship
+msgid "Contains sponsorship"
+msgstr "Enthält Sponsoring"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__contract_id
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Contract"
+msgstr "Contratto"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__is_active
+msgid "Contract Active"
+msgstr "Vertrag Aktiv"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__contract_duration
+msgid "Contract Duration"
+msgstr "Vertragsdauer"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_activate_sponsorship
+msgid "Contract activation"
+msgstr "Vertragsaktivierung"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__contract_duration
+msgid "Contract duration in days"
+msgstr "Vertragsdauer in Tagen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__contract_line_ids
+msgid "Contract lines"
+msgstr "Vertragslinien"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_contract
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_recurring_contract_form
+msgid "Contracts"
+msgstr "Verträge"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__conversion_rate
+msgid "Conversion Rate"
+msgstr "Umrechnungskurs"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__sc
+msgid "Correspondence"
+msgstr "Korrespondenz"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__correspondent_id
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__send_gifts_to__correspondent_id
+msgid "Correspondent"
+msgstr "Korrespondent"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__res_partner__portal_sponsorships__correspondent
+msgid "Correspondent (Children the partner corresponds with)"
+msgstr "Korrespondent (Kinder, mit denen der Partner korrespondiert)"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_compassion_sponsorship_kanban
+msgid "Correspondent :"
+msgstr "Korrespondent:"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid ""
+"Couldn't activate the new correspondent, GMC returned the following error: "
+msgstr ""
+"Der neue Korrespondent konnte nicht aktiviert werden, GMC meldete folgende "
+"Fehlermeldung: "
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_res_partner__sr_sponsorship
+#: model:ir.model.fields,help:sponsorship_compassion.field_res_users__sr_sponsorship
+msgid ""
+"Count only the sponsorships who are fully managed or those who are paid (not "
+"the correspondent)."
+msgstr ""
+"Zähle nur die Patenschaften, die vollständig verwaltet werden, oder "
+"diejenigen, die bezahlt werden (nicht den Korrespondenten)."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__country_id
+msgid "Country"
+msgstr "Land"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__create_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__create_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__create_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__create_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__create_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__create_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Crowdfunding"
+msgstr "Crowdfunding"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_death
+msgid "Death of partner"
+msgstr "Tod des Partners"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_depart
+msgid "Depart of child"
+msgstr "Abreise des Kindes"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
+msgid "Details of donations"
+msgstr "Details zu den Spenden"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_base_partner_merge_automatic_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_product_product__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_dont_pay
+msgid "Doesn't pay"
+msgstr "Zahlt sich nicht aus"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_not_another_child
+msgid "Doesn't want to take another child right now"
+msgstr "Möchte im Moment kein weiteres Kind aufnehmen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__download_data
+msgid "Download Data"
+msgstr "Daten herunterladen"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_download_child_pictures
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_download_child_pictures_2
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_download_child_pictures_3
+msgid "Download child pictures"
+msgstr "Kinderbilder herunterladen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Draft"
+msgstr "Entwurf"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Draft invoice lines"
+msgstr "Entwurf von Rechnungszeilen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
+msgid "During the last 12 months"
+msgstr "Während der letzten 12 Monate"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__end_period
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__end_period
+msgid "End Period"
+msgstr "Ende Periode"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Event"
+msgstr "Anlass"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_child_exchange
+msgid "Exchange of beneficiary"
+msgstr "Austausch des Begünstigten"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_sponsor_exchange
+msgid "Exchange of sponsor"
+msgstr "Austausch des Sponsors"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_financial
+msgid "Financial reasons"
+msgstr "Finanzielle Gründe"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__fname
+msgid "Fname"
+msgstr "Fname"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Forget me"
+msgstr "Vergiss mich"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Four-monthly"
+msgstr "Viermonatlich"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
+msgid "From the beginning of your sponsorships"
+msgstr "Vom Beginn deiner Patenschaften an"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_compassion_project
+msgid "Frontline Church Partner"
+msgstr "Frontline-Kirchenpartner"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__fullshot
+msgid "Fullshot"
+msgstr "Fullshot"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__fully_managed
+msgid "Fully Managed"
+msgstr "Vollständig verwaltet"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__contracts_fully_managed
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__contracts_fully_managed
+msgid "Fully managed sponsorships"
+msgstr "Vollständig verwaltete Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__fund
+msgid "Fund donation"
+msgstr "Fonds-Spende"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "GMC returned an error :"
+msgstr "GMC hat einen Fehler zurückgegeben:"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_gender
+msgid "Gender"
+msgstr "Geschlecht"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__o
+msgid "General"
+msgstr "Allgemein"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_generate_gift
+msgid "Generate"
+msgstr "Erzeugen"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_generate_gift
+msgid "Generate Gift"
+msgstr "Geschenk generieren"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/wizards/generate_gift_wizard.py:0
+#, python-format
+msgid "Generated Invoices"
+msgstr "Erstellte Rechnungen"
+
+#. module: sponsorship_compassion
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_recurring_invoicer_form
+msgid "Generated invoices"
+msgstr "Erstellte Rechnungen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_gift
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_total_gift
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__gift
+msgid "Gift"
+msgstr "Geschenk"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__amount
+msgid "Gift Amount"
+msgstr "Geschenk Betrag"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_generate_gift
+msgid "Gift Generation"
+msgstr "Generation Geschenk"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_generate_gift_wizard
+msgid "Gift Generation Wizard"
+msgstr "Assistent für die Geschenkgenerierung"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gift_partner_id
+msgid "Gift Partner"
+msgstr "Geschenkpartner"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__product_id
+msgid "Gift Type"
+msgstr "Geschenk Typ"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_generate_gift
+msgid "Gift generation from contract"
+msgstr "Geschenkgenerierung aus Vertrag"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__other_name
+msgid "Give details"
+msgstr "Details angeben"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__global_id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__global_id
+msgid "Global"
+msgstr "Globale"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_global_id
+msgid "Gmc Commitment"
+msgstr "Gmc-Engagement"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gmc_correspondent_commitment_id
+msgid "Gmc Correspondent Commitment"
+msgstr "Gmc Correspondent Commitment"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__gmc_gender
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__gmc_gender
+msgid "Gmc Gender"
+msgstr "Gmc Geschlecht"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gmc_payer_partner_id
+msgid "Gmc Payer Partner"
+msgstr "Gmc Payer Partner"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_filter
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Group By..."
+msgstr "Gruppieren nach ..."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__has_been_sponsored
+msgid "Has Been Sponsored"
+msgstr "Wurde gesponsert"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_has_mandate
+msgid "Has Mandate"
+msgstr "Hat Mandat"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__has_sponsorships
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__has_sponsorships
+msgid "Has Sponsorships"
+msgstr "Hat Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__headshot
+msgid "Headshot"
+msgstr "Headshot"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__height
+msgid "Height"
+msgstr "Höhe"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__hold_id
+msgid "Hold"
+msgstr "Hold"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard__hold_expiration_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__hold_expiration_date
+msgid "Hold Expiration Date"
+msgstr "Hold Verfallsdatum"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move_line__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_base_partner_merge_automatic_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_product_product__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings__id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__gmc_correspondent_commitment_id
+msgid "Id of the correspondent commitment."
+msgstr "Id der entsprechenden Verpflichtung."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__sponsorship_line_id
+msgid ""
+"Identifies the active sponsorship line of a sponsor.When sponsorship is "
+"ended but a SUB is made, the SUB will havethe same line id. Only new "
+"sponsorships will have new ids."
+msgstr ""
+"Wenn die Patenschaft beendet wird, aber eine SUB gemacht wird, hat die SUB "
+"dieselbe Zeilenkennung. Nur neue Patenschaften haben neue IDs."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__include_child_name
+msgid "Include Child Name"
+msgstr "Name des Kindes einbeziehen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__include_child_ref
+msgid "Include child reference"
+msgstr "Kind-Referenz einbeziehen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__information
+msgid "Information"
+msgstr "Informationen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Internal Reference"
+msgstr "Interne Referenz"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Invalid GMC answer"
+msgstr "Ungültige GMC-Antwort"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_bank_statement_line__invoice_category
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move__invoice_category
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_payment__invoice_category
+msgid "Invoice Category"
+msgstr "Rechnungskategorie"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__invoice_date
+msgid "Invoice Date"
+msgstr "Rechnungsdatum"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_partner_tree
+msgid "Invoice lines"
+msgstr "Rechnungspositionen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_account_invoice_sponsorship_filter
+msgid "Invoice type"
+msgstr "Rechnungstyp"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__is_direct_debit
+msgid "Is Direct Debit"
+msgstr "Ist das Lastschriftverfahren"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__is_first_sponsorship
+msgid "Is First Sponsorship"
+msgstr "Ist erste Patenschaft"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__is_gift_authorized
+msgid "Is Gift Authorized"
+msgstr "Ist das Geschenk autorisiert"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__is_church
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__is_church
+msgid "Is a Church"
+msgstr "Ist eine Kirche"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__is_direct_debit
+msgid "Is paid by direct debit"
+msgstr "Wird per Lastschriftverfahren bezahlt"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_too_old
+msgid "Is too old to sponsor another child"
+msgstr "zu alt ist, um ein anderes Kind zu sponsern"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__is_active
+msgid ""
+"It indicates that the first invoice has been paid and the contract was "
+"activated."
+msgstr ""
+"Es zeigt an, dass die erste Rechnung bezahlt wurde und der Vertrag aktiviert "
+"wurde."
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_account_move
+msgid "Journal Entry"
+msgstr "Buchungssatz"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_account_move_line
+msgid "Journal Item"
+msgstr "Journalbuchung"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard__keep_child_on_hold
+msgid "Keep Child On Hold"
+msgstr "Kind in der Warteschleife halten"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Last 3 Months"
+msgstr "Letzte 3 Monate"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Last 3 months"
+msgstr "Letzte 3 Monate"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_base_partner_merge_automatic_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_product_product____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__write_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__write_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__write_uid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__write_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__write_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_activate_wizard__write_date
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Last payment"
+msgstr "Letzte Zahlung"
+
+#. module: sponsorship_compassion
+#: model:ir.cron,name:sponsorship_compassion.recurring_invoicer_cron
+msgid "Launch friday invoice generation"
+msgstr "Start der Rechnungserstellung am Freitag"
+
+#. module: sponsorship_compassion
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_invoice_automatic_generation
+msgid "Launch invoices generation"
+msgstr "Erstellung von Rechnungen starten"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
+msgid "Make Zip"
+msgstr "Reißverschluss machen"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Marketing campaign"
+msgstr "Marketing-Kampagne"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__member_ids
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__member_ids
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Members"
+msgstr "Mitglieder"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "Assistent für die Zusammenführung von Partnern"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_mistake
+msgid "Mistake from our staff"
+msgstr "Fehler von unseren Mitarbeitern"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Monthly"
+msgstr "Monatlich"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_moved
+msgid "Moved to foreign country"
+msgstr "Ins Ausland umgezogen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__name
+msgid "Name"
+msgstr "Bezeichnung"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_never_paid
+msgid "Never paid"
+msgstr "Nie bezahlt"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/res_partner.py:0
+#, python-format
+msgid "New Sponsorship"
+msgstr "Neue Patenschaft"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "New sponsorship"
+msgstr "Neue Patenschaft"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.actions.act_window,help:sponsorship_compassion.action_gmc_message_commitment
+#: model_terms:ir.actions.act_window,help:sponsorship_compassion.action_gmc_message_constituent
+msgid "No messages."
+msgstr "Keine Nachrichten."
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_not_given
+msgid "Not given"
+msgstr "Nicht angegeben"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_not_satisfied
+msgid "Not satisfied"
+msgstr "Nicht zufrieden"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_bible
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_bible
+msgid "Number of bibles distributed"
+msgstr "Anzahl der verteilten Bibeln"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_boy
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_boy
+msgid "Number of boys"
+msgstr "Anzahl der Jungen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_children
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__number_children
+msgid "Number of children"
+msgstr "Anzahl Kinder im Kinderzentrum:"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_girl
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_girl
+msgid "Number of girls"
+msgstr "Anzahl der Mädchen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_medic_check
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_medic_check
+msgid "Number of given medical checks"
+msgstr "Anzahl der durchgeführten medizinischen Untersuchungen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner_sr_nb_s2b_letter
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users_sr_nb_s2b_letter
+msgid "Number of letters to beneficiary"
+msgstr "Anzahl der Briefe an den Begünstigten"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner_sr_nb_b2s_letter
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users_sr_nb_b2s_letter
+msgid "Number of letters to sponsor"
+msgstr "Anzahl der Briefe an den Sponsor"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_meal
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_meal
+msgid "Number of meals served"
+msgstr "Anzahl der servierten Mahlzeiten"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_sponsorship
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_sponsorship
+msgid "Number of sponsorship"
+msgstr "Anzahl der Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_sponsorships
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__number_sponsorships
+msgid "Number of sponsorships"
+msgstr "Anzahl der Patenschaften"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Open"
+msgstr "Offen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Open invoice lines"
+msgstr "Offene Rechnungszeilen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__origin_id
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_form
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Origin"
+msgstr "Herkunft"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract_origin__type
+msgid ""
+"Origin of contract :  * Contact with sponsor/ambassador : an other sponsor "
+"told the person about Compassion. * Event : sponsorship was made during an "
+"event * Marketing campaign : sponsorship was made after specific campaign "
+"(magazine, ad, etc..) * Crowdfunding : sponsorship obtained from a "
+"crowdunfding project * Transfer : sponsorship transferred from another "
+"country. * Other : select only if none other type matches."
+msgstr ""
+"Ursprung des Vertrags:  * Kontakt mit Sponsor/Botschafter: Ein anderer "
+"Sponsor hat der Person von Compassion erzählt. * Veranstaltung: Die "
+"Patenschaft wurde während einer Veranstaltung übernommen * "
+"Marketingkampagne: Die Patenschaft wurde nach einer bestimmten Kampagne "
+"(Zeitschrift, Anzeige usw.) übernommen * Crowdfunding: Die Patenschaft wurde "
+"über ein Crowdfunding-Projekt erworben * Transfer: Die Patenschaft wurde aus "
+"einem anderen Land übertragen. * Sonstiges : Nur auswählen, wenn keine "
+"andere Art zutrifft."
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_form
+msgid "Originated Sponsorships"
+msgstr "Entstandene Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.open_view_origin_tree
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_origin
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_tree
+msgid "Origins"
+msgstr "Ursprünge"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__other
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_other
+#, python-format
+msgid "Other"
+msgstr "Anderes"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__other_contract_ids
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__other_contract_ids
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Other contracts"
+msgstr "Andere Verträge"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Paid"
+msgstr "Bezahlt"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Paid invoice lines"
+msgstr "Bezahlte Rechnungszeilen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__partner_id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__partner_id
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Partner"
+msgstr "Partner"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__partner_lang
+msgid "Partner language"
+msgstr "Partnersprache"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__partner_codega
+msgid "Partner ref"
+msgstr "Partner ref"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__gmc_payer_partner_id
+msgid "Partner synchronized with GMC as a payer."
+msgstr "Partner synchronisiert mit GMC als Zahler."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__send_gifts_to__partner_id
+msgid "Payer"
+msgstr "Bezahlen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__group_freq
+msgid "Payment frequency"
+msgstr "Zahlungsrhythmus"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_personal
+msgid "Personal reasons"
+msgstr "Persönliche Gründe"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__preferred_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__preferred_name
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__preferred_name
+msgid "Preferred Name"
+msgstr "Bevorzugter Name"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__reading_language
+msgid "Preferred language"
+msgstr "Bevorzugte Sprache"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__preview
+msgid "Preview"
+msgstr "Vorschau"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__parent_id
+msgid "Previous sponsorship"
+msgstr "Vorherige Patenschaft"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_product_product
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Product"
+msgstr "Produkt"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_product_product__categ_name
+msgid "Product category"
+msgstr "Produktkategorie"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__project_id
+msgid "Project"
+msgstr "Projekt"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__quantity
+msgid "Quantity"
+msgstr "Anzahl"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "Quarterly"
+msgstr "Vierteljährlich"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__receivable_items
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__receivable_items
+msgid "Receivable Items"
+msgstr "Empfangene Posten"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_contract_origin
+msgid "Recurring Contract Origin"
+msgstr "Wiederkehrender Vertrag Ursprung"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Wiederkehrender Vertrag"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_contract_activate_wizard
+msgid "Recurring contract activation wizard"
+msgstr "Assistent zur Aktivierung wiederkehrender Verträge"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_end_contract_wizard
+msgid "Recurring contract end wizard"
+msgstr "Assistent für wiederkehrende Vertragsabschlüsse"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_recurring_contract_line
+msgid "Recurring contract line"
+msgstr "Wiederkehrende Vertragslinie"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__related_active_sponsorships
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__related_active_sponsorships
+msgid "Related Active Sponsorships"
+msgstr "Verwandte aktive Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__related_sponsorships
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__related_sponsorships
+msgid "Related Sponsorships"
+msgstr "Verwandte Patenschaften"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/res_partner.py:0
+#, python-format
+msgid "Related invoice lines"
+msgstr "Verwandte Rechnungszeilen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard__return_action
+msgid "Return Action"
+msgstr "Rückholaktion"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "Search invoice lines"
+msgstr "Rechnungszeilen suchen"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_filter
+msgid "Search origin"
+msgstr "Herkunft suchen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__send_gifts_to
+msgid "Send Gifts To"
+msgstr "Geschenke senden an"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_res_config_settings__time_allowed_for_gifts
+msgid ""
+"Set number of days after sponsorship ending where gifts to the child are "
+"still allowed"
+msgstr ""
+"Festgelegte Anzahl von Tagen nach Beendigung der Patenschaft, in denen "
+"Geschenke an das Kind noch erlaubt sind"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_res_config_settings__time_allowed_for_letters
+msgid ""
+"Set number of days after sponsorship ending where letters to the child are "
+"still allowed"
+msgstr ""
+"Festgelegte Anzahl von Tagen nach Beendigung der Patenschaft, in denen "
+"Briefe an das Kind noch erlaubt sind"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__birthday_invoice
+msgid ""
+"Set the amount to enable automatic invoice creation each year for a birthday "
+"gift. The invoice is set two months before child's birthday."
+msgstr ""
+"Lege den Betrag fest, damit jedes Jahr automatisch eine Rechnung für ein "
+"Geburtstagsgeschenk erstellt wird. Die Rechnung wird zwei Monate vor dem "
+"Geburtstag des Kindes erstellt."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__christmas_invoice
+msgid ""
+"Set the amount to enable automatic invoice creation each year for a "
+"christmas gift. The invoice is set depending christmas invoice setting"
+msgstr ""
+"Lege den Betrag fest, damit jedes Jahr automatisch eine Rechnung für ein "
+"Weihnachtsgeschenk erstellt wird. Die Rechnung wird abhängig von der "
+"Einstellung für die Weihnachtsrechnung erstellt"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_hold_wizard__return_action__sponsor
+msgid "Sponsor the child"
+msgstr "Patenschaft für das Kind"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/wizards/child_hold_wizard.py:0
+#, python-format
+msgid "Sponsor the child on hold"
+msgstr "Patenschaft für das Kind in der Warteschleife"
+
+#. module: sponsorship_compassion
+#: model:ir.model,name:sponsorship_compassion.model_compassion_child
+msgid "Sponsored Child"
+msgstr "Patenkind"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__child_id
+msgid "Sponsored child"
+msgstr "Patenkind"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_compassion_sponsorship_kanban
+msgid "Sponsored child :"
+msgstr "Patenkind:"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sponsored_child_ids
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sponsored_child_ids
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsored children"
+msgstr "Patenkinder"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_sponsor_other_children
+msgid "Sponsors other children"
+msgstr "Patenschaften für andere Kinder"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line__sponsorship_id
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sponsorship_ids
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sponsorship_ids
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__sponsorship
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__s
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_settings
+msgid "Sponsorship"
+msgstr "Patenschaft"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_compassion_sponsorship_kanban
+msgid "Sponsorship :"
+msgstr "Patenschaft:"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sponsorship_line_id
+msgid "Sponsorship Line"
+msgstr "Sponsoring Linie"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
+msgid "Sponsorship Report"
+msgstr "Patenschaftsbericht"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsorship impact"
+msgstr "Auswirkungen des Sponsorings"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__type
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line__contract_type
+msgid "Sponsorship type"
+msgstr "Patenschaft Typ"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_sponsorship_contract
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__sponsorship_ids
+#: model:ir.ui.menu,name:sponsorship_compassion.menu_sponsorship_contract_form
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_child_compassion_form
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_project_intervention_form
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsorships"
+msgstr "Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__sponsorships_count
+msgid "Sponsorships Count"
+msgstr "Patenschaften zählen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__portal_sponsorships
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__portal_sponsorships
+msgid "Sponsorships accessible from the portal"
+msgstr "Patenschaften über das Portal zugänglich"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__contracts_correspondant
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__contracts_correspondant
+msgid "Sponsorships as correspondant only"
+msgstr "Patenschaften nur als Korrespondent"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsorships as correspondent only"
+msgstr "Patenschaften nur als Korrespondent"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__contracts_paid
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__contracts_paid
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsorships as payer only"
+msgstr "Patenschaften nur als Zahler"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid "Sponsorships fully managed"
+msgstr "Vollständig verwaltete Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__contract_ids
+msgid "Sponsorships originated"
+msgstr "Patenschaften entstanden"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__start_period
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__start_period
+msgid "Start Period"
+msgstr "Start Zeitraum"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
+msgid "State"
+msgstr "Bundesland"
+
+#. module: sponsorship_compassion
+#: model:utm.campaign,name:sponsorship_compassion.utm_campaign_sub
+#: model:utm.source,name:sponsorship_compassion.utm_source_sub
+msgid "Sub sponsorship"
+msgstr "SUB-Patenschaft"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_subreject
+msgid "Subreject"
+msgstr "Unterprojekt"
+
+#. module: sponsorship_compassion
+#: model:ir.actions.act_window,name:sponsorship_compassion.action_partner_supporter
+#: model:ir.ui.menu,name:sponsorship_compassion.open_customers
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_search
+msgid "Supporters"
+msgstr "Unterstützer"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_another_ngo
+msgid "Supports another organization"
+msgstr "Unterstützt eine andere Organisation"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_sponsorship_contract_form_compassion
+msgid ""
+"The contract has inconsistent parameters between the payment mode and gift "
+"amount !\n"
+"                        The payment mode should be a direct debit one for "
+"gift to be generated in advance. Currently no\n"
+"                        gift invoices will be generated for this contract."
+msgstr ""
+"Der Vertrag hat widersprüchliche Parameter zwischen dem Zahlungsmodus und "
+"dem Geschenkbetrag!\n"
+"                        Der Zahlungsmodus sollte ein Lastschrifteinzug sein, "
+"damit das Geschenk im Voraus generiert werden kann. Derzeit werden keine\n"
+"                        werden für diesen Vertrag keine Rechnungen für "
+"Geschenke erstellt."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid ""
+"The donation product does not exist for the current company yet. Please "
+"create a product with default_code 'fund_gen' first."
+msgstr ""
+"Das Spendenprodukt existiert noch nicht für das aktuelle Unternehmen. Bitte "
+"erstelle zuerst ein Produkt mit dem default_code 'fund_gen'."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid ""
+"The sponsorship product does not exist for the current company yet. Please "
+"create a product with default_code 'sponsorship' first."
+msgstr ""
+"Das Produkt \"Sponsoring\" existiert für das aktuelle Unternehmen noch "
+"nicht. Bitte erstelle zuerst ein Produkt mit dem default_code 'sponsorship'."
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
+msgid ""
+"This will erase all data of the partner and will anonymize its name. This is "
+"not reversible. Do you confirm you want to do that?"
+msgstr ""
+"Dadurch werden alle Daten des Partners gelöscht und sein Name anonymisiert. "
+"Dies ist nicht umkehrbar. Bestätigst du, dass du das tun willst?"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_activate_sponsorship
+msgid ""
+"This will mark the contract as Active, even if the partner has made no "
+"payment. Please be sure that you want to do this."
+msgstr ""
+"Dadurch wird der Vertrag als aktiv markiert, auch wenn der Partner keine "
+"Zahlung geleistet hat. Bitte vergewissere dich, dass du das auch wirklich "
+"willst."
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings__time_allowed_for_gifts
+msgid "Time Allowed For Gifts"
+msgstr "Erlaubte Zeit für Geschenke"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_config_settings__time_allowed_for_letters
+msgid "Time Allowed For Letters"
+msgstr "Erlaubte Zeit für Briefe"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_partner_tree
+msgid "Total"
+msgstr "Summe"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_donation
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_total_donation
+msgid "Total donations"
+msgstr "Spenden insgesamt"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_time_fcp
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_time_fcp
+msgid "Total hour spent at the FCP"
+msgstr "Insgesamt im FCP verbrachte Stunden"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Transfer"
+msgstr "Lieferung vornehmen"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Transfer from "
+msgstr "Übertragung von "
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#, python-format
+msgid "Transfer from partner country"
+msgstr "Überweisung aus dem Partnerland"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__transfer_partner_id
+msgid "Transferred to"
+msgstr "Übertragen auf"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__type
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__type
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_filter
+msgid "Type"
+msgstr "Typ"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/account_move_line.py:0
+#, python-format
+msgid "Unexpected error while updating contract invoices."
+msgstr "Unerwarteter Fehler beim Aktualisieren von Vertragsrechnungen."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid ""
+"Unfortunately this sponsorship is already used, please choose a unique one"
+msgstr "Leider ist diese Patenschaft bereits vergeben, bitte wähle eine andere"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__unrec_items
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__unrec_items
+msgid "Unrec Items"
+msgstr "Unerfasste Posten"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__hold_expiration_date
+msgid "Used for setting a hold after sponsorship cancellation"
+msgstr ""
+"Wird verwendet, um nach der Stornierung einer Patenschaft einen Halt zu "
+"setzen"
+
+#. module: sponsorship_compassion
+#: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_funds
+msgid "Wants to support with fund donations"
+msgstr "Möchte mit Geldspenden unterstützen"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__can_make_gift
+msgid "Whether gift to the child is possible at the moment or not"
+msgstr "Ob das Geschenk an das Kind im Moment möglich ist oder nicht"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__can_write_letter
+msgid "Whether letter to the child is possible at the moment or not"
+msgstr "Ob ein Brief an das Kind im Moment möglich ist oder nicht"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__width
+msgid "Width"
+msgstr "Breite"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__won_sponsorships
+msgid "Won Sponsorships"
+msgstr "Gewonnene Patenschaften"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__swp
+msgid "Write&Pray"
+msgstr "Write&Pray"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
+msgid "Write&Pray Sponsorship"
+msgstr "Write&Pray Patenschaft"
+
+#. module: sponsorship_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
+msgid "You can download an archive file from here."
+msgstr "Du kannst eine Archivdatei von hier herunterladen."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid ""
+"You can't change the correspondent of a cancelled or terminated sponsorship"
+msgstr ""
+"Du kannst den Korrespondenten einer gekündigten oder beendeten Patenschaft "
+"nicht ändern"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "You cannot delete a validated sponsorship."
+msgstr "Du kannst eine bestätigte Patenschaft nicht löschen."
+
+#. module: sponsorship_compassion
+#: model:ir.model.constraint,message:sponsorship_compassion.constraint_recurring_contract_unique_gmc_commitment_id
+msgid "You cannot have same commitment ids for contracts"
+msgstr "Du kannst nicht dieselben Verpflichtungskennungen für Verträge haben"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contract_origin.py:0
+#: model:ir.model.constraint,message:sponsorship_compassion.constraint_recurring_contract_origin_name_uniq
+#, python-format
+msgid ""
+"You cannot have two origins with same name.The origin does probably already "
+"exist."
+msgstr ""
+"Du kannst nicht zwei Ursprünge mit demselben Namen haben, denn der Ursprung "
+"existiert wahrscheinlich schon."
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "You cannot validate a sponsorship without any amount"
+msgstr "Du kannst eine Patenschaft nicht ohne einen Betrag validieren"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "You should select payment option with \"1 month\" as recurring value"
+msgstr ""
+"Du solltest die Zahlungsoption mit \"1 Monat\" als wiederkehrenden Wert "
+"wählen"
+
+#. module: sponsorship_compassion
+#: code:addons/sponsorship_compassion/models/contracts.py:0
+#, python-format
+msgid "every"
+msgstr "jede"
+
+#. module: sponsorship_compassion
+#: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sub_sponsorship_id
+msgid "sub sponsorship"
+msgstr "SUB-Patenschaft"
+
+#~ msgid "Sponsored child code"
+#~ msgstr "Code für gesponsertes Kind"
+
+#~ msgid "Sponsored child name"
+#~ msgstr "Name des Patenkindes"

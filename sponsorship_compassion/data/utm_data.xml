@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--
+    Resource: utm.campaign
+    -->
+    <record id="utm_campaign_sub" model="utm.campaign">
+        <field name="name">Sub sponsorship</field>
+    </record>
+
+    <!-- Add Sub sponsorship UTM Source -->
+    <record id="utm_source_sub" model="utm.source">
+        <field name="name">Sub sponsorship</field>
+    </record>
+</odoo>

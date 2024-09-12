@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_project_intervention_form" model="ir.ui.view">
+        <field name="name">project.compassion.sponsorships</field>
+        <field name="model">compassion.project</field>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_project_form"
+    />
+        <field eval="19" name="priority" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']">
+                <button
+          name="open_sponsorships"
+          type="object"
+          icon="fa-child"
+          class="oe_stat_button oe_inline"
+          context="{'search_default_active':1}"
+        >
+                    <field
+            name="sponsorships_count"
+            widget="statinfo"
+            string="Sponsorships"
+          />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

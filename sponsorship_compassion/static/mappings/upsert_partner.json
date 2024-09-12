@@ -1,0 +1,31 @@
+{
+  "name": "Upsert Partner Mapping",
+  "model": "res.partner",
+  "mapping": {
+    "GlobalID": {
+      "field": "global_id"
+    },
+    "GPID": {
+      "field": "ref",
+      "to_json_conversion": "'65-' + odoo_value"
+    },
+    "Gender": {
+      "field": "gmc_gender"
+    },
+    "PreferredName": {
+      "field": "preferred_name"
+    },
+    "FirstName": {
+      "field": "firstname"
+    },
+    "LastName": {
+      "field": "lastname"
+    },
+    "GlobalPartner": {
+      "to_json_conversion": "gpname"
+    },
+    "Status": {
+      "to_json_conversion": "'Active'"
+    }
+  }
+}

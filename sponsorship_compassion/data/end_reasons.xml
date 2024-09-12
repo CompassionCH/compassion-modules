@@ -1,0 +1,74 @@
+<odoo>
+    <record id="end_reason_depart" model="recurring.contract.end.reason">
+        <field name="name">Depart of child</field>
+    </record>
+    <record id="end_reason_release" model="recurring.contract.end.reason">
+        <field name="name">Child hold expired</field>
+    </record>
+    <record id="end_reason_mistake" model="recurring.contract.end.reason">
+        <field name="name">Mistake from our staff</field>
+    </record>
+    <record id="end_reason_death" model="recurring.contract.end.reason">
+        <field name="name">Death of partner</field>
+    </record>
+    <record id="end_reason_moved" model="recurring.contract.end.reason">
+        <field name="name">Moved to foreign country</field>
+    </record>
+    <record id="end_reason_not_satisfied" model="recurring.contract.end.reason">
+        <field name="name">Not satisfied</field>
+    </record>
+    <record id="end_reason_dont_pay" model="recurring.contract.end.reason">
+        <field name="name">Doesn't pay</field>
+    </record>
+    <record id="end_reason_personal" model="recurring.contract.end.reason">
+        <field name="name">Personal reasons</field>
+    </record>
+    <record id="end_reason_never_paid" model="recurring.contract.end.reason">
+        <field name="name">Never paid</field>
+    </record>
+    <record id="end_reason_subreject" model="recurring.contract.end.reason">
+        <field name="name">Subreject</field>
+    </record>
+    <record
+    id="end_reason_sponsor_exchange"
+    model="recurring.contract.end.reason"
+  >
+        <field name="name">Exchange of sponsor</field>
+    </record>
+    <record
+    id="end_reason_child_exchange"
+    model="recurring.contract.end.reason"
+  >
+        <field name="name">Exchange of beneficiary</field>
+    </record>
+    <record id="end_reason_financial" model="recurring.contract.end.reason">
+        <field name="name">Financial reasons</field>
+    </record>
+    <record id="end_reason_not_given" model="recurring.contract.end.reason">
+        <field name="name">Not given</field>
+    </record>
+    <record
+    id="end_reason_sponsor_other_children"
+    model="recurring.contract.end.reason"
+  >
+        <field name="name">Sponsors other children</field>
+    </record>
+    <record id="end_reason_too_old" model="recurring.contract.end.reason">
+        <field name="name">Is too old to sponsor another child</field>
+    </record>
+    <record id="end_reason_funds" model="recurring.contract.end.reason">
+        <field name="name">Wants to support with fund donations</field>
+    </record>
+    <record id="end_reason_another_ngo" model="recurring.contract.end.reason">
+        <field name="name">Supports another organization</field>
+    </record>
+    <record
+    id="end_reason_not_another_child"
+    model="recurring.contract.end.reason"
+  >
+        <field name="name">Doesn't want to take another child right now</field>
+    </record>
+    <record id="end_reason_other" model="recurring.contract.end.reason">
+        <field name="name">Other</field>
+    </record>
+</odoo>

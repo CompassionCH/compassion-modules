@@ -1,0 +1,85 @@
+{
+  "name": "Create Sponsorship Mapping",
+  "model": "recurring.contract",
+  "mapping": {
+    "Commitment_ID": {
+      "field": "gmc_commitment_id"
+    },
+    "CorrespondentCommitmentID": {
+      "field": "gmc_correspondent_commitment_id"
+    },
+    "CommitmentID": {
+      "field": "gmc_commitment_id"
+    },
+    "CompassNeedKey": {
+      "field": "child_id.local_id",
+      "search_relational_record": true
+    },
+    "CorrespondenceEndDate": {
+      "field": "end_date"
+    },
+    "CorrespondentCorrespondenceLanguage": {
+      "field": "reading_language.name",
+      "search_relational_record": true
+    },
+    "CorrespondentSupporterGlobalID": {
+      "field": "correspondent_id.global_id",
+      "search_relational_record": true
+    },
+    "FinalCommitmentOfLine": {
+      "to_json_conversion": "''"
+    },
+    "HoldID": {
+      "field": "hold_id.hold_id",
+      "search_relational_record": true
+    },
+    "HoldType": {
+      "to_json_conversion": "'Sponsor Cancel Hold'"
+    },
+    "PrimaryHoldOwner": {
+      "field": "write_uid.name",
+      "search_relational_record": true
+    },
+    "SecondaryHoldOwner": {
+      "field": "create_uid.name",
+      "search_relational_record": true
+    },
+    "SponsorCorrespondenceLanguage": {
+      "field": "reading_language.name",
+      "search_relational_record": true
+    },
+    "SponsorSupporterGlobalID": {
+      "field": "partner_id.global_id",
+      "search_relational_record": true
+    },
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "HoldExpirationDate": {
+      "field": "hold_expiration_date"
+    },
+    "Channel_Name": {
+      "field": null
+    },
+    "LinkType": {
+      "field": null
+    },
+    "ParentCommitmentID": {
+      "field": "parent_id.gmc_commitment_id"
+    },
+    "CommitmentEndDate": {
+      "field": "end_date"
+    },
+    "CorrespondentGlobalPartnerID": {
+      "to_json_conversion": "gpid"
+    },
+    "IsSponsorCorrespondent": "fully_managed",
+    "SponsorGlobalPartnerID": {
+      "to_json_conversion": "gpid"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}

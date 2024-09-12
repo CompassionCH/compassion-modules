@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="sponsorship_report_form">
+        <field name="name">Sponsorship Report Form View</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+              class="oe_inline oe_stat_button"
+              type="object"
+              string="Details of donations"
+              groups="child_compassion.group_sponsorship"
+              name="open_donation_details"
+              icon="fa-file-text-o "
+            />
+                    </div>
+                    <group col='2' string="Sponsorship Report">
+                        <group string="Active sponsorships">
+                            <field name="sr_sponsorship" />
+                            <field name="sr_nb_boy" />
+                            <field name="sr_nb_girl" />
+                        </group>
+                        <group string="From the beginning of your sponsorships">
+                            <field name="sr_time_fcp" />
+                            <field name="sr_nb_meal" />
+                            <field name="sr_nb_bible" />
+                            <field name="sr_nb_medic_check" />
+                        </group>
+                        <group string="During the last 12 months">
+                            <field
+                name="sr_total_donation"
+                widget="monetary"
+                options="{'currency_field': 'currency_id'}"
+              />
+                            <field name="sr_total_gift" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+{
+  "name": "Anonymize Partner Mapping",
+  "model": "res.partner",
+  "mapping": {
+    "GlobalSupporterID": {
+      "field": "global_id"
+    },
+    "GP_SupporterID": {
+      "field": "ref",
+      "to_json_conversion": "'65-' + odoo_value"
+    },
+    "GP_ID": {
+      "to_json_conversion": "gpid"
+    },
+    "DataProtection_Type": {
+      "to_json_conversion": "'ForgetMe'"
+    }
+  }
+}

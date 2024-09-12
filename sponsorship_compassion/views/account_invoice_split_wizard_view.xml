@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+	<!--  <record id="view_invoice_split_wizard_compassion_form" model="ir.ui.view">
+        <field name="name">invoice.split.wizard.compassion.form</field>
+        <field name="model">account.invoice.split.wizard</field>
+        <field name="inherit_id" ref="account_invoice_split_invoice.view_invoice_split_wizard_form"/>
+        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='name']" position="after">-->
+<!--                <field name="contract_id" readonly="1"/>-->
+<!--            </xpath>-->
+<!--        </field>
+</record>-->
+</odoo>
