@@ -24,7 +24,7 @@
             </group>
             <group name="personal_information_group">
                 <group name="privacy_statements" string="Data privacy">
-                    <field name="uuid" />
+                    <field name="uuid" readonly="1" />
                 </group>
             </group>
             <!-- Restrict the tab to sponsorship users -->

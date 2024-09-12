@@ -23,6 +23,9 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [advanced_translation](advanced_translation/) | 17.0.1.0.0 |  | Advanced Translation
+[child_compassion](child_compassion/) | 17.0.1.0.0 |  | Compassion Children
+[message_center_compassion](message_center_compassion/) | 17.0.1.0.0 |  | Compassion Connect
+[partner_personal_info](partner_personal_info/) | 17.0.1.0.0 |  | Adds a tab on partners for showing personal information
 [rest_json_api](rest_json_api/) | 17.0.1.0.0 |  | REST Json API
 
 [//]: # (end addons)

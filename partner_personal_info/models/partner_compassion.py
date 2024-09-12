@@ -19,7 +19,6 @@ class ResPartner(models.Model):
         "Personal unique identifier",
         copy=False,
         index=True,
-        readonly=True,
         default=lambda s: uuid.uuid4(),
     )
 
