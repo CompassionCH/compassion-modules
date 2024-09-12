@@ -1,5 +1,3 @@
-from typing import List
-
 from odoo import _, models
 from odoo.exceptions import UserError
 
@@ -27,7 +25,7 @@ class CustomMergePartnerAutomatic(models.TransientModel):
         (excluding the destination partner) before proceeding with the merge action.
         If any active contracts are found, it raises a UserError to prevent the merge.
         """
-        partner_ids: List[int] = (self.partner_ids - self.dst_partner_id).ids
+        partner_ids: list[int] = (self.partner_ids - self.dst_partner_id).ids
 
         active_sponsorship_contracts = self.env["recurring.contract"].search_count(
             [
