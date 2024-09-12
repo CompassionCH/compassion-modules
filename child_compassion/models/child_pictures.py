@@ -137,7 +137,8 @@ class ChildPictures(models.Model):
             [
                 ("child_id", "=", vals.get("child_id")),
                 ("image_url", "=", vals.get("image_url")),
-            ], limit=1
+            ],
+            limit=1,
         )
 
         return existing_picture
