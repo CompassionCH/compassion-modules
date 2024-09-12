@@ -37,7 +37,6 @@ class PDFCreator
                                     // through the available boxes.
 	protected $overflowPage;        // Will be set when overflow occurs. Holds the overflown texts from the current page.  => array[Text]
 
-
     /**
     *
     */
@@ -205,7 +204,7 @@ class PDFCreator
         {
             $pagesWithoutText++;
             if($pagesWithoutText >= 4) {
-                if ($this->overflowTemplate != false) {
+                if ($this->utils->overflowTemplate) {
                     // Try to push remaining text on overflow page
                     $this->InsertOverflowPages($pdf);
                 } else {

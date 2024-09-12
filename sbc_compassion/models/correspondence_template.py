@@ -179,12 +179,13 @@ class CorrespondenceTemplate(models.Model):
         text_list = []
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
-                temp_img.append(
-                    tempfile.NamedTemporaryFile("w", prefix=t_type + "_", suffix=".txt")
+                txt_file = tempfile.NamedTemporaryFile(
+                    "w", prefix=t_type + "_", suffix=".txt", encoding="utf-8"
                 )
-                temp_img[-1].write(txt)
-                temp_img[-1].flush()
-                text_list.append([temp_img[-1].name, t_type])
+                txt_file.write(txt)
+                txt_file.flush()
+                temp_img.append(txt_file)
+                text_list.append([txt_file.name, t_type])
 
         for image in image_data:
             ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
@@ -206,7 +207,8 @@ class CorrespondenceTemplate(models.Model):
 
         json_val = json.dumps(generated_json).replace(" ", "")
 
-        std_err_file = open(self.path_to("stderr.txt"), "w")
+        std_err_file_path = self.path_to("stderr.txt")
+        std_err_file = open(std_err_file_path, "w", encoding="utf-8")
 
         php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
         if config.get("php_debug"):
@@ -222,6 +224,14 @@ class CorrespondenceTemplate(models.Model):
             )
         proc = subprocess.Popen(php_command_args, stderr=std_err_file)
         proc.communicate()
+
+        if proc.returncode != 0:
+            with open(std_err_file_path, "r", encoding="utf-8") as stderr:
+                _logger.error(
+                    "FPDF returned nonzero exit code %d. stderr:\n%s",
+                    proc.returncode,
+                    stderr.read(),
+                )
 
         # Clean temp files
         for img in temp_img:
