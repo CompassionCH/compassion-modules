@@ -84,8 +84,9 @@ class ChildPictures(models.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
-        if self._child_picture_already_exists(vals):
-            return False
+        existing_picture = self._child_picture_already_exists(vals)
+        if existing_picture:
+            return existing_picture
 
         pictures = super().create(vals)
         # Retrieve Headshot
@@ -132,14 +133,14 @@ class ChildPictures(models.Model):
         return same_pics
 
     def _child_picture_already_exists(self, vals):
-        already_exists = self.search_count(
+        existing_picture = self.search(
             [
                 ("child_id", "=", vals.get("child_id")),
                 ("image_url", "=", vals.get("image_url")),
-            ]
+            ], limit=1
         )
 
-        return bool(already_exists)
+        return existing_picture
 
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
         """Gets a picture from Compassion webservice"""
