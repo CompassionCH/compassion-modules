@@ -736,7 +736,12 @@ class Correspondence(models.Model):
 
     def process_letter(self):
         """Method called when new B2S letter is Published."""
-        self.download_attach_letter_image(letter_type="final_letter_url")
+        # If the letter's source language is known by the sponsor,
+        # send the original letter without any translation
+        letter_type = "final_letter_url"
+        if self.original_language_id in self.supporter_languages_ids:
+            letter_type = "original_letter_url"
+        self.download_attach_letter_image(letter_type=letter_type)
         return True
 
     def download_attach_letter_image(self, letter_type="final_letter_url"):
