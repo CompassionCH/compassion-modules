@@ -1,0 +1,38 @@
+<odoo>
+    <!-- Move all personal fields in the tab from OCA partner-birthdate -->
+    <record id="view_partner_form_compassion_personal" model="ir.ui.view">
+        <field name="name">res.partner.form.compassion.personal.info</field>
+        <field name="model">res.partner</field>
+        <field
+      name="inherit_id"
+      ref="partner_contact_birthdate.view_partner_form"
+    />
+        <field name="arch" type="xml">
+            <!-- Move the personal information group into a sub-group -->
+            <group name="personal_information_group" position="attributes">
+                <attribute
+          name="name"
+        >personal_information_birthdate</attribute>
+                <attribute name="string">Age</attribute>
+            </group>
+            <page name="personal_information_page">
+                <group name="personal_information_group" />
+            </page>
+            <!-- Add fields in the tab -->
+            <group name="personal_information_group">
+                <group name="personal_information_birthdate" position="move" />
+            </group>
+            <group name="personal_information_group">
+                <group name="privacy_statements" string="Data privacy">
+                    <field name="uuid" />
+                </group>
+            </group>
+            <!-- Restrict the tab to sponsorship users -->
+            <page name="personal_information_page" position="attributes">
+                <attribute
+          name="groups"
+        >child_compassion.group_sponsorship</attribute>
+            </page>
+        </field>
+    </record>
+</odoo>
