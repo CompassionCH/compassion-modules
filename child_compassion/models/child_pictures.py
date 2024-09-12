@@ -43,6 +43,14 @@ class ChildPictures(models.Model):
     hname = fields.Char(compute="_compute_filename")
     _error_msg = "Image cannot be fetched: No image url available"
 
+    _sql_constraints = [
+        (
+            "unique_picture_per_child",
+            "UNIQUE(child_id,image_url)",
+            "You cannot set two identical images for the same child.",
+        )
+    ]
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -76,6 +84,9 @@ class ChildPictures(models.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
+        existing_picture = self._child_picture_already_exists(vals)
+        if existing_picture:
+            return existing_picture
 
         pictures = super().create(vals)
         # Retrieve Headshot
@@ -120,6 +131,17 @@ class ChildPictures(models.Model):
             and record.headshot == reference.headshot
         )
         return same_pics
+
+    def _child_picture_already_exists(self, vals):
+        existing_picture = self.search(
+            [
+                ("child_id", "=", vals.get("child_id")),
+                ("image_url", "=", vals.get("image_url")),
+            ],
+            limit=1,
+        )
+
+        return existing_picture
 
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
         """Gets a picture from Compassion webservice"""
