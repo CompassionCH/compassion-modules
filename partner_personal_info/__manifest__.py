@@ -30,7 +30,7 @@
 {
     "name": "Compassion partner personal information page",
     "summary": "Adds a tab on partners for showing personal information",
-    "version": "14.0.1.0.0",
+    "version": "16.0.1.0.0",
     "development_status": "Production/Stable",
     "category": "Partner Management",
     "author": "Compassion CH",
