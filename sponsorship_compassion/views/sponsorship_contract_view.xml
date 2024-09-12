@@ -53,7 +53,7 @@
             <field name="medium_id" position="attributes">
                 <attribute
           name="attrs"
-        >{'required':[('type', 'in', ['S','SC','SWP'])]}</attribute>
+        >{'required':[('type', 'in', ['S','SC','SWP']), ('id', '=', False)]}</attribute>
             </field>
             <field name="medium_id" position="before">
                 <field
