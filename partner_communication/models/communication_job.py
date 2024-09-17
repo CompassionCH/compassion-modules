@@ -10,24 +10,18 @@
 import base64
 import logging
 import re
-import threading
 from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
 
-from jinja2 import TemplateSyntaxError
-
-from odoo import _, api, fields, models, tools
-from odoo.exceptions import MissingError, QWebException, UserError
-
-from odoo.addons.phone_validation.tools import phone_validation
+from odoo import Command, _, api, fields, models, tools
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
 try:
     from PyPDF2 import PdfFileReader
-    from PyPDF2.utils import PdfReadError
 except ImportError:
     _logger.warning(
         "Please install PyPDF2 for generating print versions of communications."
@@ -80,7 +74,6 @@ class CommunicationJob(models.Model):
         "partner.communication.defaults",
         "mail.activity.mixin",
         "mail.thread",
-        "phone.validation.mixin",
     ]
 
     ##########################################################################
@@ -91,8 +84,8 @@ class CommunicationJob(models.Model):
         "Type",
         required=True,
         default=lambda s: s.env.ref("partner_communication.default_communication"),
-        readonly=False,
         index=True,
+        ondelete="cascade",
     )
     model = fields.Char(related="config_id.model_id.model", store=True, index=True)
     partner_id = fields.Many2one(
@@ -100,18 +93,21 @@ class CommunicationJob(models.Model):
         "Send to",
         required=True,
         ondelete="cascade",
-        readonly=False,
         index=True,
         check_company=True,
     )
     company_id = fields.Many2one(
         "res.company", compute="_compute_company", store=True, index=True
     )
-    country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
+    country_id = fields.Many2one(
+        related="partner_id.country_id",
+        readonly=False,
+        search="_search_country_id",
+    )
     parent_id = fields.Many2one(related="partner_id.parent_id", readonly=False)
     object_ids = fields.Char("Resource ids", required=True)
     date = fields.Datetime(default=fields.Datetime.now, index=True)
-    sent_date = fields.Datetime(readonly=True, copy=False, index=True)
+    sent_date = fields.Datetime(copy=False, index=True)
     state = fields.Selection(
         [
             ("pending", _("Pending")),
@@ -141,9 +137,11 @@ class CommunicationJob(models.Model):
     email_id = fields.Many2one(
         "mail.mail", "Generated e-mail", readonly=True, index=True, copy=False
     )
-    body_html = fields.Html(sanitize=False)
+    body_html = fields.Html(sanitize=False, compute="_compute_content", store=True)
     pdf_page_count = fields.Integer("Page count", readonly=True)
-    subject = fields.Char()
+    subject = fields.Char(compute="_compute_content", store=True)
+    email_from = fields.Char(compute="_compute_content", store=True)
+    reply_to = fields.Char(compute="_compute_content", store=True)
     attachment_ids = fields.One2many(
         "partner.communication.attachment",
         "communication_id",
@@ -171,8 +169,8 @@ class CommunicationJob(models.Model):
     )
     printed_pdf_name = fields.Char(compute="_compute_print_pdfname")
 
-    # printer_output_tray_id = fields.Many2one("printing.tray.output",
-    #                                          "Printer Output Bin")
+    printer_output_tray_id = fields.Many2one("printing.tray.output",
+                                             "Printer Output Bin")
 
     sms_cost = fields.Float()
 
@@ -180,10 +178,30 @@ class CommunicationJob(models.Model):
         for job in self:
             job.ir_attachment_ids = job.mapped("attachment_ids.attachment_id")
 
+    @api.depends("config_id", "object_ids")
+    def _compute_content(self):
+        for job in self:
+            template_vals = {}
+            template = job.email_template_id
+            if template:
+                template_vals = template.with_context(
+                    lang=job.partner_id.lang
+                )._generate_template(
+                    job.ids, ["body_html", "subject", "email_from", "reply_to"]
+                )
+            if job.id in template_vals:
+                job.body_html = template_vals[job.id]["body_html"]
+                job.subject = template_vals[job.id]["subject"]
+                job.email_from = template_vals[job.id]["email_from"]
+                job.reply_to = template_vals[job.id]["reply_to"]
+            else:
+                job.body_html = job.body_html
+                job.subject = job.subject
+                job.email_from = job.email_from
+                job.reply_to = job.reply_to
+
     def count_pdf_page(self):
-        skip_count = self.env.context.get(
-            "skip_pdf_count", getattr(threading.currentThread(), "testing", False)
-        )
+        skip_count = self.env.context.get("skip_pdf_count")
         if not skip_count:
             for record in self.filtered("report_id"):
                 if record.send_mode == "physical":
@@ -194,12 +212,7 @@ class CommunicationJob(models.Model):
                         pdf_str = report.sudo()._render_qweb_pdf(record.ids)
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
-                    except (
-                        UserError,
-                        PdfReadError,
-                        QWebException,
-                        TemplateSyntaxError,
-                    ):
+                    except Exception:
                         self.env.clear()
                         record.pdf_page_count = 0
 
@@ -227,7 +240,7 @@ class CommunicationJob(models.Model):
                     )
             # Remove deleted attachments
             job.attachment_ids.filtered(
-                lambda a, job=job: a.attachment_id not in job.ir_attachment_ids
+                lambda a, _job=job: a.attachment_id not in _job.ir_attachment_ids
             ).unlink()
 
     def _compute_void(self):
@@ -250,6 +263,9 @@ class CommunicationJob(models.Model):
             ]
             self._inverse_ir_attachments()
 
+    def _search_country_id(self, operator, value):
+        return [("partner_id.country_id", operator, value)]
+
     @api.depends("partner_id", "object_ids")
     def _compute_company(self):
         """
@@ -269,11 +285,6 @@ class CommunicationJob(models.Model):
                 and first_object.company_id
             ):
                 company = first_object.company_id
-            if not company and job.partner_id.country_id:
-                company = self.env["res.company"].search(
-                    [("partner_id.country_id", "=", job.partner_id.country_id.id)],
-                    limit=1,
-                )
             if not company:
                 company = self._fallback_company()
             job.company_id = company
@@ -350,19 +361,15 @@ class CommunicationJob(models.Model):
         ):
             job.auto_send = send_mode[1]
 
-        if not job.body_html or not strip_tags(job.body_html):
-            job.refresh_text()
-        else:
-            job.set_attachments()
-
-        if job.body_html or job.send_mode == "physical":
+        job.set_attachments()
+        if job.send_mode in ("both", "physical"):
             job.count_pdf_page()
 
         # Difference between send_mode of partner and send_mode of job
         if send_mode[0] != job.send_mode:
             if "only" in job.partner_id.global_communication_delivery_preference:
                 # Send_mode chosen by the employee is not compatible with the partner
-                # So we remove it and an employee must set it manually afterwards
+                # So we remove it and an employee must set it manually afterward
                 job.send_mode = ""
 
         if job.need_call == "before_sending":
@@ -370,12 +377,6 @@ class CommunicationJob(models.Model):
         if job.auto_send:
             job.send()
         return job
-
-    def copy(self, vals=None):
-        if vals is None:
-            vals = {}
-        vals["auto_send"] = False
-        return super().copy(vals)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
@@ -418,10 +419,11 @@ class CommunicationJob(models.Model):
                 user_id = config.user_id.id
             vals["user_id"] = user_id
 
-        # if not vals.get("printer_output_tray_id"):
-        #     if printer_config.printer_output_tray_id:
-        #         vals["printer_output_tray_id"] = \
-        #             printer_config.printer_output_tray_id.id
+        if not vals.get("printer_output_tray_id"):
+            if default_config.printer_output_tray_id:
+                vals[
+                    "printer_output_tray_id"
+                ] = default_config.printer_output_tray_id.id
 
         # Check all default_vals fields
         for default_val in default_vals:
@@ -486,20 +488,7 @@ class CommunicationJob(models.Model):
             if origin == "both_print" and job.send_mode == "both":
                 job.send_mode = "digital"
                 return job._print_report()
-
-            state = job._send_mail()
-            if job.send_mode != "both":
-                job.write(
-                    {
-                        "state": state,
-                        "sent_date": state != "pending" and fields.Datetime.now(),
-                    }
-                )
-            else:
-                # Job was sent by e-mail and must now be printed
-                job.send_mode = "physical"
-                job.refresh_text()
-
+            job._send_mail()
             # if the call must be done after the sending, an activity is scheduled
             if job.need_call == "after_sending":
                 job.with_user(job.user_id.id).schedule_call()
@@ -547,33 +536,25 @@ class CommunicationJob(models.Model):
         ):
             sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
             sms_texts.append(sms_text)
-            sanitize_res = phone_validation.phone_sanitize_numbers_w_record(
-                [job.partner_id.mobile], job.partner_id
-            )
-            sanitized_numbers = [
-                info["sanitized"] for info in sanitize_res.values() if info["sanitized"]
-            ]
-            invalid_numbers = [
-                number for number, info in sanitize_res.items() if info["code"]
-            ]
-            if invalid_numbers:
-                raise UserError(
-                    _("Invalid phone numbers: %s") % ", ".join(invalid_numbers)
-                )
-            self.env["sms.sms"].create(
-                {
-                    "number": sanitized_numbers[0],
-                    "body": sms_text,
-                    "partner_id": job.partner_id.id,
-                }
-            ).send()
-            job.write(
-                {
-                    "state": "done",
-                    "sent_date": fields.Datetime.now(),
-                }
-            )
-            _logger.debug("SMS length: %s", len(sms_text))
+            try:
+                with self.env.cr.savepoint():
+                    self.env["sms.sms"].create(
+                        {
+                            "number": job.partner_id.mobile,
+                            "body": sms_text,
+                            "partner_id": job.partner_id.id,
+                        }
+                    ).send(raise_exception=True)
+                    job.write(
+                        {
+                            "state": "done",
+                            "sent_date": fields.Datetime.now(),
+                        }
+                    )
+                    _logger.debug("SMS length: %s", len(sms_text))
+            except Exception as e:
+                self.env.cr.rollback()
+                job.write({"state": "failure", "body_html": str(e)})
         return sms_texts
 
     def convert_html_for_sms(self, link_pattern, sms_medium_id):
@@ -602,11 +583,6 @@ class CommunicationJob(models.Model):
                 short_link = self.env["link.tracker"].create(
                     {
                         "url": full_link,
-                        "campaign_id": self.utm_campaign_id.id
-                        or self.env.ref(
-                            "partner_communication_compassion."
-                            "utm_campaign_communication"
-                        ).id,
                         "medium_id": sms_medium_id,
                         "source_id": source_id,
                     }
@@ -626,44 +602,7 @@ class CommunicationJob(models.Model):
     def refresh_text(self):
         self.mapped("attachment_ids").unlink()
         failed = self.set_attachments()
-        for job in self - failed:
-            lang = self.env.context.get("lang_preview", job.partner_id.lang)
-            template_id = job.email_template_id
-
-            if not template_id and job.config_id:
-                template_id = job.config_id.email_template_id
-                job.write({"email_template_id": template_id})
-
-            if template_id and job.object_ids:
-                try:
-                    fields = template_id.with_context(
-                        template_preview_lang=lang
-                    ).generate_email(job.ids, ["body_html", "subject"])
-                    job.write(
-                        {
-                            "body_html": fields[job.id]["body_html"],
-                            "subject": fields[job.id]["subject"],
-                            "state": job.state if job.state != "failure" else "pending",
-                        }
-                    )
-                except (
-                    MissingError,
-                    UserError,
-                    QWebException,
-                    TemplateSyntaxError,
-                ) as e:
-                    _logger.error(
-                        f"Failed to generate communication {str(e)}",
-                        exc_info=True,
-                    )
-                    job.env.clear()
-                    if job.state == "pending":
-                        job.write(
-                            {
-                                "state": "failure",
-                                "body_html": f"{str(type(e))} {str(e)}",
-                            }
-                        )
+        (self - failed)._compute_content()
         return True
 
     def quick_refresh(self):
@@ -676,7 +615,7 @@ class CommunicationJob(models.Model):
         values = template.with_context(template_preview_lang=lang).generate_email(
             jobs.ids, ["body_html", "subject"]
         )
-        for job, vals in zip(jobs, values.values()):
+        for job, vals in zip(jobs, values.values(), strict=True):
             job.write(
                 {
                     "body_html": vals["body_html"],
@@ -687,19 +626,19 @@ class CommunicationJob(models.Model):
 
     @api.onchange("config_id", "partner_id")
     def onchange_config_id(self):
-        if self.config_id and self.partner_id:
-            send_mode = self.config_id.get_inform_mode(self.partner_id)
-            self.send_mode = send_mode[0]
-            # set default fields
-            partner_id = None
-            if self.partner_id:
-                partner_id = self.partner_id.id
-            default_vals = {"config_id": self.config_id.id, "partner_id": partner_id}
-            self._get_default_vals(default_vals)
-            for key, val in list(default_vals.items()):
-                if key.endswith("_id"):
-                    val = getattr(self, key).browse(val)
-                setattr(self, key, val)
+        self.user_id = self.config_id.user_id or self.env.user
+        send_mode = self.config_id.get_inform_mode(self.partner_id)
+        self.send_mode = send_mode[0]
+        # set default fields
+        partner_id = None
+        if self.partner_id:
+            partner_id = self.partner_id.id
+        default_vals = {"config_id": self.config_id.id, "partner_id": partner_id}
+        self._get_default_vals(default_vals)
+        for key, val in list(default_vals.items()):
+            if key.endswith("_id"):
+                val = getattr(self, key).browse(val)
+            setattr(self, key, val)
 
     def open_related(self):
         object_ids = list(map(int, self.object_ids.split(",")))
@@ -821,7 +760,7 @@ class CommunicationJob(models.Model):
     def _send_mail(self):
         """
         Called for sending the communication by e-mail.
-        :return: state of the communication depending if the e-mail was
+        :return: state of the communication depending on if the e-mail was
                  successfully sent or not.
         """
         self.ensure_one()
@@ -830,39 +769,45 @@ class CommunicationJob(models.Model):
         email = self.email_id
         if not email:
             email_vals = {
-                "recipient_ids": [(4, partner.id)],
+                "recipient_ids": [Command.link(partner.id)],
                 "communication_config_id": self.config_id.id,
+                "body": self.body_html,
                 "body_html": self.body_html,
                 "subject": self.subject,
                 "attachment_ids": [(6, 0, self.ir_attachment_ids.ids)],
                 "auto_delete": False,
+                "model": self._name,
+                "res_id": self.id,
+                "email_from": self.user_id.email_formatted,
             }
             if "default_email_vals" in self.env.context:
                 email_vals.update(self.env.context["default_email_vals"])
 
-            email = (
-                self.env["mail.compose.message"]
-                .with_context(lang=partner.lang)
-                .create_emails(self.email_template_id, [self.id], email_vals)
-            )
+            email = self.env["mail.mail"].create(email_vals)
             self.email_id = email
-
-            try:
-                with self.env.cr.savepoint():
-                    email.send()
-            except Exception:
-                _logger.error(
-                    "Error while sending communication by email to %s ",
-                    partner.email,
-                    exc_info=True,
-                )
-                return "failure"
-
+        try:
+            with self.env.cr.savepoint():
+                if email.state != "sent":
+                    email.send(raise_exception=True)
+                if self.send_mode != "both":
+                    self.write(
+                        {
+                            "state": "done",
+                            "sent_date": fields.Datetime.now(),
+                        }
+                    )
+                else:
+                    # Job was sent by e-mail and must now be printed
+                    self.send_mode = "physical"
+                    with self.env.cr.savepoint():
+                        self.refresh_text()
+        except Exception as e:
+            _logger.error("Couldn't refresh the communication for printing")
+            self.env.cr.rollback()
+            self.write({"state": "failure", "body_html": str(e)})
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)
-
-        return "done"
 
     def _print_report(self):
         name = self.env.user.name
@@ -911,7 +856,7 @@ class CommunicationJob(models.Model):
     ):
         res = dict.fromkeys(self.ids)
         for job in self:
-            res[job.id] = job.email_template_id.reply_to
+            res[job.id] = job.reply_to
         return res
 
     def print_letter(self, print_name, **print_options):
@@ -966,7 +911,7 @@ class CommunicationJob(models.Model):
             (config_lang.printer_input_tray_id.system_name, behaviour["input_tray"])
         )
 
-        to_print = report._render_qweb_pdf(self.ids)
+        to_print = report._render_qweb_pdf(report.xml_id, res_ids=self.ids)
         printer = behaviour["printer"].with_context(lang=lang)
         if behaviour["action"] == "server" and printer:
             # Get pdf should directly send it to the printer

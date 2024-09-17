@@ -21,7 +21,6 @@ class IrActionsServer(models.Model):
     config_id = fields.Many2one(
         "partner.communication.config",
         "Communication type",
-        readonly=False,
         domain="[('model_id', '=', model_id)]",
     )
     partner_field = fields.Char("Partner field name", help="'self' for record itself")

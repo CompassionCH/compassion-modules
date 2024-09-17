@@ -5,10 +5,10 @@
         <field name="arch" type="xml">
             <form>
                 <field name="state" invisible="1" />
-                <group states="physical,both">
+                <group invisible="state not in ('physical', 'both')">
                     <field name="preview" widget="image" width="500" />
                 </group>
-                <div states="digital,both">
+                <div invisible="state not in ('digital', 'both')">
                     <field name="body_html" />
                 </div>
                 <footer>
@@ -19,7 +19,7 @@
             icon="fa-envelope"
             type="object"
             class="oe_highlight"
-            attrs="{'invisible':['|',('state', '=', 'physical'),('send_state', 'not in', 'pending')]}"
+            invisible="state == 'physical' or send_state != 'pending'"
           />
                     <button
             name="send"
@@ -27,7 +27,7 @@
             icon="fa-print"
             type="object"
             class="oe_highlight"
-            attrs="{'invisible':['|',('state', '=', 'digital'),('send_state', 'not in', 'pending')]}"
+            invisible="state == 'digital' or send_state != 'pending'"
           />
                 </footer>
             </form>

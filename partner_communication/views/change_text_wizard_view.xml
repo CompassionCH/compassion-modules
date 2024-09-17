@@ -5,7 +5,7 @@
         <field name="arch" type="xml">
             <form>
                 <field name="state" invisible="1" />
-                <div states="edit">
+                <div invisible="state != 'edit'">
                     <button
             name="get_preview"
             string="Preview"
@@ -16,7 +16,7 @@
                     <separator />
                     <field name="template_text" />
                 </div>
-                <div states="preview">
+                <div invisible="state != 'preview'">
                     <button
             name="edit"
             string="Edit"

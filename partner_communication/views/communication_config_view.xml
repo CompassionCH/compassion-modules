@@ -11,7 +11,7 @@
               name="web_ribbon"
               title="Archived"
               bg_color="bg-danger"
-              attrs="{'invisible': [('active', '=', True)]}"
+              invisible="active"
             />
                     </div>
                     <group string="General configuration" name="general_config">
@@ -34,7 +34,7 @@
                     <separator string="Custom configuration" />
                     <field
             name="default_config_ids"
-            context="{'default_config_id': active_id}"
+            context="{'default_config_id': id}"
           />
                 </sheet>
             </form>

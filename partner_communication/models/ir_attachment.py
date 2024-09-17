@@ -18,7 +18,6 @@ class IrAttachment(models.Model):
     report_id = fields.Many2one(
         "ir.actions.report",
         "Print configuration",
-        readonly=False,
     )
     enable_omr = fields.Boolean(
         string="Enable OMR",

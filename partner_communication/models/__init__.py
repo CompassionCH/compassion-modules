@@ -14,11 +14,9 @@ from . import (
     communication_config,
     communication_job,
     communication_snippet,
-    email,
     ir_actions,
     ir_attachment,
     mail_mail,
-    mail_template,
     queue_job,
     res_partner,
 )

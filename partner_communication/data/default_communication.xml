@@ -2,6 +2,9 @@
     <record id="default_communication_template" model="mail.template">
         <field name="name">Default communication</field>
         <field name="model_id" ref="model_partner_communication_job" />
+        <field name="email_from">{{ object.user_id.email_formatted }}</field>
+        <field name="use_default_to" eval="True" />
+        <field name="reply_to">{{ object.user_id.email_formatted }}</field>
     </record>
 
     <record id="default_communication" model="partner.communication.config">
@@ -13,14 +16,5 @@
     >global_communication_delivery_preference</field>
         <field name="report_id" ref="report_a4_communication" />
         <field name="email_template_id" ref="default_communication_template" />
-    </record>
-
-    <record id="phonecall_communication" model="partner.communication.config">
-        <field name="name">Phonecall</field>
-        <field name="model_id" ref="model_res_partner" />
-        <field name="send_mode">partner_preference</field>
-        <field
-      name="send_mode_pref_field"
-    >global_communication_delivery_preference</field>
     </record>
 </odoo>

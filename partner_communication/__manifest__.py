@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Other",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
@@ -39,9 +39,10 @@
         "base_report_to_printer",  # OCA/report-print-send
         "contacts",
         "queue_job",  # OCA/queue
-        "mass_mailing_sms",  # OCA/queue
+        "mass_mailing_sms",
         "utm",
         "mail",
+        "phone_validation",
     ],
     "external_dependencies": {"python": ["wand"]},
     "data": [
@@ -61,7 +62,6 @@
         "views/communication_snippet_view.xml",
         "data/default_communication.xml",
         "data/queue_job.xml",
-        # "data/assets_backend.xml",
     ],
     "qweb": [],
     "demo": ["demo/demo_data.xml"],

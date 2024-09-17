@@ -1,0 +1,1 @@
+The Partner Communication module is designed to facilitate the sending of emails and printing communications within your Odoo system. This module ensures that communication processes are streamlined and efficient.

@@ -28,12 +28,10 @@ class CommunicationAttachment(models.Model):
         "Communication",
         required=True,
         ondelete="cascade",
-        readonly=False,
     )
     report_id = fields.Many2one(
         "ir.actions.report",
         string="ID of report used by the attachment",
-        readonly=False,
     )
     report_name = fields.Char(
         required=True, help="Identifier of the report used to print"
@@ -42,7 +40,6 @@ class CommunicationAttachment(models.Model):
         "ir.attachment",
         string="Attachments",
         required=True,
-        readonly=False,
         ondelete="cascade",
     )
     data = fields.Binary(compute="_compute_data")

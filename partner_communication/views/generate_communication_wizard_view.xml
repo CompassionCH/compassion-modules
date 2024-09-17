@@ -6,11 +6,11 @@
             <form>
                 <field name="state" invisible="1" />
                 <sheet>
-                    <group states="edit" name="template">
+                    <group invisible="state != 'edit'" name="template">
                         <field name="model_id" />
                     </group>
                     <group
-            states="edit"
+            invisible="state != 'edit'"
             name="selection"
             string="Partner Selection"
           >
@@ -22,19 +22,23 @@
             />
                         <field name="partner_ids" invisible="1" />
                     </group>
-                    <group states="edit" string="Options" name="options">
+                    <group
+            invisible="state != 'edit'"
+            string="Options"
+            name="options"
+          >
                         <field name="customize_template" />
                         <field
               name="send_mode"
-              attrs="{'invisible': [('customize_template', '=', False)]}"
+              invisible="not customize_template"
             />
                         <field
               name="force_language"
-              attrs="{'invisible': [('customize_template', '=', False)]}"
+              invisible="not customize_template"
             />
                         <field name="scheduled_date" />
                     </group>
-                    <div states="generation">
+                    <div invisible="state != 'generation'">
                         <p
             >The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
                         <br />
@@ -48,7 +52,7 @@
             type="object"
             class="oe_highlight"
             icon="fa-cog"
-            states="edit"
+            invisible="state != 'edit'"
           />
                     <button
             name="reload"
@@ -56,15 +60,19 @@
             type="object"
             class="oe_highlight"
             icon="fa-refresh"
-            states="generation"
+            invisible="state != 'generation'"
           />
                     <button
             name="close"
             string="Close"
             type="object"
-            states="generation"
+            invisible="state != 'generation'"
           />
-                    <button string="Cancel" special="cancel" states="edit" />
+                    <button
+            string="Cancel"
+            special="cancel"
+            invisible="state != 'edit'"
+          />
                 </footer>
             </form>
         </field>

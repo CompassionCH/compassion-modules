@@ -8,22 +8,16 @@
             <field name="link_field_id" position="after">
                 <field
           name="config_id"
-          attrs="{'invisible': [('state', '!=', 'communication')],
-                            'required': [('state', '=', 'communication')]}"
+          invisible="state != 'communication'"
+          required="state == 'communication'"
         />
                 <field
           name="partner_field"
-          attrs="{'invisible': [('state', '!=', 'communication')],
-                            'required': [('state', '=', 'communication')]}"
+          invisible="state != 'communication'"
+          required="state == 'communication'"
         />
-                <field
-          name="send_mode"
-          attrs="{'invisible': [('state', '!=', 'communication')]}"
-        />
-                <field
-          name="auto_send"
-          attrs="{'invisible': [('state', '!=', 'communication')]}"
-        />
+                <field name="send_mode" invisible="state != 'communication'" />
+                <field name="auto_send" invisible="state != 'communication'" />
             </field>
         </field>
     </record>

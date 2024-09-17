@@ -10,7 +10,6 @@
 from . import correspondence_metadata  # isort:skip
 from . import (
     contracts,
-    contracts_report,
     correspondence,
     correspondence_page,
     correspondence_paragraph,

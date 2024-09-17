@@ -34,7 +34,6 @@ class CommunicationDefaults(models.AbstractModel):
         "ir.actions.report",
         "Print report",
         domain=[("model", "=", "partner.communication.job")],
-        readonly=False,
     )
     printer_input_tray_id = fields.Many2one("printing.tray.input", "Paper Source")
     printer_output_tray_id = fields.Many2one("printing.tray.output", "Output Bin")
@@ -90,14 +89,16 @@ class CommunicationConfig(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     source_id = fields.Many2one(
-        "utm.source", "UTM Source", required=True, ondelete="restrict", readonly=False
+        "utm.source",
+        "UTM Source",
+        required=True,
+        ondelete="restrict",
     )
     model_id = fields.Many2one(
         "ir.model",
         "Applies to",
         required=True,
         help="The kind of document with this communication can be used",
-        readonly=False,
         ondelete="cascade",
     )
     model = fields.Char(related="model_id.model", store=True, readonly=True)
@@ -115,7 +116,6 @@ class CommunicationConfig(models.Model):
             ("model", "=", "partner.communication.job"),
             ("model", "=", "crm.claim"),
         ],
-        readonly=False,
     )
     attachments_function = fields.Char(
         help="Define a function in the communication_job model that will "
@@ -259,7 +259,7 @@ class CommunicationConfig(models.Model):
                     "digital_only" in partner_mode or "digital_only" in comm_mode
                 )
         else:
-            send_mode = getattr(partner, send_mode_pref_field, "none")
+            send_mode = getattr(partner, send_mode_pref_field, "none") or "none"
             auto_mode = "auto" in send_mode or send_mode == "both"
             digital_only = "digital_only" in send_mode
 

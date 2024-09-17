@@ -93,7 +93,7 @@
           />
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="buttons">
+                    <div class="oe_button_box" name="button_box">
                         <button
               name="get_infos"
               string="Get info"

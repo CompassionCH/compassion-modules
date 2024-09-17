@@ -13,7 +13,6 @@ from . import (
     download_print_job_wizard,
     email_template_preview_view,
     generate_communication_wizard,
-    mail_compose_message,
     pdf_wizard,
     settings,
 )
