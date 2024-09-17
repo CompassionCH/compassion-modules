@@ -24,7 +24,9 @@ class SponsorshipLine(models.Model):
         readonly=True,
     )
     sponsorship_id = fields.Many2one(
-        "recurring.contract", "Sponsorship", ondelete="cascade", readonly=False
+        "recurring.contract",
+        "Sponsorship",
+        ondelete="cascade",
     )
 
     @api.model

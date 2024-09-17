@@ -24,7 +24,9 @@ class GenerateGiftWizard(models.TransientModel):
 
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one(
-        "product.product", "Gift Type", required=True, readonly=False
+        "product.product",
+        "Gift Type",
+        required=True,
     )
     contract_id = fields.Many2one("recurring.contract", "Contract")
     invoice_date = fields.Date(default=fields.Date.today)

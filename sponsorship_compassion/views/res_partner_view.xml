@@ -13,17 +13,14 @@
             <!-- Add the church-->
             <field name="uuid" position="after">
                 <field name="is_church" invisible="1" />
-                <field
-          name="church_id"
-          attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"
-        />
+                <field name="church_id" invisible="is_company or is_church" />
             </field>
 
             <!-- Replace parent position of reference and global numbers -->
             <field name="ref" position="replace" />
             <field name="type" position="before">
                 <field name="ref" string="Internal Reference" />
-                <field name="global_id" />
+                <field name="global_id" readonly="1" />
             </field>
 
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -89,7 +86,7 @@
           />
                     <div
             groups="child_compassion.group_sponsorship"
-            attrs="{'invisible' : [('contracts_paid','=', [])]}"
+            invisible="not contracts_paid"
           >
                         <h3>Sponsorships as payer only</h3>
                         <field
@@ -125,7 +122,7 @@
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
-            attrs="{'invisible' : [('contracts_correspondant','=', [])]}"
+            invisible="not contracts_correspondant"
           >
                         <h3>Sponsorships as correspondent only</h3>
                         <field
@@ -161,7 +158,7 @@
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
-            attrs="{'invisible' : [('contracts_fully_managed','=', [])]}"
+            invisible="not contracts_fully_managed"
           >
                         <h3>Sponsorships fully managed</h3>
                         <field
@@ -197,7 +194,7 @@
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
-            attrs="{'invisible' : [('other_contract_ids','=', [])]}"
+            invisible="not other_contract_ids"
           >
                         <h3>Other contracts</h3>
                         <field
@@ -235,8 +232,9 @@
             <xpath expr="//page[2]" position="after">
                 <page
           string="Members"
-          attrs="{'invisible': ['|',('is_church','=',False), ('member_ids', '=', [])]}"
+          invisible="not is_church or not member_ids"
           autofocus="autofocus"
+          groups="child_compassion.group_sponsorship"
         >
                     <group>
                         <field name="church_member_count" />
@@ -244,7 +242,7 @@
                     <field
             name="member_ids"
             mode="kanban"
-            context="{'default_church_id': active_id, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}"
+            context="{'default_church_id': id, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}"
           />
                 </page>
             </xpath>

@@ -18,14 +18,10 @@
                 <field name="contains_sponsorship" invisible="1" />
             </group>
             <field name="recurring_value" position="attributes">
-                <attribute
-          name="attrs"
-        >{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+                <attribute name="readonly">contains_sponsorship</attribute>
             </field>
             <field name="recurring_unit" position="attributes">
-                <attribute
-          name="attrs"
-        >{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+                <attribute name="readonly">contains_sponsorship</attribute>
             </field>
         </field>
     </record>

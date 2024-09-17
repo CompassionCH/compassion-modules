@@ -5,7 +5,7 @@
         <field name="model">recurring.contract.activate.wizard</field>
         <field eval="18" name="priority" />
         <field name="arch" type="xml">
-            <form string="Contract activation">
+            <form>
                 <p
         >This will mark the contract as Active, even if the partner has made no payment. Please be sure that you want to do this.</p>
                 <footer>

@@ -47,7 +47,6 @@ class SponsorshipContract(models.Model):
         string="Correspondent",
         tracking=True,
         index=True,
-        readonly=False,
     )
     partner_codega = fields.Char(
         "Partner ref", related="correspondent_id.ref", readonly=True
@@ -70,14 +69,9 @@ class SponsorshipContract(models.Model):
         "res.lang.compassion",
         "Preferred language",
         tracking=True,
-        readonly=False,
     )
-    transfer_partner_id = fields.Many2one(
-        "compassion.global.partner", "Transferred to", readonly=False
-    )
-    gmc_commitment_id = fields.Char(
-        help="Connect global ID", readonly=True, copy=False, tracking=True
-    )
+    transfer_partner_id = fields.Many2one("compassion.global.partner", "Transferred to")
+    gmc_commitment_id = fields.Char(help="Connect global ID", copy=False, tracking=True)
     hold_expiration_date = fields.Datetime(
         help="Used for setting a hold after sponsorship cancellation"
     )
@@ -96,13 +90,7 @@ class SponsorshipContract(models.Model):
     child_id = fields.Many2one(
         "compassion.child",
         "Sponsored child",
-        readonly=True,
         copy=False,
-        states={
-            "draft": [("readonly", False)],
-            "waiting": [("readonly", False)],
-            "mandate": [("readonly", False)],
-        },
         ondelete="restrict",
         tracking=True,
         index=True,
@@ -131,7 +119,6 @@ class SponsorshipContract(models.Model):
         ondelete="restrict",
         tracking=True,
         index=True,
-        readonly=False,
     )
     parent_id = fields.Many2one(
         "recurring.contract",
@@ -139,10 +126,9 @@ class SponsorshipContract(models.Model):
         tracking=True,
         index=True,
         copy=False,
-        readonly=False,
     )
     sub_sponsorship_id = fields.Many2one(
-        "recurring.contract", "sub sponsorship", readonly=True, copy=False, index=True
+        "recurring.contract", "sub sponsorship", copy=False, index=True
     )
     partner_lang = fields.Selection(
         string="Partner language", related="partner_id.lang", store=True
@@ -151,16 +137,14 @@ class SponsorshipContract(models.Model):
         "res.partner",
         "Partner",
         required=True,
-        readonly=False,
-        states={"terminated": [("readonly", True)]},
         ondelete="restrict",
         tracking=True,
     )
     gmc_payer_partner_id = fields.Many2one(
-        "res.partner", readonly=True, help="Partner synchronized with GMC as a payer."
+        "res.partner", help="Partner synchronized with GMC as a payer."
     )
     gmc_correspondent_commitment_id = fields.Char(
-        readonly=True, help="Id of the correspondent commitment.", tracking=True
+        help="Id of the correspondent commitment.", tracking=True
     )
     type = fields.Selection(
         [
@@ -175,7 +159,8 @@ class SponsorshipContract(models.Model):
         string="Sponsorship type",
     )
     group_freq = fields.Char(
-        string="Payment frequency", compute="_compute_frequency", readonly=True
+        string="Payment frequency",
+        compute="_compute_frequency",
     )
     is_first_sponsorship = fields.Boolean(
         compute="_compute_is_first_sponsorship", store=True
@@ -264,23 +249,22 @@ class SponsorshipContract(models.Model):
                     "default_code 'fund_gen' first."
                 )
             )
-
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
-        if self.company_id:
-            pricelist = self.pricelist_id
-            sponsorship_product.with_context(
-                {"pricelist": pricelist.id, "partner": self.partner_id.id}
-            )._compute_product_price()
-            gen_product.with_context(
-                {"pricelist": pricelist.id, "partner": self.partner_id.id}
-            )._compute_product_price()
-
+        pricelist = self.pricelist_id
+        sponsorship_price = pricelist._get_product_price(
+            sponsorship_product,
+            1.0,
+        )
+        gen_price = pricelist._get_product_price(
+            gen_product,
+            1.0,
+        )
         sponsorship_vals = {
             "product_id": sponsorship_product.id,
             "quantity": 0 if correspondence else 1,
-            "amount": 0 if correspondence else sponsorship_product.list_price,
-            "subtotal": 0 if correspondence else sponsorship_product.list_price,
+            "amount": 0 if correspondence else sponsorship_price,
+            "subtotal": 0 if correspondence else sponsorship_price,
         }
         res.append((0, 0, sponsorship_vals))
         # Avoid appending the GEN fund when one line already exists
@@ -289,8 +273,8 @@ class SponsorshipContract(models.Model):
             gen_vals = {
                 "product_id": gen_product.id,
                 "quantity": 0 if correspondence else 1,
-                "amount": 0 if correspondence else gen_product.list_price,
-                "subtotal": 0 if correspondence else gen_product.list_price,
+                "amount": 0 if correspondence else gen_price,
+                "subtotal": 0 if correspondence else gen_price,
             }
             res.append((0, 0, gen_vals))
         return res
@@ -364,9 +348,9 @@ class SponsorshipContract(models.Model):
                     )
 
     @api.depends("partner_id", "partner_id.ref", "child_id", "child_id.local_id")
-    def name_get(self):
+    def _compute_display_name(self):
         """Gives a friendly name for a sponsorship"""
-        result = []
+        super()._compute_display_name()
         for contract in self:
             if contract.partner_id.ref or contract.reference:
                 name = contract.partner_id.ref or contract.reference
@@ -374,8 +358,9 @@ class SponsorshipContract(models.Model):
                     name += " - " + contract.child_code
                 elif contract.contract_line_ids:
                     name += " - " + contract.contract_line_ids[0].product_id.name
-                result.append((contract.id, name))
-        return result
+                contract.display_name = name
+            else:
+                contract.display_name = "Contract"
 
     @api.depends("activation_date", "state")
     def _compute_active(self):
@@ -614,7 +599,7 @@ class SponsorshipContract(models.Model):
                 child.child_sponsored(vals["correspondent_id"])
 
         if "reading_language" in vals:
-            (self - updated_correspondents)._on_language_changed()
+            (self - updated_correspondents).upsert_sponsorship()
 
         if old_partners:
             self.mapped("partner_id").update_number_sponsorships()
@@ -843,7 +828,7 @@ class SponsorshipContract(models.Model):
 
     def contract_waiting(self):
         contracts = self.filtered(lambda c: c.type == "O")
-        super(SponsorshipContract, self).contract_waiting()
+        super().contract_waiting()
         for contract in self - contracts:
             if not contract.start_date:
                 contract.start_date = fields.Datetime.now()
@@ -902,26 +887,6 @@ class SponsorshipContract(models.Model):
                 }
             )
         return messages
-
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    def _on_language_changed(self):
-        """Update the preferred language in GMC."""
-        messages = self.upsert_sponsorship().with_context({"async_mode": False})
-        error_msg = (
-            "Error when updating sponsorship language. "
-            "You may be out of sync with GMC - please try again."
-        )
-        for message in messages:
-            try:
-                message.process_messages()
-                if "failure" in message.state:
-                    failure = message.failure_reason or error_msg
-                    self.env.user.notify_danger(failure, "Language update failed.")
-            except Exception:
-                self.env.user.notify_danger(error_msg, "Language update failed.")
-                logger.error(error_msg, exc_info=True)
 
     def _change_correspondent(self):
         self.ensure_one()
@@ -1312,9 +1277,9 @@ class SponsorshipContract(models.Model):
         )
         answer = onramp.send_message(f"beneficiaries/{global_id}/summary", "GET")
         commitments = (
-            answer.get("content").get("Commitments")
+            answer.get("content", {}).get("Commitments", [])
             if answer.get("code") == 200
-            else False
+            else []
         )
         if commitments:
             for commitment in commitments:

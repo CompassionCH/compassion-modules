@@ -4,7 +4,7 @@
         <field name="name">contract.generate.gift.form</field>
         <field name="model">generate.gift.wizard</field>
         <field name="arch" type="xml">
-            <form string="Gift Generation">
+            <form>
                 <separator string="Gift generation from contract" />
                 <group>
                     <field name="contract_id" />
@@ -38,6 +38,6 @@
         <field name="binding_model_id" ref="model_recurring_contract" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="context">{'default_contract_id': active_ids[0]}</field>
+        <field name="context">{'default_contract_id': id}</field>
     </record>
 </odoo>

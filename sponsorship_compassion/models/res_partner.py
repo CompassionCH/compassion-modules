@@ -36,7 +36,7 @@ class ResPartner(models.Model):
         default="correspondent",
         required=True,
     )
-    global_id = fields.Char(copy=False, readonly=True)
+    global_id = fields.Char(copy=False)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
@@ -88,7 +88,9 @@ class ResPartner(models.Model):
     )
     church_member_count = fields.Integer(compute="_compute_is_church", store=True)
     church_id = fields.Many2one(
-        "res.partner", "Church", domain=[("is_church", "=", True)], readonly=False
+        "res.partner",
+        "Church",
+        domain=[("is_church", "=", True)],
     )
     gmc_gender = fields.Char(compute="_compute_gmc_gender")
 

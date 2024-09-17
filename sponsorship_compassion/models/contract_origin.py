@@ -40,14 +40,14 @@ class ContractOrigin(models.Model):
         required=True,
         index=True,
     )
-    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
-    analytic_id = fields.Many2one(
-        "account.analytic.account", "Analytic Account", readonly=False
-    )
+    partner_id = fields.Many2one("res.partner", "Partner")
+    analytic_id = fields.Many2one("account.analytic.account", "Analytic Account")
     contract_ids = fields.One2many(
-        "recurring.contract", "origin_id", "Sponsorships originated", readonly=True
+        "recurring.contract",
+        "origin_id",
+        "Sponsorships originated",
     )
-    country_id = fields.Many2one("res.country", "Country", readonly=False)
+    country_id = fields.Many2one("res.country", "Country")
     other_name = fields.Char("Give details", size=128)
     won_sponsorships = fields.Integer(compute="_compute_won_sponsorships", store=True)
     conversion_rate = fields.Float(compute="_compute_won_sponsorships", store=True)

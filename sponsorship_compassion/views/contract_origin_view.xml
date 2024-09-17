@@ -4,7 +4,7 @@
         <field name="name">contract.origin.tree</field>
         <field name="model">recurring.contract.origin</field>
         <field name="arch" type="xml">
-            <tree string="Origins">
+            <tree>
                 <field name="name" />
                 <field name="type" />
                 <field name="partner_id" />
@@ -20,7 +20,7 @@
         <field name="name">contract.origin.form</field>
         <field name="model">recurring.contract.origin</field>
         <field name="arch" type="xml">
-            <form string="Origin">
+            <form>
                 <sheet>
                     <div class="oe_title">
                         <group>
@@ -32,24 +32,21 @@
                     <group>
                         <field
               name="partner_id"
-              attrs="{'required': [('type', '=', 'partner')]}"
+              required="type == 'partner'"
               options="{'create': false, 'm2o_dialog': false}"
             />
                         <field
               name="analytic_id"
-              attrs="{'invisible': [('type', 'not in', ('marketing','partner', 'event'))],
-                                                          'required': [('type', 'in', ('marketing', 'event'))]}"
+              invisible="type not in ('marketing','partner', 'event')"
+              required="type in ('marketing', 'event')"
               domain="[('partner_id.parent_id.name','=','Campaign')]"
             />
                         <field
               name="country_id"
-              attrs="{'invisible': [('type', '!=', 'transfer')],
-                                                         'required': [('type','=','transfer')]}"
+              invisible="type != 'transfer'"
+              required="type == 'transfer'"
             />
-                        <field
-              name="other_name"
-              attrs="{'invisible': [('type', '!=', 'other')]}"
-            />
+                        <field name="other_name" invisible="type != 'other'" />
                         <field name="won_sponsorships" />
                         <field name="conversion_rate" />
                     </group>
@@ -57,7 +54,7 @@
                         <page string="Originated Sponsorships">
                             <field
                 name="contract_ids"
-                attrs="{'invisible': [('contract_ids', '=', False)]}"
+                invisible="not contract_ids"
               />
                         </page>
                     </notebook>

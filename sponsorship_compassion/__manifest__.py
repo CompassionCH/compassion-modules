@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Sponsorships",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -41,9 +41,7 @@
         "child_compassion",
         "partner_personal_info",
         "web_m2x_options",  # oca/web
-        "web_notify",  # oca/web
         "partner_firstname",  # oca/partner-contact
-        "account_analytic_attribution",  # compassion-accounting
         "sale",
     ],
     "data": [
@@ -76,9 +74,7 @@
         "views/product_views.xml",
         "views/res_config_settings_view.xml",
     ],
-    "demo": [
-        "demo/demo_data.xml",
-    ],
+    "demo": ["demo/product_product.xml"],
     "installable": True,
     "auto_install": False,
     "development_status": "Production/Stable",

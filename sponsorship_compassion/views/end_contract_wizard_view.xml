@@ -8,7 +8,7 @@
                     <field name="keep_child_on_hold" />
                     <field
           name="hold_expiration_date"
-          attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"
+          invisible="not keep_child_on_hold"
         />
             </field>
         </field>

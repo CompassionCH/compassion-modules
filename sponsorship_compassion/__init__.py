@@ -13,7 +13,7 @@ from odoo.addons.message_center_compassion.tools.load_mappings import load_mappi
 from . import models, wizards
 
 
-def load_mappings(cr, registry):
+def load_mappings(env):
     path = "sponsorship_compassion/static/mappings/"
     files = [
         "anonymize_partner.json",
@@ -21,4 +21,4 @@ def load_mappings(cr, registry):
         "create_sponsorship.json",
         "upsert_partner.json",
     ]
-    load_mapping_files(cr, path, files)
+    load_mapping_files(env, path, files)

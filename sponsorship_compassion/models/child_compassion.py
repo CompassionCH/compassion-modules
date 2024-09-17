@@ -22,7 +22,6 @@ class ChildCompassion(models.Model):
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Sponsorships",
-        readonly=True,
     )
     has_been_sponsored = fields.Boolean(compute="_compute_has_been_sponsored")
 
