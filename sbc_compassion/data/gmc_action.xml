@@ -1,0 +1,41 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Letter Messages -->
+        <record id="update_letter" model="gmc.action">
+            <field name="name">UpdateLetter</field>
+            <field name="direction">in</field>
+            <field name="mapping_id" ref="correspondence_mapping" />
+            <field
+        name="description"
+      >This will update a Sponsorship Correspondence object.</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <record id="create_letter" model="gmc.action">
+            <field name="name">CreateLetter</field>
+            <field name="direction">out</field>
+            <field name="mapping_id" ref="correspondence_mapping" />
+            <field
+        name="description"
+      >This will send a new Sponsorship Correspondence to GMC.</field>
+            <field name="connect_service">communications</field>
+            <field name="connect_answer_wrapper">Responses</field>
+            <field name="success_method">enrich_letter</field>
+            <field name="request_type">POST</field>
+        </record>
+
+        <!-- Action to Connect mappings -->
+        <record id="update_letter_1_connect" model="gmc.action.connect">
+            <field
+        name="connect_schema"
+      >http://schemas.ci.org/ci/messaging/communications/2015/08/CommunicationUpdates</field>
+            <field name="action_id" ref="update_letter" />
+        </record>
+        <record id="update_letter_2_connect" model="gmc.action.connect">
+            <field
+        name="connect_schema"
+      >http://schemas.ci.org/ci/messaging/communications/2015/09/SBCStructured</field>
+            <field name="action_id" ref="update_letter" />
+        </record>
+    </data>
+</odoo>

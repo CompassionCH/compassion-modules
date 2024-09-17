@@ -1,0 +1,24 @@
+{
+  "name": "Correspondence Page",
+  "model": "correspondence.page",
+  "mapping": {
+    "OriginalPageURL": {
+      "field": "original_page_url"
+    },
+    "FinalPageURL": {
+      "field": "final_page_url"
+    },
+    "OriginalText": {
+      "field": "original_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
+    },
+    "EnglishTranslatedText": {
+      "field": "english_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
+    },
+    "TranslatedText": {
+      "field": "translated_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
+    }
+  }
+}

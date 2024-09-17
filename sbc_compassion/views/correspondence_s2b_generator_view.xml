@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+        <!-- Form Definition -->
+        <record id="s2b_generator_form" model="ir.ui.view">
+            <field name="name">correspondence.s2b.generator.form</field>
+            <field name="model">correspondence.s2b.generator</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" />
+                        <button
+            name="generate_letters"
+            string="Generate Letters"
+            states="draft,preview"
+            type="object"
+            class="oe_highlight"
+          />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="buttons">
+                            <button
+              name="preview"
+              string="Preview"
+              type="object"
+              icon="fa-search-plus"
+              class="oe_stat_button"
+              states="draft"
+            />
+                            <button
+              name="edit"
+              string="Edit"
+              type="object"
+              icon="fa-edit"
+              class="oe_stat_button"
+              states="preview"
+            />
+                            <button
+              name="open_letters"
+              states="done"
+              type="object"
+              class="oe_stat_button"
+              icon="fa-pencil"
+            >
+                                <field
+                name="nb_letters"
+                string="Open Letters"
+                widget="statinfo"
+              />
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field
+                name="name"
+                attrs="{'readonly': [('state', '!=', 'draft')]}"
+              />
+                            </h1>
+                        </div>
+                        <group context="{'default_source': 'compassion'}">
+                            <field
+              name="selection_domain"
+              widget="domain"
+              options="{'model': 'recurring.contract'}"
+              string="Sponsorships"
+              attrs="{'readonly': [('state', '!=', 'draft')]}"
+            />
+                            <field
+              name="sponsorship_ids"
+              widget="many2many_tags"
+              invisible="1"
+            />
+                            <field
+              name="template_id"
+              attrs="{'readonly': [('state', '!=', 'draft')]}"
+            />
+                            <field
+              name="language_id"
+              attrs="{'readonly': [('state', '!=', 'draft')]}"
+            />
+                            <field
+              name="month"
+              string="Filter birthday month"
+            />
+                            <field name="source" />
+                        </group>
+                        <div states="draft">
+                            <p>Available keywords:</p>
+                            <ul>
+                                <li><b>%child%</b>: Child firstname</li>
+                                <li><b>%age%</b>: Child age (3,4,5,...)</li>
+                                <li><b>%firstname%</b>: Sponsor firstname</li>
+                                <li><b>%lastname%</b>: Sponsor lastname</li>
+                            </ul>
+                        </div>
+                        <group>
+                            <field
+              name="image_ids"
+              states="draft,done"
+              attrs="{'readonly': [('state', '!=', 'draft')]}"
+              widget="many2many_binary"
+            />
+                            <field
+              name="body"
+              states="draft,done"
+              attrs="{'readonly': [('state', '!=', 'draft')]}"
+            />
+                            <field name="filename" invisible="1" />
+                            <field
+              name="preview_pdf"
+              states="preview"
+              filename="filename"
+            />
+                            <field
+              name="preview_image"
+              states="preview"
+              widget="image"
+            />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree Definition -->
+        <record id="s2b_generator_tree" model="ir.ui.view">
+            <field name="name">correspondence.s2b.generator.tree</field>
+            <field name="model">correspondence.s2b.generator</field>
+            <field name="arch" type="xml">
+                <tree decoration-primary="state == 'draft'">
+                    <field name="date" />
+                    <field name="name" />
+                    <field name="template_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action Definition -->
+        <record id="action_s2b_generator" model="ir.actions.act_window">
+            <field name="name">S2B Generator</field>
+            <field name="res_model">correspondence.s2b.generator</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_source': 'compassion'}</field>
+        </record>
+
+        <!-- Menu Definition -->
+        <menuitem
+    id="s2b_generator_menu"
+    parent="menu_correspondence"
+    name="S2B Generator"
+    action="action_s2b_generator"
+    sequence="2"
+  />
+</odoo>

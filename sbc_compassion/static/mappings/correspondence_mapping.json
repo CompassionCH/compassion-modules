@@ -1,0 +1,164 @@
+{
+  "name": "Sponsorship Correspondence",
+  "model": "correspondence",
+  "mapping": {
+    "Beneficiary": {
+      "field": "child_id.id",
+      "sub_mapping": {
+        "name": "Beneficiary Correspondence",
+        "model": "compassion.child",
+        "mapping": {
+          "Age": {
+            "field": null
+          },
+          "CompassId": {
+            "field": "compass_id"
+          },
+          "Gender": {
+            "field": null
+          },
+          "GlobalId": {
+            "field": "global_id"
+          },
+          "LocalId": {
+            "field": "local_id"
+          },
+          "Name": {
+            "field": null
+          },
+          "ObjectUrl": {
+            "field": null
+          }
+        }
+      }
+    },
+    "FontSize": {
+      "field": null
+    },
+    "Font": {
+      "field": null
+    },
+    "GlobalPartner": {
+      "to_json_conversion": "self.env.user.company_id.country_id.code"
+    },
+    "Pages": {
+      "field": "page_ids.id",
+      "sub_mapping": "Correspondence Page"
+    },
+    "Direction": {
+      "field": "direction"
+    },
+    "PrintType": {
+      "field": null
+    },
+    "RelationshipType": {
+      "field": "relationship"
+    },
+    "SBCGlobalStatus": {
+      "field": "state"
+    },
+    "Status": {
+      "field": "state"
+    },
+    "SBCTypes": {
+      "field": "communication_type_ids.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "CompassionSBCId": {
+      "field": "kit_identifier"
+    },
+    "FinalLetterURL": {
+      "field": "final_letter_url"
+    },
+    "GlobalPartnerSBCId": {
+      "field": "id",
+      "to_json_conversion": "str(odoo_value)",
+      "from_json_conversion": "int(json_value)"
+    },
+    "IsFinalLetter": {
+      "field": null
+    },
+    "IsFinalLetterArchived": {
+      "field": null
+    },
+    "IsOriginalLetterArchived": {
+      "field": null
+    },
+    "IsOriginalLetterMailed": {
+      "field": null
+    },
+    "ItemNotScannedEligible": {
+      "field": null
+    },
+    "ItemNotScannedNotEligible": {
+      "field": null
+    },
+    "NumberOfPages": {
+      "field": "nbr_pages"
+    },
+    "OriginalLanguage": {
+      "field": "original_language_id.name",
+      "search_relational_record": true
+    },
+    "OriginalLetterURL": {
+      "field": "original_letter_url"
+    },
+    "TransactionId": {
+      "field": null
+    },
+    "MarkedForRework": {
+      "field": "marked_for_rework"
+    },
+    "ReasonForRework": {
+      "field": "rework_reason"
+    },
+    "ReworkComments": {
+      "field": "rework_comments"
+    },
+    "Template": {
+      "field": "template_id.layout",
+      "search_relational_record": true
+    },
+    "TranslatedBy": {
+      "field": "translator"
+    },
+    "TranslationLanguage": {
+      "field": "translation_language_id.name",
+      "search_relational_record": true
+    },
+    "Supporter": {
+      "field": "partner_id.id",
+      "sub_mapping": {
+        "name": "Supporter mapping",
+        "model": "res.partner",
+        "mapping": {
+          "CompassConstituentId": {
+            "field": null
+          },
+          "GlobalId": {
+            "field": "global_id"
+          },
+          "ObjectUrl": {
+            "field": null
+          },
+          "PreferredName": {
+            "field": "preferred_name"
+          },
+          "Gender": {
+            "field": null
+          }
+        }
+      },
+      "search_relational_record": true,
+      "allow_relational_creation": false,
+      "search_key": "global_id"
+    },
+    "SourceSystem": {
+      "to_json_conversion": "'Odoo'"
+    },
+    "GlobalPartner.Id": {
+      "to_json_conversion": "self.env.user.company_id.country_id.code"
+    }
+  }
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Form Definition -->
+    <record id="import_letters_config_form" model="ir.ui.view">
+        <field name="name">import.letter.config.form</field>
+        <field name="model">import.letter.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="name" />
+                        <field name="template_id" />
+                    </group>
+                    <group>
+                        <field name="physical_attachments" />
+                        <field name="attachments_description" />
+                        <field name="source" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sbc_settings_form" model="ir.ui.view">
+        <field name="name">sbc.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.notification_settings"
+    />
+        <field name="arch" type="xml">
+            <xpath
+        expr="//div[@name='notification_configuration']//div[@name='right_group']"
+        position='inside'
+      >
+                <div class="row">
+                    <label
+            class="col-md-5 o_light_label"
+            for="letter_responsible"
+          />
+                    <field name="letter_responsible" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action Definition -->
+    <record id="import_letter_config_action" model="ir.actions.act_window">
+        <field name="name">Letter Import Config</field>
+        <field name="res_model">import.letter.config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Definition -->
+    <menuitem
+    id="correspondence_config"
+    name="Correspondence"
+    parent="child_compassion.menu_configuration"
+    sequence="4"
+  />
+    <menuitem
+    id="import_letter_config_menu"
+    parent="correspondence_config"
+    name="Letter Import"
+    action="import_letter_config_action"
+    sequence="3"
+  />
+</odoo>

@@ -1,0 +1,23 @@
+<odoo>
+    <!-- Channels -->
+    <record id="channel_sbc_compassion" model="queue.job.channel">
+        <field name="name">sbc_compassion</field>
+        <field name="parent_id" ref="queue_job.channel_root" />
+    </record>
+    <record id="channel_letter_import" model="queue.job.channel">
+        <field name="name">letter_import</field>
+        <field name="parent_id" ref="channel_sbc_compassion" />
+    </record>
+
+    <!-- Job functions -->
+    <record id="generate_letters_job" model="queue.job.function">
+        <field name="model_id" ref="model_correspondence_s2b_generator" />
+        <field name="method">generate_letters_job</field>
+        <field name="channel_id" ref="channel_sbc_compassion" />
+    </record>
+    <record id="run_analyze_job" model="queue.job.function">
+        <field name="model_id" ref="model_import_letters_history" />
+        <field name="method">run_analyze</field>
+        <field name="channel_id" ref="channel_letter_import" />
+    </record>
+</odoo>
