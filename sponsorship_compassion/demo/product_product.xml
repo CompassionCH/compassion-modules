@@ -4,13 +4,21 @@
         <field name="categ_id" ref="product_category_sponsorship" />
         <field name="default_code">sponsorship</field>
         <field name="list_price">42</field>
-        <field name="image_128" type="base64" file="child_compassion/static/description/icon.png" />
+        <field
+      name="image_128"
+      type="base64"
+      file="child_compassion/static/description/icon.png"
+    />
     </record>
     <record model="product.product" id="general_fund">
         <field name="name">General FUND</field>
         <field name="categ_id" ref="product_category_fund" />
         <field name="default_code">fund_gen</field>
         <field name="list_price">8</field>
-        <field name="image_128" type="base64" file="child_compassion/static/description/icon.png" />
+        <field
+      name="image_128"
+      type="base64"
+      file="child_compassion/static/description/icon.png"
+    />
     </record>
 </odoo>

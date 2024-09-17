@@ -226,7 +226,7 @@ class CorrespondenceTemplate(models.Model):
         proc.communicate()
 
         if proc.returncode != 0:
-            with open(std_err_file_path, "r", encoding="utf-8") as stderr:
+            with open(std_err_file_path, encoding="utf-8") as stderr:
                 _logger.error(
                     "FPDF returned nonzero exit code %d. stderr:\n%s",
                     proc.returncode,

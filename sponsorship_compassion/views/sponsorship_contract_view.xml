@@ -35,7 +35,7 @@
             </field>
 
             <field name="last_paid_invoice_date" position="before">
-                <field name="type" readonly="state != 'draft'"/>
+                <field name="type" readonly="state != 'draft'" />
                 <field name="group_freq" />
             </field>
 
