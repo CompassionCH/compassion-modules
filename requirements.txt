@@ -2,8 +2,12 @@ babel
 iso639-lang
 jwt
 langdetect
+PyMuPDF
 pytesseract
 pyquery
 pyquerystring
+python-magic
 pytz
+pyzbar
 timezonefinder
+wand

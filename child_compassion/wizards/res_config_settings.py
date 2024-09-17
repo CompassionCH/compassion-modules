@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import fields, models
+from odoo import Command, fields, models
 
 
 class AvailabilitySettings(models.TransientModel):
@@ -65,6 +65,7 @@ class AvailabilitySettings(models.TransientModel):
     # Users to notify after Disaster Alert
     disaster_notify_ids = fields.Many2many(
         "res.partner",
+        "disaster_notify_rel",
         string="Disaster Alert",
         domain=[
             ("user_ids", "!=", False),
@@ -82,7 +83,7 @@ class AvailabilitySettings(models.TransientModel):
         param_obj = self.env["ir.config_parameter"].sudo()
         partners = param_obj.get_param("child_compassion.disaster_notify_ids", False)
         if partners:
-            return list(map(int, partners.split(",")))
+            return [Command.set(list(map(int, partners.split(","))))]
         else:
             return False
 

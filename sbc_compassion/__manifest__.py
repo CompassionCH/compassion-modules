@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Sponsor to Participant communication",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Compassion",
     "summary": "SBC - Supporter to Participant Communication",
     "sequence": 150,

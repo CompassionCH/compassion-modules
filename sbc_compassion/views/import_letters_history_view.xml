@@ -17,7 +17,7 @@
                     <button
             name="button_save"
             string="Import Letters"
-            states="ready"
+            invisible="state != 'ready'"
             type="object"
             class="oe_highlight"
           />
@@ -25,33 +25,40 @@
             name="button_import"
             string="Load Files"
             type="object"
-            states="draft"
+            invisible="state != 'draft'"
           />
                     <button
             name="button_review"
             string="Review Imports"
             type="object"
             class="oe_highlight"
-            states="open"
+            invisible="state != 'open'"
           />
                 </header>
                 <sheet>
                     <h1>Imported Letters</h1>
                     <group>
-                        <label for="data" string="Files" states="draft" />
-                        <div states="draft">
+                        <label
+              for="data"
+              string="Files"
+              invisible="state != 'draft'"
+            />
+                        <div invisible="state != 'draft'">
                             <field name="data" widget="many2many_binary" />
                         </div>
                         <field name="config_id" widget="radio" />
                         <field name="nber_letters" />
                         <field name="physical_attachments" />
                         <field name="attachments_description" />
-                        <field name="template_id" states="draft,open" />
+                        <field
+              name="template_id"
+              invisible="state not in ('draft', 'open')"
+            />
                     </group>
                     <group>
                         <field
               name="import_line_ids"
-              states="open,pending,ready"
+              invisible="state not in ('open','pending','ready')"
               domain="[('id','=','-1')]"
             >
                             <tree
@@ -71,13 +78,13 @@
                                 <field
                   name="letter_image_preview"
                   widget='image'
-                  height="400"
+                  options="{'height': 400}"
                   string="Letter image preview"
                   readonly="1"
                 />
                             </tree>
                         </field>
-                        <field name="letters_ids" states="done" />
+                        <field name="letters_ids" invisible="state != 'done'" />
                     </group>
                 </sheet>
                 <div class="oe_chatter">

@@ -13,7 +13,7 @@ from io import BytesIO
 
 from wand.exceptions import PolicyError
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
@@ -185,7 +185,15 @@ class CorrespondenceS2bGenerator(models.Model):
         :return: True
         """
         self.with_delay().generate_letters_job()
-        return True
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Success"),
+                "message": _("Letters are being generated in background."),
+                "type": "success",
+            },
+        }
 
     def generate_letters_job(self):
         """
@@ -221,18 +229,15 @@ class CorrespondenceS2bGenerator(models.Model):
                 letters += letters.create(vals)
 
             letters.create_text_boxes()
-            self.letter_ids = letters
-
-            # If the operation succeeds, notify the user
-            message = "Letters have been successfully generated."
-            self.env.user.notify_success(message=message)
-            return self.write({"state": "done", "date": fields.Datetime.now()})
-
-        except Exception as error:
-            # If the operation fails, notify the user with the error message
-            error_message = str(error)
-            self.env.user.notify_danger(message=error_message)
-
+            self.write(
+                {
+                    "state": "done",
+                    "date": fields.Datetime.now(),
+                    "letter_ids": [Command.set(letters.ids)],
+                }
+            )
+        except Exception:
+            _logger.error("Error in S2B generator", exc_info=True)
         return True
 
     def open_letters(self):

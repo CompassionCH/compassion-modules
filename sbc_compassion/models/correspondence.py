@@ -67,7 +67,7 @@ class Correspondence(models.Model):
         "recurring.contract",
         "Sponsorship",
         required=True,
-        domain=[("state", "not in", ["draft", "cancelled"])],
+        domain=[("state", "not in", ["draft", "cancelled"]), ("child_id", "!=", False)],
         tracking=True,
         readonly=False,
     )
@@ -76,10 +76,11 @@ class Correspondence(models.Model):
         "res.partner", "Partner", readonly=True, ondelete="restrict"
     )
     child_id = fields.Many2one(
-        related="sponsorship_id.child_id", store=True, readonly=False
+        related="sponsorship_id.child_id", precompute=True, store=True, readonly=False
     )
+    avatar_128 = fields.Image(compute="_compute_avatar")
     # Field used for identifying correspondence by GMC
-    kit_identifier = fields.Char("Kit id", copy=False, readonly=True, tracking=True)
+    kit_identifier = fields.Char("Kit id", copy=False, tracking=True)
     direction = fields.Selection(
         selection=[
             ("Supporter To Beneficiary", _("Supporter to participant")),
@@ -94,7 +95,6 @@ class Correspondence(models.Model):
         "correspondence_id",
         "type_id",
         "Communication type",
-        readonly=True,
     )
     s2b_state = fields.Selection(
         [
@@ -158,19 +158,21 @@ class Correspondence(models.Model):
     # 3. Letter language, text information, attached images
     #######################################################
     supporter_languages_ids = fields.Many2many(
-        "res.lang.compassion", related="partner_id.spoken_lang_ids", readonly=True
+        "res.lang.compassion",
+        related="partner_id.spoken_lang_ids",
     )
     beneficiary_language_ids = fields.Many2many(
         "res.lang.compassion",
         compute="_compute_beneficiary_language_ids",
-        readonly=True,
     )
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        "res.lang.compassion", "Original language", readonly=False
+        "res.lang.compassion",
+        "Original language",
     )
     translation_language_id = fields.Many2one(
-        "res.lang.compassion", "Translation language", readonly=False
+        "res.lang.compassion",
+        "Translation language",
     )
     original_text = fields.Text(
         compute="_compute_original_text", inverse="_inverse_original"
@@ -184,7 +186,6 @@ class Correspondence(models.Model):
     original_attachment_ids = fields.One2many(
         "ir.attachment",
         "res_id",
-        readonly=True,
         domain=[("res_model", "=", _name)],
         string="Attached images",
         copy=True,
@@ -215,7 +216,7 @@ class Correspondence(models.Model):
         readonly=True,
         string="First letter from Participant",
     )
-    marked_for_rework = fields.Boolean(readonly=True)
+    marked_for_rework = fields.Boolean()
     rework_reason = fields.Char()
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
@@ -321,6 +322,13 @@ class Correspondence(models.Model):
                 )
             else:
                 letter.name = _("New correspondence")
+
+    def _compute_avatar(self):
+        for correspondence in self:
+            if correspondence.direction == "Supporter To Beneficiary":
+                correspondence.avatar_128 = correspondence.partner_id.avatar_128
+            else:
+                correspondence.avatar_128 = correspondence.child_id.avatar_128
 
     @api.depends("page_ids")
     def _compute_original_text(self):

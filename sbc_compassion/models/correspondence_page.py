@@ -34,9 +34,9 @@ class CorrespondencePage(models.Model):
     original_page_url = fields.Char()
     final_page_url = fields.Char()
     paragraph_ids = fields.One2many("correspondence.paragraph", "page_id", "Paragraphs")
-    original_text = fields.Text(default="", readonly=True)
-    english_text = fields.Text(default="", readonly=True)
-    translated_text = fields.Text(default="", readonly=True)
+    original_text = fields.Text(default="")
+    english_text = fields.Text(default="")
+    translated_text = fields.Text(default="")
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

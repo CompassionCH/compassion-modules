@@ -12,10 +12,10 @@ from odoo.addons.message_center_compassion.tools.load_mappings import load_mappi
 from . import controllers, models, tools, wizards
 
 
-def load_mappings(cr, registry):
+def load_mappings(env):
     path = "sbc_compassion/static/mappings/"
     files = [
         "page_mapping.json",
         "correspondence_mapping.json",
     ]
-    load_mapping_files(cr, path, files)
+    load_mapping_files(env, path, files)

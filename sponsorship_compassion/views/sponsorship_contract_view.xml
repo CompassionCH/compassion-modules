@@ -9,6 +9,15 @@
       ref="recurring_contract.view_recurring_contract_form"
     />
         <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="before">
+                <field
+          name="avatar_128"
+          widget="image"
+          class="oe_avatar"
+          invisible="not avatar_128"
+        />
+            </xpath>
+
             <xpath expr="//header" position="after">
                 <!-- Alert to warn on the gift invoice generation -->
                 <field name="is_gift_authorized" invisible="1" />
@@ -270,6 +279,44 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="recurring_contract_simple_tree">
+        <field name="name">contract simple tree</field>
+        <field name="model">recurring.contract</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <tree
+        decoration-info="state == 'draft'"
+        decoration-bf="state == 'active'"
+        decoration-success="state == 'waiting'"
+        decoration-muted="state in ('terminated','cancelled')"
+      >
+                                <button
+          name="open_contract"
+          type="object"
+          icon="fa-external-link"
+        />
+                                <field
+          name="child_id"
+          widget="many2one_avatar"
+        />
+                                <field name="preferred_name" />
+                                <field name="child_gender" optional="show" />
+                                <field name="child_age" />
+                                <field name="create_date" optional="hide" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="payment_mode_id" optional="hide" />
+                                <field name="group_freq" optional="hide" />
+                                <field
+          name="last_paid_invoice_date"
+          optional="hide"
+        />
+                                <field name="total_amount" optional="hide" />
+                                <field name="state" />
+                                <field name="type" optional="hide" />
+                            </tree>
+        </field>
+    </record>
     <!--Compassion sponsorship kanban view -->
     <record model="ir.ui.view" id="view_compassion_sponsorship_kanban">
         <field name="name">compassion.sponsorship.kanban</field>

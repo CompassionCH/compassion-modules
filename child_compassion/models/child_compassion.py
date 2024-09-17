@@ -286,6 +286,7 @@ class CompassionChild(models.Model):
     )
     household_id = fields.Many2one("compassion.household", "Household", readonly=True)
     portrait = fields.Image(compute="_compute_portrait")
+    avatar_128 = fields.Image(related="portrait", max_width=128, max_height=128)
     fullshot = fields.Image(compute="_compute_fullshot")
     child_disaster_impact_ids = fields.One2many(
         "child.disaster.impact", "child_id", "Child Disaster Impact", readonly=True

@@ -26,7 +26,7 @@
             <xpath expr="//page[1]" position="after">
                 <page
           string="Correspondence"
-          attrs="{'invisible': [('type', 'not in', ['S','SC','SWP'])]}"
+          invisible="type not in ('S','SC','SWP')"
         >
                     <group>
                         <field

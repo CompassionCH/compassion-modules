@@ -32,19 +32,18 @@
                             <separator string="Pages layout" colspan="2" />
                             <field
                 name="page_ids"
-                context="{'default_template_id': active_id}"
+                context="{'default_template_id': id}"
               />
                             <field
                 name="additional_page_id"
-                context="{'default_template_id': active_id}"
+                context="{'default_template_id': id}"
               />
                         </group>
                         <group>
                             <field
                 name="template_image"
                 widget="image"
-                width="210px"
-                height="297px"
+                options="{'width': 210}"
               />
                         </group>
                     </group>

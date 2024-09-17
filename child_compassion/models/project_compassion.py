@@ -380,7 +380,9 @@ class CompassionProject(models.Model):
         readonly=True,
     )
     last_lifecycle_id = fields.Many2one(
-        "compassion.project.ile", compute="_compute_last_lifecycle"
+        "compassion.project.ile",
+        compute="_compute_last_lifecycle",
+        search="_search_last_lifecycle_id",
     )
     status_comment = fields.Text(related="last_lifecycle_id.details")
     hold_cdsp_funds = fields.Boolean(related="last_lifecycle_id.hold_cdsp_funds")
@@ -483,6 +485,9 @@ class CompassionProject(models.Model):
             )[:1]
             # If it exists, lifecycle with type 'Reactivation' is determinant
             project.last_lifecycle_id = reactivation_lifecycle or last_info
+
+    def _search_last_lifecycle_id(self, operator, value):
+        return [("lifecycle_ids", operator, value)]
 
     @api.depends("lifecycle_ids", "lifecycle_ids.write_date")
     def _compute_suspension(self):

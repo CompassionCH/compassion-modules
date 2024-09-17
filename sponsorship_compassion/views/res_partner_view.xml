@@ -82,7 +82,7 @@
             string="New sponsorship"
             type="object"
             groups="child_compassion.group_sponsorship"
-            class="my-2 btn-primary"
+            class="my-4 btn-primary"
           />
                     <div
             groups="child_compassion.group_sponsorship"
@@ -91,34 +91,8 @@
                         <h3>Sponsorships as payer only</h3>
                         <field
               name="contracts_paid"
-              context="{'default_type': 'S'}"
-            >
-                            <tree
-                decoration-info="state == 'draft'"
-                decoration-bf="state == 'active'"
-                decoration-success="state == 'waiting'"
-                decoration-muted="state in ('terminated','cancelled')"
-              >
-                                <button
-                  name="open_contract"
-                  type="object"
-                  icon="fa-external-link"
-                />
-                                <field name="child_id" />
-                                <field name="preferred_name" />
-                                <field name="child_gender" />
-                                <field name="child_age" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
-                                <field name="group_freq" />
-                                <field name="last_paid_invoice_date" />
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <field name="type" />
-                            </tree>
-                        </field>
+              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+            />
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
@@ -127,34 +101,8 @@
                         <h3>Sponsorships as correspondent only</h3>
                         <field
               name="contracts_correspondant"
-              context="{'default_type': 'S'}"
-            >
-                            <tree
-                decoration-info="state == 'draft'"
-                decoration-bf="state == 'active'"
-                decoration-success="state == 'waiting'"
-                decoration-muted="state in ('terminated','cancelled')"
-              >
-                                <button
-                  name="open_contract"
-                  type="object"
-                  icon="fa-external-link"
-                />
-                                <field name="child_id" />
-                                <field name="preferred_name" />
-                                <field name="child_gender" />
-                                <field name="child_age" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
-                                <field name="group_freq" />
-                                <field name="last_paid_invoice_date" />
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <field name="type" />
-                            </tree>
-                        </field>
+              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+            />
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
@@ -163,34 +111,8 @@
                         <h3>Sponsorships fully managed</h3>
                         <field
               name="contracts_fully_managed"
-              context="{'default_type': 'S'}"
-            >
-                            <tree
-                decoration-info="state == 'draft'"
-                decoration-bf="state == 'active'"
-                decoration-success="state == 'waiting'"
-                decoration-muted="state in ('terminated','cancelled')"
-              >
-                                <button
-                  name="open_contract"
-                  type="object"
-                  icon="fa-external-link"
-                />
-                                <field name="child_id" />
-                                <field name="preferred_name" />
-                                <field name="child_gender" />
-                                <field name="child_age" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
-                                <field name="group_freq" />
-                                <field name="last_paid_invoice_date" />
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <field name="type" />
-                            </tree>
-                        </field>
+              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+            />
                     </div>
                     <div
             groups="child_compassion.group_sponsorship"
@@ -213,7 +135,7 @@
                   icon="fa-external-link"
                 />
                                 <field name="display_name" />
-                                <field name="create_date" />
+                                <field name="create_date" optional="hide" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="payment_mode_id" />
@@ -221,7 +143,7 @@
                                 <field name="last_paid_invoice_date" />
                                 <field name="total_amount" />
                                 <field name="state" />
-                                <field name="type" />
+                                <field name="type" optional="hide" />
                             </tree>
                         </field>
                     </div>

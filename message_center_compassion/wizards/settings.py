@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.tools import ormcache
 
 
@@ -20,6 +20,7 @@ class Settings(models.TransientModel):
     # Users to notify for translating GMC values
     translate_notify_ids = fields.Many2many(
         "res.users",
+        "translate_notify_rel",
         string="Translate missing GMC values",
         domain=[("share", "=", False)],
         compute="_compute_relation_translate_notify_ids",
@@ -51,7 +52,7 @@ class Settings(models.TransientModel):
             "message_center_compassion.translate_notify_ids", False
         )
         if partners:
-            return [(6, 0, list(map(int, partners.split(","))))]
+            return [Command.set(list(map(int, partners.split(","))))]
         else:
             return False
 

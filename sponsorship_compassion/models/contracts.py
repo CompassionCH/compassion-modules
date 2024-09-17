@@ -103,7 +103,7 @@ class SponsorshipContract(models.Model):
         "Child code", related="child_id.local_id", readonly=True, store=True
     )
     child_age = fields.Integer("Age", related="child_id.age", readonly=True)
-    child_gender = fields.Selection("Gender", related="child_id.gender", readonly=True)
+    child_gender = fields.Selection(related="child_id.gender", readonly=True)
     is_active = fields.Boolean(
         "Contract Active",
         compute="_compute_active",
@@ -188,6 +188,9 @@ class SponsorshipContract(models.Model):
         compute="_compute_is_direct_debit", help="Is paid by direct debit"
     )
     is_gift_authorized = fields.Boolean(compute="_compute_is_gift_auth")
+    avatar_128 = fields.Image(
+        related="child_id.avatar_128", max_width=128, max_height=128
+    )
 
     _sql_constraints = [
         (

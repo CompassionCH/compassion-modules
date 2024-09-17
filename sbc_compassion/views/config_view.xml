@@ -26,20 +26,16 @@
         <field name="model">res.config.settings</field>
         <field
       name="inherit_id"
-      ref="message_center_compassion.notification_settings"
+      ref="message_center_compassion.compassion_settings"
     />
         <field name="arch" type="xml">
-            <xpath
-        expr="//div[@name='notification_configuration']//div[@name='right_group']"
-        position='inside'
-      >
-                <div class="row">
-                    <label
-            class="col-md-5 o_light_label"
-            for="letter_responsible"
+            <xpath expr="//block[@name='notification_configuration']">
+                <setting id="letter_responsible_setting">
+                    <field
+            name="letter_responsible"
+            widget="many2one_avatar_user"
           />
-                    <field name="letter_responsible" />
-                </div>
+                </setting>
             </xpath>
         </field>
     </record>

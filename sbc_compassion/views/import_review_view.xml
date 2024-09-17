@@ -22,14 +22,14 @@
             name="next"
             string="Next"
             type="object"
-            attrs="{'invisible': [('progress', '=', 100.0)]}"
+            invisible="progress == 100.0"
             class="oe_inline"
           />
                     <button
             name="finish"
             string="Finish"
             type="object"
-            attrs="{'invisible': [('progress', '!=', 100.0)]}"
+            invisible="progress != 100.0"
             class="oe_inline"
           />
                 </header>
@@ -42,12 +42,12 @@
                             <field name="edit" />
                             <field
                 name="partner_id"
-                attrs="{'invisible': [('partner_id', '!=', False), ('edit', '=', False)]}"
+                invisible="partner_id and not edit"
               />
                             <field name="child_id" invisible="1" />
                             <field
                 name="sponsorship_id"
-                attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False), ('edit', '=', False)]}"
+                invisible="child_id and partner_id and not edit"
                 options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
                                              'field_color':'state',
                                              'create': false, 'create_edit': false}"

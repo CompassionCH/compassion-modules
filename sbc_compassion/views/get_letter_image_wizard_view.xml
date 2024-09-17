@@ -13,11 +13,11 @@
                         <field
               name="image_preview"
               widget="image"
-              attrs="{'invisible': ['|', ('image_preview', '=', False), ('format', 'not in', ('jpeg', 'png'))]}"
+              invisible="not image_preview or format not in ('jpeg', 'png')"
             />
                         <field
               name="image_download"
-              attrs="{'invisible': ['|', ('image_download', '=', False), ('format', 'in', ('jpeg', 'png'))]}"
+              invisible="not image_download or format not in ('jpeg', 'png')"
             />
                     </group>
                 </sheet>

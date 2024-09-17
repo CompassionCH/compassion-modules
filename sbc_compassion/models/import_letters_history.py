@@ -120,7 +120,15 @@ class ImportLettersHistory(models.Model):
     def button_import(self):
         for letters_import in self:
             letters_import.with_delay().run_analyze()
-        return True
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Success"),
+                "message": _("Letters are being imported in background."),
+                "type": "success",
+            },
+        }
 
     def button_save(self):
         # check if all the imports are OK
@@ -196,12 +204,10 @@ class ImportLettersHistory(models.Model):
 
         self.ensure_one()
         self.state = "pending"
-        self.env.user.notify_info("Letters import started...")
 
         for current_file, nb_files_to_import, filename in generator():
             logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
 
-        self.env.user.notify_success("Letters import completed !")
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
@@ -275,7 +281,6 @@ class ImportLettersHistory(models.Model):
             self._cr.commit()
         except Exception:
             message = f"Couldn't import file {file_name}"
-            self.env.user.notify_danger(message)
             logger.error(
                 message,
                 exc_info=True,
