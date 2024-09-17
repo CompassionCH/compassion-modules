@@ -120,7 +120,17 @@ class GenerateCommunicationWizard(models.TransientModel):
 
     def generate_communications(self, async_mode=True):
         """Create the communication records"""
+        processed_addresses = set()
+        send_mode = self.send_mode or self.model_id.send_mode
         for partner in self.partner_ids:
+            address = (
+                partner.email
+                if "digital" in send_mode
+                else f"{partner.zip} {partner.city}"
+            )
+            if address in processed_addresses:
+                continue
+            processed_addresses.add(address)
             vals = {
                 "partner_id": partner.id,
                 "object_ids": partner.id,

@@ -234,8 +234,7 @@ class Correspondence(models.Model):
     # Letter remote access
     ######################
     uuid = fields.Char(
-        required=True, default=lambda self: self._get_uuid(),
-        copy=False, index=True
+        required=True, default=lambda self: self._get_uuid(), copy=False, index=True
     )
     read_url = fields.Char(compute="_compute_read_url", store=True)
 
