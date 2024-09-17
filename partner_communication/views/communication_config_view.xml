@@ -1,0 +1,139 @@
+<odoo>
+    <record model="ir.ui.view" id="communication_config_form">
+        <field name="name">communication.config.form</field>
+        <field name="model">partner.communication.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="active" invisible="1" />
+                        <widget
+              name="web_ribbon"
+              title="Archived"
+              bg_color="bg-danger"
+              attrs="{'invisible': [('active', '=', True)]}"
+            />
+                    </div>
+                    <group string="General configuration" name="general_config">
+                        <group>
+                            <field name="name" />
+                            <field name="send_mode" />
+                            <field name="send_mode_pref_field" />
+                            <field name="print_if_not_email" />
+                            <field name="need_call" />
+                          <field name="forbid_merging" />
+                        </group>
+                        <group>
+                            <field name="user_id" />
+                            <field name="model_id" />
+                            <field name="email_template_id" />
+                            <field name="report_id" />
+                            <field name="attachments_function" />
+                        </group>
+                    </group>
+                    <separator string="Custom configuration" />
+                    <field
+            name="default_config_ids"
+            context="{'default_config_id': active_id}"
+          />
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="communication_config_tree">
+        <field name="name">communication.config.tree</field>
+        <field name="model">partner.communication.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="model" />
+                <field name="send_mode" />
+                <field name="print_if_not_email" />
+                <field name="need_call" />
+                <field name="email_template_id" />
+                <field name="report_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="communication_config_search">
+        <field name="name">communication.config.search</field>
+        <field name="model">partner.communication.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name" />
+                <filter
+          name="archived"
+          string="Archived"
+          domain="[('active', '=', False)]"
+        />
+                <separator />
+                <filter
+          name="communication"
+          string="Communication"
+          domain="[('email_template_id.model', '=', 'partner.communication.job')]"
+        />
+                <filter
+          name="support"
+          string="Support"
+          domain="[('email_template_id.model', '=', 'crm.claim')]"
+        />
+            </search>
+        </field>
+     </record>
+
+    <record model="ir.ui.view" id="default_config_tree">
+        <field name="name">communication.default.config.tree</field>
+        <field name="model">partner.communication.default.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="lang_id" />
+                <field name="user_id" />
+                <field name="need_call" />
+                <field name="print_if_not_email" />
+                <field name="report_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="default_config_form">
+        <field name="name">communication.default.config.form</field>
+        <field name="model">partner.communication.default.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="lang_id" />
+                        <field name="user_id" />
+                    </group>
+                    <group>
+                        <field name="print_if_not_email" />
+                        <field name="need_call" />
+                        <field name="report_id" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_communication_config" model="ir.actions.act_window">
+        <field name="name">Communication config</field>
+        <field name="res_model">partner.communication.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+    id="menu_communication_settings_root"
+    parent="menu_communication"
+    name="Settings"
+    sequence="50"
+  />
+    <menuitem
+    name="Communication Templates"
+    id="menu_communication_config"
+    parent="menu_communication_settings_root"
+    sequence="10"
+    action="action_communication_config"
+  />
+</odoo>
