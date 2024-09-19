@@ -327,6 +327,17 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             }
           );
 
+          /**
+          self.fields.user_id = new relational_fields.FieldMany2One(
+            self,
+            "user_id",
+            record,
+            {
+              mode: "edit",
+            }
+          );
+          **/
+
           self.fields.comment = new basic_fields.FieldChar(
             self,
             "comment",
@@ -391,6 +402,11 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           self.fields.sponsorship_id.appendTo(
             $create.find(".create_sponsorship_id .o_td_field")
           );
+          /**
+          self.fields.user_id.appendTo(
+            $create.find(".create_user_id .o_td_field")
+          );
+          **/
           self.fields.comment.appendTo(
             $create.find(".create_comment .o_td_field")
           );
