@@ -133,6 +133,7 @@
                   name="open_contract"
                   type="object"
                   icon="fa-external-link"
+                  string=""
                 />
                                 <field name="display_name" />
                                 <field name="create_date" optional="hide" />

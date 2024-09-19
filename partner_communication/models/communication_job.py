@@ -169,8 +169,9 @@ class CommunicationJob(models.Model):
     )
     printed_pdf_name = fields.Char(compute="_compute_print_pdfname")
 
-    printer_output_tray_id = fields.Many2one("printing.tray.output",
-                                             "Printer Output Bin")
+    printer_output_tray_id = fields.Many2one(
+        "printing.tray.output", "Printer Output Bin"
+    )
 
     sms_cost = fields.Float()
 

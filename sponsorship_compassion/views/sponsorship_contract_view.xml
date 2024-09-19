@@ -294,6 +294,7 @@
           name="open_contract"
           type="object"
           icon="fa-external-link"
+          string=""
         />
                                 <field
           name="child_id"

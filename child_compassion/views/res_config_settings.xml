@@ -50,7 +50,7 @@
                 <setting id="disaster_alert_setting">
                     <field
             name="disaster_notify_ids"
-            widget="many2many_tags_avatar"
+            widget="many2many_tags"
           />
                 </setting>
             </xpath>
