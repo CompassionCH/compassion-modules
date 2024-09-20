@@ -72,8 +72,9 @@ class PartnerForm(models.AbstractModel):
             match_update = vals.get("match_update", False)
             match_create = vals.get("match_create", True)
             if vals.get("partner_id") and match_update:
-                partner = self.env["res.partner"].browse(vals["partner_id"])
-                self.env["res.partner.match"].update_partner(partner, vals)
+                partner_vals = self._convert_vals_for_res_partner(vals)
+                partner = self.env["res.partner"].browse(partner_vals["id"])
+                self.env["res.partner.match"].update_partner(partner, partner_vals)
             if not vals.get("partner_id") and (match_update or match_create):
                 partner_vals = self._convert_vals_for_res_partner(vals)
                 vals["partner_id"] = (
