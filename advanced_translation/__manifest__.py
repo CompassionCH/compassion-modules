@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Advanced Translation",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.0.1",
     "category": "Other",
     "sequence": 150,
     "author": "Compassion CH",
@@ -37,7 +37,7 @@
     "development_status": "Production/Stable",
     "depends": ["base"],
     "external_dependencies": {
-        "python": ["babel", "pytesseract", "langdetect", "iso639-lang"]
+        "python": ["babel", "pytesseract", "langdetect", "iso639-lang", "pandas>=2.0.0"],
     },
     "data": [
         "security/ir.model.access.csv",

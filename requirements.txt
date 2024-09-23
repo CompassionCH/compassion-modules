@@ -2,6 +2,7 @@ babel
 iso639-lang
 jwt
 langdetect
+pandas >= 2.0.0
 PyMuPDF
 pytesseract
 pyquery
