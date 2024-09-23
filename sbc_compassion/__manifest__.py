@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Sponsor to Participant communication",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.0.1",
     "category": "Compassion",
     "summary": "SBC - Supporter to Participant Communication",
     "sequence": 150,
@@ -39,12 +39,11 @@
         "sponsorship_compassion",
     ],
     "external_dependencies": {
-        "bin": ["php"],
         "python": [
             "python-magic",
             "wand",
             "pyzbar",
-            "PyMuPDF",  # TODO replace by Odoo standard library
+            "PyMuPDF",  # TODO T1850 replace by Odoo standard library
         ],
     },
     "data": [
