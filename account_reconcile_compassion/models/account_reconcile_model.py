@@ -13,6 +13,7 @@ class AccountReconcileModel(models.Model):
     sponsorship_id = fields.Many2one(
         "recurring.contract", "Sponsorship", readonly=False
     )
+    user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
     only_this_month = fields.Boolean(
         default=False, help="Check to search only from the start of the month"
     )
@@ -122,6 +123,8 @@ class AccountReconcileModelLine(models.Model):
         default="self.model_id.avoid_thankyou_letter",
         readonly=True,
     )
+
+    # ADD STUFF HERE ?????
 
     @api.onchange("product_id")
     def _onchange_product_id(self):

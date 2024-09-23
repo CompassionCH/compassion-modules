@@ -178,6 +178,11 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
               ],
             },
             {
+              relation: "res.partner",
+              type: "many2one",
+              name: "user_id",
+            },
+            {
               type: "char",
               name: "comment",
             },
@@ -203,6 +208,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             },
             sponsorship_id: {
               string: _t("Sponsorship"),
+            },
+            user_id: {
+              string: "Ambassador",
             },
             comment: {
               string: _t("Gift instructions"),
@@ -327,7 +335,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             }
           );
 
-          /**
           self.fields.user_id = new relational_fields.FieldMany2One(
             self,
             "user_id",
@@ -336,7 +343,6 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
               mode: "edit",
             }
           );
-          **/
 
           self.fields.comment = new basic_fields.FieldChar(
             self,
@@ -402,11 +408,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           self.fields.sponsorship_id.appendTo(
             $create.find(".create_sponsorship_id .o_td_field")
           );
-          /**
           self.fields.user_id.appendTo(
             $create.find(".create_user_id .o_td_field")
           );
-          **/
           self.fields.comment.appendTo(
             $create.find(".create_comment .o_td_field")
           );
@@ -436,6 +440,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
     quickCreateFields: [
       "product_id",
       "sponsorship_id",
+      "user_id",
       "comment",
       "account_id",
       "amount",
@@ -642,6 +647,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
       result.sponsorship_id = prop.sponsorship_id
         ? prop.sponsorship_id.id
         : null;
+      result.user_id = prop.user_id ? prop.user_id.id : null;
       result.comment = prop.comment;
       result.avoid_thankyou_letter = prop.avoid_thankyou_letter
         ? prop.avoid_thankyou_letter

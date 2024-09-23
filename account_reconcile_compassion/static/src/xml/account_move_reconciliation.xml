@@ -115,18 +115,6 @@
                </td>
                 <td class="o_td_field" />
             </tr>
-            <tr class="create_campaign_id">
-               <td class="o_td_label">
-                   <label class="o_form_label">Campaign</label>
-               </td>
-                <td class="o_td_field" />
-            </tr>
-            <tr class="create_medium_id">
-               <td class="o_td_label">
-                   <label class="o_form_label">Medium</label>
-               </td>
-                <td class="o_td_field" />
-            </tr>
         </t>
 
         <t t-jquery="tr.create_tax_id" t-operation="replace">
