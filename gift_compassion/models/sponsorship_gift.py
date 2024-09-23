@@ -75,7 +75,7 @@ class SponsorshipGift(models.Model):
     name = fields.Char(compute="_compute_name", translate=False)
     gmc_gift_id = fields.Char(readonly=True, copy=False)
     gift_date = fields.Date(
-        compute="_compute_invoice_fields", inverse=lambda g: True, store=True
+        compute="_compute_invoice_fields", inverse="_inverse_gift_date", store=True
     )
     date_partner_paid = fields.Date(
         compute="_compute_invoice_fields", inverse=lambda g: True, store=True
@@ -215,6 +215,18 @@ class SponsorshipGift(models.Model):
             )
             gift.amount = sum(invoice_lines.mapped(lambda il: -il.amount_currency))
 
+    def _inverse_gift_date(self):
+        # Postpone message if gift date is in the future
+        for gift in self:
+            if gift.gift_date > fields.Date.today() and gift.message_id.state == "new":
+                gift.message_id.write({"state": "postponed"})
+            elif (
+                gift.gift_date <= fields.Date.today()
+                and gift.message_id.state == "postponed"
+                and gift.state != "verify"
+            ):
+                gift.message_id.write({"state": "new"})
+
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
         for gift in self:
@@ -292,6 +304,7 @@ class SponsorshipGift(models.Model):
             vals.pop("message_follower_ids")
             new_gift.write(vals)
         new_gift._create_gift_message()
+        new_gift._inverse_gift_date()
         return new_gift
 
     def _search_for_similar_pending_gifts(self, vals):

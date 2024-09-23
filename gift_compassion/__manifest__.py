@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Sponsorship Gifts",
-    "version": "14.0.1.0.2",
+    "version": "14.0.1.0.3",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -44,6 +44,7 @@
         "views/contracts_view.xml",
         "data/gift_compassion_mapping.xml",
         "data/gmc_action.xml",
+        "data/base_automation.xml",
     ],
     "demo": [],
     "installable": True,
