@@ -205,6 +205,18 @@ class SponsorshipGift(models.Model):
             )
             gift.amount = sum(invoice_lines.mapped(lambda il: -il.amount_currency))
 
+    def _inverse_gift_date(self):
+        # Postpone message if gift date is in the future
+        for gift in self:
+            if gift.gift_date > fields.Date.today() and gift.message_id.state == "new":
+                gift.message_id.write({"state": "postponed"})
+            elif (
+                gift.gift_date <= fields.Date.today()
+                and gift.message_id.state == "postponed"
+                and gift.state != "verify"
+            ):
+                gift.message_id.write({"state": "new"})
+
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
         for gift in self:
@@ -265,6 +277,7 @@ class SponsorshipGift(models.Model):
             if new_gift.invoice_line_ids:
                 new_gift.invoice_line_ids.write({"gift_id": new_gift.id})
             new_gift._create_gift_message()
+        new_gift._inverse_gift_date()
         return gifts + new_gifts
 
     def _search_for_similar_pending_gifts(self, vals):
