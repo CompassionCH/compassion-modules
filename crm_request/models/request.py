@@ -161,14 +161,15 @@ class CrmClaim(models.Model):
             "alias_id": alias.id,
             "categ_id": category_id,
             "name": subject,
-            "email_from": msg.get("from"),
+            # Our contact forms use the reply-to field for the sponsor's email
+            "email_from": msg.get("in-reply-to", msg.get("from")),
         }
 
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
             partner = match_obj._match_email(
                 {"email": email_normalize(defaults["email_from"])}
-            )
+            )[:1]
             if partner:
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
