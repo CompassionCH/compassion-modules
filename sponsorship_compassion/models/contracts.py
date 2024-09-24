@@ -908,7 +908,11 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     def _on_language_changed(self):
         """Update the preferred language in GMC."""
-        messages = self.upsert_sponsorship().with_context({"async_mode": False})
+        messages = (
+            self.filtered("gmc_commitment_id")
+            .with_context({"async_mode": False})
+            .upsert_sponsorship()
+        )
         error_msg = (
             "Error when updating sponsorship language. "
             "You may be out of sync with GMC - please try again."
