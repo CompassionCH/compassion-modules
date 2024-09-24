@@ -162,7 +162,7 @@ class CrmClaim(models.Model):
             "categ_id": category_id,
             "name": subject,
             # Our contact forms use the reply-to field for the sponsor's email
-            "email_from": msg.get("in-reply-to", msg.get("from")),
+            "email_from": msg.get("reply_to", msg.get("from")),
         }
 
         if "partner_id" not in custom_values:
