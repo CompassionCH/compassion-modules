@@ -822,8 +822,7 @@ class SponsorshipContract(models.Model):
             # Define the payer that will be sync to gmc
             contract.gmc_payer_partner_id = contract.partner_id
             # UpsertConstituent Message
-            partner = contract.correspondent_id
-            partner.upsert_constituent()
+            partners.upsert_constituent()
             contract.upsert_sponsorship()
         return True
 
