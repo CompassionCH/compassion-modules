@@ -33,7 +33,6 @@ class AccountInvoice(models.Model):
         """View children contained in invoice."""
         for invoice in self:
             children = invoice.mapped("line_ids.contract_id.child_id")
-
             if len(children) > 1:
                 num_children = len(children)
                 invoice.children = f"{num_children} children"
