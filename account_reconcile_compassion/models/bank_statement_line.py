@@ -217,7 +217,7 @@ class BankStatementLine(models.Model):
             "account_id": account_id,
             "price_unit": amount,
             "price_subtotal": amount,
-            # "user_id": mv_line_dict.get("user_id"),
+            "user_id": mv_line_dict.get("user_id"),
             "quantity": 1,
             "product_id": mv_line_dict["product_id"],
             "analytic_account_id": mv_line_dict["analytic_account_id"],
