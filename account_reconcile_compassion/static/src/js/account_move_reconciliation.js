@@ -210,7 +210,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
               string: _t("Sponsorship"),
             },
             user_id: {
-              string: "Ambassador",
+              string: _t("Ambassador"),
             },
             comment: {
               string: _t("Gift instructions"),

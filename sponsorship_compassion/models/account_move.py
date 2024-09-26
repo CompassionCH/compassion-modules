@@ -31,15 +31,8 @@ class AccountInvoice(models.Model):
 
     def _compute_children(self):
         """View children contained in invoice."""
-        def get_contract_child(contract):
-            if contract.type == "G" and False:
-                children = contract.mapped("contract_line_ids.sponsorship_id.child_id")
-                return children
-            else:
-                return contract.mapped("child_id")
-
         for invoice in self:
-            children = invoice.mapped("line_ids.contract_id").mapped(lambda c: get_contract_child(c))
+            children = invoice.mapped("line_ids.contract_id.child_id")
 
             if len(children) > 1:
                 num_children = len(children)
