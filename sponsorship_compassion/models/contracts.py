@@ -1099,12 +1099,17 @@ class SponsorshipContract(models.Model):
             # checks if there is already a gift for this year which has been cancelled
             gift_this_year = self.env["account.move.line"].search(
                 [
-                    ("partner_id", "=", contract.partner_id.id),
                     ("product_id", "=", product_id),
                     ("date", ">=", start_of_year),
                     ("date", "<=", end_of_year),
                     ("contract_id", "=", contract.id),
-                ]
+                    "|",
+                    "&",
+                    ("partner_id", "=", contract.correspondent_id.id),
+                    ("contract_id.send_gifts_to", "=", "correspondent_id"),
+                    "&",
+                    ("partner_id", "=", contract.partner_id.id),
+                    ("contract_id.send_gifts_to", "=", "partner_id"),                ]
             )
             if gift_this_year:
                 contracts -= contract
