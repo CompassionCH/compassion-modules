@@ -1109,7 +1109,8 @@ class SponsorshipContract(models.Model):
                     ("contract_id.send_gifts_to", "=", "correspondent_id"),
                     "&",
                     ("partner_id", "=", contract.partner_id.id),
-                    ("contract_id.send_gifts_to", "=", "partner_id"),                ]
+                    ("contract_id.send_gifts_to", "=", "partner_id"),
+                ]
             )
             if gift_this_year:
                 contracts -= contract
