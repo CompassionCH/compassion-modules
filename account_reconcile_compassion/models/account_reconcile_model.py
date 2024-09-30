@@ -124,8 +124,6 @@ class AccountReconcileModelLine(models.Model):
         readonly=True,
     )
 
-    # ADD STUFF HERE ?????
-
     @api.onchange("product_id")
     def _onchange_product_id(self):
         if self.product_id:
