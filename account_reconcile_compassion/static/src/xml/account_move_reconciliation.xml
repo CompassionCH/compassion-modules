@@ -109,6 +109,12 @@
                </td>
                 <td class="o_td_field" />
             </tr>
+            <tr class="create_user_id">
+               <td class="o_td_label">
+                   <label class="o_form_label">Ambassador</label>
+               </td>
+                <td class="o_td_field" />
+            </tr>
         </t>
 
         <t t-jquery="tr.create_tax_id" t-operation="replace">

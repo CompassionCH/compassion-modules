@@ -13,6 +13,7 @@ class AccountReconcileModel(models.Model):
     sponsorship_id = fields.Many2one(
         "recurring.contract", "Sponsorship", readonly=False
     )
+    user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
     only_this_month = fields.Boolean(
         default=False, help="Check to search only from the start of the month"
     )
