@@ -48,10 +48,7 @@
         position="inside"
       >
                 <setting id="disaster_alert_setting">
-                    <field
-            name="disaster_notify_ids"
-            widget="many2many_tags"
-          />
+                    <field name="disaster_notify_ids" widget="many2many_tags" />
                 </setting>
             </xpath>
         </field>
