@@ -1,0 +1,23 @@
+{
+  "name": "Commitment Creation Mapping",
+  "model": "compassion.intervention.commitment.wizard",
+  "mapping": {
+    "Intervention_ID": {
+      "field": "intervention_id.intervention_id",
+      "search_relational_record": true
+    },
+    "Commitment_Amount": {
+      "field": "commitment_amount",
+      "to_json_conversion": "str(odoo_value)"
+    },
+    "HoldID": {
+      "field": "hold_id"
+    },
+    "IsRequestedAdditionalFundCommitted": {
+      "field": "commit_to_additional_fund"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}

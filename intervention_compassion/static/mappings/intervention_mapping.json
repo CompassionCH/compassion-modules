@@ -1,0 +1,359 @@
+{
+  "name": "Intervention Compassion",
+  "model": "compassion.intervention",
+  "mapping": {
+    "FieldOffice_Name": {
+      "field": "field_office_id.name",
+      "search_relational_record": true
+    },
+    "AdditionalMarketingInformation": {
+      "field": "additional_marketing_information"
+    },
+    "ActualLocalContribution": {
+      "field": "local_contribution"
+    },
+    "EstimatedLocalContributionUSD": {
+      "field": "estimated_local_contribution"
+    },
+    "TotalActualCostsUSD": {
+      "field": "total_cost"
+    },
+    "TotalEstimatedCostsUSD": {
+      "field": "estimated_costs"
+    },
+    "InterventionCategory_Name": {
+      "field": "category_id.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "InterventionSubCategory_Name": {
+      "field": "subcategory_ids.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "ActualDurationInMonthsNbr": {
+      "field": "actual_duration"
+    },
+    "ActualEndDate": {
+      "field": "end_date"
+    },
+    "ApprovedSLACostUSD": {
+      "field": "approved_sla_costs"
+    },
+    "BackgroundInformation": {
+      "field": "background_information"
+    },
+    "CancellationReason": {
+      "field": "cancel_reason"
+    },
+    "CurrentPlannedEndDate": {
+      "field": "planned_end_date"
+    },
+    "Description": {
+      "field": "description"
+    },
+    "DisburseWithoutCommitment": {
+      "field": "disburse_without_commitment"
+    },
+    "EstimatedImpactedBeneficiaryQuantity": {
+      "field": "estimated_impacted_beneficiaries"
+    },
+    "ExpectedDurationMonths": {
+      "field": "expected_duration"
+    },
+    "FundingGlobalPartners": {
+      "field": "funding_global_partners"
+    },
+    "FundingStatus": {
+      "field": "funding_status"
+    },
+    "GlobalPartnerRequestedDeliverables": {
+      "field": "deliverable_level_3_ids.name",
+      "search_relational_record": true
+    },
+    "GlobalPartnerSelectedDeliverables": {
+      "field": "deliverable_level_2_ids.name",
+      "search_relational_record": true
+    },
+    "GlobalPartnerLevel2Selection": {
+      "field": "sla_selection_complete"
+    },
+    "ICP": {
+      "field": "fcp_ids.fcp_id",
+      "search_relational_record": true
+    },
+    "Intervention_ID": {
+      "field": "intervention_id"
+    },
+    "ImpactedBeneficiaryQuantity": {
+      "field": "impacted_beneficiaries"
+    },
+    "ImplementationRisks": {
+      "field": "implementation_risks"
+    },
+    "InitialPlannedEndDate": {
+      "field": "initial_planned_end_date"
+    },
+    "IsFieldOfficePriority": {
+      "field": "is_fo_priority"
+    },
+    "LocalContributionUSD": {
+      "field": "local_contribution"
+    },
+    "Intervention_Name": {
+      "field": "name"
+    },
+    "NotFundedImplications": {
+      "field": "not_funded_implications"
+    },
+    "Objectives": {
+      "field": "objectives"
+    },
+    "ParentInterventionName": {
+      "field": "parent_intervention_name"
+    },
+    "ProblemStatement": {
+      "field": "problem_statement"
+    },
+    "ProposedSLACostUSD": {
+      "field": "fo_proposed_sla_costs"
+    },
+    "ProposedStartDate": {
+      "field": "proposed_start_date"
+    },
+    "RecordType": {
+      "field": "type"
+    },
+    "SLAAdditionalComments": {
+      "field": "sla_comments"
+    },
+    "SLANegotiationStatus": {
+      "field": "sla_negotiation_status"
+    },
+    "ServiceLevel": {
+      "field": "service_level"
+    },
+    "Solutions": {
+      "field": "solutions"
+    },
+    "StartDate": {
+      "field": "start_date"
+    },
+    "StartNoLaterThanDate": {
+      "field": "start_no_later_than"
+    },
+    "Status": {
+      "field": "intervention_status"
+    },
+    "SuccessFactors": {
+      "field": "success_factors"
+    },
+    "TotalActualCosts": {
+      "field": "total_actual_cost_local"
+    },
+    "TotalEstimatedCost": {
+      "field": "total_estimated_cost_local"
+    },
+    "ProgramActivitiesFirstDayDate": {
+      "field": "start_date"
+    },
+    "InterventionType_Name": {
+      "field": "type"
+    },
+    "ExpirationDate": {
+      "field": "expiration_date"
+    },
+    "NotificationReason": {
+      "field": "cancel_reason"
+    },
+    "HoldAmount": {
+      "field": "hold_amount",
+      "to_json_conversion": "str(odoo_value)"
+    },
+    "PrimaryOwner": {
+      "field": "user_id.name",
+      "search_relational_record": true
+    },
+    "SecondaryOwner": {
+      "field": "secondary_owner"
+    },
+    "InterventionHold_ID": {
+      "field": "hold_id"
+    },
+    "RevisedFirstDayOfProgramActivities": {
+      "field": "start_date"
+    },
+    "TotalEstimatedCosts": {
+      "field": "estimated_costs"
+    },
+    "RevisedPlannedEndDate": {
+      "field": "end_date"
+    },
+    "AllocatedSurvivalSlots": {
+      "field": "survival_slots"
+    },
+    "ReasonsForLaunch": {
+      "field": "launch_reason"
+    },
+    "MotherAndChildrenChallenges": {
+      "field": "mother_children_challenges"
+    },
+    "DesiredCommuniyBenefits": {
+      "field": "community_benefits"
+    },
+    "FirstTimeMothersAverageAge": {
+      "field": "mother_average_age"
+    },
+    "HouseholdChildrenAverageQuantity": {
+      "field": "household_children_average"
+    },
+    "PopulationUnderAge5": {
+      "field": "under_five_population"
+    },
+    "MedicalFacilityBirthPercent": {
+      "field": "birth_medical"
+    },
+    "SpiritualActivities": {
+      "field": "spiritual_activity_ids.name",
+      "search_relational_record": true
+    },
+    "SocioEmotionalActivities": {
+      "field": "socio_activity_ids.name",
+      "search_relational_record": true
+    },
+    "CognitiveVocationalActivities": {
+      "field": "cognitive_activity_ids.name",
+      "search_relational_record": true
+    },
+    "OtherActivities": {
+      "field": "other_activities"
+    },
+    "ParentFamilyActivities": {
+      "field": "activities_for_parents"
+    },
+    "PhysicalHealthActivities": {
+      "field": "physical_activity_ids.name",
+      "search_relational_record": true
+    },
+    "Beneficiary_ProgramFieldManualExemption": {
+      "field": null
+    },
+    "Case_ApprovedDate": {
+      "field": null
+    },
+    "Case_ID": {
+      "field": null
+    },
+    "Case_RequestedDate": {
+      "field": null
+    },
+    "FieldOffice_Currency": {
+      "field": null
+    },
+    "GlobalPartner_Name": {
+      "field": null
+    },
+    "CenterBasedMinimumAge": {
+      "field": null
+    },
+    "HomeBasedMaximumAge": {
+      "field": null
+    },
+    "HomeBasedMinimumAge": {
+      "field": null
+    },
+    "ActualCostPerBeneficiaryUSD": {
+      "field": null
+    },
+    "EstimatedCostPerBeneficiaryUSD": {
+      "field": null
+    },
+    "EstimatedLocalContribution": {
+      "field": null
+    },
+    "AdditionalFundsCommitted": {
+      "field": null
+    },
+    "ApprovedDate": {
+      "field": null
+    },
+    "ContractorInformation": {
+      "field": null
+    },
+    "FiscalYear": {
+      "field": null
+    },
+    "FocusAreaNumber": {
+      "field": null
+    },
+    "FundCode": {
+      "field": null
+    },
+    "FundingStatusCommittedDate": {
+      "field": null
+    },
+    "InitiationType": {
+      "field": null
+    },
+    "IsIncludedInInterventionStrategy": {
+      "field": null
+    },
+    "LeadershipApproval": {
+      "field": null
+    },
+    "LinkToFieldOfficeStrategy": {
+      "field": null
+    },
+    "MonthFundsRequested": {
+      "field": null
+    },
+    "MonthOfNBRAllocation": {
+      "field": null
+    },
+    "ProgramType": {
+      "field": null
+    },
+    "ProposedSLACost": {
+      "field": null
+    },
+    "RequestedAdditionalFundingUSD": {
+      "field": "requested_additional_funding"
+    },
+    "SLAPreferenceSubmittedByUser": {
+      "field": null
+    },
+    "Supporter": {
+      "field": null
+    },
+    "SurvivalInterventionDesignation": {
+      "field": null
+    },
+    "TopThreeAnticipatedExpenses": {
+      "field": null
+    },
+    "SourceKitName": {
+      "field": null
+    },
+    "Supporter_GlobalID": {
+      "field": null
+    },
+    "InterventionReportingMilestone_ID": {
+      "field": null
+    },
+    "Intervention_RecordTypeID": {
+      "field": null
+    },
+    "DueDate": {
+      "field": null
+    },
+    "HoldID": {
+      "field": "hold_id"
+    },
+    "HoldReason": {
+      "field": null
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}
