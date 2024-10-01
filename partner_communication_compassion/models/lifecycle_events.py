@@ -7,6 +7,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import date
+
 from odoo import api, models
 
 
@@ -25,7 +27,8 @@ class ChildLifecycle(models.Model):
                     "partner_communication_compassion.planned_exit_notification"
                 )
                 sponsorship = lifecycle.child_id.sponsorship_ids[:1]
-                sponsorship.send_communication(communication_type, both=True)
+                if sponsorship.end_date.date() == date.today():
+                    sponsorship.send_communication(communication_type, both=True)
             else:
                 communication_type = self.env["partner.communication.config"].search(
                     [
@@ -49,14 +52,19 @@ class ChildLifecycle(models.Model):
                         object_ids = lifecycle.child_id.sponsorship_ids[:1].id
 
                     # Generate the communication
-                    sponsor = lifecycle.child_id.sponsorship_ids[:1].correspondent_id
-                    self.env["partner.communication.job"].create(
-                        {
-                            "config_id": communication_type.id,
-                            "partner_id": sponsor.id,
-                            "object_ids": object_ids,
-                        }
-                    )
+                    sponsorship = lifecycle.child_id.sponsorship_ids[:1]
+                    if (
+                        sponsorship.state == "active"
+                        or sponsorship.end_date.date() == date.today()
+                    ):
+                        sponsor = sponsorship.correspondent_id
+                        self.env["partner.communication.job"].create(
+                            {
+                                "config_id": communication_type.id,
+                                "partner_id": sponsor.id,
+                                "object_ids": object_ids,
+                            }
+                        )
         return ids
 
 
