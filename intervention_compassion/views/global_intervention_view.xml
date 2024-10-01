@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_compassion_global_intervention_tree" model="ir.ui.view">
+        <field name="name">compassion.global.intervention.tree</field>
+        <field name="model">compassion.global.intervention</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="category_id" />
+                <field name="intervention_id" />
+                <field name="field_office_id" />
+                <field name="description" />
+                <field name="proposed_start_date" />
+                <field name="total_cost" />
+                <field name="remaining_amount_to_raise" />
+                <field name="estimated_impacted_beneficiaries" />
+                <field name="funding_status" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_compassion_global_intervention_form" model="ir.ui.view">
+        <field name="name">compassion.global.intervention.form</field>
+        <field name="model">compassion.global.intervention</field>
+        <field name="arch" type="xml">
+            <form readonly="1">
+                <header>
+                    <field name="can_be_funded" invisible="1" />
+                    <button
+            name="make_hold"
+            type="object"
+            string="Put a hold"
+            class="oe_highlight"
+            attrs="{'invisible': [('can_be_funded', '=', False)]}"
+          />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                        <field name="description" />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="intervention_id" />
+                            <field name="parent_intervention" />
+                            <field name="field_office_id" />
+                            <field name="fcp_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="category_id" />
+                            <field name="subcategory_ids" widget="many2many" />
+                            <field name="type" />
+                            <field name="additional_marketing_information" />
+                        </group>
+                        <group>
+                            <field name="funding_status" />
+                            <field name="holding_partner_id" />
+                            <field
+                name="amount_on_hold"
+                widget="monetary"
+                options="{'currency_field': 'currency_usd'}"
+              />
+                            <field
+                name="remaining_amount_to_raise"
+                widget="monetary"
+                options="{'currency_field': 'currency_usd'}"
+              />
+                        </group>
+                        <group>
+                            <field name="is_fo_priority" />
+                            <field name="proposed_start_date" />
+                            <field name="start_no_later_than" />
+                        </group>
+                        <group string="Costs">
+                            <field name="disburse_without_commitment" />
+                            <field name="currency_usd" invisible="1" />
+                            <field
+                name="estimated_costs"
+                widget="monetary"
+                options="{'currency_field': 'currency_usd'}"
+              />
+                            <field
+                name="pdc_costs"
+                widget="monetary"
+                options="{'currency_field': 'currency_usd'}"
+              />
+                            <field
+                name="total_cost"
+                widget="monetary"
+                options="{'currency_field': 'currency_usd'}"
+              />
+                            <field name="estimated_impacted_beneficiaries" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_compassion_global_intervention_filter" model="ir.ui.view">
+        <field name="name">compassion.global.intervention.select</field>
+        <field name="model">compassion.global.intervention</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="category_id" />
+                <field name="subcategory_ids" widget="many2many" />
+                <field name="fcp_ids" />
+                <field name="field_office_id" />
+                <field name="funding_status" />
+                <field name="additional_marketing_information" />
+                <field name="disburse_without_commitment" />
+                <field name="type" />
+                <group expand="0" string="Group By...">
+                    <filter
+            string="Category"
+            name="category"
+            domain="[]"
+            context="{'group_by':'category_id'}"
+          />
+                    <filter
+            string="Funding Status"
+            name="funding_status"
+            domain="[]"
+            context="{'group_by':'funding_status'}"
+          />
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,40 @@
+<odoo>
+    <record id="mapping_create_commitment" model="compassion.mapping">
+        <field
+      name="model_id"
+      ref="model_compassion_intervention_commitment_wizard"
+    />
+        <field name="name">Commitment Creation Mapping</field>
+    </record>
+    <record id="mapping_global_intervention" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_global_intervention" />
+        <field name="name">Compassion Global Intervention</field>
+    </record>
+    <record id="mapping_global_intervention_search" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_global_intervention" />
+        <field name="name">Compassion Global Intervention Search</field>
+    </record>
+    <record id="mapping_intervention" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention" />
+        <field name="name">Intervention Compassion</field>
+    </record>
+    <record id="mapping_intervention_search" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention_search" />
+        <field name="name">Intervention Compassion Search</field>
+    </record>
+    <record id="mapping_hold_create" model="compassion.mapping">
+        <field
+      name="model_id"
+      ref="model_compassion_intervention_hold_wizard"
+    />
+        <field name="name">Hold Creation</field>
+    </record>
+    <record id="mapping_hold_update" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention" />
+        <field name="name">Hold Update</field>
+    </record>
+    <record id="mapping_hold_cancel" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention" />
+        <field name="name">Hold Cancel</field>
+    </record>
+</odoo>

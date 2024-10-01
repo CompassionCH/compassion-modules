@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Intervention Search Wizard Form View -->
+    <record id="view_compassion_intervention_search_form" model="ir.ui.view">
+        <field name="name">compassion.intervention.search.form</field>
+        <field name="model">compassion.intervention.search</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+            name="do_search"
+            string="Search"
+            type="object"
+            class="oe_highlight"
+          />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Let's find an Intervention!</h1>
+                    </div>
+                    <notebook>
+                        <page string="Quick Search">
+                            <group>
+                                <group>
+                                    <label
+                    for="status_chooser"
+                    string="Status selection"
+                  />
+                                    <div>
+                                        <field name="status_chooser" />
+                                        <button
+                      name="add_status"
+                      string="Add"
+                      type="object"
+                      class="oe_link oe_inline"
+                    />
+                                        <button
+                      name="reset_status"
+                      string="Reset"
+                      type="object"
+                      class="oe_link oe_inline"
+                    />
+                                        <field name="status_selected" />
+                                    </div>
+                                    <label
+                    for="type_chooser"
+                    string="Type selection"
+                  />
+                                    <div>
+                                        <field name="type_chooser" />
+                                        <button
+                      name="add_type"
+                      string="Add"
+                      type="object"
+                      class="oe_link oe_inline"
+                    />
+                                        <button
+                      name="reset_type"
+                      string="Reset"
+                      type="object"
+                      class="oe_link oe_inline"
+                    />
+                                        <field name="type_selected" />
+                                    </div>
+                                    <field
+                    name="category_id"
+                    options="{'limit': 20}"
+                  />
+                                    <field name="disburse_without_commitment" />
+                                </group>
+                                <group>
+                                    <field name="intervention_id" />
+                                    <field
+                    name="fcp_ids"
+                    widget="many2many_tags"
+                    options="{'create_edit': False, 'create': False}"
+                  />
+                                    <field
+                    name="field_office_ids"
+                    widget="many2many_tags"
+                    options="{'create_edit': False, 'create': False}"
+                  />
+                                    <field name="remaining_amount_equal" />
+                                    <field
+                    name="remaining_amount_greater"
+                    attrs="{'invisible': [('remaining_amount_equal', '!=', 0)]}"
+                  />
+                                    <field
+                    name="remaining_amount_lower"
+                    attrs="{'invisible': [('remaining_amount_equal', '!=', 0)]}"
+                  />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Advanced Search">
+                            <group>
+                                <field name="use_advanced_search" />
+                            </group>
+                            <button
+                name="compute_search"
+                type="object"
+                string="Update from quick search selection"
+                class="oe_link"
+              />
+                            <field
+                name="search_filter_ids"
+                context="{'default_model': 'compassion.global.intervention',
+                                                                      'default_mapping_name': 'search'}"
+                attrs="{'readonly': [('use_advanced_search', '=', False)]}"
+              />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_intervention_hold_wizard_form" model="ir.ui.view">
+        <field name="name">compassion.intervention.hold.form</field>
+        <field name="model">compassion.intervention.hold.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="usd" invisible="1" />
+                    <field name="intervention_id" invisible="1" />
+                    <field
+            name="hold_amount"
+            widget="monetary"
+            options="{'currency_field': 'usd'}"
+          />
+                    <field name="expiration_date" />
+                    <field name="user_id" />
+                    <field name="secondary_owner" />
+                    <field name="service_level" />
+                    <field name="next_year_opt_in" />
+                </group>
+                <footer>
+                    <button
+            name="make_hold"
+            string="Create Hold"
+            type="object"
+            class="oe_highlight"
+          />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="search_intervention" model="ir.actions.act_window">
+        <field name="name">Search Interventions</field>
+        <field name="res_model">compassion.intervention.search</field>
+        <field name="view_mode">form</field>
+        <!-- Useful for using the search mapping on global.interventions -->
+        <field name="context">{'default_mapping_name': 'search'}</field>
+    </record>
+
+    <menuitem
+    id="menu_interventions_search"
+    parent="menu_interventions_section"
+    name="Global Pool"
+    action="search_intervention"
+    sequence="20"
+    groups="group_intervention"
+  />
+</odoo>

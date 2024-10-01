@@ -1,0 +1,83 @@
+{
+  "name": "Compassion Global Intervention",
+  "model": "compassion.global.intervention",
+  "mapping": {
+    "AdditionalMarketingInformation": {
+      "field": "additional_marketing_information"
+    },
+    "Intervention_Name": {
+      "field": "name"
+    },
+    "Intervention_ID": {
+      "field": "intervention_id"
+    },
+    "InterventionType": {
+      "field": "type"
+    },
+    "GlobalPartner_ID": {
+      "field": "holding_partner_id.code",
+      "search_relational_record": true
+    },
+    "RemainingAmountToRaise": {
+      "field": "remaining_amount_to_raise"
+    },
+    "FundingStatus": {
+      "field": "funding_status"
+    },
+    "PlannedSponsorshipBeneficiariesNumber": {
+      "field": "estimated_impacted_beneficiaries"
+    },
+    "StartNoLaterThanDate": {
+      "field": "start_no_later_than"
+    },
+    "Description": {
+      "field": "description"
+    },
+    "DisburseWithoutCommitment": {
+      "field": "disburse_without_commitment"
+    },
+    "InterventionCategory": {
+      "field": "category_id.name",
+      "search_relational_record": true
+    },
+    "InterventionSubCategory_Name": {
+      "field": "subcategory_ids.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "ProposedStartDate": {
+      "field": "proposed_start_date"
+    },
+    "ICP_ID": {
+      "field": "fcp_ids.fcp_id",
+      "search_relational_record": true,
+      "from_json_conversion": "json_value and json_value.split(',')"
+    },
+    "FieldOffice_ID": {
+      "field": "field_office_id.field_office_id",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "IsFieldOfficePriority": {
+      "field": "is_fo_priority"
+    },
+    "FundCode": {
+      "field": null
+    },
+    "TotalInterventionAmount": {
+      "field": "total_cost"
+    },
+    "TotalEstimatedCosts": {
+      "field": "estimated_costs"
+    },
+    "TotalPDCCost": {
+      "field": "pdc_costs"
+    },
+    "AdditionalRequestedFunding": {
+      "field": null
+    },
+    "ParentInterventionID": {
+      "field": "parent_intervention"
+    }
+  }
+}
