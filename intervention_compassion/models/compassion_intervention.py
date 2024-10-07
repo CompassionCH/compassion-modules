@@ -48,8 +48,8 @@ class CompassionIntervention(models.Model):
         default="on_hold",
         tracking=True,
     )
-    type = fields.Selection(store=True, readonly=True)
-    parent_intervention_name = fields.Char(string="Parent Intervention", readonly=True)
+    type = fields.Selection(store=True)
+    parent_intervention_name = fields.Char(string="Parent Intervention")
     intervention_status = fields.Selection(
         [
             ("Approved", _("Approved")),
@@ -59,17 +59,15 @@ class CompassionIntervention(models.Model):
             ("Rejected", _("Rejected")),
             ("Submitted", _("Submitted")),
         ],
-        readonly=True,
     )
-    funding_global_partners = fields.Char(readonly=True)
-    cancel_reason = fields.Char(readonly=True)
+    funding_global_partners = fields.Char()
+    cancel_reason = fields.Char()
     fcp_ids = fields.Many2many(
         "compassion.project",
         "fcp_interventions",
         "intervention_id",
         "fcp_id",
         string="FCPs",
-        readonly=True,
     )
     product_template_id = fields.Many2one(
         "product.template", "Linked product", readonly=False
@@ -78,7 +76,6 @@ class CompassionIntervention(models.Model):
         "compassion.intervention.subcategory",
         "compassion_intervention_subcategory_rel",
         string="Subcategory",
-        readonly=True,
     )
 
     # Multicompany
@@ -93,27 +90,23 @@ class CompassionIntervention(models.Model):
 
     # Schedule Information
     ######################
-    start_date = fields.Date(help="Actual start date", readonly=True)
-    actual_duration = fields.Integer(help="Actual duration in months", readonly=True)
-    initial_planned_end_date = fields.Date(readonly=True)
-    planned_end_date = fields.Date(readonly=True, tracking=True)
-    end_date = fields.Date(help="Actual end date", readonly=True, tracking=True)
+    start_date = fields.Date(help="Actual start date")
+    actual_duration = fields.Integer(help="Actual duration in months")
+    initial_planned_end_date = fields.Date()
+    planned_end_date = fields.Date(tracking=True)
+    end_date = fields.Date(help="Actual end date", tracking=True)
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
-    estimated_local_contribution = fields.Float(readonly=True)
+    estimated_local_contribution = fields.Float()
     impacted_beneficiaries = fields.Integer(
-        help="Actual number of impacted beneficiaries", readonly=True
+        help="Actual number of impacted beneficiaries"
     )
-    local_contribution = fields.Float(readonly=True, help="Actual local contribution")
-    commitment_amount = fields.Float(readonly=True, tracking=True)
-    commited_percentage = fields.Float(readonly=True, tracking=True, default=100.0)
-    total_expense = fields.Char(
-        "Total expense", compute="_compute_move_line", readonly=True
-    )
-    total_income = fields.Char(
-        "Total income", compute="_compute_move_line", readonly=True
-    )
+    local_contribution = fields.Float(help="Actual local contribution")
+    commitment_amount = fields.Float(tracking=True)
+    commited_percentage = fields.Float(tracking=True, default=100.0)
+    total_expense = fields.Char("Total expense", compute="_compute_move_line")
+    total_income = fields.Char("Total income", compute="_compute_move_line")
     total_amendment = fields.Float()
     total_actual_cost_local = fields.Float("Total cost (local currency)")
     total_estimated_cost_local = fields.Float("Estimated costs (local currency)")
@@ -125,13 +118,13 @@ class CompassionIntervention(models.Model):
 
     # Intervention Details Information
     ##################################
-    problem_statement = fields.Text(readonly=True)
-    background_information = fields.Text(readonly=True)
-    objectives = fields.Text(readonly=True)
-    success_factors = fields.Text(readonly=True)
-    solutions = fields.Text(readonly=True)
-    not_funded_implications = fields.Text(readonly=True)
-    implementation_risks = fields.Text(readonly=True)
+    problem_statement = fields.Text()
+    background_information = fields.Text()
+    objectives = fields.Text()
+    success_factors = fields.Text()
+    solutions = fields.Text()
+    not_funded_implications = fields.Text()
+    implementation_risks = fields.Text()
 
     # Service Level Negotiation
     ###########################
@@ -144,15 +137,14 @@ class CompassionIntervention(models.Model):
             ("GP Rejected Costs", _("GP Rejected Costs")),
             ("FO Rejected GP Preferences", _("FO Rejected GP Preferences")),
         ],
-        readonly=True,
         tracking=True,
     )
-    sla_comments = fields.Char(readonly=True)
+    sla_comments = fields.Char()
     fo_proposed_sla_costs = fields.Float(
-        readonly=True, help="The costs proposed by the National Office for the SLA"
+        help="The costs proposed by the National Office for the SLA"
     )
     approved_sla_costs = fields.Float(
-        readonly=True, help="The final approved Service Level Agreement Cost"
+        help="The final approved Service Level Agreement Cost"
     )
     deliverable_level_1_ids = fields.Many2many(
         "compassion.intervention.deliverable",
@@ -169,7 +161,6 @@ class CompassionIntervention(models.Model):
         "intervention_id",
         "deliverable_id",
         string="Level 2 Deliverables",
-        readonly=True,
     )
     deliverable_level_3_ids = fields.Many2many(
         "compassion.intervention.deliverable",
@@ -177,13 +168,12 @@ class CompassionIntervention(models.Model):
         "intervention_id",
         "deliverable_id",
         string="Level 3 Deliverables",
-        readonly=True,
     )
     sla_selection_complete = fields.Boolean()
 
     # Hold information
     ##################
-    hold_id = fields.Char(readonly=True)
+    hold_id = fields.Char()
     service_level = fields.Selection(
         [
             ("Level 1", _("Level 1")),
@@ -191,93 +181,52 @@ class CompassionIntervention(models.Model):
             ("Level 3", _("Level 3")),
         ],
         required=True,
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
     )
     hold_amount = fields.Float(
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
         tracking=True,
     )
-    expiration_date = fields.Date(
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
-    )
-    next_year_opt_in = fields.Boolean(
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
-    )
+    expiration_date = fields.Date()
+    next_year_opt_in = fields.Boolean()
     user_id = fields.Many2one(
         "res.users",
         "Primary owner",
         domain=[("share", "=", False)],
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
         tracking=True,
     )
-    secondary_owner = fields.Char(
-        readonly=True,
-        states={
-            "on_hold": [("readonly", False)],
-            "sla": [("readonly", False)],
-        },
-    )
+    secondary_owner = fields.Char()
 
     # Survival Information
     ######################
-    survival_slots = fields.Integer(readonly=True)
-    launch_reason = fields.Char(readonly=True)
-    mother_children_challenges = fields.Char(
-        "Challenges for mother and children", readonly=True
-    )
-    community_benefits = fields.Char(readonly=True)
-    mother_average_age = fields.Integer("Avg age of first-time mother", readonly=True)
-    household_children_average = fields.Integer(
-        "Avg of children per household", readonly=True
-    )
-    under_five_population = fields.Char("% population under age 5", readonly=True)
-    birth_medical = fields.Char("% births in medical facility", readonly=True)
+    survival_slots = fields.Integer()
+    launch_reason = fields.Char()
+    mother_children_challenges = fields.Char("Challenges for mother and children")
+    community_benefits = fields.Char()
+    mother_average_age = fields.Integer("Avg age of first-time mother")
+    household_children_average = fields.Integer("Avg of children per household")
+    under_five_population = fields.Char("% population under age 5")
+    birth_medical = fields.Char("% births in medical facility")
     spiritual_activity_ids = fields.Many2many(
         "fcp.spiritual.activity",
         "intervention_spiritual_activities",
         string="Spiritual activities",
-        readonly=True,
     )
     cognitive_activity_ids = fields.Many2many(
         "fcp.cognitive.activity",
         "intervention_cognitive_activities",
         string="Cognitive activities",
-        readonly=True,
     )
     physical_activity_ids = fields.Many2many(
         "fcp.physical.activity",
         "intervention_physical_activities",
         string="Physical activities",
-        readonly=True,
     )
     socio_activity_ids = fields.Many2many(
         "fcp.sociological.activity",
         "intervention_socio_activities",
         string="Sociological activities",
-        readonly=True,
     )
-    activities_for_parents = fields.Char(readonly=True)
-    other_activities = fields.Char(readonly=True)
+    activities_for_parents = fields.Char()
+    other_activities = fields.Char()
 
     def _compute_level1_deliverables(self):
         for intervention in self:

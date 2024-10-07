@@ -16,14 +16,14 @@
             name="create_commitment"
             string="Commit Funds"
             type="object"
-            states="on_hold"
+            invisible="state != 'on_hold'"
             class="oe_highlight"
           />
                     <button
             name="cancel_hold"
             string="Cancel Hold"
             type="object"
-            attrs="{'invisible': [('hold_id', '=', False)]}"
+            invisible="not hold_id"
           />
                 </header>
                 <sheet>
@@ -47,6 +47,7 @@
                 name="total_expense"
                 string="Expenses"
                 widget="statinfo"
+                readonly="1"
               />
                         </button>
 
@@ -60,6 +61,7 @@
                 name="total_income"
                 string="Income"
                 widget="statinfo"
+                readonly="1"
               />
                         </button>
 
@@ -81,31 +83,51 @@
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" />
+                            <field name="name" readonly="1" />
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="intervention_id" />
-                            <field name="field_office_id" />
-                            <field name="fcp_ids" widget="many2many_tags" />
-                            <field name="additional_marketing_information" />
-                            <field name="category_id" />
+                            <field name="intervention_id" readonly="1" />
+                            <field name="field_office_id" readonly="1" />
+                            <field
+                name="fcp_ids"
+                widget="many2many_tags"
+                readonly="1"
+              />
+                            <field
+                name="additional_marketing_information"
+                readonly="1"
+              />
+                            <field name="category_id" readonly="1" />
                             <field
                 name="subcategory_ids"
                 domain="[('category_ids', '=', category_id)]"
+                readonly="1"
               />
-                            <field name="type" />
-                            <field name="parent_intervention_name" />
+                            <field name="type" readonly="1" />
+                            <field
+                name="parent_intervention_name"
+                readonly="1"
+              />
                         </group>
                         <group>
-                            <field name="funding_status" />
-                            <field name="intervention_status" />
-                            <field name="disburse_without_commitment" />
+                            <field name="funding_status" readonly="1" />
+                            <field name="intervention_status" readonly="1" />
+                            <field
+                name="disburse_without_commitment"
+                readonly="1"
+              />
                             <field name='company_id' />
-                            <field name="funding_global_partners" />
-                            <field name="service_level" />
-                            <field name="cancel_reason" />
+                            <field
+                name="funding_global_partners"
+                readonly="1"
+              />
+                            <field
+                name="service_level"
+                readonly="state not in ('on_hold', 'sla')"
+              />
+                            <field name="cancel_reason" readonly="1" />
                             <field name="product_template_id" />
                         </group>
                     </group>
@@ -114,18 +136,32 @@
                             <group>
                                 <group
                   string="Hold Information"
-                  attrs="{'invisible': [('hold_id', '=', False)]}"
+                  invisible="not hold_id"
                 >
-                                    <field name="hold_id" />
+                                    <field name="hold_id" readonly="1" />
                                     <field
                     name="hold_amount"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="state not in ('on_hold', 'sla')"
                   />
-                                    <field name="expiration_date" />
-                                    <field name="next_year_opt_in" />
-                                    <field name="user_id" />
-                                    <field name="secondary_owner" />
+                  />
+                                    <field
+                    name="expiration_date"
+                    readonly="state not in ('on_hold', 'sla')"
+                  /> />
+                                    <field
+                    name="next_year_opt_in"
+                    readonly="state not in ('on_hold', 'sla')"
+                  />
+                                    <field
+                    name="user_id"
+                    readonly="state not in ('on_hold', 'sla')"
+                  />
+                                    <field
+                    name="secondary_owner"
+                    readonly="state not in ('on_hold', 'sla')"
+                  />
                                 </group>
                                 <group string="Previsions">
                                     <field name="currency_usd" invisible="1" />
@@ -133,6 +169,7 @@
                     name="estimated_costs"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="total_estimated_cost_local"
@@ -141,11 +178,13 @@
                   />
                                     <field
                     name="estimated_impacted_beneficiaries"
+                    readonly="1"
                   />
                                     <field
                     name="estimated_local_contribution"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="local_currency_id"
@@ -157,31 +196,39 @@
                     name="total_cost"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="total_actual_cost_local"
                     widget="monetary"
                     options="{'currency_field': 'local_currency_id'}"
                   />
-                                    <field name="impacted_beneficiaries" />
+                                    <field
+                    name="impacted_beneficiaries"
+                    readonly="1"
+                  />
                                     <field
                     name="local_contribution"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="requested_additional_funding"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="commitment_amount"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    readonly="1"
                   />
                                     <field
                     name="commited_percentage"
                     widget="progressbar"
+                    readonly="1"
                   />
                                     <field
                     name="total_amendment"
@@ -194,34 +241,57 @@
                         <page string="Schedule">
                             <group>
                                 <group string="Start">
-                                    <field name="is_fo_priority" />
-                                    <field name="proposed_start_date" />
-                                    <field name="start_no_later_than" />
-                                    <field name="start_date" />
-                                    <field name="expected_duration" />
-                                    <field name="actual_duration" />
+                                    <field name="is_fo_priority" readonly="1" />
+                                    <field
+                    name="proposed_start_date"
+                    readonly="1"
+                  />
+                                    <field
+                    name="start_no_later_than"
+                    readonly="1"
+                  />
+                                    <field name="start_date" readonly="1" />
+                                    <field
+                    name="expected_duration"
+                    readonly="1"
+                  />
+                                    <field
+                    name="actual_duration"
+                    readonly="1"
+                  />
                                 </group>
                                 <group string="End">
-                                    <field name="initial_planned_end_date" />
-                                    <field name="planned_end_date" />
-                                    <field name="end_date" />
+                                    <field
+                    name="initial_planned_end_date"
+                    readonly="1"
+                  />
+                                    <field
+                    name="planned_end_date"
+                    readonly="1"
+                  />
+                                    <field name="end_date" readonly="1" />
                                 </group>
                             </group>
                         </page>
                         <page string="SLA Negotiation">
                             <group>
-                                <field name="sla_negotiation_status" />
+                                <field
+                  name="sla_negotiation_status"
+                  readonly="1"
+                />
                                 <field
                   name="fo_proposed_sla_costs"
                   widget="monetary"
                   options="{'currency_field': 'currency_usd'}"
+                  readonly="1"
                 />
                                 <field
                   name="approved_sla_costs"
                   widget="monetary"
                   options="{'currency_field': 'currency_usd'}"
+                  readonly="1"
                 />
-                                <field name="sla_comments" />
+                                <field name="sla_comments" readonly="1" />
                             </group>
                             <group>
                                 <field
@@ -231,12 +301,14 @@
                                 <field
                   name="deliverable_level_2_ids"
                   widget="many2many_tags"
-                  attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"
+                  invisible="service_level != 'Level 2'"
+                  readonly="1"
                 />
                                 <field
                   name="deliverable_level_3_ids"
                   widget="many2many_tags"
-                  attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"
+                  invisible="service_level != 'Level 3'"
+                  readonly="1"
                 />
                             </group>
                         </page>
@@ -246,72 +318,106 @@
                                     <field
                     name="problem_statement"
                     widget="html"
+                    readonly="1"
                   />
                                     <field
                     name="background_information"
                     widget="html"
+                    readonly="1"
                   />
-                                    <field name="objectives" widget="html" />
+                                    <field
+                    name="objectives"
+                    widget="html"
+                    readonly="1"
+                  />
                                     <field
                     name="success_factors"
                     widget="html"
+                    readonly="1"
                   />
                                 </group>
                                 <group>
-                                    <field name="solutions" widget="html" />
+                                    <field
+                    name="solutions"
+                    widget="html"
+                    readonly="1"
+                  />
                                     <field
                     name="not_funded_implications"
                     widget="html"
+                    readonly="1"
                   />
                                     <field
                     name="implementation_risks"
                     widget="html"
+                    readonly="1"
                   />
                                 </group>
                                 <group
-                  attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}"
+                  invisible="type not in ('Survival', 'Survival FY Details')"
                 >
-                                    <field name="survival_slots" />
-                                    <field name="launch_reason" widget="html" />
+                                    <field name="survival_slots" readonly="1" />
+                                    <field
+                    name="launch_reason"
+                    widget="html"
+                    readonly="1"
+                  />
                                     <field
                     name="mother_children_challenges"
                     widget="html"
+                    readonly="1"
                   />
                                     <field
                     name="community_benefits"
                     widget="html"
+                    readonly="1"
                   />
-                                    <field name="mother_average_age" />
-                                    <field name="household_children_average" />
-                                    <field name="under_five_population" />
-                                    <field name="birth_medical" />
+                                    <field
+                    name="mother_average_age"
+                    readonly="1"
+                  />
+                                    <field
+                    name="household_children_average"
+                    readonly="1"
+                  />
+                                    <field
+                    name="under_five_population"
+                    readonly="1"
+                  />
+                                    <field name="birth_medical" readonly="1" />
                                 </group>
                                 <group
-                  attrs="{'invisible': [('type', 'not in', ('Survival', 'Survival FY Details'))]}"
+                  invisible="type not in ('Survival', 'Survival FY Details')"
                 >
                                     <field
                     name="spiritual_activity_ids"
                     widget="many2many_tags"
+                    readonly="1"
                   />
                                     <field
                     name="cognitive_activity_ids"
                     widget="many2many_tags"
+                    readonly="1"
                   />
                                     <field
                     name="physical_activity_ids"
                     widget="many2many_tags"
+                    readonly="1"
                   />
                                     <field
                     name="socio_activity_ids"
                     widget="many2many_tags"
+                    readonly="1"
                   />
                                     <field
                     name="activities_for_parents"
                     widget="html"
+                    readonly="1"
                   />
                                     <field
                     name="other_activities"
                     widget="html"
+                    readonly="1"
                   />
                                 </group>
                             </group>
@@ -415,9 +521,7 @@
             options="{'currency_field': 'usd'}"
           />
                 </group>
-                <div
-          attrs="{'invisible': [('additional_fund_amount', '=', 0)]}"
-        >
+                <div invisible="additional_fund_amount == 0">
                     <p
           >Additional fundings were requested by the National Office for this Intervention:</p>
                     <group>

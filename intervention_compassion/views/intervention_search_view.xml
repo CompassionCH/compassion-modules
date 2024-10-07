@@ -40,7 +40,10 @@
                       type="object"
                       class="oe_link oe_inline"
                     />
-                                        <field name="status_selected" />
+                                        <field
+                      name="status_selected"
+                      readonly="1"
+                    />
                                     </div>
                                     <label
                     for="type_chooser"
@@ -60,7 +63,10 @@
                       type="object"
                       class="oe_link oe_inline"
                     />
-                                        <field name="type_selected" />
+                                        <field
+                      name="type_selected"
+                      readonly="1"
+                    />
                                     </div>
                                     <field
                     name="category_id"
@@ -83,11 +89,11 @@
                                     <field name="remaining_amount_equal" />
                                     <field
                     name="remaining_amount_greater"
-                    attrs="{'invisible': [('remaining_amount_equal', '!=', 0)]}"
+                    invisible="remaining_amount_equal != 0"
                   />
                                     <field
                     name="remaining_amount_lower"
-                    attrs="{'invisible': [('remaining_amount_equal', '!=', 0)]}"
+                    invisible="remaining_amount_equal != 0"
                   />
                                 </group>
                             </group>
@@ -106,7 +112,7 @@
                 name="search_filter_ids"
                 context="{'default_model': 'compassion.global.intervention',
                                                                       'default_mapping_name': 'search'}"
-                attrs="{'readonly': [('use_advanced_search', '=', False)]}"
+                readonly="not use_advanced_search"
               />
                         </page>
                     </notebook>
