@@ -45,3 +45,9 @@ class AccountJournal(models.Model):
             move_lines.reconcile("manual")
         self.to_reconcile = 0.0
         return True
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
