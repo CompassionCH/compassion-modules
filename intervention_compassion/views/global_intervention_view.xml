@@ -31,7 +31,7 @@
             type="object"
             string="Put a hold"
             class="oe_highlight"
-            attrs="{'invisible': [('can_be_funded', '=', False)]}"
+            invisible="not can_be_funded"
           />
                 </header>
                 <sheet>

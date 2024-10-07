@@ -22,10 +22,11 @@ class GlobalIntervention(models.TransientModel):
     _name = "compassion.global.intervention"
     _description = "Global Intervention"
 
-    parent_intervention = fields.Char(readonly=True)
+    parent_intervention = fields.Char()
     amount_on_hold = fields.Float(compute="_compute_amount_on_hold")
     holding_partner_id = fields.Many2one(
-        "compassion.global.partner", "Major holding partner", readonly=True
+        "compassion.global.partner",
+        "Major holding partner",
     )
     can_be_funded = fields.Boolean(compute="_compute_can_be_funded")
     fcp_ids = fields.Many2many(
@@ -34,13 +35,11 @@ class GlobalIntervention(models.TransientModel):
         "intervention_id",
         "fcp_id",
         string="FCPs",
-        readonly=True,
     )
     subcategory_ids = fields.Many2many(
         "compassion.intervention.subcategory",
         "compassion_global_intervention_subcategory_rel",
         string="Subcategory",
-        readonly=True,
     )
 
     def _compute_amount_on_hold(self):

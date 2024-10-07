@@ -13,7 +13,7 @@ from odoo.addons.message_center_compassion.tools.load_mappings import load_mappi
 from . import models, wizards
 
 
-def load_mappings(cr, registry):
+def load_mappings(env):
     path = "intervention_compassion/static/mappings/"
     files = [
         "commitment_mapping.json",
@@ -26,4 +26,4 @@ def load_mappings(cr, registry):
         "intervention_search_mapping.json",
     ]
 
-    load_mapping_files(cr, path, files)
+    load_mapping_files(env, path, files)

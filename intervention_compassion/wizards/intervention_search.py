@@ -47,12 +47,12 @@ class InterventionSearch(models.TransientModel):
     # Search helpers
     ################
     type_chooser = fields.Selection("get_types")
-    type_selected = fields.Char(readonly=True)
+    type_selected = fields.Char()
     category_id = fields.Many2one(
         "compassion.intervention.category", "Category", readonly=False
     )
     status_chooser = fields.Selection("get_statuses")
-    status_selected = fields.Char(readonly=True)
+    status_selected = fields.Char()
     intervention_id = fields.Char()
     fcp_ids = fields.Many2many(
         "compassion.project",

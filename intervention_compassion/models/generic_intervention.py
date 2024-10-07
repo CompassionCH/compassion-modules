@@ -27,41 +27,43 @@ class GenericIntervention(models.AbstractModel):
 
     # General Information
     #####################
-    name = fields.Char(readonly=True)
-    intervention_id = fields.Char(required=True, readonly=True)
-    field_office_id = fields.Many2one(
-        "compassion.field.office", "National Office", readonly=True
+    name = fields.Char()
+    intervention_id = fields.Char(
+        required=True,
     )
-    description = fields.Text(readonly=True)
-    additional_marketing_information = fields.Text(readonly=True)
+    field_office_id = fields.Many2one(
+        "compassion.field.office",
+        "National Office",
+    )
+    description = fields.Text()
+    additional_marketing_information = fields.Text()
     category_id = fields.Many2one(
-        "compassion.intervention.category", "Category", readonly=True
+        "compassion.intervention.category",
+        "Category",
     )
 
     type = fields.Selection(related="category_id.type")
-    funding_status = fields.Selection("get_funding_statuses", readonly=True)
+    funding_status = fields.Selection("get_funding_statuses")
 
     # Schedule Information
     ######################
-    is_fo_priority = fields.Boolean("Is National Office priority", readonly=True)
-    proposed_start_date = fields.Date(readonly=True)
-    start_no_later_than = fields.Date(readonly=True)
-    expected_duration = fields.Integer(
-        readonly=True, help="Expected duration in months"
-    )
+    is_fo_priority = fields.Boolean("Is National Office priority")
+    proposed_start_date = fields.Date()
+    start_no_later_than = fields.Date()
+    expected_duration = fields.Integer(help="Expected duration in months")
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
     currency_usd = fields.Many2one(
         "res.currency", compute="_compute_usd", readonly=False
     )
-    estimated_costs = fields.Float(readonly=True)
-    remaining_amount_to_raise = fields.Float(readonly=True)
-    pdc_costs = fields.Float(help="Program development costs", readonly=True)
-    total_cost = fields.Float(readonly=True)
-    requested_additional_funding = fields.Float(readonly=True)
-    estimated_impacted_beneficiaries = fields.Integer(readonly=True)
-    disburse_without_commitment = fields.Boolean(readonly=True)
+    estimated_costs = fields.Float()
+    remaining_amount_to_raise = fields.Float()
+    pdc_costs = fields.Float(help="Program development costs")
+    total_cost = fields.Float()
+    requested_additional_funding = fields.Float()
+    estimated_impacted_beneficiaries = fields.Integer()
+    disburse_without_commitment = fields.Boolean()
 
     @api.model
     def get_fields(self):
