@@ -1,0 +1,6 @@
+<odoo>
+    <record id="mapping_create_update_gifts" model="compassion.mapping">
+        <field name="model_id" ref="model_sponsorship_gift" />
+        <field name="name">CreateGift</field>
+    </record>
+</odoo>
