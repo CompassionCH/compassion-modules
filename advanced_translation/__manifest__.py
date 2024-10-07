@@ -37,7 +37,13 @@
     "development_status": "Production/Stable",
     "depends": ["base"],
     "external_dependencies": {
-        "python": ["babel", "pytesseract", "langdetect", "iso639-lang", "pandas>=2.0.0"],
+        "python": [
+            "babel",
+            "pytesseract",
+            "langdetect",
+            "iso639-lang",
+            "pandas>=2.0.0",
+        ],
     },
     "data": [
         "security/ir.model.access.csv",
