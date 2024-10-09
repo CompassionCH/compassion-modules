@@ -40,10 +40,11 @@ class GiftNotificationSettings(models.TransientModel):
         "Gift analytic account",
         config_parameter="gift_compassion.analytic_id",
     )
-    gift_analytic_tag_id = fields.Many2one(
-        "account.analytic.tag",
-        "Gift analytic tag",
-        config_parameter="gift_compassion.analytic_tag_id",
+
+    gift_analytic_distribution_model_id = fields.Many2one(
+        "account.analytic.distribution.model",
+        "Gift Analytic Distribution Model",
+        config_parameter="gift_compassion.analytic_distribution_model_id",
     )
     gift_journal_id = fields.Many2one(
         "account.journal",
@@ -64,25 +65,27 @@ class GiftNotificationSettings(models.TransientModel):
         res = super().get_values()
         param_obj = self.env["ir.config_parameter"]
         company_id = self.env.company.id
+
+        gift_expense_account_id = param_obj.get_param(
+            f"gift_compassion.gift_expense_account_{company_id}"
+        )
+        gift_income_account_id = param_obj.get_param(
+            f"gift_compassion.gift_income_account_{company_id}"
+        )
+        gift_journal_id = param_obj.get_param(
+            f"gift_compassion.gift_journal_id{company_id}"
+        )
+
         res.update(
             {
                 "gift_notify_ids": self._get_gift_notify_ids(),
-                "gift_expense_account_id": int(
-                    param_obj.get_param(
-                        f"gift_compassion.gift_expense_account_{company_id}"
-                    )
-                    or 0
-                ),
-                "gift_income_account_id": int(
-                    param_obj.get_param(
-                        f"gift_compassion.gift_income_account_{company_id}"
-                    )
-                    or 0
-                ),
-                "gift_journal_id": int(
-                    param_obj.get_param(f"gift_compassion.gift_journal_id{company_id}")
-                    or 0
-                ),
+                "gift_expense_account_id": int(gift_expense_account_id)
+                if gift_expense_account_id
+                else False,
+                "gift_income_account_id": int(gift_income_account_id)
+                if gift_income_account_id
+                else False,
+                "gift_journal_id": int(gift_journal_id) if gift_journal_id else False,
             }
         )
         return res
