@@ -58,7 +58,7 @@ class SponsorshipGift(models.Model):
         readonly=False,
     )
     invoice_line_ids = fields.One2many(
-        "account.move.line", "gift_id", string="Invoice lines", readonly=True
+        "account.move.line", "gift_id", string="Invoice lines"
     )
     payment_id = fields.Many2one(
         "account.move", "GMC Payment", copy=False, readonly=False
@@ -73,16 +73,14 @@ class SponsorshipGift(models.Model):
     # Gift information
     ##################
     name = fields.Char(compute="_compute_name", translate=False)
-    gmc_gift_id = fields.Char(readonly=True, copy=False)
+    gmc_gift_id = fields.Char(copy=False)
     gift_date = fields.Date(
         compute="_compute_invoice_fields", inverse="_inverse_gift_date", store=True
     )
     date_partner_paid = fields.Date(
         compute="_compute_invoice_fields", inverse=lambda g: True, store=True
     )
-    date_sent = fields.Datetime(
-        related="message_id.process_date", store=True, readonly=True
-    )
+    date_sent = fields.Datetime(related="message_id.process_date", store=True)
     amount = fields.Monetary(
         compute="_compute_invoice_fields",
         inverse=lambda g: True,
@@ -91,7 +89,6 @@ class SponsorshipGift(models.Model):
     )
     company_id = fields.Many2one(
         related="sponsorship_id.company_id",
-        readonly=True,
         help="Field is retrieve from the associated sponsorship",
     )
     currency_id = fields.Many2one(
@@ -103,8 +100,8 @@ class SponsorshipGift(models.Model):
     currency_usd = fields.Many2one(
         "res.currency", compute="_compute_usd", readonly=False
     )
-    exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
-    amount_us_dollars = fields.Float("Amount due", readonly=True, copy=False)
+    exchange_rate = fields.Float(copy=False, digits=(12, 6))
+    amount_us_dollars = fields.Float("Amount due", copy=False)
     instructions = fields.Char()
     gift_type = fields.Selection(
         "get_gift_type_selection", required=True, string="Gift for"
@@ -124,7 +121,6 @@ class SponsorshipGift(models.Model):
             ("Undeliverable", _("Undeliverable")),
         ],
         default="draft",
-        readonly=True,
         tracking=True,
     )
     undeliverable_reason = fields.Selection(
@@ -149,23 +145,21 @@ class SponsorshipGift(models.Model):
                 "Participant Exited More Than 90 Days Ago",
             ),
         ],
-        readonly=True,
         copy=False,
     )
     threshold_alert = fields.Boolean(
         help="Partner exceeded the maximum gift amount allowed",
-        readonly=True,
         copy=False,
     )
-    threshold_alert_type = fields.Char(readonly=True, copy=False)
-    field_office_notes = fields.Char(readonly=True, copy=False)
-    status_change_date = fields.Datetime(readonly=True)
-    account_credit = fields.Char(compute="_compute_params", readonly=True)
-    account_debit = fields.Char(compute="_compute_params", readonly=True)
-    journal_id = fields.Char(compute="_compute_params", readonly=True)
-    analytic = fields.Char(compute="_compute_params", readonly=True)
-    analytic_tag = fields.Char(compute="_compute_params", readonly=True)
-    is_param_set = fields.Boolean(compute="_compute_is_param_set", readonly=True)
+    threshold_alert_type = fields.Char(copy=False)
+    field_office_notes = fields.Char(copy=False)
+    status_change_date = fields.Datetime()
+    account_credit = fields.Char(compute="_compute_params")
+    account_debit = fields.Char(compute="_compute_params")
+    journal_id = fields.Char(compute="_compute_params")
+    analytic = fields.Char(compute="_compute_params")
+    analytic_tag = fields.Char(compute="_compute_params")
+    is_param_set = fields.Boolean(compute="_compute_is_param_set")
 
     ##########################################################################
     #                             FIELDS METHODS                             #

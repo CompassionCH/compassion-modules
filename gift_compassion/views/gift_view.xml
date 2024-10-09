@@ -42,40 +42,41 @@
             name="state"
             widget="statusbar"
             statusbar_visible="draft,In Progress,Delivered"
+            readonly="1"
           />
                     <button
             name="action_send"
             type="object"
             string="Send Now"
             class="oe_highlight"
-            states="draft,open"
+            invisible="state not in ('draft', 'open')"
             context="{'async_mode': False}"
           />
                     <button
             name="action_verify"
             type="object"
             string="To Verify"
-            states="draft,error"
+            invisible="state not in ('draft', 'error')"
           />
                     <button
             name="action_ok"
             type="object"
             string="Gift OK"
             class="oe_highlight"
-            states="verify"
+            invisible="state != 'verify'"
           />
                     <button
             name="action_cancel"
             type="object"
             string="Cancel Gift"
             help="Will unreconcile the payment"
-            states="draft,verify"
+            invisible="state not in ('draft', 'verify')"
           />
                     <button
             name="mark_sent"
             type="object"
             string="Mark as delivered"
-            states="draft,verify,open"
+            invisible="state not in ('draft', 'verify', 'open')"
             confirm="This will cancel the message for GMC and put the gift in Delivered state. Are you sure?"
           />
                 </header>
@@ -87,7 +88,7 @@
               type="action"
               icon="fa-pencil-square-o"
               class="oe_stat_button"
-              states="draft"
+              invisible="state != 'draft'"
             />
                         <button
               name="view_invoices"
@@ -98,11 +99,11 @@
             />
                     </div>
                     <!-- Alert to warn on the no payment generation -->
-                    <field name="is_param_set" attrs="{'invisible': 1}" />
+                    <field name="is_param_set" invisible="True" readonly="1" />
                     <div
             class="alert alert-warning text-center o_form_header"
             role="alert"
-            attrs="{'invisible': ['|', ('is_param_set', '=', True), ('state', '!=', 'draft')]}"
+            invisible="is_param_set or state != 'draft'"
           >
 
                         <a class="close" data-dismiss="alert" href="#">x</a>
@@ -120,20 +121,20 @@
                             <field
                 name="sponsorship_id"
                 options="{'colors':{'draft':'blue', 'waiting':'green', 'cancelled':'grey', 'terminated':'grey', 'mandate':'red'}, 'field_color':'state'}"
-                attrs="{'required': [('gift_type', '!=', 'Project Gift')]}"
+                required="gift_type != 'Project Gift'"
               />
                             <field
                 name="partner_id"
                 domain="[('global_id', '!=', False)]"
-                attrs="{'readonly': [('sponsorship_id', '!=', False)]}"
+                readonly="sponsorship_id != False"
               />
                             <field
                 name="child_id"
-                attrs="{'readonly': [('sponsorship_id', '!=', False)]}"
+                readonly="sponsorship_id != False"
               />
                             <field
                 name="project_id"
-                attrs="{'readonly': [('sponsorship_id', '!=', False)]}"
+                readonly="sponsorship_id != False"
               />
                         </group>
                         <group>
@@ -141,54 +142,57 @@
                             <field name="attribution" />
                             <field
                 name="sponsorship_gift_type"
-                attrs="{'invisible': [('gift_type', '!=', 'Beneficiary Gift')],
-                                                                        'required': [('gift_type', '=', 'Beneficiary Gift')]}"
+                invisible="gift_type != 'Beneficiary Gift'"
+                required="gift_type == 'Beneficiary Gift'"
               />
                             <field name="instructions" />
                         </group>
                         <group>
                             <field name="gift_date" />
                             <field name="date_partner_paid" />
-                            <field name="date_sent" />
+                            <field name="date_sent" readonly="1" />
                             <field
                 name="message_id"
                 groups="message_center_compassion.group_gmc_user"
               />
                             <field
                 name="payment_id"
-                attrs="{'invisible': [('is_param_set', '=', False)]}"
+                invisible="is_param_set == False"
               />
                             <field
                 name="inverse_payment_id"
-                attrs="{'invisible': [('inverse_payment_id', '=', False)]}"
+                invisible="inverse_payment_id == False"
               />
                         </group>
                         <group>
-                            <field name="gmc_gift_id" />
+                            <field name="gmc_gift_id" readonly="1" />
                             <field
                 name="undeliverable_reason"
-                attrs="{'invisible': [('state', '!=', 'Undeliverable')]}"
+                invisible="state != 'Undeliverable'"
+                readonly="1"
               />
-                            <field name="exchange_rate" />
-                            <field name="threshold_alert" />
+                            <field name="exchange_rate" readonly="1" />
+                            <field name="threshold_alert" readonly="1" />
                             <field
                 name="threshold_alert_type"
-                attrs="{'invisible': [('threshold_alert', '=', False)]}"
+                invisible="threshold_alert == False"
+                readonly="1"
               />
-                            <field name="field_office_notes" />
-                            <field name="status_change_date" />
+                            <field name="field_office_notes" readonly="1" />
+                            <field name="status_change_date" readonly="1" />
                         </group>
                     </group>
                     <notebook>
                         <page string="Sponsor payments">
-                            <field name="currency_id" invisible="1" />
-                            <field name="currency_usd" invisible="1" />
-                            <field name="invoice_line_ids" />
+                            <field name="currency_id" invisible="True" />
+                            <field name="currency_usd" invisible="True" />
+                            <field name="invoice_line_ids" readonly="1" />
                             <group class="oe_subtotal_footer oe_right">
                                 <field
                   name="amount_us_dollars"
                   widget="monetary"
                   options="{'currency_field': 'currency_usd'}"
+                  readonly="1"
                 />
                                 <field
                   name="amount"
@@ -273,9 +277,9 @@
                 No gifts.
             </p>
         </field>
-        <field
-      name="context"
-    >{'search_default_not_sent': 1, 'search_default_group_by_date': 1}</field>
+        <field name="context">
+            {'search_default_not_sent': 1, 'search_default_group_by_date': 1}
+        </field>
     </record>
 
     <!-- Send Gift actions -->
