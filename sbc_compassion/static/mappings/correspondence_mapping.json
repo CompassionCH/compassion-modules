@@ -32,6 +32,12 @@
         }
       }
     },
+    "CloudinaryFinalURL": {
+      "field": "cloudinary_final_letter_url"
+    },
+    "CloudinaryOriginalURL": {
+      "field": "cloudinary_original_letter_url"
+    },
     "FontSize": {
       "field": null
     },

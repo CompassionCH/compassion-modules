@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- S2B Templates -->
         <record id="default_template" model="correspondence.template">
             <field name="name">Default Template</field>
@@ -7,124 +6,85 @@
         </record>
 
         <!-- S2B text boxes -->
-        <record id="s2b_header_box" model="correspondence.text.box">
-            <field name="name">S2B-default header</field>
-            <field name="x_min">5</field>
-            <field name="x_max">170</field>
-            <field name="y_min">8</field>
-            <field name="y_max">30</field>
-            <field name="text_line_height">4</field>
-        </record>
-
         <record id="s2b_l1_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L1-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">98</field>
-            <field name="y_min">70</field>
-            <field name="y_max">230</field>
-            <field name="text_line_height">5.32</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">23.57</field>
+            <field name="width">39.52</field>
+            <field name="height">53.87</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
+            <field name="max_chars">690</field>
+            <field name="line_size">30</field>
         </record>
         <record id="s2b_l1_textbox_original2" model="correspondence.text.box">
             <field name="name">S2B-L1-2-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">101</field>
-            <field name="y_min">21</field>
-            <field name="y_max">255</field>
-            <field name="text_line_height">7.2</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">7.07</field>
+            <field name="width">40.48</field>
+            <field name="height">78.79</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
+            <field name="max_chars">1830</field>
+            <field name="line_size">30</field>
         </record>
 
-        <record id="s2b_l2_design" model="correspondence.positioned.object">
-            <field name="name">S2B-L2-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">184</field>
-            <field name="y_min">15</field>
-            <field name="y_max">270</field>
-        </record>
         <record id="s2b_l2_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L2-2-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">200</field>
-            <field name="y_min">55</field>
-            <field name="y_max">165</field>
-            <field name="text_line_height">5.32</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">18.52</field>
+            <field name="width">84.05</field>
+            <field name="height">31.99</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
         </record>
 
-        <record id="s2b_l3_design" model="correspondence.positioned.object">
-            <field name="name">S2B-L3-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">184</field>
-            <field name="y_min">15</field>
-            <field name="y_max">270</field>
-        </record>
         <record id="s2b_l3_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L3-2-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">185</field>
-            <field name="y_min">55</field>
-            <field name="y_max">152</field>
-            <field name="text_line_height">5.32</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">18.52</field>
+            <field name="width">77.62</field>
+            <field name="height">24.66</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
         </record>
 
-        <record id="s2b_l4_design" model="correspondence.positioned.object">
-            <field name="name">S2B-L4-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">184</field>
-            <field name="y_min">15</field>
-            <field name="y_max">270</field>
-        </record>
-        <record id="s2b_l4_design_2" model="correspondence.positioned.object">
-            <field name="name">S2B-L4-2-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">113</field>
-            <field name="y_min">55</field>
-            <field name="y_max">270</field>
-        </record>
         <record id="s2b_l4_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L4-2-2</field>
-            <field name="x_min">115</field>
-            <field name="x_max">192</field>
-            <field name="y_min">52</field>
-            <field name="y_max">148</field>
-            <field name="text_line_height">5</field>
+            <field name="x_min">26.07</field>
+            <field name="y_min">5.89</field>
+            <field name="width">24.29</field>
+            <field name="height">24.24</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
         </record>
 
         <record id="s2b_l5_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L5-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">200</field>
-            <field name="y_min">75</field>
-            <field name="y_max">257</field>
-            <field name="text_line_height">5.32</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">8.49</field>
+            <field name="width">84.05</field>
+            <field name="height">61.28</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
         </record>
 
         <record id="s2b_l6_textbox_original" model="correspondence.text.box">
             <field name="name">S2B-L6-1-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">184</field>
-            <field name="y_min">50</field>
-            <field name="y_max">270</field>
-            <field name="text_line_height">5.32</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">5.66</field>
+            <field name="width">77.62</field>
+            <field name="height">68.69</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Original</field>
         </record>
         <record id="s2b_l6_textbox_translation" model="correspondence.text.box">
             <field name="name">S2B-L6-2-1</field>
-            <field name="x_min">15</field>
-            <field name="x_max">190</field>
-            <field name="y_min">15</field>
-            <field name="y_max">290</field>
-            <field name="text_line_height">4</field>
+            <field name="x_min">7.14</field>
+            <field name="y_min">1.68</field>
+            <field name="width">80.00</field>
+            <field name="height">92.26</field>
+            <field name="text_line_height">24</field>
             <field name="text_type">Translation</field>
         </record>
-
-        <record id="threshold_keypoints_template" model="ir.config_parameter">
-            <field name="key">threshold_keypoints_template</field>
-            <field name="value">0.4</field>
-        </record>
-    </data>
 </odoo>

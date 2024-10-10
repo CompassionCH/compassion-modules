@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Sponsor to Participant communication",
-    "version": "17.0.1.0.1",
+    "version": "17.0.1.1.2",
     "category": "Compassion",
     "summary": "SBC - Supporter to Participant Communication",
     "sequence": 150,
@@ -40,10 +40,8 @@
     ],
     "external_dependencies": {
         "python": [
-            "python-magic",
-            "wand",
+            "pdf2image",
             "pyzbar",
-            "PyMuPDF",  # TODO T1850 replace by Odoo standard library
         ],
     },
     "data": [
@@ -67,6 +65,7 @@
         "data/correspondence_mappings.xml",
         "data/gmc_action.xml",
         "data/queue_job.xml",
+        "reports/correspondence_report.xml",
     ],
     "demo": [
         "demo/correspondence_template.xml",

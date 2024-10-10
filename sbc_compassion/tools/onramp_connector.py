@@ -46,9 +46,8 @@ class SBCConnector:
             raise UserError(_("[%s] %s") % (str(status), letter_url))
         return letter_url
 
-    def get_letter_image(self, letter_url, img_type="jpeg", pages=0, dpi=96):
+    def get_letter_image(self, letter_url, params=None):
         """Calls Letter Image Service from Onramp U.S. and get the data"""
-        params = {"format": img_type, "pg": pages, "dpi": dpi}
         return base64.b64encode(
             self.connector.send_message(
                 letter_url, "GET_RAW", params=params, full_url=True

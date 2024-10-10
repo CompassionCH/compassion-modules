@@ -81,7 +81,7 @@
               type="object"
               icon="fa-search-plus"
               class="oe_stat_button"
-              invisible="send_mode != 'physical' or not id"
+              invisible="state != 'pending'"
             />
                         <button
               name="open_related"

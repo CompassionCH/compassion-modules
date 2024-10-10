@@ -1,29 +1,18 @@
 ##############################################################################
 #
-#    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2024 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import base64
 import logging
-from io import BytesIO
-
-from wand.exceptions import PolicyError
 
 from odoo import Command, _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
-
-try:
-    from PyPDF2 import PdfFileReader, PdfFileWriter
-    from wand.image import Image
-except ImportError:
-    _logger.debug("Please install wand to use SBC module")
 
 
 class CorrespondenceS2bGenerator(models.Model):
@@ -38,10 +27,12 @@ class CorrespondenceS2bGenerator(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     state = fields.Selection(
-        [("draft", "Draft"), ("preview", "Preview"), ("done", "Done")], default="draft"
+        [("draft", "Draft"), ("preview", "Preview"), ("done", "Done")],
+        default="draft",
+        copy=False,
     )
     name = fields.Char(required=True)
-    date = fields.Datetime(default=fields.Datetime.now)
+    date = fields.Datetime(default=fields.Datetime.now, copy=False)
     image_ids = fields.Many2many(
         "ir.attachment", string="Attached images", readonly=False
     )
@@ -60,7 +51,6 @@ class CorrespondenceS2bGenerator(models.Model):
     language_id = fields.Many2one(
         "res.lang.compassion",
         "Language",
-        readonly=False,
         default=lambda s: s.env.ref("advanced_translation.lang_compassion_english").id,
         required=True,
     )
@@ -73,12 +63,10 @@ class CorrespondenceS2bGenerator(models.Model):
         "* %lastname%: sponsor lastname\n",
     )
     letter_ids = fields.One2many(
-        "correspondence", "generator_id", "Letters", readonly=False
+        "correspondence", "generator_id", "Letters", copy=False
     )
     nb_letters = fields.Integer(compute="_compute_nb_letters")
-    preview_image = fields.Image(readonly=True)
-    preview_pdf = fields.Binary(readonly=True)
-    filename = fields.Char(compute="_compute_filename")
+    preview = fields.Html(compute="_compute_preview")
     month = fields.Selection("_get_months")
 
     def _compute_nb_letters(self):
@@ -89,23 +77,11 @@ class CorrespondenceS2bGenerator(models.Model):
     def _get_months(self):
         return self.env["compassion.child"]._get_months()
 
-    def _compute_filename(self):
+    @api.depends("letter_ids")
+    def _compute_preview(self):
         for generator in self:
-            generator.filename = generator.name + ".pdf"
+            generator.preview = generator.letter_ids[:1].preview
 
-    @api.constrains("image_ids")
-    def check_attached_images(self):
-        # Only jpg images are allowed
-        for generator in self:
-            for image in generator.image_ids:
-                if image.mimetype != "image/jpeg":
-                    raise ValidationError(
-                        _("Only JPG images are allowed as attached images.")
-                    )
-
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
     @api.onchange("selection_domain")
     def onchange_domain(self):
         if self.selection_domain:
@@ -128,55 +104,15 @@ class CorrespondenceS2bGenerator(models.Model):
                 domain.append(month_select)
             self.selection_domain = str(domain)
 
-    def preview(self):
-        """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
-        if self.template_id.layout == "CH-A-3S01-1":
-            # Read page 2
-            in_pdf = PdfFileReader(BytesIO(pdf))
-            output_pdf = PdfFileWriter()
-            out_data = BytesIO()
-            output_pdf.addPage(in_pdf.getPage(1))
-            output_pdf.write(out_data)
-            out_data.seek(0)
-            pdf = out_data.read()
-
-        try:
-            with Image(blob=pdf, resolution=96) as pdf_image:
-                preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-        except PolicyError as error:
-            _logger.error(
-                "ImageMagick policy error. Please add following line to "
-                "/etc/Image-Magick-<version>/policy.xml: "
-                '<policy domain="coder" rights="read|write" '
-                'pattern="PDF" />',
-            )
-            raise UserError(
-                _(
-                    "Please allow ImageMagick to write PDF files."
-                    " Ask an IT admin for help."
-                )
-            ) from error
-        except TypeError as error:
-            raise UserError(
-                _(
-                    "There was an error while generating the PDF of the letter. "
-                    "Please check FPDF logs for more information."
-                )
-            ) from error
-
-        pdf_image = base64.b64encode(pdf)
-
+    def action_preview(self):
+        self.generate_letters_job(preview_mode=True)
         return self.write(
             {
                 "state": "preview",
-                "preview_image": preview,
-                "preview_pdf": pdf_image,
             }
         )
 
-    def edit(self):
-        """Generate a picture for preview."""
+    def action_edit(self):
         return self.write({"state": "draft"})
 
     def generate_letters(self):
@@ -195,49 +131,54 @@ class CorrespondenceS2bGenerator(models.Model):
             },
         }
 
-    def generate_letters_job(self):
+    def generate_letters_job(self, preview_mode=False):
         """
         Create S2B Letters
         :return: True
         """
-        try:
-            letters = self.env["correspondence"]
-            for sponsorship in self.sponsorship_ids:
-                text = self._get_text(sponsorship)
-                vals = {
-                    "sponsorship_id": sponsorship.id,
-                    "store_letter_image": False,
-                    "template_id": self.template_id.id,
-                    "direction": "Supporter To Beneficiary",
-                    "source": self.source,
-                    "original_language_id": self.language_id.id,
-                    "original_text": text,
-                }
-                if self.image_ids:
-                    vals["original_attachment_ids"] = [
-                        (
-                            0,
-                            0,
-                            {
-                                "datas": atchmt.datas,
-                                "name": atchmt.name,
-                                "res_model": letters._name,
-                            },
-                        )
-                        for atchmt in self.image_ids
-                    ]
-                letters += letters.create(vals)
-
-            letters.create_text_boxes()
+        letters = self.env["correspondence"]
+        sponsorships = (
+            self.sponsorship_ids[:1] if preview_mode else self.sponsorship_ids
+        )
+        for sponsorship in sponsorships:
+            text = self._get_text(sponsorship)
+            vals = {
+                "sponsorship_id": sponsorship.id,
+                "template_id": self.template_id.id,
+                "direction": "Supporter To Beneficiary",
+                "source": self.source,
+                "original_language_id": self.language_id.id,
+                "original_text": text,
+                "state": "Draft" if preview_mode else "Received in the system",
+            }
+            if self.image_ids:
+                vals["original_attachment_ids"] = [Command.clear()] + [
+                    Command.create(
+                        {
+                            "datas": atchmt.datas,
+                            "name": atchmt.name,
+                            "res_model": letters._name,
+                        }
+                    )
+                    for atchmt in self.image_ids
+                ]
+            letter = self.letter_ids.filtered(
+                lambda c, _sp=sponsorship: c.sponsorship_id == _sp
+            )
+            if letter:
+                letter.write(vals)
+            else:
+                letter = letters.create(vals)
+            letters += letter
+        letters.create_text_boxes()
+        self.write({"letter_ids": [Command.set(letters.ids)]})
+        if not preview_mode:
             self.write(
                 {
                     "state": "done",
                     "date": fields.Datetime.now(),
-                    "letter_ids": [Command.set(letters.ids)],
                 }
             )
-        except Exception:
-            _logger.error("Error in S2B generator", exc_info=True)
         return True
 
     def open_letters(self):
@@ -251,6 +192,10 @@ class CorrespondenceS2bGenerator(models.Model):
             "domain": [("id", "in", letters.ids)],
             "target": "current",
         }
+
+    def unlink(self):
+        self.mapped("letter_ids").filtered(lambda c: c.state == "Draft").unlink()
+        return super().unlink()
 
     def _get_text(self, sponsorship):
         """Generates the text given a sponsorship."""
@@ -266,29 +211,4 @@ class CorrespondenceS2bGenerator(models.Model):
         text = self.body
         for keyword, replacement in list(keywords.items()):
             text = text.replace(keyword, replacement)
-
         return text
-
-    def _get_pdf(self, sponsorship):
-        """Generates a PDF given a sponsorship."""
-        self.ensure_one()
-        sponsor = sponsorship.correspondent_id
-        child = sponsorship.child_id
-        text = self._get_text(sponsorship)
-
-        header = (
-            f"{sponsor.global_id} - {sponsor.preferred_name} - \n"
-            f"{child.local_id} - {child.preferred_name}"
-            f" - {'Female' if child.gender == 'F' else 'Male'}"
-            f" - {str(child.age)}"
-        )
-
-        return (
-            self.template_id.generate_pdf(
-                sponsorship.display_name,
-                (header, ""),  # Headers (front/back)
-                {"Original": [text]},  # Text
-                self.mapped("image_ids.datas"),  # Images
-            ),
-            text,
-        )

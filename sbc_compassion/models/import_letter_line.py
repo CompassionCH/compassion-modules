@@ -1,8 +1,8 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2024 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>, Emanuel Cino
 #
 #    The licence is in the file __manifest__.py
 #
@@ -152,20 +152,20 @@ class ImportLetterLine(models.Model):
             vals.update(
                 {
                     "sponsorship_id": line.sponsorship_id.id,
-                    "letter_image": line.letter_image,
+                    "sponsor_letter_scan": line.letter_image,
                     "original_language_id": line.letter_language_id.id,
                     "direction": "Supporter To Beneficiary",
                     "original_text": line.original_text,
                     "source": line.source,
                     "import_id": line.import_id.id,
+                    "state": "Received in the system",
                 }
             )
 
             if line.source == "website":
                 # To save disk space, we prefer storing the text, images and template_id
                 # rather than the PDF (which contains a large background).
-                del vals["letter_image"]
-                vals["store_letter_image"] = False
+                del vals["sponsor_letter_scan"]
                 if line.original_attachment_ids:
                     vals["original_attachment_ids"] = [
                         (

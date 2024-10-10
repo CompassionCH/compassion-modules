@@ -36,7 +36,23 @@
           />
                 </header>
                 <sheet>
-                    <h1>Imported Letters</h1>
+                    <div class="oe_title">
+                        <h1>Imported Letters</h1>
+                    </div>
+                    <div name="button_box">
+                        <button
+              name="open_letters"
+              type="object"
+              icon="fa-envelope-open"
+              invisible="state != 'done'"
+            >
+                            <field
+                name="nber_letters"
+                widget="statinfo"
+                string="Letters"
+              />
+                        </button>
+                    </div>
                     <group>
                         <label
               for="data"
@@ -47,12 +63,16 @@
                             <field name="data" widget="many2many_binary" />
                         </div>
                         <field name="config_id" widget="radio" />
-                        <field name="nber_letters" />
+                        <field
+              name="nber_letters"
+              invisible="state == 'done'"
+            />
                         <field name="physical_attachments" />
                         <field name="attachments_description" />
                         <field
               name="template_id"
               invisible="state not in ('draft', 'open')"
+              domain="[('type', '=', 's2b')]"
             />
                     </group>
                     <group>

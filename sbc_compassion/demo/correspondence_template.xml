@@ -3,8 +3,6 @@
     <record id="template_postman" model="correspondence.template">
         <field name="name">Postman</field>
         <field name="layout">CH-A-1S11-1</field>
-        <field name="page_width">2480</field>
-        <field name="page_height">3508</field>
     </record>
 
     <!-- Template pages -->
@@ -16,7 +14,6 @@
       type="base64"
       file="sbc_compassion/static/img/Postman"
     />
-        <field name="header_box_id" ref="s2b_header_box" />
         <field
       name="text_box_ids"
       eval="[(4, ref('s2b_l1_textbox_original'))]"
@@ -35,35 +32,11 @@
       eval="[(4, ref('s2b_l1_textbox_original2'))]"
     />
     </record>
-    <record id="postman_template_page3" model="correspondence.template.page">
-        <field name="template_id" ref="template_postman" />
-        <field name="page_index">3</field>
-        <field
-      name="background"
-      type="base64"
-      file="sbc_compassion/static/img/additional_page.jpg"
-    />
-        <field
-      name="text_box_ids"
-      eval="[(4, ref('s2b_l6_textbox_original'))]"
-    />
-    </record>
-    <record id="postman_template_page4" model="correspondence.template.page">
-        <field name="template_id" ref="template_postman" />
-        <field name="page_index">4</field>
-        <field
-      name="background"
-      type="base64"
-      file="sbc_compassion/static/img/additional_page.jpg"
-    />
-    </record>
 
     <!-- Template Dove *************************************************** -->
     <record id="template_dove" model="correspondence.template">
         <field name="name">Dove</field>
         <field name="layout">CH-A-1S11-1</field>
-        <field name="page_width">2480</field>
-        <field name="page_height">3508</field>
     </record>
 
     <!-- Template pages -->
@@ -75,7 +48,6 @@
       type="base64"
       file="sbc_compassion/static/img/Dove"
     />
-        <field name="header_box_id" ref="s2b_header_box" />
         <field
       name="text_box_ids"
       eval="[(4, ref('s2b_l1_textbox_original'))]"

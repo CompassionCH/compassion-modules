@@ -18,34 +18,34 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <field
+            name="template_image"
+            widget="image"
+            class="oe_avatar"
+          />
+                    <field name="active" invisible="1" />
+                    <widget
+            name="web_ribbon"
+            title="Archived"
+            bg_color="text-bg-danger"
+            invisible="active"
+          />
                     <group>
                         <group>
                             <field name="name" />
                             <field name="layout" />
-                            <field name="active" />
                             <field name="usage_count" />
                         </group>
-                        <group string="Metadata">
-                            <field name="page_width" />
-                            <field name="page_height" />
-                            <separator colspan="2" />
-                            <separator string="Pages layout" colspan="2" />
-                            <field
-                name="page_ids"
-                context="{'default_template_id': id}"
-              />
-                            <field
-                name="additional_page_id"
-                context="{'default_template_id': id}"
-              />
-                        </group>
-                        <group>
-                            <field
-                name="template_image"
-                widget="image"
-                options="{'width': 210}"
-              />
-                        </group>
+                    </group>
+                    <group string="Pages layout">
+                        <field
+              name="page_ids"
+              context="{'default_template_id': id}"
+            />
+                        <field
+              name="additional_page_id"
+              context="{'default_template_id': id}"
+            />
                     </group>
                 </sheet>
             </form>
@@ -61,13 +61,15 @@
                     <group>
                         <field name="name" />
                         <field name="x_min" />
-                        <field name="x_max" />
+                        <field name="y_min" />
+                        <field name="max_chars" />
                         <field name="text_line_height" />
                     </group>
                     <group>
                         <field name="text_type" />
-                        <field name="y_min" />
-                        <field name="y_max" />
+                        <field name="width" />
+                        <field name="height" />
+                        <field name="line_size" />
                     </group>
                 </group>
             </form>

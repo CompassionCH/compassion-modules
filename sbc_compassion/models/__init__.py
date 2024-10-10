@@ -13,7 +13,7 @@ from . import (
     correspondence,
     correspondence_page,
     correspondence_paragraph,
-    correspondence_positioned_objects,
+    correspondence_text_box,
     correspondence_s2b_generator,
     correspondence_template,
     correspondence_template_page,

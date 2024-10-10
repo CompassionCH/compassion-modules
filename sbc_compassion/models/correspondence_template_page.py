@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019-2024 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -33,20 +33,13 @@ class CorrespondenceTemplatePage(models.Model):
     )
     page_index = fields.Integer(required=True, default=1)
     name = fields.Char(compute="_compute_name")
-    background = fields.Image("Page background", help="Use 300 DPI images")
-    header_box_id = fields.Many2one(
-        "correspondence.text.box", string="Header", readonly=False
+    background = fields.Image(
+        "Page background", help="Use 300 DPI images", max_width=2480, max_height=3508
     )
     text_box_ids = fields.Many2many(
         "correspondence.text.box",
         "correspondence_text_boxes_rel",
         string="Text boxes",
-        readonly=False,
-    )
-    image_box_ids = fields.Many2many(
-        "correspondence.positioned.object",
-        "correspondence_image_boxes_rel",
-        string="Image boxes",
         readonly=False,
     )
 

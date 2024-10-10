@@ -10,7 +10,6 @@ access_correspondence_type,Read access on correspondence_type,model_corresponden
 access_import_letters_history,Access on import_letters_history,model_import_letters_history,child_compassion.group_sponsorship,1,1,1,1
 access_import_letter_config,Access on import_letter_config,model_import_letter_config,child_compassion.group_sponsorship,1,1,1,0
 access_import_letters_line,Access on import_letters_line,model_import_letter_line,child_compassion.group_sponsorship,1,1,1,1
-access_correspondence_layout,Access on correspondence positioned objects,model_correspondence_positioned_object,child_compassion.group_sponsorship,1,1,1,1
 access_correspondence_text_box,Access on correspondence_text_box,model_correspondence_text_box,child_compassion.group_sponsorship,1,1,1,1
 access_correspondence_s2b_generator,Full access on correspondence generator,model_correspondence_s2b_generator,child_compassion.group_sponsorship,1,1,1,1
 read_access_generator,Read access for template generation,model_correspondence_s2b_generator,,1,0,0,0

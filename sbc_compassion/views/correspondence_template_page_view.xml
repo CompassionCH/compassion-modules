@@ -25,9 +25,7 @@
                         </group>
                     </group>
                     <group>
-                        <field name="header_box_id" />
                         <field name="text_box_ids" />
-                        <field name="image_box_ids" />
                     </group>
                 </sheet>
             </form>

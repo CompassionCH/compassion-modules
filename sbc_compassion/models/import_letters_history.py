@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2024 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emmanuel Mathier, Loic Hausammann <loic_hausammann@hotmail.com>
 #
@@ -15,8 +15,7 @@ import base64
 import io
 import logging
 
-import fitz
-from PIL import Image
+from pdf2image import convert_from_bytes
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -212,23 +211,6 @@ class ImportLettersHistory(models.Model):
         self.data.unlink()
         self.import_completed = True
 
-    def pdf_to_image(self, pdf_data):
-        pdf = fitz.Document(
-            "pdf", pdf_data
-        )  # TODO replace this library with standard Odoo one
-        page0 = next(pdf.pages())
-        image = self.convert_pdf_page_to_image(page0)
-        return image
-
-    @staticmethod
-    def convert_pdf_page_to_image(page):
-        mat = fitz.Matrix(4.5, 4.5)
-        pix = page.get_pixmap(matrix=mat, alpha=0)
-        mode = "RGBA" if pix.alpha else "RGB"
-        size = [pix.width, pix.height]
-        image = Image.frombytes(mode, size, pix.samples)
-        return image
-
     @staticmethod
     def create_preview(image):
         buffer = io.BytesIO()
@@ -251,7 +233,7 @@ class ImportLettersHistory(models.Model):
                 "template_id": self.template_id.id,
             }
 
-            image = self.pdf_to_image(pdf_data)
+            image = convert_from_bytes(pdf_data, 100, last_page=1)[0]
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
             letter_str, _ = self.env["ocr"].image_to_string(self.crop(image))
             data["letter_language_id"] = (
@@ -286,3 +268,12 @@ class ImportLettersHistory(models.Model):
                 exc_info=True,
             )
             return
+
+    def open_letters(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Imported letters"),
+            "res_model": "correspondence",
+            "view_mode": "tree,form",
+            "domain": [("import_id", "=", self.id)],
+        }

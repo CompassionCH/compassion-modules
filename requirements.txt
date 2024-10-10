@@ -3,12 +3,10 @@ iso639-lang
 jwt
 langdetect
 pandas >= 2.0.0
-PyMuPDF
+pdf2image
 pytesseract
 pyquery
 pyquerystring
-python-magic
 pytz
 pyzbar
 timezonefinder
-wand
