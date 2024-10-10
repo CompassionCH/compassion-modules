@@ -7,4 +7,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import b2s_image, download_correspondence
+from . import b2s_image

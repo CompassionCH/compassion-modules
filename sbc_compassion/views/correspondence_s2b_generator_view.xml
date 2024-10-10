@@ -9,31 +9,32 @@
                     <header>
                         <field name="state" widget="statusbar" />
                         <button
+            name="action_preview"
+            string="Preview"
+            type="object"
+            icon="fa-search-plus"
+            class="oe_stat_button"
+            invisible="state != 'draft'"
+          />
+                            <button
+            name="action_edit"
+            string="Edit"
+            type="object"
+            icon="fa-edit"
+            class="oe_stat_button"
+            invisible="state != 'preview'"
+          />
+                        <button
             name="generate_letters"
             string="Generate Letters"
             invisible="state not in ('draft', 'preview')"
             type="object"
             class="btn-primary"
           />
+
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="buttons">
-                            <button
-              name="preview"
-              string="Preview"
-              type="object"
-              icon="fa-search-plus"
-              class="oe_stat_button"
-              invisible="state != 'draft'"
-            />
-                            <button
-              name="edit"
-              string="Edit"
-              type="object"
-              icon="fa-edit"
-              class="oe_stat_button"
-              invisible="state != 'preview'"
-            />
+                        <div name="button_box">
                             <button
               name="open_letters"
               invisible="state != 'done'"
@@ -73,16 +74,24 @@
                             <field
               name="template_id"
               readonly="state != 'draft'"
+              invisible="state == 'preview'"
             />
                             <field
               name="language_id"
               readonly="state != 'draft'"
+              invisible="state == 'preview'"
             />
                             <field
               name="month"
               string="Filter birthday month"
+              readonly="state != 'draft'"
+              invisible="state == 'preview'"
             />
-                            <field name="source" />
+                            <field
+              name="source"
+              readonly="state != 'draft'"
+              invisible="state == 'preview'"
+            />
                         </group>
                         <div invisible="state != 'draft'">
                             <p>Available keywords:</p>
@@ -99,22 +108,17 @@
               invisible="state not in ('draft', 'done')"
               readonly="state != 'draft'"
               widget="many2many_binary"
+              options="{'accepted_file_extensions': '.jpg,.png,.jpeg'}"
             />
                             <field
               name="body"
               invisible="state not in ('draft', 'done')"
               readonly="state != 'draft'"
             />
-                            <field name="filename" invisible="1" />
                             <field
-              name="preview_pdf"
+              name="preview"
               invisible="state != 'preview'"
-              filename="filename"
-            />
-                            <field
-              name="preview_image"
-              invisible="state != 'preview'"
-              widget="image"
+              class="w-50"
             />
                         </group>
                     </sheet>

@@ -7,17 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import base64
 import logging
 
 from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
-
-try:
-    from wand.image import Image
-except ImportError:
-    _logger.warning("Please install wand to use PDF Previews")
 
 
 class PdfPreviewWizard(models.TransientModel):
@@ -31,24 +25,22 @@ class PdfPreviewWizard(models.TransientModel):
     communication_id = fields.Many2one(
         "partner.communication.job", required=True, ondelete="cascade", readonly=False
     )
-    preview = fields.Image(compute="_compute_pdf")
+    preview = fields.Html(compute="_compute_preview")
     state = fields.Selection(related="communication_id.send_mode")
     send_state = fields.Selection(related="communication_id.state")
     body_html = fields.Html(compute="_compute_html")
 
-    def _compute_pdf(self):
-        if self.state != "physical":
-            self.preview = False
-            return
-        comm = self.communication_id
-        report = comm.report_id.with_context(
-            lang=comm.partner_id.lang, must_skip_send_to_printer=True, bin_size=False
-        )
-        data = report._render_qweb_pdf(comm.ids)
-        with Image(blob=data[0], resolution=150) as pdf_image:
-            preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-
-        self.preview = preview
+    def _compute_preview(self):
+        for wizard in self:
+            comm = wizard.communication_id
+            if wizard.state != "physical":
+                wizard.preview = comm.body_html
+                continue
+            wizard.preview = (
+                self.env["ir.actions.report"]
+                .with_context(bin_size=False, lang=comm.partner_id.lang)
+                ._render_qweb_html(comm.report_id.xml_id, comm.ids)[0]
+            )
 
     def _compute_html(self):
         comm = self.communication_id

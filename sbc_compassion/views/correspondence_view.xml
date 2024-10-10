@@ -3,7 +3,10 @@
         <field name="name">correspondence.tree</field>
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="is_final_letter">
+            <tree
+        decoration-danger="is_final_letter"
+        decoration-primary="state == 'Draft'"
+      >
                 <field name="scanned_date" />
                 <field name="sponsorship_id" />
                 <field name="kit_identifier" />
@@ -56,7 +59,7 @@
             name="s2b_state"
             widget="statusbar"
             invisible="direction != 'Supporter To Beneficiary'"
-            statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"
+            statusbar_visible="Draft,Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"
           />
                     <field
             name="b2s_state"
@@ -65,16 +68,12 @@
             statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"
           />
                     <button
+            name="validate"
             type="object"
-            name="compose_letter_button"
-            string="Compose letter"
-            invisible="state != 'Published to Global Partner' or direction == 'Supporter To Beneficiary'"
-          />
-                    <button
-            name="download_pdf"
-            type="object"
-            string="Download PDF"
-            invisible="direction != 'Supporter To Beneficiary'"
+            string="Validate"
+            invisible="state != 'Draft'"
+            class="btn-success"
+            icon="fa-check"
           />
                     <button
             name="resubmit_letter"
@@ -82,14 +81,26 @@
             string="Resubmit Letter"
             invisible="state != 'Translation check unsuccessful'"
           />
-                    <button
-            name="quality_check_failed"
-            type="object"
-            string="Quality Check Failed"
-            invisible="state in ('Printed and sent to ICP', 'Quality check unsuccessful') or direction == 'Beneficiary To Supporter'"
-          />
                 </header>
                 <sheet>
+                    <field name="report_needs_overlay" invisible="True" />
+                    <div name="button_box">
+                        <button
+              name="quality_check_failed"
+              type="object"
+              string="Quality Check Failed"
+              invisible="state in ('Printed and sent to ICP', 'Quality check unsuccessful') or direction == 'Beneficiary To Supporter'"
+              class="bg-warning"
+              icon="fa-times"
+            />
+                        <button
+              name="spread_text_to_pages"
+              type="object"
+              string="Spread text to pages"
+              invisible="not report_needs_overlay"
+              icon="fa-text-width"
+            />
+                    </div>
                     <field
             name="avatar_128"
             widget="image"
@@ -109,8 +120,13 @@
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"
               />
                             <field name="file_name" invisible="1" />
-                            <field name="letter_image" filename="file_name" />
-                            <field name="template_id" />
+                            <field
+                name="sponsor_letter_scan"
+                filename="file_name"
+                options="{'accepted_file_extensions': '.pdf,.zip'}"
+              />
+                            <field name="letter_format" />
+                            <field name="template_id" required="1" />
                             <field name="direction" />
                             <field
                 name="communication_type_ids"
@@ -123,6 +139,7 @@
                             <field name="relationship" />
                             <field name="source" />
                             <field name="is_first_letter" />
+                            <field name="nbr_pages" />
                             <field name="physical_attachments" />
                             <field
                 name="attachments_description"
@@ -162,7 +179,14 @@
                     <separator string="Letter content" />
                     <group>
                         <group>
-                            <field name="nbr_pages" />
+                            <field
+                name="original_letter_url"
+                groups="base.group_erp_manager"
+              />
+                            <field
+                name="cloudinary_original_letter_url"
+                groups="base.group_erp_manager"
+              />
                             <field
                 name="original_language_id"
                 string="Original language"
@@ -171,6 +195,14 @@
               />
                         </group>
                         <group>
+                            <field
+                name="final_letter_url"
+                groups="base.group_erp_manager"
+              />
+                            <field
+                name="cloudinary_final_letter_url"
+                groups="base.group_erp_manager"
+              />
                             <field
                 name="translator"
                 invisible="not translator"
@@ -212,6 +244,7 @@
                         <field name="correspondence_id" />
                         <field name="original_page_url" />
                         <field name="final_page_url" />
+                        <field name="final_page_image" widget="image" />
                     </group>
                 </group>
                 <group>
@@ -314,21 +347,6 @@
                 No messages.
             </p>
         </field>
-    </record>
-
-    <record id="replace_by_original_action" model="ir.actions.server">
-        <field name="name">Replace PDF by original</field>
-        <field name="model_id" ref="model_correspondence" />
-        <field name="binding_model_id" ref="model_correspondence" />
-        <field name="state">code</field>
-        <field name="code">records.attach_original()</field>
-    </record>
-    <record id="replace_by_final_action" model="ir.actions.server">
-        <field name="name">Replace PDF by final</field>
-        <field name="model_id" ref="model_correspondence" />
-        <field name="binding_model_id" ref="model_correspondence" />
-        <field name="state">code</field>
-        <field name="code">records.attach_final()</field>
     </record>
 
     <menuitem

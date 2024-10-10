@@ -90,7 +90,7 @@ class ChildPictures(models.Model):
                 body=_(pictures._error_msg), subject=_("Picture update")
             )
             pictures.unlink()
-            return False
+            return self
 
         # Find if same pictures already exist
         same_pictures = pictures._find_same_picture()
@@ -101,7 +101,7 @@ class ChildPictures(models.Model):
                 body=_("The picture was the same"), subject=_("Picture update")
             )
             pictures.unlink()
-            return False
+            return self
 
         pictures.write({"date": image_date})
         return pictures

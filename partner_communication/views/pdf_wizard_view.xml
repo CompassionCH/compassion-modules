@@ -6,7 +6,7 @@
             <form>
                 <field name="state" invisible="1" />
                 <group invisible="state not in ('physical', 'both')">
-                    <field name="preview" widget="image" width="500" />
+                    <field name="preview" />
                 </group>
                 <div invisible="state not in ('digital', 'both')">
                     <field name="body_html" />

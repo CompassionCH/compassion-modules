@@ -1,0 +1,157 @@
+<odoo>
+    <record id="report_correspondence" model="ir.actions.report">
+        <field name="name">Correspondence Report</field>
+        <field name="model">correspondence</field>
+        <field
+      name="report_name"
+    >sbc_compassion.correspondence_report_qweb</field>
+        <field
+      name="print_report_name"
+    >object.name or object.kit_identifier</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="model_correspondence" />
+        <field name="binding_type">report</field>
+    </record>
+    <template id="correspondence_report_qweb">
+        <t t-call="web.basic_layout">
+            <style type="text/css">
+.container {
+  padding: 0;
+}
+      </style>
+            <t t-foreach="docs" t-as="letter">
+                <t t-foreach="letter.page_ids" t-as="page">
+                    <div class="page" style="page-break-after:always;">
+                        <div
+              class="image-container w-100"
+              style="position: relative;display: inline-block;"
+            >
+                            <t
+                t-set="background"
+                t-value="page.fetch_image()"
+              />
+                            <img
+                t-if="background"
+                t-attf-src="data:image/jpeg;base64,{{background}}"
+                class="w-100"
+              />
+                            <t t-if="letter.report_needs_overlay">
+                                <div
+                  class="overlay w-100 p-4"
+                  style="position: absolute; top:0; left:0"
+                >
+                                    <t
+                    t-call="sbc_compassion.correspondence_header"
+                    t-if="letter.report_needs_original_text and page_index % 2 == 0"
+                  />
+                                </div>
+                                <t
+                  t-foreach="page.paragraph_ids"
+                  t-as="text_box"
+                >
+                                    <div
+                    class="overlay"
+                    t-if="letter.report_needs_original_text"
+                    t-att-style="text_box.fetch_style('original_text')"
+                  >
+                                        <t
+                      t-foreach="text_box.original_text.split('\n')"
+                      t-as="p"
+                    >
+                                            <p t-out="p" />
+                                        </t>
+                                    </div>
+                                    <div
+                    class="overlay"
+                    t-if="letter.report_needs_final_text"
+                    t-att-style="text_box.fetch_style('translated_text')"
+                  >
+                                        <t
+                      t-foreach="text_box.translated_text.split('\n')"
+                      t-as="p"
+                    >
+                                            <p t-out="p" />
+                                        </t>
+                                    </div>
+                                    <div
+                    class="overlay"
+                    t-if="letter.report_needs_english_text"
+                    t-att-style="text_box.fetch_style('english_text')"
+                  >
+                                        <t
+                      t-foreach="text_box.english_text.split('\n')"
+                      t-as="p"
+                    >
+                                            <p t-out="p" />
+                                        </t>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="len(letter.page_ids) % 2 == 1">
+                    <div class="page p-2" style="page-break-after: always">
+                        <p />
+                    </div>
+                </t>
+                <t
+          t-if="letter.report_needs_original_text"
+          t-foreach="letter.get_attachments_per_page()"
+          t-as="attachments_page"
+        >
+                    <div
+            t-if="attachments_page_value[0]"
+            class="page p-5"
+            style="page-break-after:always;"
+          >
+                        <t t-if="attachments_page_index % 2 == 0">
+                            <t t-call="sbc_compassion.correspondence_header" />
+                        </t>
+                        <h1 class="text-center text-uppercase">
+                            <span>Additional pictures</span>
+                            <t t-if="attachments_page_size &gt; 1">
+                                <t
+                  t-out="'(' + str(attachments_page_index+1) + '/' + str(attachments_page_size) +  ')'"
+                />
+                            </t>
+                        </h1>
+                        <t
+              t-foreach="attachments_page_value"
+              t-as="attachments_row"
+            >
+                            <div class="row mx-5 my-5">
+                                <t
+                  t-foreach="attachments_row_value"
+                  t-as="attachment"
+                >
+                                    <div class="col-6 px-4">
+                                        <img
+                      t-if="attachment"
+                      t-attf-src="data:image/jpeg;base64,{{attachment}}"
+                      class="w-100"
+                    />
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <template id="correspondence_header">
+        <t t-set="child" t-value="letter.sponsorship_id.child_id" />
+        <t t-set="sponsor" t-value="letter.sponsorship_id.partner_id" />
+        <div class="d-flex flex-row-reverse">
+            <span
+        t-out="f'{sponsor.global_id} - {sponsor.preferred_name or sponsor.firstname}'"
+      />
+        </div>
+        <div class="d-flex flex-row-reverse">
+            <span
+        t-out="f'{child.global_id} - {child.preferred_name} - {child.gender} - {child.age}'"
+      />
+        </div>
+    </template>
+</odoo>

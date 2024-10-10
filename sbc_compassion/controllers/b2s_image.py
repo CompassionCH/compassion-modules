@@ -25,18 +25,13 @@ from odoo.addons.web.controllers.main import content_disposition
 _logger = logging.getLogger(__name__)
 
 
-def _get_data(letter, file_type=None):
-    if letter.letter_format == "zip" and file_type == "pdf":
-        # Force pdf usage if a zip is stored in database
-        data = letter.generate_original_pdf()
-        fname = letter.file_name
+def _get_data(letter):
+    # Use the data type that is stored in database
+    data = letter.get_pdf()
+    if letter.letter_format == "zip":
+        fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
     else:
-        # Use the data type that is stored in database
-        data = letter.get_image()
-        if letter.letter_format == "zip":
-            fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
-        else:
-            fname = f"{letter.get_date('create_date')}-{letter.file_name}"
+        fname = f"{letter.get_date('create_date')}-{letter.file_name}"
     return data, fname
 
 
@@ -60,7 +55,7 @@ def _fill_archive(buffer, letters, file_path=""):
     with ZipFile(buffer, "a") as archive:
         for letter in letters:
             try:
-                data, fname = _get_data(letter, file_type="pdf")
+                data, fname = _get_data(letter)
                 if not data:
                     raise ValueError
             except ValueError:
@@ -71,20 +66,18 @@ def _fill_archive(buffer, letters, file_path=""):
 
 class RestController(http.Controller):
     @http.route("/b2s_image", type="http", auth="public", methods=["GET"])
-    # We don't want to rename parameter id because it's used by our sponsors
-    # pylint: disable=redefined-builtin
-    def handler_b2s_image(self, id=None, disposition=None, type=None, **parameters):
+    def handler_b2s_image(self, uuid=None, disposition=None, **parameters):
         """Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
 
         """
-        if id is None:
+        if uuid is None:
             raise BadRequest()
         headers = request.httprequest.headers
         self._validate_headers(headers)
         correspondence_obj = request.env["correspondence"].sudo()
-        correspondence = correspondence_obj.search([("uuid", "=", id)])
+        correspondence = correspondence_obj.search([("uuid", "=", uuid)])
         if not correspondence:
             raise NotFound()
         correspondence.email_read = datetime.now()
@@ -92,7 +85,7 @@ class RestController(http.Controller):
         content_type = "application/" + (
             "zip" if correspondence.letter_format == "zip" else "pdf"
         )
-        data, fname = _get_data(correspondence, type)
+        data, fname = _get_data(correspondence)
         headers = Headers([("Content-Disposition", f"{disposition}; filename={fname}")])
         return Response(data or "No data", content_type=content_type, headers=headers)
 
