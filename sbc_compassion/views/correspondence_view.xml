@@ -166,10 +166,6 @@
                         </group>
                         <group>
                             <field
-                name="translator"
-                attrs="{'invisible': [('translator', '=', False)]}"
-              />
-                            <field
                 name="translation_language_id"
                 options="{'create':False}"
               />
