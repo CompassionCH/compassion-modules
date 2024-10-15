@@ -153,6 +153,7 @@
               />
                             <field name="communication_config_id" />
                             <field name="ambassador_config_id" />
+                            <field name="ambassador_sponsorship_config_id" />
                         </group>
                         <group class="oe_red">
                             <field

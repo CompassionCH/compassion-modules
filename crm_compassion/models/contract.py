@@ -44,3 +44,18 @@ class Contracts(models.Model):
                         "message": hold.comments,
                     }
                 }
+
+    def contract_waiting(self):
+        super().contract_waiting()
+        for contract in self:
+            notif_template = (
+                contract.origin_id.event_id.ambassador_sponsorship_config_id
+            )
+            if notif_template and contract.ambassador_id:
+                self.env["partner.communication.job"].create(
+                    {
+                        "config_id": notif_template.id,
+                        "partner_id": contract.ambassador_id.id,
+                        "object_ids": contract.id,
+                    }
+                )

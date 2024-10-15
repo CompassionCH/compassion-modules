@@ -56,6 +56,12 @@ class EventCompassion(models.Model):
         help="Template used to generate receipts for ambassadors",
         domain=[("model", "=", "account.move.line")],
     )
+    ambassador_sponsorship_config_id = fields.Many2one(
+        "partner.communication.config",
+        "Ambassador Sponsorship Notification",
+        help="Template used to generate sponsorship notifications for ambassadors",
+        domain=[("model", "=", "recurring.contract")],
+    )
     hold_ids = fields.One2many("compassion.hold", "event_id", readonly=True)
     allocate_child_ids = fields.One2many(
         "compassion.child",
