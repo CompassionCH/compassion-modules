@@ -8,13 +8,14 @@
       ref="sbc_compassion.view_correspondence_form"
     />
         <field name="arch" type="xml">
-            <button name="compose_letter_button" position="before">
+            <button name="validate" position="after">
                 <button
           name="send_communication"
           type="object"
           string="Send Communication"
-          class="oe_highlight"
-          attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('communication_state', '=', 'done')]}"
+          class="btn-primary"
+          icon="fa-paper-plane"
+          invisible="state != 'Published to Global Partner' or communication_state == 'done'"
           context="{'force_send': True}"
         />
             </button>

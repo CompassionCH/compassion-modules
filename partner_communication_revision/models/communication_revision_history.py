@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class CommunicationRevisionHistory(models.Model):
@@ -41,14 +41,14 @@ class CommunicationRevisionHistory(models.Model):
         )
     ]
 
-    def name_get(self):
-        names = []
+    @api.depends("revision_number", "revision_date")
+    @api.depends_context("show_revision_date")
+    def _compute_display_name(self):
         for backup in self:
             name = f"{round(backup.revision_number, 2):.2f}"
             if self._context.get("show_revision_date"):
                 name += f" - {backup.revision_date}"
-            names.append((backup.id, name))
-        return names
+            backup.display_name = name
 
     def save_revision_state(self):
         write_fields = [

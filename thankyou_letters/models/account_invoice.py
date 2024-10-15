@@ -9,11 +9,8 @@
 ##############################################################################
 import logging
 from collections import OrderedDict
-from datetime import datetime
 
-from dateutil.relativedelta import relativedelta
-
-from odoo import api, fields, models
+from odoo import fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +29,14 @@ class AccountInvoice(models.Model):
         help="Check to disable thank you letter for donation",
     )
 
-    def action_invoice_paid(self):
+    def _invoice_paid_hook(self):
         """Generate a Thank you Communication when invoice is a donation
         (no sponsorship product inside)
         """
-        res = super().action_invoice_paid()
+        super()._invoice_paid_hook()
         invoices = self._filter_invoice_to_thank()
         if invoices:
             invoices.generate_thank_you()
-        return res
 
     def _compute_amount(self):
         """When invoice is open again, remove it from donation receipt."""
@@ -61,7 +57,7 @@ class AccountInvoice(models.Model):
         res = dict()
         for partner in self.mapped("partner_id"):
             res[partner.id] = self.filtered(
-                lambda i, partner=partner: i.partner_id == partner
+                lambda i, _partner=partner: i.partner_id == _partner
             )
         return OrderedDict(
             sorted(
@@ -71,43 +67,9 @@ class AccountInvoice(models.Model):
             )
         )
 
-    @api.model
-    def thankyou_summary_cron(self):
-        """
-        Sends a summary each month of the donations
-        :return: True
-        """
-        comm_obj = self.env["partner.communication.job"]
-        first = datetime.today().replace(day=1)
-        last_month = first - relativedelta(months=1)
-        user_id = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("thankyou_letters.summary_user_id")
-        )
-        if user_id:
-            partner = self.env["res.users"].browse(int(user_id)).mapped("partner_id")
-            invoices = self.search(
-                [
-                    ("move_type", "=", "out_invoice"),
-                    ("payment_state", "=", "paid"),
-                    ("last_payment", ">=", last_month),
-                    ("last_payment", "<", first),
-                ]
-            )
-            config = self.env.ref("thankyou_letters.config_thankyou_summary")
-            comm_obj.create(
-                {
-                    "config_id": config.id,
-                    "partner_id": partner.id,
-                    "object_ids": invoices.ids,
-                }
-            )
-        return True
-
     def generate_thank_you(self):
         """
-        Creates a thank you letter communication.
+        Creates a thankyou letter communication.
         """
         partners = self.mapped("partner_id").filtered(
             lambda p: p.thankyou_preference != "none"
@@ -146,8 +108,5 @@ class AccountInvoice(models.Model):
             lambda i: i.move_type == "out_invoice"
             and not i.avoid_thankyou_letter
             and any(i.line_ids.mapped("product_id.requires_thankyou"))
-            and (
-                not i.communication_id
-                or i.communication_id.state in ("call", "pending")
-            )
+            and (not i.communication_id or i.communication_id.state == "pending")
         )

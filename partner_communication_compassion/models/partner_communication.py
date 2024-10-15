@@ -142,7 +142,7 @@ class PartnerCommunication(models.Model):
         :return: base64 encoded PDF
         """
         report_str = report_ref._render_qweb_pdf(data["doc_ids"], data)
-        if isinstance(report_str, (list, tuple)):
+        if isinstance(report_str, list | tuple):
             report_str = report_str[0]
         elif isinstance(report_str, bool):
             report_str = ""

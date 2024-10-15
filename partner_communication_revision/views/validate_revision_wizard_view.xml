@@ -8,16 +8,14 @@
             <form>
                 <h3>Well done!</h3>
                 <field name="translation_revision_id" invisible="1" />
-                <div
-          attrs="{'invisible': [('translation_revision_id', '=', False)]}"
-        >
+                <div invisible="not translation_revision_id">
                     <p
           >Now you can select responsible people for the translations.</p>
                     <group>
                         <field name="lang" />
                         <field
               name="translator_user_id"
-              attrs="{'required': [('translation_revision_id', '!=', False)]}"
+              invisible="not translation_revision_id"
             />
                     </group>
                 </div>
@@ -27,14 +25,14 @@
             class="oe_highlight"
             type="object"
             name="set_translator"
-            attrs="{'invisible': [('translation_revision_id', '=', False)]}"
+            invisible="not translation_revision_id"
           />
                     <button
             string="Approve text"
             class="oe_highlight"
             type="object"
             name="approve"
-            attrs="{'invisible': [('translation_revision_id', '!=', False)]}"
+            invisible="not translation_revision_id"
           />
                 </footer>
             </form>

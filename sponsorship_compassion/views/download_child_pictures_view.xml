@@ -53,6 +53,7 @@
         <field name="binding_model_id" ref="model_recurring_contract" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="context">{'default_type': 'headshot'}</field>
     </record>
 
     <record id="action_download_child_pictures_3" model="ir.actions.act_window">

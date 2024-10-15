@@ -29,16 +29,16 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Partner Communications",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
+    "development_status": "Production/Stable",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "partner_communication",
         "partner_salutation",
         "sbc_compassion",
-        "report_wkhtmltopdf_param",  # OCA/reporting-engine
     ],
     "data": [
         "data/major_revision_emails.xml",

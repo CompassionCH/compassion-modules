@@ -56,7 +56,7 @@
             name="reset"
             string="Retry"
             type="object"
-            invisible="state not in ('done', 'cancel')"
+            invisible="state not in ('done', 'cancel', 'failure')"
           />
                     <button
             name="cancel"

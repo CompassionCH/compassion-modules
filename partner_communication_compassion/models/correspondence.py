@@ -7,16 +7,18 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import base64
 import logging
 from datetime import datetime
 from functools import reduce
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import fields, models
+from odoo import api, fields, models
 
-from odoo.addons.sbc_compassion.models.correspondence import DEFAULT_LETTER_DPI
+from odoo.addons.sbc_compassion.models.correspondence import (
+    BOX_SEPARATOR,
+    PAGE_SEPARATOR,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -51,41 +53,37 @@ class Correspondence(models.Model):
         store=True,
         tracking=True,
     )
-    zip_file = fields.Binary()
+    has_valid_language = fields.Boolean(compute="_compute_valid_language", store=True)
 
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    def _compute_letter_format(self):
-        """Letter is zip if it contains a zip attachment"""
+    @api.depends(
+        "supporter_languages_ids",
+        "page_ids",
+        "page_ids.translated_text",
+        "translation_language_id",
+    )
+    def _compute_valid_language(self):
+        """Detect if text is written in the language corresponding to the
+        language_id"""
         for letter in self:
-            if letter.zip_file:
-                letter.letter_format = "zip"
-            else:
-                super(Correspondence, letter)._compute_letter_format()
-
-    def _compute_preferred_dpi(self):
-        """Compute DPI based on letter delivery preference"""
-        for letter in self:
-            letter.preferred_dpi = (
-                DEFAULT_LETTER_DPI
-                if "digital" in letter.letter_delivery_preference and letter.email
-                else PHYSICAL_LETTER_DPI
-            )
+            letter.has_valid_language = False
+            if letter.translated_text and letter.translation_language_id:
+                s = (
+                    letter.translated_text.strip(" \t\n\r.")
+                    .replace(BOX_SEPARATOR, "")
+                    .replace(PAGE_SEPARATOR, "")
+                )
+                if s:
+                    # find the language of text argument
+                    lang = self.env["langdetect"].detect_language(
+                        letter.translated_text
+                    )
+                    letter.has_valid_language = (
+                        lang and lang in letter.supporter_languages_ids
+                    )
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
-    def get_image(self):
-        """Method for retrieving the image"""
-        self.ensure_one()
-        if self.zip_file:
-            data = base64.b64decode(self.zip_file)
-        else:
-            data = super().get_image()
-        return data
-
     def attach_zip(self):
         """
         When a partner gets multiple letters, we make a zip and attach it
@@ -99,31 +97,15 @@ class Correspondence(models.Model):
                 .create({})
             )
             _zip.get_letters()
-            self.write({"zip_file": False})
+            self.write({"sponsor_letter_scan": False})
             letter_attach = self[:1]
-            letter_attach.write(
-                {"zip_file": _zip.download_data, "letter_format": "zip"}
-            )
-            base_url = (
-                self.env["ir.config_parameter"].sudo().get_param("web.external.url")
-            )
-            self.write({"read_url": f"{base_url}/b2s_image?id={letter_attach.uuid}"})
+            letter_attach.write({"sponsor_letter_scan": _zip.download_data})
         return True
 
-    def compose_letter_image(self):
-        """
-        Regenerate communication if already existing
-        """
-        res = super().compose_letter_image()
-        if self.communication_id:
-            self.communication_id.refresh_text()
-        return res
-
-    def process_letter(self):
+    def publish_b2s_letter(self):
         # Prepare the communication when a letter is published
-        res = super().process_letter()
+        super().publish_b2s_letter()
         self.send_communication()
-        return res
 
     def send_communication(self):
         """
@@ -147,11 +129,8 @@ class Correspondence(models.Model):
                 "sbc_compassion.correspondence_type_new_sponsor"
             )
             skip = self.filtered(
-                lambda letter: not letter.letter_image
-                or (
-                    intro_letter in letter.communication_type_ids
-                    and not letter.sponsorship_id.send_introduction_letter
-                )
+                lambda letter: intro_letter in letter.communication_type_ids
+                and not letter.sponsorship_id.send_introduction_letter
             )
             eligible_letters = (self - skip).filtered(
                 lambda letter: letter.sponsorship_id.state == "active"
@@ -171,7 +150,7 @@ class Correspondence(models.Model):
 
         for partner in partners:
             letters = eligible_letters.filtered(
-                lambda letter, partner=partner: letter.partner_id == partner
+                lambda letter, _partner=partner: letter.partner_id == _partner
             )
             is_first = eligible_letters.filtered(
                 lambda letter: letter.communication_type_ids

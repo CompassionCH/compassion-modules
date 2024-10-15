@@ -87,7 +87,7 @@
             name="submit_proposition"
             string="Submit proposition"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_editor', '=', False)]}"
+            invisible="state != 'pending' or not is_editor"
           />
 
                     <!-- Proposition to Approve / Corrections to submit-->
@@ -96,7 +96,7 @@
             name="validate_proposition"
             string="Validate proposition"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
+            invisible="state != 'submit' or not is_editor"
             confirm="This will approve the proposition text."
           />
                     <button
@@ -104,7 +104,7 @@
             name="submit_correction"
             string="Submit corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
+            invisible="state != 'submit' or not is_editor"
           />
 
                     <!-- Corrections to Approve / New Proposition -->
@@ -113,7 +113,7 @@
             name="validate_correction"
             string="Approve corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            invisible="state != 'corrected' or not is_editor"
             confirm="This will approve the corrections."
           />
                     <button
@@ -121,14 +121,14 @@
             name="edit_correction"
             string="Edit corrections"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            invisible="state != 'corrected' or not is_editor"
             confirm="This will discard your original proposition and allow you to edit further the corrected text."
           />
                     <button
             type="object"
             name="discard_correction"
             string="Discard corrections"
-            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            invisible="state != 'corrected' or not is_editor"
             confirm="This will discard corrections and let you start over your proposition."
           />
 
@@ -137,14 +137,14 @@
             type="object"
             name="cancel_approve"
             string="Cancel approval"
-            attrs="{'invisible': ['|', ('state', '!=', 'approved'), '&amp;', ('is_editor', '=', False),('is_editor', '=', False)]}"
+            invisible="state != 'approved' or not is_editor"
           />
 
                     <button
             type="object"
             name="start_single_revision"
             string="Start a revision"
-            states="active"
+            invisible="state != 'active'"
           />
                 </header>
                 <sheet>
@@ -178,13 +178,14 @@
                         <group>
                             <field
                 name="user_id"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': [('state', '!=', 'pending')]}"
+                required="state == 'pending'"
+                readonly="state != 'pending'"
               />
                         </group>
                         <group>
                             <field
                 name="correction_user_id"
-                attrs="{'required': [('state', '=', 'pending')]}"
+                required="state == 'pending'"
               />
                         </group>
                     </group>
@@ -192,43 +193,43 @@
                         <group>
                             <field
                 name="subject"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
+                required="state == 'pending'"
+                readonly="state != 'pending' or not is_editor"
               />
                             <field
                 name="proposition_text"
-                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
+                required="state == 'pending'"
+                readonly="state != 'pending' or not is_editor"
               />
                         </group>
-                        <group
-              attrs="{'invisible': [('proposition_correction', '=', False)]}"
-            >
+                        <group invisible="not proposition_correction">
                             <field
                 name="subject_correction"
-                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
-                states="pending,submit,corrected"
+                readonly="state != 'submit' or not is_editor"
+                invisible="state not in ('pending','submit','corrected')"
               />
                             <field
                 name="proposition_correction"
-                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
-                states="pending,submit,corrected"
+                readonly="state != 'submit' or not is_editor"
+                invisible="state not in ('pending','submit','corrected')"
               />
                         </group>
                         <group
               string="Compare with other translations"
-              attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}"
+              invisible="state not in ('pending', 'submit') or is_master_version"
             >
                             <field
                 name="compare_lang"
-                attrs="{'invisible': [('is_master_version', '=', True)]}"
+                invisible="is_master_version"
               />
                             <field
                 name="compare_subject"
-                attrs="{'invisible': [('is_master_version', '=', True)]}"
+                invisible="is_master_version"
                 readonly="1"
               />
                             <field
                 name="compare_text"
-                attrs="{'invisible': [('is_master_version', '=', True)]}"
+                invisible="is_master_version"
                 readonly="1"
               />
                         </group>

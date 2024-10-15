@@ -13,8 +13,8 @@ from odoo import api, fields, models
 class CommunicationConfig(models.Model):
     _inherit = "partner.communication.config"
 
-    revision_number = fields.Float(default=1.0, readonly=True)
-    revision_date = fields.Date(default=fields.Date.today(), readonly=True)
+    revision_number = fields.Float(default=1.0)
+    revision_date = fields.Date(default=fields.Date.today())
     revision_ids = fields.One2many(
         "partner.communication.revision", "config_id", "Revisions", readonly=False
     )

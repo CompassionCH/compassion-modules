@@ -27,19 +27,19 @@
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
             <tree create="false">
-                <field name="color" invisible="1" />
-                <field name="edit_value" invisible="1" />
+                <field name="color" column_invisible="1" />
+                <field name="edit_value" column_invisible="1" />
                 <button
           name="toggle_edit_value"
           string="Toggle true"
           type="object"
-          attrs="{'invisible':[('edit_value','=',True)]}"
+          invisible="edit_value"
         />
                 <button
           name="toggle_edit_value"
           string="Toggle false"
           type="object"
-          attrs="{'invisible':[('edit_value','=', False)]}"
+          invisible="not edit_value"
         />
                 <field name="short_code" />
                 <field name="name" string="Description" />
@@ -52,7 +52,7 @@
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
             <tree create="false">
-                <field name="color" invisible="1" />
+                <field name="color" column_invisible="1" />
                 <field name="type" />
                 <field name="short_code" />
                 <field name="name" string="Description" />

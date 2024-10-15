@@ -12,7 +12,7 @@
                 <field
           name="partner_communication_config"
           domain="[('model', '=', 'account.move.line')]"
-          attrs="{'invisible': [('requires_thankyou', '=', False)]}"
+          invisible="not requires_thankyou"
         />
                 <field name="success_story_id" />
             </field>

@@ -29,7 +29,7 @@
 {
     "name": "Reminder for contracts",
     "summary": "Reminder features",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "AGPL-3",
     "author": "Compassion CH",
     "development_status": "Production/Stable",

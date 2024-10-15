@@ -13,7 +13,11 @@
     />
         <field name="arch" type="xml">
             <field name="selection_domain" position="before">
-                <field name="res_model" widget="radio" />
+                <field
+          name="res_model"
+          widget="radio"
+          options="{'horizontal': True}"
+        />
             </field>
             <field name="selection_domain" position="attributes">
                 <attribute name="options">{'model': 'res_model'}</attribute>
@@ -27,27 +31,29 @@
         />
                 <field
           name="partner_source"
-          attrs="{'invisible': [('res_model', '!=', 'recurring.contract')]}"
+          invisible="res_model != 'recurring.contract'"
           widget="radio"
+          options="{'horizontal': True}"
         />
             </field>
             <field name="model_id" position="attributes">
                 <attribute
-          name="attrs"
-        >{'required': [('res_model', '=', 'recurring.contract')]}</attribute>
+          name="required"
+        >res_model == 'recurring.contract'</attribute>
                 <attribute name="domain">[('model', '=', res_model)]</attribute>
             </field>
         </field>
     </record>
 
     <!-- Add action in sponsorships to generate communications -->
-    <act_window
-    id="action_generate_communication"
-    name="Generate Communications"
-    res_model="partner.communication.generate.wizard"
-    binding_model="recurring.contract"
-    view_mode="form"
-    target="new"
-    context="{'default_res_model': 'recurring.contract', 'default_selection_domain': [('id', 'in', active_ids)]}"
-  />
+    <record model="ir.actions.act_window" id="action_generate_communication">
+        <field name="name">Generate Communications</field>
+        <field name="res_model">partner.communication.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field
+      name="context"
+    >{'default_res_model': 'recurring.contract', 'default_selection_domain': [('id', 'in', active_ids)]}</field>
+        <field name="binding_model_id" ref="model_recurring_contract" />
+  </record>
 </odoo>

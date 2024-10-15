@@ -10,15 +10,15 @@
             <field name="force_language" position="after">
                 <field
           name="print_subject"
-          attrs="{'invisible': ['|', ('customize_template', '=', False), ('send_mode', '=', 'digital')]}"
+          invisible="send_mode == 'digital' or not customize_template"
         />
                 <field
           name="print_header"
-          attrs="{'invisible': ['|', ('customize_template', '=', False), ('send_mode', '=', 'digital')]}"
+          invisible="send_mode == 'digital' or not customize_template"
         />
                 <field
           name="success_story_id"
-          attrs="{'invisible': [('customize_template', '=', False)]}"
+          invisible="not customize_template"
         />
             </field>
         </field>

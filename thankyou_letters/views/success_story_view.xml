@@ -19,15 +19,17 @@
               />
                             <field
                 name="date_start"
-                attrs="{'invisible': [('type', '=', 'sentence')]}"
+                invisible="type == 'sentence'"
+                readonly="state != 'new'"
               />
                             <field
                 name="date_stop"
-                attrs="{'invisible': [('type', '=', 'sentence')]}"
+                invisible="type == 'sentence'"
+                readonly="state != 'new'"
               />
                             <field
                 name="is_active"
-                attrs="{'invisible': [('type', '=', 'story')]}"
+                invisible="type == 'story'"
               />
                             <field name="print_count" />
                         </group>
@@ -35,12 +37,13 @@
                     <group>
                         <field
               name="body"
-              widget="text_ckeditor4"
-              attrs="{'invisible': [('type', '!=', 'story')]}"
+              widget="ace"
+              options="{'type': 'html', 'mode': 'html'}"
+              invisible="type != 'story'"
             />
                         <field
               name="body_text"
-              attrs="{'invisible': [('type', '!=', 'sentence')]}"
+              invisible="type != 'sentence'"
             />
                     </group>
                 </sheet>

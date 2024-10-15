@@ -31,8 +31,8 @@
             <group name="general_config" position="after">
                 <group string="Revisions">
                     <group colspan="4">
-                        <field name="revision_number" />
-                        <field name="revision_date" />
+                        <field name="revision_number" readonly="1" />
+                        <field name="revision_date" readonly="1" />
                         <field name="revision_ids">
                             <tree
                 decoration-primary="state in ('pending','submit','corrected')"
@@ -40,8 +40,11 @@
                 decoration-muted="is_old_version"
                 editable="bottom"
               >
-                                <field name="is_old_version" invisible="1" />
-                                <field name="config_id" invisible="1" />
+                                <field
+                  name="is_old_version"
+                  column_invisible="1"
+                />
+                                <field name="config_id" column_invisible="1" />
                                 <field
                   name="lang"
                   widget="selection"
@@ -56,7 +59,7 @@
                   icon="fa-file"
                   context="{'config_id': config_id}"
                   string="Edit revision text"
-                  attrs="{'invisible': [('state', 'in', ['approved', 'active'])]}"
+                  invisibile="state in ('approved', 'active')"
                 />
                                 <field
                   name="active_revision_id"
@@ -78,21 +81,21 @@
                   type="object"
                   icon="fa-edit"
                   string="Correct active text"
-                  attrs="{'invisible': [('is_old_version', '=', True)]}"
+                  invisibile="is_old_version"
                 />
                                 <button
                   name="new_revision"
                   type="object"
                   icon="fa-plus-square"
                   groups="base.group_erp_manager"
-                  attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'approved')]}"
+                  invisibile="is_old_version or state != 'approved'"
                 />
                                 <button
                   name="duplicate_revision"
                   type="object"
                   icon="fa-copy"
                   string="Duplicate"
-                  attrs="{'invisible': [('is_old_version', '=', False)]}"
+                  invisibile="not is_old_version"
                 />
                                 <field name="state" readonly="1" />
                             </tree>

@@ -1,4 +1,5 @@
 babel
+bs4
 iso639-lang
 jwt
 langdetect
@@ -9,4 +10,5 @@ pyquery
 pyquerystring
 pytz
 pyzbar
+regex
 timezonefinder
