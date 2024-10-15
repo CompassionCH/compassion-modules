@@ -63,8 +63,8 @@ class Partner(models.Model):
                  interactions exist further in the past.
         """
         self.ensure_one()
-        # Each page shows interactions for one year
-        years_to_fetch = 1
+        # Each page shows interactions for two years
+        years_to_fetch = 2
         years = page * years_to_fetch
         # Do not fetch invalid negative years interactions
         if years > dt.now().year:
