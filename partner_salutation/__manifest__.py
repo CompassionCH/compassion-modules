@@ -30,7 +30,7 @@
 {
     "name": "Compassion Partner Communications",
     "summary": "Adds a salutation field on partners",
-    "version": "14.0.1.0.0",
+    "version": "16.0.1.0.0",
     "development_status": "Beta",
     "category": "Partner Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
