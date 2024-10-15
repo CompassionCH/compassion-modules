@@ -23,10 +23,10 @@
           name="preview_html"
           widget="html"
           options='{"safe": True}'
-          attrs="{'readonly': [('state','=','active_revision')]}"
+          readonly="state == 'active_revision'"
         />
                 <hr />
-                <div states="active_revision">
+                <div invisible="state != 'active_revision'">
                     Choose an example of <field
             name="model_desc"
             class="oe_inline"
@@ -45,7 +45,7 @@
           string="Refresh preview"
           class="oe_highlight"
         />
-                <group attrs="{'invisible': [('preview_html', '=', False)]}">
+                <group invisible="not preview_html">
                     <field name="pdf_name" invisible="1" />
                     <field name="pdf_page_count" />
                     <field

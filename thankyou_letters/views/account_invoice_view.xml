@@ -10,16 +10,13 @@
                     <label for="avoid_thankyou_letter" />
                 </div>
                 <field name="avoid_thankyou_letter" nolabel="1" />
-                <div
-          class="o_td_label"
-          attrs="{'invisible': [('communication_id', '=', False)]}"
-        >
+                <div class="o_td_label" invisible="not communication_id">
                     <label for="communication_id" />
                 </div>
                 <field
           name="communication_id"
           nolabel="1"
-          attrs="{'invisible': [('communication_id', '=', False)]}"
+          invisible="not communication_id"
         />
             </xpath>
         </field>

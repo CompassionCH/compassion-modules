@@ -14,15 +14,15 @@
             <field name="subject" position="after">
                 <field
           name="print_subject"
-          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+          invisible="send_mode not in ('physical','both')"
         />
                 <field
           name="print_header"
-          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+          invisible="send_mode not in ('physical','both')"
         />
                 <field
           name="show_signature"
-          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+          invisible="send_mode not in ('physical','both')"
         />
             </field>
         </field>
@@ -68,28 +68,28 @@
                 <field name="user_id" />
                 <field name="state" />
                 <field name="need_call" />
-                <field name="activity_ids" invisible="1" />
+                <field name="activity_ids" column_invisible="1" />
                 <field name="sent_date" />
                 <button
           name="send"
           string="Send Now"
           type="object"
           icon="fa-paper-plane-o"
-          states='pending'
+          invisible="state != 'pending'"
         />
                 <button
           name="reset"
           string="Retry"
           type="object"
           icon="fa-undo"
-          states='done,cancel'
+          invisible="state not in ('done','cancel')"
         />
                 <button
           name="cancel"
           string="Cancel"
           type="object"
           icon="fa-ban"
-          states='pending'
+          invisible="state != 'pending'"
         />
             </tree>
         </field>

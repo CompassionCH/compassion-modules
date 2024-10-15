@@ -29,12 +29,8 @@ class SuccessStory(models.Model):
     )
     body = fields.Html(translate=True, sanitize=False)
     body_text = fields.Text(translate=True)
-    date_start = fields.Date(
-        readonly=True, states={"new": [("readonly", False)]}, copy=False
-    )
-    date_stop = fields.Date(
-        readonly=True, states={"new": [("readonly", False)]}, copy=False
-    )
+    date_start = fields.Date(copy=False)
+    date_stop = fields.Date(copy=False)
     is_active = fields.Boolean(copy=False)
     state = fields.Selection(
         [("new", "New"), ("active", "Active"), ("used", "Used")],

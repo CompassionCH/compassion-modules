@@ -804,8 +804,8 @@ class CommunicationJob(models.Model):
                         self.refresh_text()
         except Exception as e:
             _logger.error("Couldn't refresh the communication for printing")
-            self.env.cr.rollback()
             self.write({"state": "failure", "body_html": str(e)})
+        finally:
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)

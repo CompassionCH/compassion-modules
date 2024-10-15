@@ -14,15 +14,5 @@
             <field name="model_id" ref="model_account_move_line" />
             <field name="add_success_story" eval="True" />
         </record>
-
-        <record
-      id="config_thankyou_summary"
-      model="partner.communication.config"
-    >
-            <field name="name">Donation - Summary</field>
-            <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="donation_summary_template" />
-            <field name="model_id" ref="model_account_move" />
-        </record>
     </data>
 </odoo>

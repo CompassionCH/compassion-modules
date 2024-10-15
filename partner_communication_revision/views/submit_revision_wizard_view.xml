@@ -9,11 +9,11 @@
                 <p>This will submit your text to <b><field
               name="reviser_name"
               readonly="1"
-              states="submit"
+              invisible="state != 'submit'"
             /><field
               name="corrector_name"
               readonly="1"
-              states="pending,corrected"
+              invisible="state not in ('pending', 'corrected')"
             /></b>. Add comments to explain what you changed if necessary.</p>
                 <group>
                     <field name="comments" />

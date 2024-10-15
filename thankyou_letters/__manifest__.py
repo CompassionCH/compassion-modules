@@ -28,9 +28,10 @@
 # pylint: disable=C8101
 {
     "name": "Thank You Letters",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
+    "development_status": "Production/Stable",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
@@ -48,7 +49,6 @@
         "report/donation_report.xml",
         "data/email_template.xml",
         "data/communication_config.xml",
-        "data/ir_cron.xml",
         "data/queue_job.xml",
         "views/success_story_view.xml",
         "views/communication_job_view.xml",
