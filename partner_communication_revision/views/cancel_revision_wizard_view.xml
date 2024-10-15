@@ -1,0 +1,26 @@
+<odoo>
+    <record model="ir.ui.view" id="cancel_revision_wizard_form">
+        <field name="name">communication.cancel.proposition.wizard.form</field>
+        <field name="model">partner.communication.cancel.proposition</field>
+        <field name="arch" type="xml">
+            <form>
+                <p
+        >This will set back the text in revision mode. Please select who will be in charge to edit the proposition and add comments to explain why if necessary.</p>
+                <field name="revision_id" invisible="1" />
+                <group>
+                    <field name="revision_mode" />
+                    <field name="user_id" required="1" />
+                    <field name="comments" />
+                </group>
+                <footer>
+                    <button
+            string="Confirm"
+            class="oe_highlight"
+            type="object"
+            name="cancel_revision"
+          />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

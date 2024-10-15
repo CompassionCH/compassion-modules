@@ -1,0 +1,62 @@
+<odoo>
+    <!-- Success Stories -->
+    <record id="success_story_1" model="success.story">
+        <field name="name">Success Story 1</field>
+        <field name="type">story</field>
+        <field name="is_active">True</field>
+        <field name="body" type="xml">
+            <h1>Success Story 1</h1>
+            <p>Hello</p>
+        </field>
+    </record>
+
+    <record id="success_story_2" model="success.story">
+        <field name="name">Success Story 2</field>
+        <field name="type">story</field>
+        <field name="is_active">True</field>
+        <field name="only_when_chosen">True</field>
+        <field name="body" type="xml">
+            <h1>Success Story 2</h1>
+            <p>Only used for Macbooks</p>
+        </field>
+    </record>
+
+    <record id="success_sentence_1" model="success.story">
+        <field name="name">Success Sentence 1</field>
+        <field name="type">sentence</field>
+        <field name="is_active">True</field>
+        <field name="body_text">Success Sentence 1.</field>
+    </record>
+
+    <!-- Associate success story 2 to iPod product -->
+    <record id="product.product_product_11" model="product.product">
+        <field name="success_story_id" ref="success_story_2" />
+        <field name="requires_thankyou">True</field>
+        <field name="thanks_name">a great iPod</field>
+    </record>
+
+    <!-- Enable Thank You for Office Chair -->
+    <record id="product.product_delivery_01" model="product.product">
+        <field name="requires_thankyou">True</field>
+        <field name="thanks_name">a great office chair</field>
+    </record>
+
+    <!-- Disable Thank You for Cabinet with Doors -->
+    <record id="product.product_product_10" model="product.product">
+        <field name="requires_thankyou">False</field>
+    </record>
+
+    <!--  Add a Thank you configuration  -->
+    <record id="thankyou_config_50" model="thankyou.config">
+        <field name="min_donation_amount">50</field>
+        <field name="send_mode">auto_digital_only</field>
+    </record>
+    <record id="thankyou_config_100" model="thankyou.config">
+        <field name="min_donation_amount">100</field>
+        <field name="send_mode">physical</field>
+    </record>
+    <record id="thankyou_config_500" model="thankyou.config">
+        <field name="min_donation_amount">500</field>
+        <field name="send_mode">physical</field>
+    </record>
+</odoo>

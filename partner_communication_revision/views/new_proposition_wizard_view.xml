@@ -1,0 +1,27 @@
+<odoo>
+    <record model="ir.ui.view" id="new_proposition_form">
+        <field name="name">communication.new.proposition.wizard.form</field>
+        <field name="model">partner.communication.new.proposition</field>
+        <field name="arch" type="xml">
+            <form>
+                <h3>Select the master language for the new revision</h3>
+                <field name="lang" />
+                <footer>
+                    <button
+            string="Start new revision"
+            class="oe_highlight"
+            type="object"
+            name="new_proposition"
+          />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_new_proposition" model="ir.actions.act_window">
+        <field name="name">New proposition</field>
+        <field name="res_model">partner.communication.new.proposition</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id='revision_history_action' model='ir.actions.act_window'>
+        <field name="name">Revision history</field>
+        <field name="res_model">partner.communication.revision.history</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_history_form">
+        <field name="name">communication.revision.history.form</field>
+        <field name="model">partner.communication.revision.history</field>
+        <field name="arch" type="xml">
+            <form create="false" duplicate="false" edit="false">
+                <group>
+                    <field name="linked_revision_id" />
+                    <field name="revision_number" />
+                    <group string="Proposition">
+                        <field name="subject" />
+                        <field name="proposition_text" />
+                    </group>
+                    <group string="Active text">
+                        <field name="raw_subject" widget="ace" />
+                        <field name="body_html" widget="ace" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>

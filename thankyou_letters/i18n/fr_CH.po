@@ -1,0 +1,1112 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* thankyou_letters
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-09 19:11+0000\n"
+"PO-Revision-Date: 2024-05-09 21:12+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: thankyou_letters
+#: model:mail.template,body_html:thankyou_letters.thankyou_letter_template_large
+#| msgid ""
+#| "<div>\n"
+#| "                    % set invoice_lines = object.get_objects()\n"
+#| "                    % set donations = invoice_lines.get_donations()\n"
+#| "                    % set partner = object.partner_id\n"
+#| "                    % set ambassadors = invoice_lines.mapped('user_id')."
+#| "filtered('ambassador_quote')\n"
+#| "                </div>\n"
+#| "                <div>\n"
+#| "                    ${partner.salutation},\n"
+#| "                    <br/>\n"
+#| "                    <br/>\n"
+#| "                    Compassion Switzerland thank you so much for your "
+#| "generous donation of CHF ${donations[0]}.- you made\n"
+#| "                    % if donations[1]:\n"
+#| "                        % if len(ambassadors) == 1:\n"
+#| "                            <!-- space --> for ${ambassadors.firstname} "
+#| "${ambassadors.lastname}\n"
+#| "                        % else:\n"
+#| "                            <!-- space --> (${donations[1]}).\n"
+#| "                        % endif\n"
+#| "                    % else\n"
+#| "                        .\n"
+#| "                    % endif\n"
+#| "                    <br/>\n"
+#| "                    <br/>\n"
+#| "                    % if len(ambassadors) == 1:\n"
+#| "                        ${ambassadors.ambassador_quote |safe}\n"
+#| "                        <br/>\n"
+#| "                    % endif\n"
+#| "                    % if object.event_id.thank_you_text:\n"
+#| "                        ${object.event_id.thank_you_text |safe}\n"
+#| "                    % endif\n"
+#| "                    % if partner.number_sponsorships:\n"
+#| "                        Did you write to your child recently? Our new "
+#| "website allows you to write a letter online.\n"
+#| "                        Why not take advantage of this and write a letter "
+#| "this week?\n"
+#| "                    % else:\n"
+#| "                        % if partner.is_new_donor:\n"
+#| "                            Since 1952, Compassion has one goal: free as "
+#| "much as possible children from extreme poverty.\n"
+#| "                            In partnership with 7'000 local churches, we "
+#| "can support and help 1.8 million children in 25 countries from the "
+#| "South.\n"
+#| "                            <br/>\n"
+#| "                            <br/>\n"
+#| "                        % endif\n"
+#| "                            Do you have a heart for children in need? "
+#| "Compassion offers you various ways to contribute.\n"
+#| "                            One is through the sponsorship. You can find "
+#| "information in French, German and Italian on our website www.compassion."
+#| "ch\n"
+#| "                            or call us at 0800 874 773.\n"
+#| "                    % endif\n"
+#| "                    <br/>\n"
+#| "                    <br/>\n"
+#| "                    Thanks again for your generosity towards the children "
+#| "in need.\n"
+#| "                    <br/>\n"
+#| "                    <br/>\n"
+#| "                    Yours sincerely\n"
+#| "                </div>\n"
+#| "            "
+msgid ""
+"<div>\n"
+"                    % set invoice_lines = object.get_objects()\n"
+"                    % set invoices = invoice_lines.mapped('invoice_id')\n"
+"                    % set donations = invoice_lines.get_donations()\n"
+"                    % set partner = object.partner_id\n"
+"                    % set products = invoice_lines.mapped('product_id')\n"
+"                    % set gift = 'gift' in invoice_lines.mapped('invoice_id."
+"invoice_type')\n"
+"                    % set ambassadors = invoice_lines.mapped('user_id')."
+"filtered('advocate_details_id.quote')\n"
+"                    % set prenoms = invoice_lines.mapped('contract_id."
+"child_id').get_list('preferred_name', 3, 'your children', False)\n"
+"                    % set currency = invoices[0].currency_id.name\n"
+"% set wash = '6012' in invoice_lines.mapped('account_id.code') or '6004' in "
+"invoice_lines.mapped('account_id.code')\n"
+"                </div>\n"
+"                <div>\n"
+"                    ${partner.salutation},\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Your gift of ${donations[0]}\n"
+"                    % if ambassadors and not gift:\n"
+"                        <!-- space --> for ${ambassadors."
+"get_list('full_name')}'s project\n"
+"                    % endif\n"
+"                    % if donations[1]:\n"
+"                        <!-- space --> for ${donations[1]}\n"
+"                        % if gift:\n"
+"                            <!-- space --> for ${prenoms}\n"
+"                        % endif\n"
+"                    % endif\n"
+"                    <!-- space --> has been well received. Please accept our "
+"heartfelt thanks for your generosity towards helping the poorest children of "
+"this world.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % if len(ambassadors) == 1 and not gift:\n"
+"                        <div id=\"ambassador_quote\">\n"
+"                            ${ambassadors.thank_you_quote |safe}\n"
+"                        </div>\n"
+"                    % else:\n"
+"                        Along with our 8600 partner churches in 27 countries "
+"in the global south, we are currently able to support 2,3 million children. "
+"The ultimate goal is to permanently release children from poverty – in "
+"Jesus’ name. Thank you very much for being a part of it!\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    % endif\n"
+"                    % if partner.number_sponsorships and partner."
+"sponsorship_ids and 47 not in products.ids:\n"
+"                        The letters received by children truly provides them "
+"with encouragement. Have you recently written to your sponsored child? Our "
+"website allows you to write a letter online. Even better news is that the "
+"time taken to send the letters has been substantially reduced, thanks to the "
+"new technology!\n"
+"                                 <br/>\n"
+"                                 <br/>\n"
+"                    % else:\n"
+"                        Is the future of the world's poorest children "
+"important to you? Compassion offers different ways and solutions to release "
+"children from poverty. At the heart of Compassion’s ministry is the Child "
+"Sponsorship program. Maybe you would consider sponsoring a child and "
+"offering support and encouragement throughout their development? You can "
+"find further information on\n"
+"www.compassion.ch or you can call us on 0800 874 773.\n"
+"                                 <br/>\n"
+"                                 <br/>\n"
+"                    % endif\n"
+"                    We just want to take this opportunity to thank you once "
+"again for your generosity and support towards these children in need.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Yours sincerely.\n"
+"% if object.send_mode == 'digital':\n"
+"   <br/>\n"
+"   <br/>\n"
+"    Rachel Maglo\n"
+"    <br/>\n"
+"    Donors relation\n"
+"    <br/>\n"
+"    Compassion Switzerland\n"
+"% endif\n"
+"                </div>\n"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:mail.template,body_html:thankyou_letters.donation_summary_template
+msgid ""
+"<div>\n"
+"    % set invoices = object.get_objects()\n"
+"    % set month = invoices.get_date('last_payment', '%B %Y')\n"
+"    % set partner = object.partner_id\n"
+"</div>\n"
+"<div>\n"
+"    ${partner.salutation},\n"
+"    <br>\n"
+"    <br>\n"
+"    Voici un résumé des donations reçues en ${month} :\n"
+"    <br>\n"
+"    <br>\n"
+"    <table style=\"border: 1px solid black; border-collapse: collapse;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Partenaire</th>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Date</th>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Attribution</th>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Montant</th>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Remerciement</th>\n"
+"                    <th style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Raison non-remercié</th>\n"
+"            </tr>\n"
+"            % for p, p_invoices in invoices.group_by_partner().iteritems():\n"
+"                % set donor = p_invoices.mapped('partner_id')\n"
+"                % set comm = p_invoices.mapped('communication_id')[0]\n"
+"                % set date = p_invoices.get_date('last_payment')\n"
+"                % set attribution = ', '.join(p_invoices."
+"mapped('invoice_line_ids.product_id.name') or p_invoices."
+"mapped('invoice_line_ids.name'))\n"
+"                % set total = sum(p_invoices.mapped('amount_total'))\n"
+"                <tr>\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">\n"
+"                        <a href=\"https://erp.compassion.ch/web?#id=${donor."
+"id}&view_type=form&model=res.partner&menu_id=450&action=809\">${donor.name}</"
+"a>\n"
+"                    </td>\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">${date}</td>\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">\n"
+"                        <a href=\"https://erp.compassion.ch/web?"
+"#id=${p_invoices[0].id}&view_type=form&model=account."
+"invoice&menu_id=220&action=241\">\n"
+"                            ${attribution}\n"
+"                        </a>\n"
+"                    </td>\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: right;\">${total}</td>\n"
+"                % if comm and comm.state == 'done':\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">\n"
+"                        <a href=\"https://erp.compassion.ch/web?#id=${comm."
+"id}&view_type=form&model=partner.communication."
+"job&menu_id=717&action=999\">\n"
+"                            Remercié par ${'papier' if comm.send_mode == "
+"'physical' else 'e-mail'}\n"
+"                        </a>\n"
+"                    </td>\n"
+"                % elif comm and comm.state != 'cancel':\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">\n"
+"                        <a href=\"https://erp.compassion.ch/web?#id=${comm."
+"id}&view_type=form&model=partner.communication."
+"job&menu_id=717&action=999\">\n"
+"                            Pas encore remercié\n"
+"                        </a>\n"
+"                    </td>\n"
+"                % else:\n"
+"                    <td style=\"border: 1px solid black; padding-right: 5px; "
+"padding-left: 5px; text-align: center;\">Non remercié</td>\n"
+"                    % if p_invoices.mapped('partner_id').thankyou_letter == "
+"'no':\n"
+"                        <td style=\"border: 1px solid black; padding-right: "
+"5px; padding-left: 5px; text-align: center;\">Volonté du parrain</td>\n"
+"                    % elif p_invoices.mapped('invoice_line_ids.contract_id') "
+"and 'gift' not in p_invoices.mapped('invoice_type'):\n"
+"                        <td style=\"border: 1px solid black; padding-right: "
+"5px; padding-left: 5px; text-align: center;\">Don récurrent</td>\n"
+"                    % else:\n"
+"                         <td style=\"border: 1px solid black; padding-right: "
+"5px; padding-left: 5px; text-align: center;\">Annulé</td>\n"
+"                    % endif\n"
+"                % endif\n"
+"                </tr>\n"
+"            % endfor\n"
+"       </tbody>\n"
+"   </table>\n"
+"</div>\n"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:mail.template,body_html:thankyou_letters.thankyou_letter_template
+msgid ""
+"<style>\n"
+"#ambassador_quote table {border:None !important;}\n"
+"#ambassador_quote td {border:None !important;}\n"
+"</style>\n"
+"<div>\n"
+"   % set invoice_lines = object.get_objects()\n"
+"                    \n"
+"% set donations = invoice_lines.get_donations()\n"
+"                    \n"
+"% set partner = object.partner_id\n"
+"                    \n"
+"% set products = invoice_lines.mapped('product_id')\n"
+"% set total =  sum(invoice_lines."
+"mapped('price_subtotal'))                    \n"
+"% set invoices = invoice_lines.mapped('invoice_id')\n"
+"                    \n"
+"% set gift = 'gift' in invoice_lines.mapped('invoice_id.invoice_category')\n"
+"                    \n"
+"% set prenoms = invoice_lines.mapped('contract_id.child_id')."
+"get_list('preferred_name', 3, 'vos filleuls', False)\n"
+"                    \n"
+"% set ambassadors = invoice_lines.mapped('user_id')\n"
+"                    \n"
+"                         \n"
+"% set currency = invoices[0].currency_id.name\n"
+"  </div>\n"
+"  <div>\n"
+"   ${partner.salutation},\n"
+"   <br>\n"
+"   <br>\n"
+"   Your gift of ${donations[0]}                    \n"
+"% if ambassadors and not gift:\n"
+"   <!-- space -->\n"
+"         % if ambassadors.deathdate!=False:\n"
+"          in memory of  ${ambassadors.get_list('full_name')}\n"
+"        % else:\n"
+"        for the project of ${ambassadors.get_list('full_name')}\n"
+"        % endif\n"
+"% endif \n"
+"     \n"
+"% if donations[1]:\n"
+"\t\n"
+"% if not gift or one:\n"
+"   <!-- space -->\n"
+"        % if round(total/products[0].list_price) >= 12:\n"
+"            % set qty_product = round(total/12/(products[0].list_price or "
+"1))\n"
+"            % set months = 'one year'\n"
+"         % else:\n"
+"            % set qty_product = round(total/(products[0].list_price or 1))\n"
+"            % set months = 'one month'\n"
+"        % endif\n"
+"   ${ donations[1].replace('QTY_PRODUCT',str(qty_product)).replace('MONTHS',"
+"str(months)) }\n"
+"\n"
+"% endif \n"
+"% if gift:\n"
+"   <!-- space -->\n"
+"for ${prenoms}\n"
+"% endif \n"
+"% endif \n"
+"% if 'has been well received' not in donations[1]:\n"
+"has been well received.\n"
+"% endif\n"
+"Please accept our heartfelt thanks for your generosity towards helping "
+"children living in extreme poverty.\n"
+"   <br>\n"
+"   <br>\n"
+"% if len(ambassadors.filtered('advocate_details_id.quote')) == 1 and not "
+"gift and len(ambassadors)==1:\n"
+"<div id=\"ambassador_quote\" style=\"border-width: 0px;\">\n"
+"${ambassadors.advocate_details_id.thank_you_quote |safe}\n"
+"</div>\n"
+"   % else:\n"
+"\t\n"
+"\tAlong with our 8,600 partner churches in 27 countries in the global south, "
+"we are currently able to support 2.3 million children. The ultimate goal is "
+"to permanently release children from poverty – in Jesus’ name. Thank you "
+"very much for being a part of it!\n"
+"   <br>\n"
+"   <br>\n"
+"   % endif \n"
+"     \n"
+"% if partner.number_sponsorships and partner.sponsorship_ids and 47 not in "
+"products.ids:\n"
+"\t\n"
+"% if object.send_mode != 'physical':\n"
+"   <a href=\"https://my.compassion.ch/r/egf\">\n"
+"    Our website allows you to write a letter online.\n"
+"   </a>\n"
+"% else :\n"
+"Our website allows you to write a letter online (www.compassion.ch/ecrire).\n"
+"% endif \n"
+" \n"
+" \n"
+" The letters received by children truly provides them with encouragement. "
+"Have you recently written to your sponsored child?  Even better news is that "
+"the time taken to send the letters has been substantially reduced, thanks to "
+"the new technology!\n"
+"   <br>\n"
+"   <br>\n"
+"   % else:\n"
+"\tIs the future of children important to you? Compassion offers different "
+"ways and solutions to release children from poverty. At the heart of "
+"Compassion’s ministry is the Child Sponsorship program. Maybe you would "
+"consider sponsoring a child and offering support and encouragement "
+"throughout their development? You can find further information on www."
+"compassion.ch or you can call us on 0800 874 773.\n"
+"   <br>\n"
+"   <br>\n"
+"   % endif \n"
+"     We just want to take this opportunity to thank you once again for your "
+"generosity and support towards these children in need.\n"
+"   <br>\n"
+"   <br>\n"
+"   Yours sincerely.\n"
+"% if object.send_mode == 'digital':\n"
+"   <br>\n"
+"   <br>\n"
+"   Rachel Maglo\n"
+"   <br>\n"
+"   Donors relation\n"
+"   <br>\n"
+"   Compassion Suisse\n"
+"% endif\n"
+"  </div>\n"
+" "
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.actions.report,name:thankyou_letters.report_donation
+#| msgid "Event Donations"
+msgid "A4 Donation"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__active
+msgid "Active"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__add_success_story
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_default_config__add_success_story
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__add_success_story
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__add_success_story
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__add_success_story
+msgid "Add Success Story"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_company_address_name
+msgid "Address Name"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_ambassador_id
+#| msgid "Ambassador quote"
+msgid "Ambassador"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__amount
+msgid "Amount"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__min_donation_amount
+msgid "Amount in the local currency to apply the configuration"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move__avoid_thankyou_letter
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_payment__avoid_thankyou_letter
+#| msgid "Thank you letter"
+msgid "Avoid Thankyou Letter"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.cron,cron_name:thankyou_letters.success_story_cron
+#: model:ir.cron,cron_name:thankyou_letters.thank_you_summary_cron
+msgid "Base: Auto-vacuum internal data"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__body
+msgid "Body"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_sentence
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__body_text
+msgid "Body Text"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.donation_document
+msgid "CH-"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
+msgid "Cancel"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
+#: model:ir.model.fields,help:thankyou_letters.field_account_move__avoid_thankyou_letter
+#: model:ir.model.fields,help:thankyou_letters.field_account_payment__avoid_thankyou_letter
+msgid "Check to disable thank you letter for donation"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_partner_communication_job
+msgid "Communication Job"
+msgstr "Communication"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__create_uid
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__create_date
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__current_usage_count
+msgid "Current Usage Count"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__date_communication
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users__date_communication
+#| msgid "Communication Job"
+msgid "Date Communication"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__date_start
+msgid "Date Start"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__date_stop
+msgid "Date Stop"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__display_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:partner.communication.config,name:thankyou_letters.config_thankyou_summary
+msgid "Donation - Summary  (intern)"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:partner.communication.config,name:thankyou_letters.config_thankyou_standard
+msgid "Donation - Thank You"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:mail.template,subject:thankyou_letters.thankyou_letter_template_large
+msgid "Donation Receipt"
+msgstr "Remerciement"
+
+#. module: thankyou_letters
+#: model:ir.actions.act_window,name:thankyou_letters.action_thank_you
+msgid "Donation Receipts"
+msgstr "Remerciements"
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__requires_thankyou
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__requires_thankyou
+#| msgid "Thank you letter"
+msgid "Enable thank you letter"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_event_id
+msgid "Event"
+msgstr "Événement"
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users_valid_mandate_id
+msgid "First Valid Mandate"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_product_product__success_story_id
+#: model:ir.model.fields,help:thankyou_letters.field_product_template__success_story_id
+msgid "Forces a success story when receiving a donation for this product."
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__gender
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_gender
+msgid "Gender"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
+msgid "Group By"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move_line__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__id
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__id
+msgid "ID"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__lang
+msgid ""
+"If specified will only be used with partners that have the same language."
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__need_call
+msgid "Indicates we should have a personal contact with the partner"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_informal_salutation
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users_informal_salutation
+msgid "Informal Salutation"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_res_partner_informal_salutation
+#: model:ir.model.fields,help:thankyou_letters.field_res_users_informal_salutation
+msgid "Informal salutation used in French"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__is_active
+msgid "Is Active"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_is_new_donor
+#| msgid "Is new donor"
+msgid "Is New Donor"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__lang
+msgid "Lang"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story____last_update
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__write_uid
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__write_date
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__min_donation_amount
+msgid "Minimum Donation Amount"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__name
+msgid "Name"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__need_call
+msgid "Need Call"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__new
+msgid "New"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__only_when_chosen
+msgid "Only When Chosen"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_order_index
+msgid "Order Index"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.donation_document
+msgid "P.P."
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_partner_communication_generate_wizard
+msgid "Partner Communication Generation Wizard"
+msgstr ""
+
+#. module: thankyou_letters
+#: code:addons/thankyou_letters/models/success_story.py:0
+#, python-format
+msgid "Period is not valid"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_plural
+msgid "Plural"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.donation_document
+msgid "Poste CH SA"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__print_count
+msgid "Print Count"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__print_header
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_default_config__print_header
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__print_header
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__print_header
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__print_header
+msgid "Print Header"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__print_subject
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_default_config__print_subject
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__print_subject
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__print_subject
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__print_subject
+msgid "Print Subject"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_product_product
+msgid "Product"
+msgstr "Produit"
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_product_template
+msgid "Product Template"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
+msgid "Retry"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:mail.template,subject:thankyou_letters.donation_summary_template
+msgid "Résumé des donations"
+msgstr "Résumé des donations"
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_salutation
+msgid "Salutation"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__send_mode
+msgid "Send Mode"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
+msgid "Send Now"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.cron,name:thankyou_letters.thank_you_summary_cron
+msgid "Send monthly donation summary"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__sentence
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
+msgid "Sentence"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_success_story__only_when_chosen
+msgid ""
+"Set this to use the story only for given products or when manually chosen. "
+"The story won't be used automatically."
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,help:thankyou_letters.field_product_product__requires_thankyou
+#: model:ir.model.fields,help:thankyou_letters.field_product_template__requires_thankyou
+msgid ""
+"Set to true to enable thank you letters when invoice line with this product "
+"is reconciled."
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__short_address
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users__short_address
+msgid "Short Address"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__show_signature
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_default_config__show_signature
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_defaults__show_signature
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__show_signature
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__show_signature
+msgid "Show Signature"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users_signature_letter
+msgid "Signature Letter"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__state
+msgid "State"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
+msgid "Status"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__story
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
+msgid "Story"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_sentence_id
+msgid "Success Sentence"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.actions.act_window,name:thankyou_letters.action_success_story
+#: model:ir.ui.menu,name:thankyou_letters.menu_donation_success_story_sales
+msgid "Success Stories"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__success_story_id
+#: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_story_id
+msgid "Success Story"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.cron,name:thankyou_letters.success_story_cron
+msgid "Success Story Activation"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_success_story
+msgid "Success Story: story in a blue layout added in letters."
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_tree
+msgid "Success stories"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__success_story_id
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__success_story_id
+msgid "Success story"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_thankyou_config
+msgid "Thank You Configuration"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.ui.menu,name:thankyou_letters.menu_donation_general
+#| msgid "Thank you letter"
+msgid "Thank you Letters"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__partner_communication_config
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__partner_communication_config
+#| msgid "Thank you text"
+msgid "Thank you config"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.ui.menu,name:thankyou_letters.thank_you_config_item
+msgid "Thank you configuration"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:mail.template,subject:thankyou_letters.thankyou_letter_template
+msgid "Thank you for your support in the fight against poverty!"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_bank_statement_line__communication_id
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_move__communication_id
+#: model:ir.model.fields,field_description:thankyou_letters.field_account_payment__communication_id
+msgid "Thank you letter"
+msgstr "Lettre de remerciement"
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__user_id
+#| msgid "Thanks name"
+msgid "Thanker"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_product__thanks_name
+#: model:ir.model.fields,field_description:thankyou_letters.field_product_template__thanks_name
+#| msgid "Thanks name"
+msgid "Thanks Name"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.actions.act_window,name:thankyou_letters.action_thank_you_config
+#| msgid "Thank you text"
+msgid "Thankyou Config"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__thankyou_preference
+#: model:ir.model.fields,field_description:thankyou_letters.field_res_users__thankyou_preference
+#| msgid "Thankyou preference"
+msgid "Thankyou Preference"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields,field_description:thankyou_letters.field_success_story__type
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
+msgid "Type"
+msgstr ""
+
+#. module: thankyou_letters
+#: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_form
+msgid "Use story only when manually chosen"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__used
+msgid "Used"
+msgstr ""
+
+#. module: thankyou_letters
+#: model:ir.model,name:thankyou_letters.model_partner_communication_defaults
+msgid "partner.communication.defaults"
+msgstr ""
+
+#~ msgid ""
+#~ "<div>\n"
+#~ "                    % set invoice_lines = object.get_objects()\n"
+#~ "                    % set donations = invoice_lines.get_donations()\n"
+#~ "                    % set partner = object.partner_id\n"
+#~ "                    % set ambassadors = invoice_lines.mapped('user_id')."
+#~ "filtered('ambassador_quote')\n"
+#~ "                </div>\n"
+#~ "                <div>\n"
+#~ "                    ${partner.salutation},\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    We thank you for the donation of CHF "
+#~ "${donations[0]}.-\n"
+#~ "                    % if donations[1]:\n"
+#~ "                        you made for ${donations[1]}.\n"
+#~ "                    % else\n"
+#~ "                        you made.\n"
+#~ "                    % endif\n"
+#~ "                    We appreciate your generosity towards the poorest "
+#~ "children of the world.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Thanks to your commitment and the help of 7'000 "
+#~ "church partners in 25 countries from the South,\n"
+#~ "                    we currently can help 1.8 million children. We have "
+#~ "one goal: free them from poverty.\n"
+#~ "                    Thanks again for your support.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    % if partner.number_sponsorships:\n"
+#~ "                        The letters that children receive have a huge "
+#~ "impact by encouraging them. Did you write to your child recently?\n"
+#~ "                        Our new website allows you to write a letter "
+#~ "online. The other good news is that the delivery time has been reduced\n"
+#~ "                        thanks to the digitalization of the process all "
+#~ "through the projects!\n"
+#~ "                    % else:\n"
+#~ "                        Do you have a heart for children in need? "
+#~ "Compassion offers you various ways to contribute.\n"
+#~ "                        One is through the sponsorship. You can find "
+#~ "information in French, German and Italian on our website www.compassion."
+#~ "ch\n"
+#~ "                        or call us at 0800 874 773.\n"
+#~ "                    % endif\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Thanks again for your generosity towards the children "
+#~ "in need.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Yours sincerely\n"
+#~ "                </div>\n"
+#~ "            "
+#~ msgstr ""
+#~ "<div>\n"
+#~ "                    % set invoice_lines = object.get_objects()\n"
+#~ "                    % set donations = invoice_lines.get_donations()\n"
+#~ "                    % set partner = object.partner_id\n"
+#~ "                    % set ambassadors = invoice_lines.mapped('user_id')."
+#~ "filtered('ambassador_quote')\n"
+#~ "                </div>\n"
+#~ "                <div>\n"
+#~ "                    ${partner.salutation},\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Votre don de CHF ${donations[0]}.-\n"
+#~ "                    % if donations[1]:\n"
+#~ "                        <!-- space --> pour ${donations[1]}\n"
+#~ "                    % endif\n"
+#~ "                    <!-- space --> nous est bien parvenu. Merci de tout "
+#~ "coeur de votre élan de générosité en faveur des enfants les plus démunis "
+#~ "de ce monde.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Grâce à votre soutien et à l'engagement de 7000 "
+#~ "Eglises partenaires dans 25 pays du Sud, nous pouvons soutenir 1.8 "
+#~ "millions enfants à l'heure actuelle. Avec un objectif commun: libérer le "
+#~ "plus d'enfants possible durablement de la pauvreté. Merci de tout cœur de "
+#~ "votre don précieux.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    % if partner.number_sponsorships:\n"
+#~ "                        Les courriers que reçoivent les enfants ont un "
+#~ "impact déterminant, pour l'encouragement des enfants. Si vous parrainez "
+#~ "déjà un enfant, avez-vous récemment écrit à votre filleul(e)? Notre "
+#~ "nouveau site internet vous permet d'écrire un courrier directement en "
+#~ "ligne. Autre bonne nouvelle, le délai de transmission des courriers a été "
+#~ "réduit, grâce à l'informatisation du processus jusque dans les centres de "
+#~ "développement de l'enfant!\n"
+#~ "                    % else:\n"
+#~ "                        Le sort des enfants parmi les plus démunis de la "
+#~ "planète vous tient à cœur? Compassion vous propose différentes formes "
+#~ "d'engagements dont le parrainage d'un enfant. Vous trouverez les infos "
+#~ "sur www.compassion.ch ou en nous appelant au 0800 874 773.\n"
+#~ "                    % endif\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Encore une fois, merci de tout coeur de votre "
+#~ "générosité pour les enfants démunis.\n"
+#~ "                    <br/>\n"
+#~ "                    <br/>\n"
+#~ "                    Recevez nos meilleures salutations.\n"
+#~ "                </div>"
+
+#~ msgid "Compassion event"
+#~ msgstr "Événement Compassion"
+
+#~ msgid "Event Donation Receipts"
+#~ msgstr "Remerciements événements"
+
+#~ msgid "General Donations"
+#~ msgstr "Dons"
+
+#~ msgid "Invoice"
+#~ msgstr "Facture"
+
+#~ msgid "Invoice Line"
+#~ msgstr "Ligne de facture"
+
+#~ msgid "Partner"
+#~ msgstr "Partenaire"
+
+#~ msgid ""
+#~ "Set a custom text used in thank you letters for donations linked to an "
+#~ "event and to this partner."
+#~ msgstr ""
+#~ "Définissez un texte qui apparaîtra dans les remerciements pour les dons "
+#~ "d'événements en faveur de cette personne."

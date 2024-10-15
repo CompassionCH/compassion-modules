@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!--
+        Resource: utm.campaign
+        -->
+        <record id="utm_campaign_communication" model="utm.campaign">
+            <field name="name">Odoo communication</field>
+        </record>
+    </data>
+</odoo>

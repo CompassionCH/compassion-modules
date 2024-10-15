@@ -1,0 +1,27 @@
+<odoo>
+    <!-- Add donation receipts in views -->
+    <record id="view_invoice_form_donation" model="ir.ui.view">
+        <field name="name">account.invoice.donation.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='header_right_group']">
+                <div class="o_td_label">
+                    <label for="avoid_thankyou_letter" />
+                </div>
+                <field name="avoid_thankyou_letter" nolabel="1" />
+                <div
+          class="o_td_label"
+          attrs="{'invisible': [('communication_id', '=', False)]}"
+        >
+                    <label for="communication_id" />
+                </div>
+                <field
+          name="communication_id"
+          nolabel="1"
+          attrs="{'invisible': [('communication_id', '=', False)]}"
+        />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,234 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Hold Removal Notification -->
+        <record id="email_hold_removal" model="mail.template">
+            <field name="name">Participant Hold Removal</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >Child ${object.get_objects().child_id.local_id} removal notification</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set hold = object.get_objects()
+                    % set owner = object.partner_id.firstname
+                    % set child_code = hold.child_id.local_id
+                    % set child_name = hold.child_id.name
+                </div>
+                <p>
+                    Dear ${owner},
+                    <br />
+                    <br />
+                    We just learned that the child ${child_name} with ref. ${child_code} is no longer available for sponsorship.
+                    The following comments were received : ${hold.comments}
+                    <br />
+                    <br />
+                    If you have the childpack, please don't use it.
+                    <br />
+                    <br />
+                    Yours sincerely
+                </p>
+            </field>
+        </record>
+
+        <!-- New picture e-mail -->
+        <record id="email_biennial" model="mail.template">
+            <field name="name">New Biennial</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >New photo for ${object.get_objects().get_list('firstname', 3, 'your children')}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set child = object.get_objects()
+                    % set firstname = child.get_list('firstname', 3, 'many children')
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br />
+                    <br />
+                    A warm thank you for supporting ${firstname}. Compassion Switzerland is delighted to send you a new photo of your sponsored child. You will see how ${child.get('he') + ' ' + child.get('has')} grown!
+                    % if object.send_mode == 'both':
+                        <br />
+                        <br />
+                        We will send you the printed picture as we used to do in the following weeks. In case you don't need it, or you want to stop receiving pictures by e-mail, please let us know by answering to this e-mail.
+                    % endif
+                    <br />
+                    <br />
+                    Thanks to your generosity, the Compassion staff offer a stable environment, support and different activities. ${child.get('your sponsored child').capitalize()} can develop on a personal, educational, spiritual and medical level.
+                    Through your sponsorship, you also allow ${child.get('him')} to have a special relationship with somebody living on the other side of the world.
+                    % if object.send_mode == 'physical':
+                        Enclosed, you will find writing paper which will enable you to write to ${child.get('your sponsored child')} and to send a new photo of yourself.
+                    % endif
+                    Thank you very much for your commitment to Compassion to release children from poverty in Jesus’ name.
+                    <br />
+                    <br />
+                    Yours sincerely
+                </p>
+            </field>
+        </record>
+
+        <!-- E-mail for new Child Notes -->
+        <record id="email_child_notes" model="mail.template">
+            <field name="name">New Child Notes</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >New notes for ${object.get_objects().get_list('firstname', 3, 'your children')}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set child = object.get_objects()
+                    % set firstname = child.get_list('firstname', 3, 'many children')
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br />
+                    <br />
+                    A warm thank you for supporting ${firstname}. We received new information from the project about ${child.get('your sponsored child')}:
+                    <br />
+                    <br />
+                    <i>${child.note_ids[0].body}</i>
+                    <br />
+                    <br />
+                    Yours sincerely
+                </p>
+            </field>
+        </record>
+
+        <!-- E-mail for Disaster Alert -->
+        <record id="email_disaster_alert" model="mail.template">
+            <field name="name">Disaster Alert</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >Disaster alert in ${object.get_objects()[0].child_id.project_id.country_id.name}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set children = object.get_objects().mapped('child_id')
+                    % set disaster = children.mapped('child_disaster_impact_ids.disaster_id')[0]
+                    % set firstname = children.get_list('firstname', 3, 'many children')
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br />
+                    <br />
+                    We want to share with you some news about ${children[0].project_id.country_id.name}, where ${children.get('your sponsored child')} ${'lives' if len(children) == 1 else 'live'}.
+                    <br />
+                    <br />
+                    <b>${disaster.name}</b>
+                    <ul>
+                        <li>Occurred on: ${disaster.disaster_date}</li>
+                        <li>Disaster type: ${disaster.disaster_type}</li>
+                        <li>(internal only: <a
+                href="${disaster.access_link}"
+                target="blank"
+              >details</a>)</li>
+                    </ul>
+                    % if disaster.fcp_disaster_impact_ids:
+                        <b>Project impacts:</b>
+                        % for fcp_impact in disaster.fcp_disaster_impact_ids:
+                            <ul>
+                                <li
+            >Impact description: ${fcp_impact.disaster_impact_description}</li>
+                                <li
+            >Impact on FCP program: ${fcp_impact.impact_on_fcp_program}</li>
+                                <li
+            >Infrastructure: ${fcp_impact.infrastructure}</li>
+                                <li
+            >Impact description: ${fcp_impact.disaster_impact_description}</li>
+                            </ul>
+                        % endfor
+                    % endif
+                    <br />
+                    % for child in children:
+                        % set impact = child.child_disaster_impact_ids[0]
+                        <b>${child.name} - [${child.local_id}]</b>
+                        <ul>
+                            <li
+            >Physical condition: ${impact.beneficiary_physical_condition}
+                                % if impact.beneficiary_physical_condition_description:
+                                    <br
+              />${impact.beneficiary_physical_condition_description}
+                                % endif
+                            </li>
+                            % if impact.house_condition:
+                                <li
+            >House condition: ${impact.house_condition}</li>
+                            % endif
+                            % if impact.siblings_died_number:
+                                <li
+            >Siblings died: ${impact.siblings_died_number}</li>
+                            % endif
+                            % if impact.siblings_seriously_injured_number:
+                                <li
+            >Siblings seriously injured number: ${impact.siblings_seriously_injured_number}</li>
+                            % endif
+                            % if impact.caregivers_died_number:
+                                <li
+            >Caregivers died: ${impact.caregivers_died_number}</li>
+                            % endif
+                            % if impact.caregivers_seriously_injured_number:
+                                <li
+            >Caregivers seriously injured number: ${impact.caregivers_seriously_injured_number}</li>
+                            % endif
+                            % if impact.loss_ids:
+                                <li> Personal effects lost:
+                                    <ul>
+                                        % for loss in impact.loss_ids:
+                                            <li>${loss.name}</li>
+                                        % endfor
+                                    </ul>
+                                </li>
+                            % endif
+                        </ul>
+                    % endfor
+                    <br />
+                    <br />
+                    Yours sincerely
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

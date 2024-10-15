@@ -1,0 +1,32 @@
+<odoo>
+    <record model="ir.ui.view" id="submit_revision_wizard_form">
+        <field name="name">communication.submit.revision.wizard.form</field>
+        <field name="model">partner.communication.submit.revision</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="revision_id" invisible="1" />
+                <field name="state" invisible="1" />
+                <p>This will submit your text to <b><field
+              name="reviser_name"
+              readonly="1"
+              states="submit"
+            /><field
+              name="corrector_name"
+              readonly="1"
+              states="pending,corrected"
+            /></b>. Add comments to explain what you changed if necessary.</p>
+                <group>
+                    <field name="comments" />
+                </group>
+                <footer>
+                    <button
+            string="Confirm"
+            class="oe_highlight"
+            type="object"
+            name="submit"
+          />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
