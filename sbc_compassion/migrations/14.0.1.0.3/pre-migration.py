@@ -1,4 +1,5 @@
 import logging
+
 from openupgradelib import openupgrade
 
 _logger = logging.getLogger(__name__)
@@ -9,8 +10,8 @@ def migrate(env, version):
     cr = env.cr
     cr.execute(
         """
-        SELECT DISTINCT(id) FROM res_partner 
-        WHERE translation_user_id IS NULL 
+        SELECT DISTINCT(id) FROM res_partner
+        WHERE translation_user_id IS NULL
         AND id IN (
             SELECT DISTINCT(translator_id) FROM correspondence c
             WHERE c.translator_id IS NOT NULL
@@ -27,15 +28,17 @@ def migrate(env, version):
             """
             SELECT DISTINCT(new_translator_id) FROM correspondence
             WHERE translator_id = %s;
-        """ % r
+            """,
+            (r,),
         )
         translation_user_ids = [r[0] for r in cr.fetchall()]
         if len(translation_user_ids) == 0:
             _logger.info("Partner link to translation_user not found for id = %s" % r)
             all_missing_links_resolved = False
         elif len(translation_user_ids) > 1:
-            _logger.info("Partner link to translation_user is not unique for id = %s"
-                         % r)
+            _logger.info(
+                "Partner link to translation_user is not unique for id = %s" % r
+            )
             all_missing_links_resolved = False
         else:
             # set the direct link to res_partner -> translation_user
@@ -46,7 +49,11 @@ def migrate(env, version):
                 UPDATE res_partner
                 SET translation_user_id = %s
                 WHERE id = %s;
-                """ % (link, r),
+                """,
+                (
+                    link,
+                    r,
+                ),
             )
     if all_missing_links_resolved:
         # Remove the redundant column translator_id
@@ -64,4 +71,3 @@ def migrate(env, version):
             DROP COLUMN IF EXISTS translator;
         """
     )
-
