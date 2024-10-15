@@ -1,0 +1,68 @@
+<odoo>
+    <!-- Add buttons and communication fields in correspondence views -->
+    <record id="view_correspondence_form_communication" model="ir.ui.view">
+        <field name="name">correspondence.form.communication</field>
+        <field name="model">correspondence</field>
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.view_correspondence_form"
+    />
+        <field name="arch" type="xml">
+            <button name="compose_letter_button" position="before">
+                <button
+          name="send_communication"
+          type="object"
+          string="Send Communication"
+          class="oe_highlight"
+          attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('communication_state', '=', 'done')]}"
+          context="{'force_send': True}"
+        />
+            </button>
+
+            <field name="rework_comments" position="after">
+                <field name="communication_id" />
+                <field name="communication_state" invisible="1" />
+                <field name="sent_date" />
+                <field name="email_read" />
+            </field>
+
+            <field name="supporter_languages_ids" position="after">
+                <field name="letter_delivery_preference" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_correspondence_tree_communication" model="ir.ui.view">
+        <field name="name">correspondence.tree.communication</field>
+        <field name="model">correspondence</field>
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.view_correspondence_tree"
+    />
+        <field name="arch" type="xml">
+            <field name="status_date" position="after">
+                <field name="sent_date" />
+                <field name="email_read" />
+            </field>
+        </field>
+    </record>
+
+    <record id="correspondence_view_search_email" model="ir.ui.view">
+        <field name="name">correspondence.search.email</field>
+        <field name="model">correspondence</field>
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.correspondence_view_search"
+    />
+        <field name="arch" type="xml">
+            <search>
+                <separator />
+                <filter
+          name="unread"
+          string="Unread"
+          domain="[('email_read','=',False)]"
+        />
+            </search>
+        </field>
+    </record>
+</odoo>

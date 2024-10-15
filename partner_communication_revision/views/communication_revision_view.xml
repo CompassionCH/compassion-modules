@@ -1,0 +1,244 @@
+<odoo>
+    <record model="ir.ui.view" id="revision_form">
+        <field name="name">communication.revision.form</field>
+        <field name="model">partner.communication.revision</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+              class="oe_stat_button"
+              name="open_preview"
+              icon="fa-search-plus"
+              string="Preview"
+              type="object"
+            />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="lang" invisible="1" />
+                            <field name="subject" />
+                        </group>
+                        <group>
+                            <field name="raw_subject" widget="ace" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field
+                name="proposition_text"
+                groups="base.group_erp_manager"
+              />
+                        </group>
+                        <group>
+                            <field name="body_html" widget="ace" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_form_readonly">
+        <field name="name">communication.revision.form.readonly</field>
+        <field name="model">partner.communication.revision</field>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+              class="oe_stat_button"
+              name="open_preview"
+              icon="fa-search-plus"
+              string="Preview"
+              type="object"
+            />
+                    </div>
+                    <group>
+                        <field name="lang" invisible="1" />
+                        <field name="raw_subject" />
+                    </group>
+                    <field name="simplified_text" widget="html" readonly="1" />
+                    <group>
+                        <field
+              name="if_keyword_ids"
+              context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"
+            />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_form_proposition">
+        <field name="name">communication.revision.form.proposition</field>
+        <field name="model">partner.communication.revision</field>
+        <field name="priority">7</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="is_editor" invisible="1" />
+                    <field name="is_old_version" invisible="1" />
+                    <field name="state" widget="statusbar" />
+                    <!-- Proposition to submit -->
+                    <button
+            type="object"
+            name="submit_proposition"
+            string="Submit proposition"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_editor', '=', False)]}"
+          />
+
+                    <!-- Proposition to Approve / Corrections to submit-->
+                    <button
+            type="object"
+            name="validate_proposition"
+            string="Validate proposition"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
+            confirm="This will approve the proposition text."
+          />
+                    <button
+            type="object"
+            name="submit_correction"
+            string="Submit corrections"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_editor', '=', False)]}"
+          />
+
+                    <!-- Corrections to Approve / New Proposition -->
+                    <button
+            type="object"
+            name="validate_correction"
+            string="Approve corrections"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            confirm="This will approve the corrections."
+          />
+                    <button
+            type="object"
+            name="edit_correction"
+            string="Edit corrections"
+            class="oe_highlight"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            confirm="This will discard your original proposition and allow you to edit further the corrected text."
+          />
+                    <button
+            type="object"
+            name="discard_correction"
+            string="Discard corrections"
+            attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_editor', '=', False)]}"
+            confirm="This will discard corrections and let you start over your proposition."
+          />
+
+                    <!-- Cancel Approval -->
+                    <button
+            type="object"
+            name="cancel_approve"
+            string="Cancel approval"
+            attrs="{'invisible': ['|', ('state', '!=', 'approved'), '&amp;', ('is_editor', '=', False),('is_editor', '=', False)]}"
+          />
+
+                    <button
+            type="object"
+            name="start_single_revision"
+            string="Start a revision"
+            states="active"
+          />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+              class="oe_stat_button"
+              name="open_preview"
+              icon="fa-search-plus"
+              string="Preview"
+              type="object"
+              context="{'working_revision': True}"
+            />
+                    </div>
+                    <h3><field name="config_id" readonly="1" /></h3>
+                    <field name="is_master_version" invisible="1" />
+                    <div>
+                        <h5>Revision Instructions</h5>
+                        <ul>
+                            <li
+                style="color: darkgreen"
+              >green : keywords or comments that are not part of the text</li>
+                            <li><span
+                  style="color: red"
+                >red : any changes you make</span>, except if you change everything, you can use black</li>
+                            <li><span style="color: blue">blue</span>/<span
+                  style="color: violet"
+                >violet</span> : text for a boy / text for a girl</li>
+                        </ul>
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                name="user_id"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': [('state', '!=', 'pending')]}"
+              />
+                        </group>
+                        <group>
+                            <field
+                name="correction_user_id"
+                attrs="{'required': [('state', '=', 'pending')]}"
+              />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field
+                name="subject"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
+              />
+                            <field
+                name="proposition_text"
+                attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_editor', '=', False), ('state', '!=', 'pending')]}"
+              />
+                        </group>
+                        <group
+              attrs="{'invisible': [('proposition_correction', '=', False)]}"
+            >
+                            <field
+                name="subject_correction"
+                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
+                states="pending,submit,corrected"
+              />
+                            <field
+                name="proposition_correction"
+                attrs="{'readonly': ['|', ('is_editor', '=', False),('state','!=','submit')]}"
+                states="pending,submit,corrected"
+              />
+                        </group>
+                        <group
+              string="Compare with other translations"
+              attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}"
+            >
+                            <field
+                name="compare_lang"
+                attrs="{'invisible': [('is_master_version', '=', True)]}"
+              />
+                            <field
+                name="compare_subject"
+                attrs="{'invisible': [('is_master_version', '=', True)]}"
+                readonly="1"
+              />
+                            <field
+                name="compare_text"
+                attrs="{'invisible': [('is_master_version', '=', True)]}"
+                readonly="1"
+              />
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

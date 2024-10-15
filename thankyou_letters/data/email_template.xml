@@ -1,0 +1,115 @@
+<odoo>
+    <data noupdate="1">
+        <record id="thankyou_letter_template" model="mail.template">
+            <field name="name">Donation - Thank You Letter</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
+            <field name="subject">Donation Receipt</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set invoice_lines = object.get_objects()
+                    % set donations = invoice_lines.get_donations()
+                    % set partner = object.partner_id
+                </div>
+                <div>
+                    ${partner.salutation},
+                    <br />
+                    <br />
+                    We thank you for the donation of CHF ${donations[0]}.-
+                    % if donations[1]:
+                        you made for ${donations[1]}.
+                    % else
+                        you made.
+                    % endif
+                    We appreciate your generosity.
+                    <br />
+                    <br />
+                    Yours sincerely
+                </div>
+            </field>
+        </record>
+
+        <record id="donation_summary_template" model="mail.template">
+            <field name="name">Donation - Summary</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
+            <field name="subject">Résumé des donations</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set invoices = object.get_objects()
+                    % set month = invoices.get_date('date_invoice', '%B %Y')
+                    % set partner = object.partner_id
+                </div>
+                <div>
+                    ${partner.salutation},
+                    <br />
+                    <br />
+                    Voici un résumé des donations reçues en ${month} :
+                    <br />
+                    <br />
+                    <table
+            style="border: 1px solid black; border-collapse: collapse;"
+          >
+                        <tr>
+                            <th
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Partenaire</th>
+                            <th
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Date</th>
+                            <th
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Attribution</th>
+                            <th
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Montant</th>
+                            <th
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Remerciement</th>
+                        </tr>
+                        % for p, p_invoices in invoices.group_by_partner().iteritems():
+                            % set donor = p_invoices.mapped('partner_id')
+                            % set comm = p_invoices.mapped('communication_id')[0]
+                            % set date = p_invoices.get_date('last_payment')
+                            % set attribution = ', '.join(p_invoices.mapped('invoice_line.product_id.name') or p_invoices.mapped('invoice_line.name'))
+                            % set total = sum(p_invoices.mapped('amount_total'))
+                            <tr>
+                                <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >${donor.name}</td>
+                                <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >${date}</td>
+                                <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >${attribution}</td>
+                                <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: right;"
+              >${total}</td>
+                                % if comm and comm.state == 'done':
+                                    <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Remercié par ${'papier' if comm.send_mode == 'physical' else 'e-mail'}</td>
+                                % elif comm and comm.state != 'cancel':
+                                    <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Pas encore remercié</td>
+                                % else:
+                                    <td
+                style="border: 1px solid black; padding-right: 5px; padding-left: 5px; text-align: center;"
+              >Non remercié ${'selon volonté du donateur' if p.thankyou_preference == 'none' else ''}</td>
+                                % endif
+                            </tr>
+                        % endfor
+                    </table>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

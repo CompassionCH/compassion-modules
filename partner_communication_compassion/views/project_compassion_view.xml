@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Compassion project form view -->
+    <record id="project_tpl" model="ir.ui.view">
+        <field name="name">compassion.project.tpl</field>
+        <field name="model">compassion.project</field>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_project_form"
+    />
+        <field name="arch" type="xml">
+                    <notebook>
+                        <page string="Third party letter">
+                            <field name="tpl_item_ids" />
+                        </page>
+                    </notebook>
+        </field>
+    </record>
+</odoo>

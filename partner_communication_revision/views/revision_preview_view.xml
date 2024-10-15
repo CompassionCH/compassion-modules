@@ -1,0 +1,68 @@
+<odoo>
+    <record model="ir.ui.view" id="revision_preview">
+        <field name="name">communication.revision.preview.form</field>
+        <field name="model">partner.communication.revision.preview</field>
+        <field name="arch" type="xml">
+            <form>
+                <!-- Reroute close window button click to the discard button  -->
+                <script>
+                    $('header > button.close').on('click', function (event) {
+                        $('footer > button[name="close"]').click();
+                        event.preventDefault();
+                    });
+                </script>
+                <field name="state" invisible="1" />
+                <field name="model" invisible="1" />
+                <h3>Preview of <field
+            name="name"
+            readonly="1"
+            nolabel="1"
+            class="oe_inline"
+          /></h3>
+                <field
+          name="preview_html"
+          widget="html"
+          options='{"safe": True}'
+          attrs="{'readonly': [('state','=','active_revision')]}"
+        />
+                <hr />
+                <div states="active_revision">
+                    Choose an example of <field
+            name="model_desc"
+            class="oe_inline"
+            readonly="1"
+          /> record:
+                    <field
+            name="res_id"
+            class="oe_inline"
+            style="margin-left: 8px;"
+          />
+                    <hr />
+                </div>
+                <button
+          name="preview"
+          type="object"
+          string="Refresh preview"
+          class="oe_highlight"
+        />
+                <group attrs="{'invisible': [('preview_html', '=', False)]}">
+                    <field name="pdf_name" invisible="1" />
+                    <field name="pdf_page_count" />
+                    <field
+            name="pdf_data"
+            string="PDF preview"
+            filename="pdf_name"
+          />
+                </group>
+                <footer>
+                    <button
+            string="Discard"
+            class="btn-default"
+            type="object"
+            name="close"
+          />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

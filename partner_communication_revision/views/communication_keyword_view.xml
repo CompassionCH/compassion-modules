@@ -1,0 +1,62 @@
+<odoo>
+    <record model="ir.ui.view" id="revision_keyword_form">
+        <field name="name">communication.revision.keyword.form</field>
+        <field name="model">partner.communication.keyword</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" />
+                    <field name="short_code" />
+                    <field name="raw_code" />
+                    <field name="type" />
+                </group>
+                <group>
+                    <group>
+                        <field name="final_text" />
+                    </group>
+                    <group>
+                        <field name="replacement" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_keyword_tree_if">
+        <field name="name">communication.revision.keyword.if.tree</field>
+        <field name="model">partner.communication.keyword</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="color" invisible="1" />
+                <field name="edit_value" invisible="1" />
+                <button
+          name="toggle_edit_value"
+          string="Toggle true"
+          type="object"
+          attrs="{'invisible':[('edit_value','=',True)]}"
+        />
+                <button
+          name="toggle_edit_value"
+          string="Toggle false"
+          type="object"
+          attrs="{'invisible':[('edit_value','=', False)]}"
+        />
+                <field name="short_code" />
+                <field name="name" string="Description" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="revision_keyword_tree">
+        <field name="name">communication.revision.keyword.tree</field>
+        <field name="model">partner.communication.keyword</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="color" invisible="1" />
+                <field name="type" />
+                <field name="short_code" />
+                <field name="name" string="Description" />
+            </tree>
+        </field>
+    </record>
+</odoo>
