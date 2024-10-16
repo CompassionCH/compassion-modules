@@ -1095,7 +1095,7 @@ class SponsorshipContract(models.Model):
         # don't have an amount for the gift
         for contract in self:
             if (
-                    (contract.project_id.hold_gifts and bypass_fcp_state)
+                    (contract.project_id.hold_gifts and not bypass_fcp_state)
                 or getattr(contract, f"{gift_type}_invoice") <= 0
             ):
                 contracts -= contract
