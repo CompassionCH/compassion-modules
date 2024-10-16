@@ -638,7 +638,8 @@ class CommunicationJob(models.Model):
                 try:
                     fields = template_id.with_context(
                         template_preview_lang=lang,
-                        # Allow arbitrary data to be passed to the email template from the context
+                        # Allow arbitrary data to be passed to the email
+                        # template from the context
                         extra_email_data=self.env.context.get("extra_email_data"),
                     ).generate_email(job.ids, ["body_html", "subject"])
                     job.write(
