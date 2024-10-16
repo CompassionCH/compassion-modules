@@ -1049,10 +1049,10 @@ class SponsorshipContract(models.Model):
             .sudo()
             .get_param("sponsorship_compassion.christmas_inv_gen_month", 9)
         )
-        bypass_fcp_state = int(
+        bypass_fcp_state = bool(
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("sponsorship_compassion.bypass_fcp_state", 9)
+            .get_param("sponsorship_compassion.bypass_fcp_state", False)
         )
 
 
