@@ -273,6 +273,9 @@ class CompassionIntervention(models.Model):
 
     def _compute_move_line(self):
         for record in self:
+            # Get the currency of the connected user's company
+            currency_name = record.env.company.currency_id.name
+
             mv_line_expense = record.env["account.move.line"].search(
                 [
                     ("product_id.product_tmpl_id", "=", record.product_template_id.id),
@@ -298,8 +301,8 @@ class CompassionIntervention(models.Model):
 
             total_inc = sum(mv_line_income.mapped("credit"))
             total_exp = sum(mv_line_expense.mapped("debit"))
-            record.total_income = f"{total_inc} CHF"
-            record.total_expense = f"{total_exp} CHF"
+            record.total_income = f"{total_inc} {currency_name}"
+            record.total_expense = f"{total_exp} {currency_name}"
 
     ##########################################################################
     #                              ORM METHODS                               #
