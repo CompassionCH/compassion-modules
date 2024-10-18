@@ -36,3 +36,33 @@ class StaffNotificationSettings(models.TransientModel):
         # Default invoices for Christmas gift are due for two months before Christmas
         default=9,
     )
+
+    christmas_period_start_day = fields.Integer(
+        help="Choose the day from which the Christmas period begins. Postponed "
+        "Christmas letters will be sent at this day and month.",
+        config_parameter="sponsorship_compassion.christmas_period_start_day",
+        default=20,
+    )
+
+    christmas_period_start_month = fields.Integer(
+        help="Choose the month from which the Christmas period begins. Postponed "
+        "Christmas letters will be sent at this day and month.",
+        config_parameter="sponsorship_compassion.christmas_period_start_month",
+        default=12,
+    )
+
+    christmas_period_end_day = fields.Integer(
+        help="Choose the day from which the Christmas period ends. Christmas "
+        "letters written after this day and month will be automatically "
+        "postponed (To the next Christmas period).",
+        config_parameter="sponsorship_compassion.christmas_period_end_day",
+        default=30,
+    )
+
+    christmas_period_end_month = fields.Integer(
+        help="Choose the month from which the Christmas period ends. Christmas "
+        "letters written after this day and month will be automatically "
+        "postponed (To the next Christmas period).",
+        config_parameter="sponsorship_compassion.christmas_period_end_month",
+        default=12,
+    )
