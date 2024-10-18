@@ -35,5 +35,9 @@
         <record id="correspondence_type_supporter" model="correspondence.type">
             <field name="name">Supporter Letter</field>
         </record>
+
+        <record id="correspondence_type_christmas" model="correspondence.type">
+            <field name="name">Christmas Letter</field>
+        </record>
     </data>
 </odoo>

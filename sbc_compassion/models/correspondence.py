@@ -305,6 +305,7 @@ class Correspondence(models.Model):
             ("Reciprocal Letter", _("Reciprocal Letter")),
             ("Scheduled Letter", _("Scheduled")),
             ("Supporter Letter", _("Supporter Letter")),
+            ("Christmas Letter", _("Christmas Letter")),
         ]
 
     @api.depends("sponsorship_id", "communication_type_ids")

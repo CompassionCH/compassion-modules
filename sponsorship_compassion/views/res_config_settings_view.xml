@@ -54,9 +54,37 @@
                                         <field
                       name="christmas_inv_gen_month"
                       class="w-25"
+                    /></div>
+                                    <div class="row">
+                                        <label
+                      for="christmas_period_start_day"
+                      class="col-md-5 o_light_label"
                     />
-                                    </div>
-
+                                        <div class="col row">
+                                            <field
+                        name="christmas_period_start_day"
+                        nolabel="1"
+                      />
+                                            <field
+                        name="christmas_period_start_month"
+                        nolabel="1"
+                      /></div></div>
+                                        <div class="row">
+                                            <label
+                      for="christmas_period_end_day"
+                      class="col-md-5 o_light_label"
+                    />
+                                        <div class="col row">
+                                            <field
+                        name="christmas_period_end_day"
+                        nolabel="1"
+                      />
+                                        <field
+                        name="christmas_period_end_month"
+                        nolabel="1"
+                      />
+                                        </div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
