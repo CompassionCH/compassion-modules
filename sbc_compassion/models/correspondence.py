@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import base64
+import datetime
 import logging
 import threading
 import uuid
@@ -559,21 +560,23 @@ class Correspondence(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def create_commkit(self):
+        valid_christmas_period = self.env["res.config.settings"].is_in_christmas_period(
+            datetime.datetime.now()
+        )
+        messages = self.env["gmc.message"]
         for letter in self:
             action_id = self.env.ref("sbc_compassion.create_letter").id
-            message = self.env["gmc.message"].create(
-                {
-                    "action_id": action_id,
-                    "object_id": letter.id,
-                    "child_id": letter.child_id.id,
-                    "partner_id": letter.partner_id.id,
-                }
-            )
+            message_vals = {
+                "action_id": action_id,
+                "object_id": letter.id,
+                "child_id": letter.child_id.id,
+                "partner_id": letter.partner_id.id,
+            }
             if (
                 letter.sponsorship_id.state not in ("active", "terminated")
                 or letter.child_id.project_id.hold_s2b_letters
             ):
-                message.state = "postponed"
+                message_vals["state"] = "postponed"
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = "Exception"
                     letter.message_post(
@@ -582,7 +585,15 @@ class Correspondence(models.Model):
                         ),
                         subject=_("Project suspended"),
                     )
-        return True
+            if letter.template_id.is_christmas_letter and not valid_christmas_period:
+                message_vals["state"] = "postponed"
+                letter.state = "Exception"
+                letter.message_post(
+                    body=_("Christmas Letter put on hold outside of Christmas Period."),
+                    subject=_("Christmas Hold"),
+                )
+            messages += messages.create(message_vals)
+        return messages
 
     def compose_letter_button(self):
         """Remove old images, download original and compose translation."""
@@ -1086,3 +1097,17 @@ class Correspondence(models.Model):
                 return True
 
         return False
+
+    @api.model
+    def check_postponed_christmas_letters(self):
+        if self.env["res.config.settings"].is_in_christmas_period(
+            datetime.date.today()
+        ):
+            correspondences = self.env["correspondence"].search(
+                [
+                    ("template_id.is_christmas_letter", "=", True),
+                    ("kit_identifier", "=", False),
+                    ("state", "=", "Exception"),
+                ]
+            )
+            correspondences.reactivate_letters(_("Christmas period started"))

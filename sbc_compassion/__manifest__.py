@@ -68,6 +68,7 @@
         "data/correspondence_mappings.xml",
         "data/gmc_action.xml",
         "data/queue_job.xml",
+        "data/correspondence_cron.xml",
     ],
     "demo": [
         "demo/correspondence_template.xml",

@@ -47,6 +47,9 @@
                 height="297px"
               />
                         </group>
+                        <group>
+                            <field name="is_christmas_letter" />
+                        </group>
                     </group>
                 </sheet>
             </form>
