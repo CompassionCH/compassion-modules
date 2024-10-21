@@ -43,10 +43,11 @@ class ContractGroup(models.Model):
         super(
             ContractGroup, self.with_context(open_invoices_sponsorship_only=True)
         )._generate_invoices(invoicer, contract_id)
+        # We can generate christmas even if the contract isn't active as it is a fund.
+        self.mapped("contract_ids")._generate_gifts(invoicer, CHRISTMAS_GIFT)
         # We don't generate gift if the contract isn't active
         contracts = self.mapped("contract_ids").filtered(lambda c: c.state == "active")
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
 
     def build_inv_line_data(
