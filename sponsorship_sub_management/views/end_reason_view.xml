@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_end_reason_tree" model="ir.ui.view">
+        <field name="name">contract.end.reason.tree</field>
+        <field name="model">recurring.contract.end.reason</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Tracking actions -->
+    <record model="ir.actions.act_window" id="action_end_reason">
+        <field name="name">Sponsorship end reasons</field>
+        <field name="res_model">recurring.contract.end.reason</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem
+    action="action_end_reason"
+    id="menu_end_reason"
+    parent="menu_tracking"
+    name="Sponsorship end reasons"
+    sequence="3"
+    groups="child_compassion.group_sponsorship"
+  />
+</odoo>

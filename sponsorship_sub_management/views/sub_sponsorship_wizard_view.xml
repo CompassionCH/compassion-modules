@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright (C) 2015 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<odoo>
+    <record id="sub_sponsorship_view" model="ir.ui.view">
+        <field name="name">sds.subsponsorship.wizard.view</field>
+        <field name="model">sds.subsponsorship.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="state" invisible="1" />
+                    <group invisible="state != 'sub'">
+                        <field name="channel" required="state == 'sub'" />
+                        <field
+              name="child_id"
+              invisible="channel == 'childpool'"
+              required="channel == 'direct'"
+            />
+                    </group>
+                    <group invisible="state != 'no_sub'">
+                        <field
+              name="no_sub_default_reasons"
+              required="state == 'no_sub'"
+            />
+                        <field name="is_other" invisible="1" />
+                        <field
+              name="no_sub_reason"
+              invisible="is_other == False"
+              required="is_other == True"
+            />
+                    </group>
+                </sheet>
+                <footer>
+                    <button
+            name="create_subsponsorship"
+            string="Create SUB Sponsorship"
+            type="object"
+            class="oe_highlight"
+            invisible="state != 'sub'"
+          />
+                    <button
+            name="no_sub"
+            string="No SUB"
+            type="object"
+            class="oe_highlight"
+          />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_create_sub_sponsorship">
+        <field name="name">Create SUB Sponsorship</field>
+        <field name="res_model">sds.subsponsorship.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

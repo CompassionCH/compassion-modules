@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright (C) 2016 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<odoo>
+    <record id="view_sds_follower_settings_form" model="ir.ui.view">
+        <field name="name">sds.follower.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.compassion_settings"
+    />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='compassion_settings']" position="inside">
+                <!-- SDS Followers Block -->
+                <block title="SDS Followers">
+                    <setting string="Manage SDS Followers Notifications">
+                        <button
+              name="%(sponsorship_sub_management.sds_sub_followers_act_window)d"
+              type="action"
+              string="Manage SDS Followers Notifications"
+              icon="fa-arrow-right"
+              class="btn-link"
+            />
+                        <div class="text-muted">
+                            Choose which user will receive notifications about SUB Sponsorships
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
