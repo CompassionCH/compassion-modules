@@ -8,8 +8,21 @@
     (new sponsorship is active after 50 days)     - sub_accept / sub_reject
     -->
 
-    <!-- Rule for checking SUB sponsorships -->
-     <record id="sub_check" model="base.automation">
+    <!-- Action Server: Sponsorship - Check SUB Accept/Reject after 50 days -->
+    <record id="action_sub_check" model="ir.actions.server">
+        <field
+      name="name"
+    >Sponsorship: Check SUB Accept/Reject after 50 days</field>
+        <field name="model_id" ref="model_recurring_contract" />
+        <field name="state">code</field>
+        <field name="usage">base_automation</field>
+        <field name="code">
+            records.check_sub_state()
+        </field>
+    </record>
+
+    <!-- Automation Rule: Sponsorship - Check SUB Accept/Reject after 50 days -->
+    <record id="sub_check" model="base.automation">
         <field
       name="name"
     >Sponsorship: Check SUB Accept/Reject after 50 days</field>
@@ -22,7 +35,9 @@
         <field name="filter_domain">[('sds_state', '=', 'sub')]</field>
         <field name="trg_date_range">50</field>
         <field name="trg_date_range_type">day</field>
-        <field name="state">code</field>
-        <field name="code">records.check_sub_state()</field>
+        <field
+      name="action_server_ids"
+      eval="[(6, 0, [ref('action_sub_check')])]"
+    />
     </record>
 </odoo>

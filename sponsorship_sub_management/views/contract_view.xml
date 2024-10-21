@@ -109,7 +109,7 @@
           type="object"
           string="Open SDS view"
           context="{'view_id':'view_follow_contract_form_compassion'}"
-          attrs="{'invisible': [('type', 'not in', ['S', 'SC', 'SWP'])]}"
+          invisible="type not in ['S', 'SC', 'SWP']"
           class="oe_inline oe_stat_button"
           icon="fa-history"
         />
@@ -134,19 +134,19 @@
             type="object"
             class="oe_highlight"
             string="Create SUB Sponsorship"
-            attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"
+            invisible="sds_state != 'sub_waiting'"
           />
                     <button
             name="action_no_sub"
             type="object"
             string="No sub"
-            attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"
+            invisible="sds_state not in ['active', 'sub_waiting']"
           />
                     <button
             name="action_sub_reject"
             type="object"
             string="SUB Reject"
-            attrs="{'invisible':[('sds_state','not in',['sub', 'sub_waiting'])]}"
+            invisible="sds_state not in ['sub', 'sub_waiting']"
           />
                 </header>
                 <sheet>
@@ -174,12 +174,12 @@
                                     'tree_view_ref' : 'sponsorship_sub_management.view_follow_contract_tree_compassion'
                                     }"
                 readonly="1"
-                attrs="{'invisible': [('parent_id', '=', False)]}"
+                invisible="not parent_id"
               />
                             <field name="sub_sponsorship_id" />
                             <field
                 name="sub_notes"
-                attrs="{'invisible': [('sds_state', 'not in', ['active', 'sub_waiting'])]}"
+                invisible="sds_state not in ['active', 'sub_waiting']"
                 style="color: red;"
               />
                         </group>
@@ -192,19 +192,19 @@
                         <group>
                             <field name="start_date" readonly="1" />
                             <field name="activation_date" readonly="1" />
-                            <field name="sds_state_date" />
+                            <field name="sds_state_date" readonly="1" />
                             <field name="end_date" readonly="1" />
                         </group>
                         <group>
                             <field name="child_id" readonly="1" />
                             <field
                 name="end_reason_id"
-                states="terminated,cancelled"
+                invisible="state not in ['terminated', 'cancelled']"
                 readonly="1"
               />
                             <field
                 name="no_sub_reason"
-                attrs="{'invisible': [('sds_state', '!=', 'no_sub')]}"
+                invisible="sds_state != 'no_sub'"
               />
                             <field name="state" readonly="1" />
                         </group>
@@ -212,7 +212,7 @@
                     <group>
                         <field
               name="lifecycle_ids"
-              context="{'default_child_id': active_id}"
+              context="{'default_child_id': id}"
             >
                             <tree>
                                 <field name="date" />
