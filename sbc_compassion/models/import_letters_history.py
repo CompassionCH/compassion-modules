@@ -198,13 +198,21 @@ class ImportLettersHistory(models.Model):
         self.state = "pending"
         self.env.user.notify_info("Letters import started...")
 
+        all_successful = True
         for current_file, nb_files_to_import, filename in generator():
             logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
 
-        self.env.user.notify_success("Letters import completed !")
-        # remove all the files (now they are inside import_line_ids)
-        self.data.unlink()
-        self.import_completed = True
+            try:
+                pdf_data = base64.b64decode(current_file.with_context(bin_size=False).datas)
+                self._analyze_pdf(pdf_data, filename)
+            except Exception as e:
+                logger.error(f"Error analyzing {filename}: {e}")
+                all_successful = False
+
+        if all_successful:
+            self.env.user.notify_success("Letters import completed!")
+            self.data.unlink()
+            self.import_completed = True
 
     def pdf_to_image(self, pdf_data):
         pdf = fitz.Document(
