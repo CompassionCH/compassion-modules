@@ -13,26 +13,22 @@
       ref="message_center_compassion.compassion_settings"
     />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='compassion_settings']" position='inside'>
-
-                <h2>SDS Followers</h2>
-                <div class="row mt16 o_settings_container">
-                    <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div class="o_setting_left_pane" />
-                        <div class="o_setting_right_pane">
-                            <button
-                name="%(sponsorship_sub_management.sds_sub_followers_act_window)d"
-                icon="fa-arrow-right"
-                type="action"
-                string="Manage SDS Followers Notifications"
-                class="btn-link"
-              />
-                            <div class="text-muted" id="msg_module_digest">
-                                    Choose which user will receive notifications about SUB Sponsorships
-                            </div>
+            <xpath expr="//app[@name='compassion_settings']" position="inside">
+                <!-- SDS Followers Block -->
+                <block title="SDS Followers">
+                    <setting string="Manage SDS Followers Notifications">
+                        <button
+              name="%(sponsorship_sub_management.sds_sub_followers_act_window)d"
+              type="action"
+              string="Manage SDS Followers Notifications"
+              icon="fa-arrow-right"
+              class="btn-link"
+            />
+                        <div class="text-muted">
+                            Choose which user will receive notifications about SUB Sponsorships
                         </div>
-                    </div>
-                </div>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>

@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion SUB Sponsorships Management",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "maintainers": ["ecino", "NoeBerdoz"],

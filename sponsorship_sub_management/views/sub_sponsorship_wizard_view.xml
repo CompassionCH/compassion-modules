@@ -12,25 +12,24 @@
             <form>
                 <sheet>
                     <field name="state" invisible="1" />
-                    <group states="sub">
-                        <field
-              name="channel"
-              attrs="{'required': [('state', '=', 'sub')]}"
-            />
+                    <group invisible="state != 'sub'">
+                        <field name="channel" required="state == 'sub'" />
                         <field
               name="child_id"
-              attrs="{'invisible': [('channel', '=', 'childpool')], 'required': [('channel', '=', 'direct')]}"
+              invisible="channel == 'childpool'"
+              required="channel == 'direct'"
             />
                     </group>
-                    <group states="no_sub">
+                    <group invisible="state != 'no_sub'">
                         <field
               name="no_sub_default_reasons"
-              attrs="{'required': [('state', '=', 'no_sub')]}"
+              required="state == 'no_sub'"
             />
                         <field name="is_other" invisible="1" />
                         <field
               name="no_sub_reason"
-              attrs="{'invisible': [('is_other', '=', False)], 'required': [('is_other', '=', True)]}"
+              invisible="is_other == False"
+              required="is_other == True"
             />
                     </group>
                 </sheet>
@@ -40,14 +39,13 @@
             string="Create SUB Sponsorship"
             type="object"
             class="oe_highlight"
-            states="sub"
+            invisible="state != 'sub'"
           />
                     <button
             name="no_sub"
             string="No SUB"
             type="object"
             class="oe_highlight"
-            states=""
           />
                     or
                     <button string="Cancel" class="oe_link" special="cancel" />

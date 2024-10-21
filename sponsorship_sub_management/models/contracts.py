@@ -38,11 +38,10 @@ class RecurringContract(models.Model):
         tracking=True,
         index=True,
         copy=False,
-        readonly=True,
         default="draft",
         group_expand="_expand_sds_state",
     )
-    sds_state_date = fields.Date("SDS state date", readonly=True, copy=False)
+    sds_state_date = fields.Date("SDS state date", copy=False)
     cancel_gifts_on_termination = fields.Boolean(
         "Cancel pending gifts if sponsorship is terminated"
     )
@@ -174,30 +173,33 @@ class RecurringContract(models.Model):
         self,
         domain,
         groupby,
-        remaining_groupbys,
-        aggregated_fields,
-        count_field,
+        annoted_aggregates,
         read_group_result,
         read_group_order=None,
     ):
         result = super()._read_group_fill_results(
             domain,
             groupby,
-            remaining_groupbys,
-            aggregated_fields,
-            count_field,
+            annoted_aggregates,
             read_group_result,
             read_group_order,
         )
+
         if groupby == "sds_state":
-            # We fold sds states that have no sponsorships inside or are not
-            # present by default in kanban view
             for group in result:
-                sponsorships = self.search_count(group["__domain"])
+                # Create domain based on groupby & sds
+                group_value = group.get(groupby)
+                group_domain = [
+                    (groupby, "=", group_value if group_value else False)
+                ] + domain
+
+                sponsorships = self.search_count(group_domain)
+
                 group["__fold"] = (
                     group["sds_state"] not in self._expand_sds_state()
                     or not sponsorships
                 )
+
         return result
 
     ##########################################################################
