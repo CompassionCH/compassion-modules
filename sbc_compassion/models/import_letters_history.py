@@ -14,6 +14,7 @@ between the database and the mail.
 import base64
 import io
 import logging
+from fileinput import filename
 
 import fitz
 from PIL import Image
@@ -198,24 +199,19 @@ class ImportLettersHistory(models.Model):
         self.ensure_one()
         self.state = "pending"
         self.env.user.notify_info("Letters import started...")
-
-        all_successful = True
-        for current_file, nb_files_to_import, filename in generator():
-            logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
-
-            try:
-                pdf_data = base64.b64decode(current_file.with_context(bin_size=False).datas)
-                self._analyze_pdf(pdf_data, filename)
-            except Exception as e:
-                logger.error(f"Error analyzing {filename}: {e}")
-                all_successful = False
-
-        if all_successful:
-            self.env.user.notify_success("Letters import completed!")
-            self.data.unlink()
-            self.import_completed = True
-        else:
+        try:
+            for current_file, nb_files_to_import, filename in generator():
+                self.env.user.notify_info(
+                    f"Analyzing file {current_file}/{nb_files_to_import}: {filename}"
+                )
+        except Exception as e:
+            self.import_completed = False
             self.state = "failed"
+        else:
+            self.import_completed = True
+            self.env.user.notify_success("Letters import completed successfully!")
+            # remove all the files (now they are inside import_line_ids)
+            self.data.unlink()
 
     def pdf_to_image(self, pdf_data):
         pdf = fitz.Document(
@@ -285,11 +281,9 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
+            logger.info(f"Entering exception block for file: {file_name}")
+            self.env.user.notify_danger(f"Couldn't import file {file_name}")
+            self.import_completed = False
             self.state = "failed"
-            message = f"import failed : Couldn't import file {file_name}"
-            self.env.user.notify_danger(message)
-            logger.error(
-                message,
-                exc_info=True,
-            )
+            self._compute_state = False
             return
