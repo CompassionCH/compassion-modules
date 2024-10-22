@@ -39,6 +39,7 @@ class ImportLettersHistory(models.Model):
             ("pending", _("Analyzing")),
             ("open", _("Open")),
             ("ready", _("Ready")),
+            ("failed", _("Failed")),
             ("done", _("Done")),
         ],
         compute="_compute_state",
@@ -213,6 +214,8 @@ class ImportLettersHistory(models.Model):
             self.env.user.notify_success("Letters import completed!")
             self.data.unlink()
             self.import_completed = True
+        else:
+            self.state = "failed"
 
     def pdf_to_image(self, pdf_data):
         pdf = fitz.Document(
@@ -282,7 +285,8 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
-            message = f"Couldn't import file {file_name}"
+            self.state = "failed"
+            message = f"import failed : Couldn't import file {file_name}"
             self.env.user.notify_danger(message)
             logger.error(
                 message,
