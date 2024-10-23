@@ -201,10 +201,11 @@ class ImportLettersHistory(models.Model):
         self.env.user.notify_info("Letters import started...")
         try:
             for current_file, nb_files_to_import, filename in generator():
-                self.env.user.notify_info(
-                    f"Analyzing file {current_file}/{nb_files_to_import}: {filename}"
-                )
+                logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
+                logger.info(f"File {filename} analyzed successfully.")
+
         except Exception as e:
+            logger.error(f"Error during import: {str(e)}", exc_info=True)
             self.import_completed = False
             self.state = "failed"
         else:
@@ -281,9 +282,8 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
-            logger.info(f"Entering exception block for file: {file_name}")
-            self.env.user.notify_danger(f"Couldn't import file {file_name}")
             self.import_completed = False
             self.state = "failed"
+            self.env.user.notify_danger(f"Couldn't import file {file_name}")
             self._compute_state = False
             return
