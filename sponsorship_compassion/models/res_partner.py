@@ -368,12 +368,24 @@ class ResPartner(models.Model):
             if "failure" in message.state:
                 answer = message.get_answer_dict()
                 if isinstance(answer, dict):
-                    error_message = answer.get(
-                        "DataProtection Error", message.failure_reason
+                    # Get detailed error info
+                    error_info = answer.get("Error", {})
+                    error_id = error_info.get("ErrorId", "N/A")
+                    error_message = error_info.get("ErrorMessage", "Erreur inconnue")
+                    error_time = error_info.get("ErrorTimeStamp", "Inconnu")
+                    related_record = error_info.get("RelatedRecordId", "Non spécifié")
+
+                    # Format user-friendly error message
+                    user_error_message = (
+                        f"an error occurred during data anonymisation.\n\n"
+                        f"Message : {error_message}"
                     )
                 else:
-                    error_message = message.failure_reason
-                raise UserError(error_message)
+                    user_error_message = (
+                        f"An internal error prevented the data from being anonymised.\n"
+                        f"details: {message.failure_reason}"
+                    )
+                raise UserError(user_error_message)
         self.anonymize()
         # Reload the view
         return {"type": "ir.actions.client", "tag": "reload"}
