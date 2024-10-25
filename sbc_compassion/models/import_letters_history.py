@@ -14,7 +14,6 @@ between the database and the mail.
 import base64
 import io
 import logging
-from fileinput import filename
 
 import fitz
 from PIL import Image
@@ -70,6 +69,7 @@ class ImportLettersHistory(models.Model):
         help="Displays the name of the file that failed the PDF analysis.",
         readonly=True,
     )
+
     @api.depends(
         "import_line_ids",
         "import_line_ids.status",
