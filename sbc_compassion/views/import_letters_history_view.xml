@@ -9,11 +9,11 @@
             <form string="Imports">
                 <header>
                     <field
-                        name="state"
-                        widget="statusbar"
-                        statusbar_visible="draft,open,ready,failed,done"
-                        attrs="{'invisible': [('state', '!=', 'failed')]}"
-                    />
+            name="state"
+            widget="statusbar"
+            statusbar_visible="draft,open,ready,failed,done"
+            attrs="{'invisible': [('state', '!=', 'failed')]}"
+          />
                     <field name="import_completed" invisible="1" />
                     <button
             name="button_save"
