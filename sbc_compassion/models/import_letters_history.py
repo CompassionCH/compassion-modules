@@ -65,6 +65,11 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
+    failed_file_name = fields.Char(
+        string="failed file name",
+        help="Displays the name of the file that failed the PDF analysis.",
+        readonly=True,
+    )
     @api.depends(
         "import_line_ids",
         "import_line_ids.status",
@@ -283,6 +288,7 @@ class ImportLettersHistory(models.Model):
             self._cr.commit()
         except Exception:
             self.import_completed = False
+            self.failed_file_name = file_name
             self.state = "failed"
             self.env.user.notify_danger(f"Couldn't import file {file_name}")
             self._compute_state = False
