@@ -115,6 +115,7 @@ class Correspondence(models.Model):
     )
     b2s_state = fields.Selection(
         [
+            ("Received in the system", _("Scanned in")),
             ("Ready to be printed", _("Ready to be printed")),  # *
             (
                 "Field Office transcribing translation and content check process",
