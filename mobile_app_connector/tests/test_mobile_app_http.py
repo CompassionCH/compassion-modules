@@ -8,7 +8,7 @@
 #
 ##############################################################################
 import simplejson
-from mock import patch
+from unittest.mock import patch
 
 from odoo.tests.common import HttpCase
 
