@@ -6,7 +6,7 @@ mock_update_hold = (
 )
 
 
-class Test_14_0_1_2_3_Migration(BaseSponsorshipTest):
+class TestSWPConsistency(BaseSponsorshipTest):
 
     def create_inconsistent_contract(self, update_hold):
         return self.create_contract(
@@ -21,7 +21,7 @@ class Test_14_0_1_2_3_Migration(BaseSponsorshipTest):
 
     @mock.patch(mock_update_hold)
     def setUp(self, update_hold, *args, **kwargs):
-        super(Test_14_0_1_2_3_Migration, self).setUp(*args, **kwargs)
+        super(TestSWPConsistency, self).setUp(*args, **kwargs)
 
         wp_category = self.env["res.partner.category"].create({"name": "W&P"})
         partner = self.env["res.partner"]
@@ -42,7 +42,7 @@ class Test_14_0_1_2_3_Migration(BaseSponsorshipTest):
             update_hold,
         )
 
-    def test_migration(self):
+    def test_fix_inconsistent_SWP_contracts(self):
         self.env["recurring.contract"].fix_inconsistent_SWP_contracts()
 
         # The inconsistent contracts should have been fixed

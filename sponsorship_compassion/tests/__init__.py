@@ -8,4 +8,4 @@
 #
 ##############################################################################
 
-from . import test_sponsorship_compassion, test_sponsorship_impact, test_14_0_1_2_3_migration
+from . import test_sponsorship_compassion, test_sponsorship_impact, test_SWP_consistency

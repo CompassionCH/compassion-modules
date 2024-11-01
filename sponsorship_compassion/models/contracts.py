@@ -531,6 +531,19 @@ class SponsorshipContract(models.Model):
         correspondent_id = vals.get("correspondent_id")
         if correspondent_id and correspondent_id != partner_id:
             partner_ids.append(correspondent_id)
+            correspondent = self.env["res.partner"].browse(correspondent_id)
+            correspondent.ensure_one()
+            if "W&P" in correspondent.category_id.mapped("name"):
+                # [T1924]: If the given correspondent has the W&P tag, this contract
+                #     should have the SWP type to remain consistent
+                vals["type"] = "SWP"
+                self.env.user.notify_info(
+                    message=_(
+                        "Set sponsorship type to Write&Pray because correspondent" 
+                        "named '%s' has W&P tag."
+                    )
+                    % (correspondent.name)
+                )
         if not correspondent_id:
             vals["correspondent_id"] = partner_id
         if partner_ids:
@@ -1365,21 +1378,22 @@ class SponsorshipContract(models.Model):
         """
         # First we find contracts whose correspondent has the W&P tag. What we expect if
         # the system was consistent is that the contract has type "SWP".
-        expected_SWP_contracts = self.search(
-            [("correspondent_id.category_id.name", "=", "W&P")]
+        # if the correspondent is W&P but the contract's type is != SWP, this
+        # indicates an inconsistent state, which we fix by setting the correct
+        # type
+        inconsistent_contracts = self.search(
+            [
+                # The correspondent has the W&P tag
+                ("correspondent_id.category_id.name", "=", "W&P"),
+                # AND the partner is different from the correspondent (not a normal
+                # sponsorship)
+                ("partner_id", "!=", "correspondent_id"),
+                # AND the type is not SWP
+                ("type", "!=", "SWP"),
+            ]
         )
-        inconsistent_contracts = []
-        for contract in expected_SWP_contracts:
-            if contract.type != "SWP":
-                # if the correspondent is W&P but the contract's type is != SWP, this
-                # indicates an inconsistent state, which we fix by setting the correct
-                # type
-                contract.type = "SWP"
-                inconsistent_contracts.append(contract)
-                logger.debug(
-                    f"Found inconsistent SWP contract: {contract.id=}, "
-                    f"{contract.correspondent_id=}"
-                )
+        for contract in inconsistent_contracts:
+            contract.type = "SWP"
 
         fixed_contract_ids = list(map(lambda c: c.id, inconsistent_contracts))
         logger.info(

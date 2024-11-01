@@ -8,6 +8,3 @@ _logger = logging.getLogger(__name__)
 @migrate()
 def migrate(env, version):
     env["recurring.contract"].fix_inconsistent_SWP_contracts()
-    
-    # TODO is commit needed?
-    # env.cr.commit()
