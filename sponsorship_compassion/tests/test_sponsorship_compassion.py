@@ -102,13 +102,13 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         # Create a child and get the project associated
         self.child = self.create_child("PE012304567")
         # Creation of the sponsorship contract
-        sp_group = self.create_group(
+        self.sp_group = self.create_group(
             {"partner_id": self.partner_1.id, "payment_mode_id": dd_pay_mode.id}
         )
         self.sponsorship = self.create_contract(
             {
                 "partner_id": self.partner_1.id,
-                "group_id": sp_group.id,
+                "group_id": self.sp_group.id,
                 "child_id": self.child.id,
                 "type": "S",
             },

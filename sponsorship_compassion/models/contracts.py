@@ -1065,9 +1065,11 @@ class SponsorshipContract(models.Model):
                     (
                         "default_code",
                         "=",
-                        GIFT_PRODUCTS_REF[0]
-                        if gift_type == BIRTHDAY_GIFT
-                        else PRODUCT_GIFT_CHRISTMAS,
+                        (
+                            GIFT_PRODUCTS_REF[0]
+                            if gift_type == BIRTHDAY_GIFT
+                            else PRODUCT_GIFT_CHRISTMAS
+                        ),
                     )
                 ],
                 limit=1,
@@ -1350,3 +1352,38 @@ class SponsorshipContract(models.Model):
                     self.gmc_correspondent_commitment_id = commitment.get(
                         "CommitmentID"
                     )
+
+    def fix_inconsistent_SWP_contracts(self) -> list:
+        """
+        [T1924] : Finds the contracts whose type != "SWP" (Sponsorship Write and Pray)
+        but whose correspondent has category "W&P" (Write & Pray). This means that the
+        contract type is inconsistent with the correspondent. In that case, we fix the
+        contract by setting type = "SWP".
+
+        Returns:
+            list: fixed, previously inconsistent, contracts
+        """
+        # First we find contracts whose correspondent has the W&P tag. What we expect if
+        # the system was consistent is that the contract has type "SWP".
+        expected_SWP_contracts = self.search(
+            [("correspondent_id.category_id.name", "=", "W&P")]
+        )
+        inconsistent_contracts = []
+        for contract in expected_SWP_contracts:
+            if contract.type != "SWP":
+                # if the correspondent is W&P but the contract's type is != SWP, this
+                # indicates an inconsistent state, which we fix by setting the correct
+                # type
+                contract.type = "SWP"
+                inconsistent_contracts.append(contract)
+                logger.debug(
+                    f"Found inconsistent SWP contract: {contract.id=}, "
+                    f"{contract.correspondent_id=}"
+                )
+
+        fixed_contract_ids = list(map(lambda c: c.id, inconsistent_contracts))
+        logger.info(
+            f"Fixed {len(inconsistent_contracts)} inconsistent SWP "
+            f"contracts with ids = {fixed_contract_ids}"
+        )
+        return inconsistent_contracts
