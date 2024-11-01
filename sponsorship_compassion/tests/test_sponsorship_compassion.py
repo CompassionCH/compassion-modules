@@ -95,7 +95,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                 "name": "Some test account",
                 "user_type_id": 1,
                 "reconcile": True,
-                "code": "1050"
+                "code": "1050",
             }
         )
 
