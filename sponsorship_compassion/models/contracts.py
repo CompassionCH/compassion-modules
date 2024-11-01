@@ -301,6 +301,24 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.fully_managed = contract.partner_id == contract.correspondent_id
 
+    def is_correspondent_WP(self):
+        """
+        Does the correspondent have the W&P category ?
+        """
+        self.ensure_one()
+        return "W&P" in self.correspondent_id.category_id.mapped("name")
+
+    @api.onchange("correspondent_id")
+    def onchange_correspondent(self):
+        """
+        Prevent inconsistencies between the correspondent's W&P tag and the sponsorship
+        type.
+        """
+        self.ensure_one()
+        if not self.fully_managed and self.is_correspondent_WP():
+            self.type = "SWP"
+
+
     def _compute_last_paid_invoice(self):
         """Override to exclude gift invoices."""
         for contract in self:
@@ -531,19 +549,6 @@ class SponsorshipContract(models.Model):
         correspondent_id = vals.get("correspondent_id")
         if correspondent_id and correspondent_id != partner_id:
             partner_ids.append(correspondent_id)
-            correspondent = self.env["res.partner"].browse(correspondent_id)
-            correspondent.ensure_one()
-            if "W&P" in correspondent.category_id.mapped("name"):
-                # [T1924]: If the given correspondent has the W&P tag, this contract
-                #     should have the SWP type to remain consistent
-                vals["type"] = "SWP"
-                self.env.user.notify_info(
-                    message=_(
-                        "Set sponsorship type to Write&Pray because correspondent" 
-                        "named '%s' has W&P tag."
-                    )
-                    % (correspondent.name)
-                )
         if not correspondent_id:
             vals["correspondent_id"] = partner_id
         if partner_ids:

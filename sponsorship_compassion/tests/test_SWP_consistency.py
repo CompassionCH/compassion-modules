@@ -50,3 +50,8 @@ class TestSWPConsistency(BaseSponsorshipTest):
         self.assertEqual(self.inconsistent_contract2.type, "SWP")
         # The consistent / normal contract should not have been changed
         self.assertEqual(self.consistent_contract.type, "O")
+
+    def test_is_correspondent_WP(self):
+        self.assertTrue(self.inconsistent_contract1.is_correspondent_WP())
+        self.assertTrue(self.inconsistent_contract2.is_correspondent_WP())
+        self.assertFalse(self.consistent_contract.is_correspondent_WP())
