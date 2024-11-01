@@ -88,6 +88,17 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                 "payment_method_id": dd_pay_method.id,
             }
         )
+
+        # Create account used in unreconciled_transaction_items
+        self.env["account.account"].create(
+            {
+                "name": "Some test account",
+                "user_type_id": 1,
+                "reconcile": True,
+                "code": "1050"
+            }
+        )
+
         # Create a child and get the project associated
         self.child = self.create_child("PE012304567")
         # Creation of the sponsorship contract
