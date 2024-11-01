@@ -365,6 +365,13 @@ class CommunicationJob(models.Model):
                 # So we remove it and an employee must set it manually afterwards
                 job.send_mode = ""
 
+        # T1816 : a call activity should be scheduled if the type
+        # is "Sponsorship Activation Reminder 1"
+        if job.config_id == self.env.ref(
+            "partner_communication_reminder.sponsorship_activation_reminder_1"
+        ):
+            job.need_call = "before_sending"
+
         if job.need_call == "before_sending":
             job.schedule_call()
         if job.auto_send:
