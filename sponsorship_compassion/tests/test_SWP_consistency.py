@@ -11,7 +11,8 @@ class TestSWPConsistency(BaseSponsorshipTest):
     def create_inconsistent_contract(self, update_hold):
         return self.create_contract(
             {
-                "type": "O",  # given that the correspondent is W&P, this is inconsistent
+                # given that the correspondent is W&P, this is inconsistent
+                "type": "O",
                 "correspondent_id": self.wp_partner.id,
                 "partner_id": self.partner_1.id,
                 "group_id": self.sp_group.id,
