@@ -1390,15 +1390,19 @@ class SponsorshipContract(models.Model):
             [
                 # The correspondent has the W&P tag
                 ("correspondent_id.category_id.name", "=", "W&P"),
-                # AND the partner is different from the correspondent (not a normal
-                # sponsorship)
-                ("partner_id", "!=", "correspondent_id"),
+                # AND the sponsorship is not fully managed by one person
+                ("fully_managed", "=", False),
                 # AND the type is not SWP
                 ("type", "!=", "SWP"),
             ]
         )
         for contract in inconsistent_contracts:
+            # Fix incorrect type
             contract.type = "SWP"
+            # Fix missing contract lines
+            contract._create_empty_lines_for_correspondence()
+            # Update contracts on the partner side
+            contract.correspondent_id._compute_related_contracts()
 
         fixed_contract_ids = list(map(lambda c: c.id, inconsistent_contracts))
         logger.info(

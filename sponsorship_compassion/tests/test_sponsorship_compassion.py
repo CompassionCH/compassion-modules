@@ -70,6 +70,13 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                     self.env["product.category"],
                 ).id,
                 "sale_ok": True,
+                "default_code": "sponsorship"
+            }
+        )
+        self.donation = self.env["product.product"].create(
+            {
+                "name": "Donation test",
+                "default_code": "fund_gen"
             }
         )
         # Direct debit payment method

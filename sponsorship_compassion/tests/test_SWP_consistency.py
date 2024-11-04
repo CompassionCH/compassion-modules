@@ -43,11 +43,18 @@ class TestSWPConsistency(BaseSponsorshipTest):
         )
 
     def test_fix_inconsistent_SWP_contracts(self):
+        # Before the fix, no sponsorships are visible on the portal
+        self.assertEqual(len(self.wp_partner.get_portal_sponsorships()), 0)
+
         self.env["recurring.contract"].fix_inconsistent_SWP_contracts()
 
         # The inconsistent contracts should have been fixed
         self.assertEqual(self.inconsistent_contract1.type, "SWP")
         self.assertEqual(self.inconsistent_contract2.type, "SWP")
+
+        # After the fix, the WP partner can see their 2 sponsorships
+        self.assertEqual(len(self.wp_partner.get_portal_sponsorships()), 2)
+
         # The consistent / normal contract should not have been changed
         self.assertEqual(self.consistent_contract.type, "O")
 
