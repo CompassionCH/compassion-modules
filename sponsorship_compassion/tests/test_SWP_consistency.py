@@ -1,4 +1,5 @@
 from unittest import mock
+
 from .test_sponsorship_compassion import BaseSponsorshipTest
 
 mock_update_hold = (
@@ -7,7 +8,6 @@ mock_update_hold = (
 
 
 class TestSWPConsistency(BaseSponsorshipTest):
-
     def create_inconsistent_contract(self, update_hold):
         return self.create_contract(
             {

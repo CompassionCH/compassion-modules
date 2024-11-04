@@ -318,7 +318,6 @@ class SponsorshipContract(models.Model):
         if not self.fully_managed and self.is_correspondent_WP():
             self.type = "SWP"
 
-
     def _compute_last_paid_invoice(self):
         """Override to exclude gift invoices."""
         for contract in self:
