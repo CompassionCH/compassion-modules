@@ -10,8 +10,8 @@
 
 import logging
 import re
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
 
 import requests
 
@@ -734,7 +734,7 @@ class CompassionProject(models.Model):
             )
         return True
 
-    def sync_projects_from_gmc(self, requests_throttle_seconds = 1.0, log_period = 100):
+    def sync_projects_from_gmc(self, requests_throttle_seconds=1.0, log_period=100):
         """
         Synchronises the informations and lifecycle events fro all the projects with
         active sponsorships from the GMC. This should be called from a cron job and can
@@ -744,20 +744,22 @@ class CompassionProject(models.Model):
 
         Args:
             requests_throttle_seconds (float, optional): Time to wait between requests,
-                in seconds. This prevents the GMC server from being overwhelmed. 
-                Defaults to 1.0. 
+                in seconds. This prevents the GMC server from being overwhelmed.
+                Defaults to 1.0.
             log_period (int, optional): Write to the log every log_period requests.
                 Defaults to 100.
         """
-        
-         # log every so many updated projects to the console
+
+        # log every so many updated projects to the console
         projects = self.search([])
         projects_to_update = list(filter(lambda p: p.sponsorships_count > 0, projects))
         nb_projects_to_update = len(projects_to_update)
 
-        logger.info(f"Starting projects sync from GMC. {projects_to_update=}, "
-                    f"{requests_throttle_seconds=}, {log_period=}. Estimated duration: "
-                    f"{requests_throttle_seconds * nb_projects_to_update} seconds.")
+        logger.info(
+            f"Starting projects sync from GMC. {projects_to_update=}, "
+            f"{requests_throttle_seconds=}, {log_period=}. Estimated duration: "
+            f"{requests_throttle_seconds * nb_projects_to_update} seconds."
+        )
         for i, p in enumerate(projects_to_update):
             # Only synchronise projects for which we have sponsorships to speedup
             # execution and decrease remote server load
@@ -766,12 +768,13 @@ class CompassionProject(models.Model):
 
             # Throttle requests to avoid overwhelming GMC server
             time.sleep(requests_throttle_seconds)
-            
+
             if i > 0 and i % log_period == 0:
-                logger.info(f"Projects sync from GMC in progress: "
-                            f"{i+1}/{nb_projects_to_update}")
-        logger.info(f"Finished projects sync from GMC. ")
-            
+                logger.info(
+                    f"Projects sync from GMC in progress: "
+                    f"{i+1}/{nb_projects_to_update}"
+                )
+        logger.info("Finished projects sync from GMC. ")
 
     def hold_gifts_action(self):
         pass

@@ -1,10 +1,12 @@
 """
-Test moved here because of circular dependencies between sponsorship_compassion and child_compassion
+Test moved here because of circular dependencies between sponsorship_compassion and
+child_compassion
 """
 
 import random
+from unittest.mock import patch
+
 from odoo.tests import TransactionCase
-from unittest.mock import Mock, patch
 
 PROJECT_COMPASSION_ADDON = (
     "odoo.addons.child_compassion.models.project_compassion.CompassionProject"
@@ -12,7 +14,6 @@ PROJECT_COMPASSION_ADDON = (
 
 
 class TestProjectCompassion(TransactionCase):
-
     def create_project(self, with_sponsorship=True):
         partner = self.env["res.partner"].create(
             {"name": "Test Partner", "portal_sponsorships": "all"}
@@ -31,7 +32,7 @@ class TestProjectCompassion(TransactionCase):
             contract_group = self.env["recurring.contract.group"].create(
                 {"partner_id": partner.id}
             )
-            contract = self.env["recurring.contract"].create(
+            self.env["recurring.contract"].create(
                 {
                     "child_id": child.id,
                     "partner_id": partner.id,
@@ -56,18 +57,20 @@ class TestProjectCompassion(TransactionCase):
     def test_sync_projects_from_gmc_logic(
         self, mock_update_informations, mock_get_lifecycle_event
     ):
+        expected_nb_projects_updated = len(self.projects_with_sponsorships)
+
         projects = self.env["compassion.project"]
         projects.sync_projects_from_gmc(
             requests_throttle_seconds=0.01,
-            log_period=len(self.projects_with_sponsorships) // 4,
+            log_period=expected_nb_projects_updated // 4,
         )
 
         mock_update_informations.assert_called()
         self.assertEqual(
-            mock_update_informations.call_count, len(self.projects_with_sponsorships)
+            mock_update_informations.call_count, expected_nb_projects_updated
         )
 
         mock_get_lifecycle_event.assert_called()
         self.assertEqual(
-            mock_get_lifecycle_event.call_count, len(self.projects_with_sponsorships)
+            mock_get_lifecycle_event.call_count, expected_nb_projects_updated
         )
