@@ -381,7 +381,7 @@ class CompassionProject(models.Model):
         readonly=True,
     )
     last_lifecycle_id = fields.Many2one(
-        "compassion.project.ile", compute="_compute_last_lifecycle"
+        "compassion.project.ile", compute="_compute_last_lifecycle", store=True
     )
     status_comment = fields.Text(related="last_lifecycle_id.details")
     hold_cdsp_funds = fields.Boolean(related="last_lifecycle_id.hold_cdsp_funds")
@@ -734,7 +734,9 @@ class CompassionProject(models.Model):
             )
         return True
 
-    def sync_projects_from_gmc(self, requests_throttle_seconds=1.0, log_period=100):
+    def sync_projects_from_gmc(
+        self, requests_throttle_seconds=1.0, log_period=100, max_projects_to_sync=-1
+    ):
         """
         Synchronises the informations and lifecycle events fro all the projects with
         active sponsorships from the GMC. This should be called from a cron job and can
@@ -748,19 +750,30 @@ class CompassionProject(models.Model):
                 Defaults to 1.0.
             log_period (int, optional): Write to the log every log_period requests.
                 Defaults to 100.
+            max_projects_to_sync (int, optional): Maximum number of projects to sync.
+                Used for testing. Defaults to -1, which means: sync everything.
         """
-
         # log every so many updated projects to the console
         projects = self.search([])
-        projects_to_update = list(filter(lambda p: p.sponsorships_count > 0, projects))
-        nb_projects_to_update = len(projects_to_update)
+        projects_to_sync = list(filter(lambda p: p.sponsorships_count > 0, projects))
+
+        if max_projects_to_sync == 0:
+            raise ValueError(
+                f"Invalid parameter value {max_projects_to_sync=}. "
+                "Should be either -1 or strictly positive."
+            )
+        max_projects_to_sync = min(max_projects_to_sync, len(projects_to_sync))
+        if max_projects_to_sync > 0:
+            projects_to_sync = projects_to_sync[:max_projects_to_sync]
+
+        nb_projects_to_sync = len(projects_to_sync)
 
         logger.info(
-            f"Starting projects sync from GMC. {projects_to_update=}, "
+            f"Starting projects sync from GMC. {projects_to_sync=}, "
             f"{requests_throttle_seconds=}, {log_period=}. Estimated duration: "
-            f"{requests_throttle_seconds * nb_projects_to_update} seconds."
+            f"{requests_throttle_seconds * nb_projects_to_sync} seconds."
         )
-        for i, p in enumerate(projects_to_update):
+        for i, p in enumerate(projects_to_sync):
             # Only synchronise projects for which we have sponsorships to speedup
             # execution and decrease remote server load
             p.with_context(async_mode=True).update_informations()
@@ -772,7 +785,7 @@ class CompassionProject(models.Model):
             if i > 0 and i % log_period == 0:
                 logger.info(
                     f"Projects sync from GMC in progress: "
-                    f"{i+1}/{nb_projects_to_update}"
+                    f"{i+1}/{nb_projects_to_sync}"
                 )
         logger.info("Finished projects sync from GMC. ")
 
