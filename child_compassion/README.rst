@@ -43,18 +43,18 @@ Configuration
 Access rights
 -------------
 
--  Assign the rights to the users so that they can access the new
-   "Sponsorship" menu
+- Assign the rights to the users so that they can access the new
+  "Sponsorship" menu
 
 Configuration menu
 ------------------
 
--  Find the configuration menu in Sponsorship/Configuration (must be
-   given rights)
--  Configure the default hold durations in the menu Global
-   Childpool/Availability Management
--  Assign people to be notified when receiving National Office Disaster
-   Alerts using the menu Communication/Staff Notifications
+- Find the configuration menu in Sponsorship/Configuration (must be
+  given rights)
+- Configure the default hold durations in the menu Global
+  Childpool/Availability Management
+- Assign people to be notified when receiving National Office Disaster
+  Alerts using the menu Communication/Staff Notifications
 
 Odoo.conf file
 --------------
@@ -70,8 +70,8 @@ Demand planning
 You can add in the system settings default values for weekly demand and
 resupply quantities by setting the following keys:
 
--  child_compassion.default_demand
--  child_compassion.default_resupply
+- child_compassion.default_demand
+- child_compassion.default_resupply
 
 Usage
 =====
@@ -99,10 +99,10 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
--  Cyril Sester <cyril.sester@outlook.com>
--  Kevin Cristi <kcristi@compassion.ch>
--  David Coninckx <david@coninckx.com>
+- Emanuel Cino <ecino@compassion.ch>
+- Cyril Sester <cyril.sester@outlook.com>
+- Kevin Cristi <kcristi@compassion.ch>
+- David Coninckx <david@coninckx.com>
 
 Maintainers
 -----------

@@ -24,28 +24,27 @@ Compassion Survival Sponsorships
 
 This module add :
 
--  New type *CSP* for sponsorships
+- New type *CSP* for sponsorships
 
-   -  Filter the product available
+  - Filter the product available
 
--  Survival Sponsorship Sale on the product.template
+- Survival Sponsorship Sale on the product.template
 
-   -  Define if the product is actually used for the survival
-      sponsorships
+  - Define if the product is actually used for the survival sponsorships
 
--  Specific monitoring fields for product.product
+- Specific monitoring fields for product.product
 
-   -  Survival Field Office : Which field office this product applies to
-   -  Slot used : Number of intervention slot already taken
-   -  Survival Slots : Number of slots available for this field office
-   -  Survival Sponsorship : Number of sponsorships active
-   -  Alltime Survival Sponsorship : Number of sponsorships on this
-      specific product (active and inactive)
+  - Survival Field Office : Which field office this product applies to
+  - Slot used : Number of intervention slot already taken
+  - Survival Slots : Number of slots available for this field office
+  - Survival Sponsorship : Number of sponsorships active
+  - Alltime Survival Sponsorship : Number of sponsorships on this
+    specific product (active and inactive)
 
--  Base automation that will trigger schedule activities
+- Base automation that will trigger schedule activities
 
-   -  Put a schedule activity on the products that has too much slot
-      used (by default defined at 80%+)
+  - Put a schedule activity on the products that has too much slot used
+    (by default defined at 80%+)
 
 **Table of contents**
 
@@ -65,8 +64,8 @@ slots.
 Known issues / Roadmap
 ======================
 
--  Q3-4 2023 : API connected to the website to actually show the current
-   list of available country for this product
+- Q3-4 2023 : API connected to the website to actually show the current
+  list of available country for this product
 
 Bug Tracker
 ===========
@@ -89,7 +88,7 @@ Authors
 Contributors
 ------------
 
--  Simon Gonzalez <sgonzalez@ikmail.com>
+- Simon Gonzalez <sgonzalez@ikmail.com>
 
 Maintainers
 -----------

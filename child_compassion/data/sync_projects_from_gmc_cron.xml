@@ -3,16 +3,14 @@
         <record id="sync_projects_from_gmc_cron" model="ir.cron">
             <field
         name="name"
-      >[T1715] Update FCPs from GMC automatically</field>
+      >[T1715] Update FCPs from GMC automatically. Warning: very slow (multiple hours)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="model_id" ref="model_compassion_project" />
             <field name="state">code</field>
-            <field
-        name="code"
-      >model.sync_projects_from_gmc()</field>
-            <field name="active" eval="False" /> 
+            <field name="code">model.sync_projects_from_gmc()</field>
+            <field name="active" eval="False" />
             <!-- Not active by default because it is a very long running job. It should
             be determined when it is appropriate to run this and then activated. -->
         </record>
