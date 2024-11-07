@@ -214,7 +214,6 @@ class CommunicationJob(models.Model):
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
                     except Exception:
-                        self.env.clear()
                         record.pdf_page_count = 0
 
     def _inverse_ir_attachments(self):
