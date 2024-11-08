@@ -149,6 +149,7 @@ class ImportLettersHistory(models.Model):
                     letters.state = "failed"
                     self.state = "failed"
                     self.env.user.notify_danger(f"Error during import: {str(e)}")
+                    self.failed_file_name= vals.get('file_name')
                     return False
                 else:
                     letters.import_line_ids.unlink()
