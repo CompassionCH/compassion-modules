@@ -8,4 +8,4 @@
 #
 ##############################################################################
 
-from . import collect_gifts_wizard, gift_settings,generate_gift_wizard
+from . import collect_gifts_wizard, gift_settings, generate_gift_wizard
