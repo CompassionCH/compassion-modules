@@ -19,6 +19,13 @@ class AccountReconcileModel(models.Model):
         default=False, help="Check to search only from the start of the month"
     )
 
+    strict_reference_matching = fields.Boolean(
+        default=False,
+        help="If this option is enabled, only bank statement lines whose"
+        "label/reference EXACTLY matches a corresponding unpaid invoice for "
+        "the corresponding partner will be reconciled.",
+    )
+
     @api.onchange("past_months_limit")
     def _uncheck_only_this_month(self):
         if self.past_months_limit and self.only_this_month:
@@ -119,6 +126,24 @@ class AccountReconcileModel(models.Model):
         reconciliations = super(AccountReconcileModel, self)._apply_rules(
             st_lines, excluded_ids, partner_map
         )
+        if self.strict_reference_matching:
+            return self._filter_reconciliations_strict_ref(reconciliations, st_lines)
+        else:
+            return reconciliations
+    
+    def _filter_reconciliations_strict_ref(self, reconciliations: dict, st_lines) -> dict:
+        """
+        Filters the reconciliations, keeping only the ones where the statement's
+        label/reference exactly matches the reference of an unpaid invoice for the
+        matched partner.
+
+        Args:
+            reconciliations (dict): Original reconciliations returned by the base class.
+            st_lines (List["account.bank.statement.line"]): bank statement lines
+
+        Returns:
+            dict: strict_reconciliations
+        """
         strict_reconciliations = copy.copy(reconciliations)
         for rec_id, rec in reconciliations.items():
             if not "partner" in rec:
@@ -127,13 +152,15 @@ class AccountReconcileModel(models.Model):
             partner_invoices = rec["partner"].invoice_ids.invoice_line_ids
             st_ref = st_lines.browse(rec_id).payment_ref
 
-            strict_matches = partner_invoices.search([
-                ("payment_state", "!=", "paid"),
-                ("move_id.payment_reference", "=", st_ref)
-            ])
+            strict_matches = partner_invoices.search(
+                [
+                    ("payment_state", "!=", "paid"),
+                    ("move_id.payment_reference", "=", st_ref),
+                ]
+            )
             if len(strict_matches) == 0:
                 # Remove the approximate reconciliation
-                strict_reconciliations[rec_id] = {'aml_ids': []}
+                strict_reconciliations[rec_id] = {"aml_ids": []}
 
         return strict_reconciliations
 
