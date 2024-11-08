@@ -1,3 +1,4 @@
+import copy
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
@@ -118,15 +119,23 @@ class AccountReconcileModel(models.Model):
         reconciliations = super(AccountReconcileModel, self)._apply_rules(
             st_lines, excluded_ids, partner_map
         )
-        # res[1056809]['partner'].invoice_ids.invoice_line_ids[0].move_id.payment_reference
-        # st_lines.browse(1056809).payment_ref 
-        # => TODO strict comparison on those values
-        for rec in reconciliations:
-            partner_invoices = rec['partner'].invoice_ids
-            st_ref = st_lines.browse(rec).payment_ref
-            found_exact_invoice_ref_match = False
-            # for TODO
-        return res
+        strict_reconciliations = copy.copy(reconciliations)
+        for rec_id, rec in reconciliations.items():
+            if not "partner" in rec:
+                # Reconciliation failed, nothing to change
+                continue
+            partner_invoices = rec["partner"].invoice_ids.invoice_line_ids
+            st_ref = st_lines.browse(rec_id).payment_ref
+
+            strict_matches = partner_invoices.search([
+                ("payment_state", "!=", "paid"),
+                ("move_id.payment_reference", "=", st_ref)
+            ])
+            if len(strict_matches) == 0:
+                # Remove the approximate reconciliation
+                strict_reconciliations[rec_id] = {'aml_ids': []}
+
+        return strict_reconciliations
 
 
 class AccountReconcileModelLine(models.Model):
