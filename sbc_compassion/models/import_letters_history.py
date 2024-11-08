@@ -139,9 +139,20 @@ class ImportLettersHistory(models.Model):
             correspondence_vals = letters.import_line_ids.get_letter_data()
             # letters_ids should be empty before this line
             for vals in correspondence_vals:
-                letters.letters_ids.create(vals)
-            letters.import_line_ids.unlink()
-        return True
+                try:
+                    pdf_data = vals.get('pdf_data')
+                    pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
+                    _ = pdf_document.page_count
+                    letters.letters_ids.create(vals)
+                except Exception as e:
+                    letters.import_completed = False
+                    letters.state = "failed"
+                    self.state = "failed"
+                    self.env.user.notify_danger(f"Error during import: {str(e)}")
+                    return False
+                else:
+                    letters.import_line_ids.unlink()
+                    return True
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
