@@ -114,6 +114,20 @@ class AccountReconcileModel(models.Model):
 
         return query, params
 
+    def _apply_rules(self, st_lines, excluded_ids=None, partner_map=None):
+        reconciliations = super(AccountReconcileModel, self)._apply_rules(
+            st_lines, excluded_ids, partner_map
+        )
+        # res[1056809]['partner'].invoice_ids.invoice_line_ids[0].move_id.payment_reference
+        # st_lines.browse(1056809).payment_ref 
+        # => TODO strict comparison on those values
+        for rec in reconciliations:
+            partner_invoices = rec['partner'].invoice_ids
+            st_ref = st_lines.browse(rec).payment_ref
+            found_exact_invoice_ref_match = False
+            # for TODO
+        return res
+
 
 class AccountReconcileModelLine(models.Model):
     _inherit = "account.reconcile.model.line"
