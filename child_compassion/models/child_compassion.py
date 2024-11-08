@@ -537,6 +537,32 @@ class CompassionChild(models.Model):
         self._fetch_translations(self.env.ref("child_compassion.beneficiaries_details"))
         return self.edit_translations()
 
+    @api.model
+    def update_all_children_description(self):
+        children = self.env["compassion.child"].sudo().search([])
+        infos = ""
+        for child in children:
+            error = child.update_child_descriptions()
+            if len(error) > 0:
+                infos += "\n%s" % error
+        if len(infos) > 0:
+            raise UserError(infos)
+
+    def update_child_descriptions(self):
+        descriptions = (
+            self.env["compassion.child.description"]
+            .sudo()
+            .search([("child_id", "=", self.id)], order="write_date desc", limit=1)
+        )
+        if len(descriptions) > 0:
+            description = descriptions[0]
+            description._generate_all_translations()
+            return ""
+        return "Error with %s (%s) : description not found" % (
+            self.name if self.name else "",
+            self.id,
+        )
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
