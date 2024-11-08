@@ -42,10 +42,25 @@
             >
                 <field name="avoid_thankyou_letter" optional="hide" />
             </xpath>
-            <field
-                name="strict_reference_matching"
-                attrs="{'invisible': [('rule_type', '!=', 'invoice_matching')]}"
-            />
+
+
+            <xpath
+                expr="/form/sheet/group[2]"
+                position="inside"
+            >
+            <!-- My aim with this xpath is to add the field inside the "Conditions on Bank Statement Line" group. I found no simpler way to select it, so I use this rather inelegant solution with an index. -->
+            <group attrs="{'invisible': [('rule_type', '!=', 'invoice_matching')]}">
+                <span class="o_form_label o_td_label">Strict label matching</span>
+                <div>
+                    <field
+                        name="strict_reference_matching"
+                    />
+                    <div class="text-muted">
+                        If enabled, only statements whose <i>label</i> EXACTLY matches an unpaid invoice for a corresponding partner will be reconciled.
+                    </div>
+                </div>
+            </group>
+            </xpath>
         </field>
     </record>
 </odoo>

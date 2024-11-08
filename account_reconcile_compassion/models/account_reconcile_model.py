@@ -21,7 +21,7 @@ class AccountReconcileModel(models.Model):
 
     strict_reference_matching = fields.Boolean(
         default=False,
-        help="If this option is enabled, only bank statement lines whose"
+        help="If this option is enabled, only bank statement lines whose "
         "label/reference EXACTLY matches a corresponding unpaid invoice for "
         "the corresponding partner will be reconciled.",
     )
@@ -126,6 +126,7 @@ class AccountReconcileModel(models.Model):
         reconciliations = super(AccountReconcileModel, self)._apply_rules(
             st_lines, excluded_ids, partner_map
         )
+        # TODO: self contains multiple items! needs adaptation.
         if self.strict_reference_matching:
             return self._filter_reconciliations_strict_ref(reconciliations, st_lines)
         else:
