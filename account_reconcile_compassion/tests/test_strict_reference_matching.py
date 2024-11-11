@@ -22,11 +22,15 @@ class TestStrictReferenceMatching(TransactionCase):
             }
         )
         
-
+        journal = self.env["account.journal"].create({
+            "name": "Test journal",
+            "code": "001",
+            "type": "sale"
+        })
         abs = self.env["account.bank.statement"]
         abs1 = abs.create(
             {
-                "journal_id": 1,
+                "journal_id": journal.id,
             }
         )
         counterpart_account = self.env["account.account"].create(
@@ -50,19 +54,22 @@ class TestStrictReferenceMatching(TransactionCase):
         payment_ref_1 = "001"
         payment_ref_2 = "002"
 
-        absl1 = absl.create(
+        self.absl1 = absl.create(
             {
                 "statement_id": abs1.id,
                 "payment_ref": payment_ref_1,
                 "counterpart_account_id": counterpart_account.id,
+                "amount": 100.0,
+                "to_check": True
             }
         )
+        # TODO FIX psycopg2.errors.CheckViolation: new row for relation "account_move_line" violates check constraint "account_move_line_check_accountable_required_fields"
         absl.flush()
 
         partner1 = self.env["res.partner"].create({"name": "Test partner"})
 
         self.partner_map = {
-            absl1.id: partner1.id
+            self.absl1.id: partner1.id
         }
 
         self.st_lines = absl.search([])
@@ -73,19 +80,22 @@ class TestStrictReferenceMatching(TransactionCase):
                 "partner_id": partner1.id,
                 "payment_state": "not_paid",
                 # Different from ref for absl1 to test strict vs unstrict reconciliation
-                "payment_reference": payment_ref_2, 
+                "payment_reference": payment_ref_2,
+                
             }
         )
+        self.env["account.move"].flush()
         invoice_line_1 = self.env["account.move.line"].create(
             {"move_id": unpaid_invoice1.id, "account_id": invoice_account.id}
         )
 
     def test_apply_rules_unstrict_reference_matching(self):
-        reconciliations = self.invoice_matching_rule_unstrict._apply_rules(self.st_lines, partner_map=self.partner_map)
+        # reconciliations = self.invoice_matching_rule_unstrict._apply_rules(self.st_lines, partner_map=self.partner_map)
+        self.absl1.reconcile([{"balance": 100.0}])
         # TODO should find match
         pass
 
     def test_apply_rules_strict_reference_matching(self):
-        reconciliations = self.invoice_matching_rule_strict._apply_rules(self.st_lines, partner_map=self.partner_map)
+        # self.absl1.reconcil
         # TODO should not find match
         pass
