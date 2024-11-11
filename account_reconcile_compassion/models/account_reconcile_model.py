@@ -145,12 +145,14 @@ class AccountReconcileModel(models.Model):
         """
         strict_reconciliations = copy.copy(reconciliations)
         for rec_id, rec in reconciliations.items():
-            if not "partner" in rec:
-                # Reconciliation failed, nothing to change
-                continue
-            if (not "model" in rec) or not rec["model"].strict_reference_matching:
-                # Strict reference matching disabled for the model which discovered the
-                # reconciliation -> skip
+            if (
+                (not "partner" in rec) # No reconciliation found
+                or (not "model" in rec) # No model for the reconciliation
+                # Not invoice_matching reconciliation model
+                or rec["model"].rule_type != "invoice_matching"
+                # Strict reference matching disabled
+                or not rec["model"].strict_reference_matching 
+            ):
                 continue
 
             partner_invoices = rec["partner"].invoice_ids.invoice_line_ids
