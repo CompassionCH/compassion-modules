@@ -126,13 +126,11 @@ class AccountReconcileModel(models.Model):
         reconciliations = super(AccountReconcileModel, self)._apply_rules(
             st_lines, excluded_ids, partner_map
         )
-        # TODO: self contains multiple items! needs adaptation.
-        if self.strict_reference_matching:
-            return self._filter_reconciliations_strict_ref(reconciliations, st_lines)
-        else:
-            return reconciliations
-    
-    def _filter_reconciliations_strict_ref(self, reconciliations: dict, st_lines) -> dict:
+        return self._filter_reconciliations_strict_ref(reconciliations, st_lines)
+
+    def _filter_reconciliations_strict_ref(
+        self, reconciliations: dict, st_lines
+    ) -> dict:
         """
         Filters the reconciliations, keeping only the ones where the statement's
         label/reference exactly matches the reference of an unpaid invoice for the
@@ -150,6 +148,11 @@ class AccountReconcileModel(models.Model):
             if not "partner" in rec:
                 # Reconciliation failed, nothing to change
                 continue
+            if (not "model" in rec) or not rec["model"].strict_reference_matching:
+                # Strict reference matching disabled for the model which discovered the
+                # reconciliation -> skip
+                continue
+
             partner_invoices = rec["partner"].invoice_ids.invoice_line_ids
             st_ref = st_lines.browse(rec_id).payment_ref
 
