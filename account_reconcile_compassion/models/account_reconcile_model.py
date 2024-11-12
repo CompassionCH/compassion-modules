@@ -1,4 +1,5 @@
 import copy
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
@@ -146,9 +147,9 @@ class AccountReconcileModel(models.Model):
         strict_reconciliations = copy.copy(reconciliations)
         for rec_id, rec in reconciliations.items():
             if (
-                (not "partner" in rec)  # No reconciliation found
-                or (not "model" in rec)  # No model for the reconciliation
-                or (not "aml_ids" in rec)  # No candidate aml found
+                ("partner" not in rec)  # No reconciliation found
+                or ("model" not in rec)  # No model for the reconciliation
+                or ("aml_ids" not in rec)  # No candidate aml found
                 # Not invoice_matching reconciliation model
                 or rec["model"].rule_type != "invoice_matching"
                 # Strict reference matching disabled

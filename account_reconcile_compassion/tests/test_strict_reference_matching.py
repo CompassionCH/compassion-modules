@@ -1,12 +1,11 @@
 import unittest
-from odoo.tests import TransactionCase
 
+from odoo.tests import TransactionCase
 
 EMPTY_RECONCILIATION = {"aml_ids": []}
 
 
 class TestStrictReferenceMatching(TransactionCase):
-
     def _create_unpaid_invoice_line(self, payment_reference: str):
         unpaid_invoice = self.env["account.move"].create(
             {
@@ -23,7 +22,7 @@ class TestStrictReferenceMatching(TransactionCase):
         )
 
     def _create_absl(self, payment_reference: str):
-        abs = self.env["account.bank.statement"].create(
+        bank_statement = self.env["account.bank.statement"].create(
             {
                 "journal_id": self.journal.id,
             }
@@ -31,7 +30,7 @@ class TestStrictReferenceMatching(TransactionCase):
         return self.env["account.bank.statement.line"].create(
             {
                 "name": "Test bank statement line",
-                "statement_id": abs.id,
+                "statement_id": bank_statement.id,
                 "payment_ref": payment_reference,
                 "amount": 100.0,
                 "to_check": True,
@@ -135,7 +134,6 @@ class TestStrictReferenceMatching(TransactionCase):
         self.assertNotIn("partner_id", reconciliations[self.absl1.id])
 
     def _build_reconciliations(self, rec_model) -> dict:
-
         return {
             812: EMPTY_RECONCILIATION,
             810: EMPTY_RECONCILIATION,
