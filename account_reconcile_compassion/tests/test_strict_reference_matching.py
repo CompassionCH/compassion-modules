@@ -6,6 +6,39 @@ EMPTY_RECONCILIATION = {"aml_ids": []}
 
 
 class TestStrictReferenceMatching(TransactionCase):
+
+    def _create_unpaid_invoice_line(self, payment_reference: str):
+        unpaid_invoice = self.env["account.move"].create(
+            {
+                "journal_id": 1,
+                "partner_id": self.partner1.id,
+                "payment_state": "not_paid",
+                # Different from ref for absl1 to test strict vs unstrict reconciliation
+                "payment_reference": payment_reference,
+                "company_id": 1,
+            }
+        )
+        return self.env["account.move.line"].create(
+            {"move_id": unpaid_invoice.id, "account_id": self.invoice_account.id}
+        )
+
+    def _create_absl(self, payment_reference: str):
+        abs = self.env["account.bank.statement"].create(
+            {
+                "journal_id": self.journal.id,
+            }
+        )
+        return self.env["account.bank.statement.line"].create(
+            {
+                "name": "Test bank statement line",
+                "statement_id": abs.id,
+                "payment_ref": payment_reference,
+                "amount": 100.0,
+                "to_check": True,
+                "company_id": 1,
+            }
+        )
+
     def setUp(self):
         super(TestStrictReferenceMatching, self).setUp()
 
@@ -34,7 +67,7 @@ class TestStrictReferenceMatching(TransactionCase):
                 "reconcile": True,
             }
         )
-        invoice_account = self.env["account.account"].create(
+        self.invoice_account = self.env["account.account"].create(
             {
                 "name": "Test invoice account",
                 "code": "2",
@@ -54,7 +87,7 @@ class TestStrictReferenceMatching(TransactionCase):
             }
         )
 
-        journal = self.env["account.journal"].create(
+        self.journal = self.env["account.journal"].create(
             {
                 "name": "Test journal",
                 "code": "001",
@@ -63,50 +96,21 @@ class TestStrictReferenceMatching(TransactionCase):
                 "default_account_id": default_account.id,
             }
         )
-        abs = self.env["account.bank.statement"]
-        abs1 = abs.create(
-            {
-                "journal_id": journal.id,
-            }
-        )
-
-        absl = self.env["account.bank.statement.line"]
 
         payment_ref_1 = "001"
         payment_ref_2 = "002"
 
         self.partner1 = self.env["res.partner"].create({"name": "Test partner"})
-        self.absl1 = absl.create(
-            {
-                "name": "Test bank statement line",
-                "statement_id": abs1.id,
-                "payment_ref": payment_ref_1,
-                "amount": 100.0,
-                "to_check": True,
-                "company_id": 1,
-            }
-        )
-        absl.flush()
+        self.absl1 = self._create_absl(payment_ref_1)
+        self.absl2 = self._create_absl(payment_ref_2)
 
         # Used in call to _apply_rules
         self.partner_map = {self.absl1.id: self.partner1.id}
 
         self.st_lines = self.absl1
 
-        unpaid_invoice2 = self.env["account.move"].create(
-            {
-                "journal_id": 1,
-                "partner_id": self.partner1.id,
-                "payment_state": "not_paid",
-                # Different from ref for absl1 to test strict vs unstrict reconciliation
-                "payment_reference": payment_ref_2,
-                "company_id": 1,
-            }
-        )
-        self.unpaid_invoice_line2 = self.env["account.move.line"].create(
-            {"move_id": unpaid_invoice2.id, "account_id": invoice_account.id}
-        )
-        unpaid_invoice2.action_post()
+        self.unpaid_invoice_line1 = self._create_unpaid_invoice_line(payment_ref_1)
+        self.unpaid_invoice_line2 = self._create_unpaid_invoice_line(payment_ref_2)
 
     @unittest.skip(
         """Some unknown setup/context issue prevents the reconciliation from
@@ -140,6 +144,11 @@ class TestStrictReferenceMatching(TransactionCase):
                 "aml_ids": [self.unpaid_invoice_line2.id],  # Incorrect reconciliation
                 "partner": self.partner1,
             },
+            self.absl2.id: {
+                "model": rec_model,
+                "aml_ids": [self.unpaid_invoice_line2.id],  # Correct reconciliation
+                "partner": self.partner1,
+            },
         }
 
     def test_filter_reconciliations_strict_ref(self):
@@ -153,6 +162,9 @@ class TestStrictReferenceMatching(TransactionCase):
 
         # Strict reconciliation should have removed the incorrect reconciliation
         self.assertEqual(filtered_reconciliations[self.absl1.id], EMPTY_RECONCILIATION)
+        self.assertEqual(
+            filtered_reconciliations[self.absl2.id], reconciliations[self.absl2.id]
+        )
 
     def test_filter_reconciliations_unstrict_ref(self):
         reconciliations = self._build_reconciliations(
@@ -168,4 +180,7 @@ class TestStrictReferenceMatching(TransactionCase):
         # Unstrict reconciliation should have kept the approximate reconciliation
         self.assertEqual(
             filtered_reconciliations[self.absl1.id], reconciliations[self.absl1.id]
+        )
+        self.assertEqual(
+            filtered_reconciliations[self.absl2.id], reconciliations[self.absl2.id]
         )

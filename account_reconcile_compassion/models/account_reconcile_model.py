@@ -146,27 +146,26 @@ class AccountReconcileModel(models.Model):
         strict_reconciliations = copy.copy(reconciliations)
         for rec_id, rec in reconciliations.items():
             if (
-                (not "partner" in rec) # No reconciliation found
-                or (not "model" in rec) # No model for the reconciliation
+                (not "partner" in rec)  # No reconciliation found
+                or (not "model" in rec)  # No model for the reconciliation
+                or (not "aml_ids" in rec)  # No candidate aml found
                 # Not invoice_matching reconciliation model
                 or rec["model"].rule_type != "invoice_matching"
                 # Strict reference matching disabled
-                or not rec["model"].strict_reference_matching 
+                or not rec["model"].strict_reference_matching
             ):
                 continue
 
-            partner_invoices = rec["partner"].invoice_ids.invoice_line_ids
             st_ref = st_lines.browse(rec_id).payment_ref
-
-            strict_matches = partner_invoices.search(
-                [
-                    ("payment_state", "!=", "paid"),
-                    ("move_id.payment_reference", "=", st_ref),
-                ]
+            aml_ids = rec["aml_ids"]
+            amls = self.env["account.move.line"].browse(aml_ids)
+            filtered_aml_ids = list(
+                filter(lambda aml: aml.move_id.payment_reference == st_ref, amls)
             )
-            if len(strict_matches) == 0:
-                # Remove the approximate reconciliation
+            if len(filtered_aml_ids) == 0:
                 strict_reconciliations[rec_id] = {"aml_ids": []}
+            else:
+                strict_reconciliations[rec_id]["aml_ids"] = filtered_aml_ids
 
         return strict_reconciliations
 
