@@ -90,14 +90,16 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         )
 
         # Create account used in unreconciled_transaction_items
-        self.env["account.account"].create(
-            {
-                "name": "Some test account",
-                "user_type_id": 1,
-                "reconcile": True,
-                "code": "1050",
-            }
-        )
+        account = self.env["account.account"]
+        if account.search_count([("code", "=", "1050")]) == 0:
+            self.env["account.account"].create(
+                {
+                    "name": "Some test account",
+                    "user_type_id": 1,
+                    "reconcile": True,
+                    "code": "1050",
+                }
+            )
 
         # Create a child and get the project associated
         self.child = self.create_child("PE012304567")
