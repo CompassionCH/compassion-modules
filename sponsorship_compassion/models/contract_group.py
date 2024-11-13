@@ -67,7 +67,7 @@ class ContractGroup(models.Model):
     def _get_partner_for_contract(self, contract, gift_wizard=False):
         if gift_wizard and contract.send_gifts_to:
             return contract[contract.send_gifts_to]
-        return super()._get_partner_for_contract(contract)
+        return super()._get_partner_for_contract(contract, gift_wizard)
 
     def _should_skip_invoice_generation(self, invoicing_date, contract=None):
         self.ensure_one()
