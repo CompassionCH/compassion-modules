@@ -8,7 +8,7 @@
 ##############################################################################
 
 from . import (
-    # test_account_reconcile, # TODO FIX
-    # test_bank_account_assignation, # TODO FIX
+    test_account_reconcile,
+    test_bank_account_assignation,
     test_strict_reference_matching,
 )
