@@ -158,7 +158,7 @@ class ImportLetterLine(models.Model):
                     "original_text": line.original_text,
                     "source": line.source,
                     "import_id": line.import_id.id,
-                    "file_name": line.file_name
+                    "file_name": line.file_name,
                 }
             )
 
