@@ -143,7 +143,10 @@ class ImportLettersHistory(models.Model):
                 try:
                     pdf_data = vals.get("pdf_data")
                     pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
-                    _ = pdf_document.page_count
+                    if pdf_document.page_count <= 0:
+                        raise UserError(
+                            _("The PDF document has no pages or is invalid.")
+                        )
                     letters.letters_ids.create(vals)
                 except Exception:
                     all_imports_successful = False
