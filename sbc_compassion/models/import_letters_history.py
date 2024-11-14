@@ -141,17 +141,19 @@ class ImportLettersHistory(models.Model):
             # letters_ids should be empty before this line
             for vals in correspondence_vals:
                 try:
-                    pdf_data = vals.get('pdf_data')
+                    pdf_data = vals.get("pdf_data")
                     pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
                     _ = pdf_document.page_count
                     letters.letters_ids.create(vals)
-                except Exception as e:
+                except Exception:
                     all_imports_successful = False
                     letters.import_completed = False
                     letters.state = "failed"
                     self.state = "failed"
-                    self.env.user.notify_danger(f"Couldn't import file: {vals.get('file_name')}")
-                    letters.failed_file_name = vals.get('file_name')
+                    self.env.user.notify_danger(
+                        f"Couldn't import file: {vals.get('file_name')}"
+                    )
+                    letters.failed_file_name = vals.get("file_name")
             if not all_imports_successful:
                 return False
             else:
