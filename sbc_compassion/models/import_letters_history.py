@@ -134,6 +134,7 @@ class ImportLettersHistory(models.Model):
         for letters_h in self:
             if letters_h.state != "ready":
                 raise UserError(_("Some letters are not ready"))
+        all_imports_successful = True
         # save the imports
         for letters in self:
             correspondence_vals = letters.import_line_ids.get_letter_data()
@@ -145,15 +146,18 @@ class ImportLettersHistory(models.Model):
                     _ = pdf_document.page_count
                     letters.letters_ids.create(vals)
                 except Exception as e:
+                    all_imports_successful = False
                     letters.import_completed = False
                     letters.state = "failed"
                     self.state = "failed"
                     self.env.user.notify_danger(f"Couldn't import file: {vals.get('file_name')}")
-                    self.failed_file_name= vals.get('file_name')
-                    return False
-                else:
-                    letters.import_line_ids.unlink()
-                    return True
+                    letters.failed_file_name = vals.get('file_name')
+            if not all_imports_successful:
+                return False
+            else:
+                letters.import_line_ids.unlink()
+                letters.import_completed = True
+                return True
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
