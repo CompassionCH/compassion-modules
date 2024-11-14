@@ -148,7 +148,7 @@ class ImportLettersHistory(models.Model):
                     letters.import_completed = False
                     letters.state = "failed"
                     self.state = "failed"
-                    self.env.user.notify_danger(f"Error during import: {str(e)}")
+                    self.env.user.notify_danger(f"Couldn't import file: {vals.get('file_name')}")
                     self.failed_file_name= vals.get('file_name')
                     return False
                 else:
