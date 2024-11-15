@@ -157,11 +157,22 @@ class AccountReconcileModel(models.Model):
             ):
                 continue
 
+            # rec_id is the id of the bank statement line which we are trying to
+            # reconcile with an existing invoice
             st_ref = st_lines.browse(rec_id).payment_ref
+            # aml_ids contains the ids of the unreconciled invoices which
+            # super()._apply_rules proposes to reconcile to the current bank statement
+            # line
             aml_ids = rec["aml_ids"]
             amls = self.env["account.move.line"].browse(aml_ids)
+            # We filter the proposed reconciliations, keeping only those where the
+            # payment_ref of the bank statement is identical to the payment_reference of
+            # the invoice
             filtered_aml_ids = list(
-                filter(lambda aml: aml.move_id.payment_reference == st_ref, amls)
+                map(
+                    lambda aml: aml.id,  # extract ids to conform to format
+                    filter(lambda aml: st_ref == aml.move_id.payment_reference, amls),
+                )
             )
             if len(filtered_aml_ids) == 0:
                 strict_reconciliations[rec_id] = {"aml_ids": []}
