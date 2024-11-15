@@ -301,23 +301,6 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.fully_managed = contract.partner_id == contract.correspondent_id
 
-    def is_correspondent_WP(self):
-        """
-        Does the correspondent have the W&P category ?
-        """
-        self.ensure_one()
-        return "W&P" in self.correspondent_id.category_id.mapped("name")
-
-    @api.onchange("correspondent_id")
-    def onchange_correspondent(self):
-        """
-        Prevent inconsistencies between the correspondent's W&P tag and the sponsorship
-        type.
-        """
-        self.ensure_one()
-        if not self.fully_managed and self.is_correspondent_WP():
-            self.type = "SWP"
-
     def _compute_last_paid_invoice(self):
         """Override to exclude gift invoices."""
         for contract in self:
@@ -1372,36 +1355,20 @@ class SponsorshipContract(models.Model):
 
     def fix_inconsistent_SWP_contracts(self) -> list:
         """
-        [T1924] : Finds the contracts whose type != "SWP" (Sponsorship Write and Pray)
-        but whose correspondent has category "W&P" (Write & Pray). This means that the
-        contract type is inconsistent with the correspondent. In that case, we fix the
-        contract by setting type = "SWP".
-
+        [T1924] : Finds the contracts with type Write&Pray ("SWP") and fixes the empty
+        contract lines problem which causes the sponsorships not to appear on
+        mycompassion.ch.
         Returns:
             list: fixed, previously inconsistent, contracts
         """
-        # First we find contracts whose correspondent has the W&P tag. What we expect if
-        # the system was consistent is that the contract has type "SWP".
-        # if the correspondent is W&P but the contract's type is != SWP, this
-        # indicates an inconsistent state, which we fix by setting the correct
-        # type
-        inconsistent_contracts = self.search(
-            [
-                # The correspondent has the W&P tag
-                ("correspondent_id.category_id.name", "=", "W&P"),
-                # AND the sponsorship is not fully managed by one person
-                ("fully_managed", "=", False),
-                # AND the type is not SWP
-                ("type", "!=", "SWP"),
-            ]
-        )
+
+        inconsistent_contracts = self.search([("type", "=", "SWP")])
         for contract in inconsistent_contracts:
-            # Fix incorrect type
-            contract.type = "SWP"
-            # Fix missing contract lines
-            contract._create_empty_lines_for_correspondence()
-            # Update contracts on the partner side
-            contract.correspondent_id._compute_related_contracts()
+            if len(contract.contract_line_ids) == 0:
+                # Fix missing contract lines
+                contract._create_empty_lines_for_correspondence()
+                # Update contracts on the partner side
+                contract.correspondent_id._compute_related_contracts()
 
         fixed_contract_ids = list(map(lambda c: c.id, inconsistent_contracts))
         logger.info(
