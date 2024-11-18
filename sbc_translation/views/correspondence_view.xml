@@ -85,11 +85,20 @@
                     </group>
                     <group string="Letter content">
                         <field name="unread_comments"/>
+                        <field name="paragraph_ids" invisible="1">
+                            <tree editable="bottom" default_order="page_id asc,sequence asc">
+                                <field name="sequence" widget="handle"/>
+                                <field name="original_text"/>
+                                <field name="translated_text"/>
+                                <field name="comments"/>
+                                <field name="page_id" invisible="1"/>
+                            </tree>
+                        </field>
                         <field name="page_ids">
                             <tree>
-                                <field name="original_text" />
-                                <field name="english_text" />
-                                <field name="translated_text" />
+                                <field name="original_text"/>
+                                <field name="english_text"/>
+                                <field name="translated_text"/>
                             </tree>
                         </field>
                     </group>

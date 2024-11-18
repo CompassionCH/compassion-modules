@@ -1011,6 +1011,14 @@ class Correspondence(models.Model):
                                 "sequence": i,
                             }
                         )
+            # T1676 : Each page should contains at least one textbox (paragraph)
+            if len(page.paragraph_ids) == 0:
+                paragraphs.create(
+                    {
+                        "page_id": page.id,
+                        "sequence": 0,
+                    }
+                )
 
         return paragraphs
 
