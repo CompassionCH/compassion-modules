@@ -3,6 +3,6 @@ from . import (
     lang_compassion,
     langdetect,
     ocr,
-    res_partner_test,
     translatable_model,
+    res_partner_test,
 )

@@ -70,7 +70,11 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                     self.env["product.category"],
                 ).id,
                 "sale_ok": True,
+                "default_code": "sponsorship",
             }
+        )
+        self.donation = self.env["product.product"].create(
+            {"name": "Donation test", "default_code": "fund_gen"}
         )
         # Direct debit payment method
         dd_pay_method = self.env["account.payment.method"].create(
@@ -88,16 +92,29 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                 "payment_method_id": dd_pay_method.id,
             }
         )
+
+        # Create account used in unreconciled_transaction_items
+        account = self.env["account.account"]
+        if account.search_count([("code", "=", "1050")]) == 0:
+            self.env["account.account"].create(
+                {
+                    "name": "Some test account",
+                    "user_type_id": 1,
+                    "reconcile": True,
+                    "code": "1050",
+                }
+            )
+
         # Create a child and get the project associated
         self.child = self.create_child("PE012304567")
         # Creation of the sponsorship contract
-        sp_group = self.create_group(
+        self.sp_group = self.create_group(
             {"partner_id": self.partner_1.id, "payment_mode_id": dd_pay_mode.id}
         )
         self.sponsorship = self.create_contract(
             {
                 "partner_id": self.partner_1.id,
-                "group_id": sp_group.id,
+                "group_id": self.sp_group.id,
                 "child_id": self.child.id,
                 "type": "S",
             },
