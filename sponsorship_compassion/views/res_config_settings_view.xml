@@ -17,6 +17,9 @@
                     <setting id="christmas_inv_gen_month_setting">
                         <field name="christmas_inv_gen_month" />
                     </setting>
+                    <setting id="bypass_fcp_state_setting">
+                        <field name="bypass_fcp_state" />
+                    </setting>
                     <setting id="time_allowed_for_gifts_setting">
                         <field name="time_allowed_for_gifts" />
                     </setting>
