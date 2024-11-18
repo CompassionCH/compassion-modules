@@ -72,27 +72,3 @@ class TestProjectCompassion(TransactionCase):
         self.assertEqual(
             mock_get_lifecycle_event.call_count, expected_nb_projects_updated
         )
-
-    @patch(f"{PROJECT_COMPASSION_ADDON}.update_informations")
-    @patch(f"{PROJECT_COMPASSION_ADDON}.get_lifecycle_event")
-    def test_sync_projects_from_gmc_input_validation(
-        self, mock_update_informations, mock_get_lifecycle_event
-    ):
-        expected_nb_projects_updated = len(self.projects_with_sponsorships) // 5
-
-        projects = self.env["compassion.project"]
-        self.assertRaises(
-            ValueError, lambda: projects.sync_projects_from_gmc(max_projects_to_sync=0)
-        )
-
-        projects.sync_projects_from_gmc(
-            max_projects_to_sync=expected_nb_projects_updated
-        )
-
-        self.assertEqual(
-            mock_update_informations.call_count, expected_nb_projects_updated
-        )
-
-        self.assertEqual(
-            mock_get_lifecycle_event.call_count, expected_nb_projects_updated
-        )

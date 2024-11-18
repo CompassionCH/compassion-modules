@@ -11,6 +11,7 @@
 import logging
 import time
 from odoo import fields, models
+from odoo.tools import relativedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -64,10 +65,10 @@ class ProjectCompassion(models.Model):
 
     
     def sync_projects_from_gmc(
-        self, requests_throttle_seconds=1.0, log_period=100, max_projects_to_sync=-1
+        self, requests_throttle_seconds=1.0, log_period=100, max_projects_to_sync=None
     ):
         """
-        Synchronises the informations and lifecycle events fro all the projects with
+        Synchronises the informations and lifecycle events for all the projects with
         active sponsorships from the GMC. This should be called from a cron job and can
         take a long time to execute (a few hours). The reason for this is that the
         requests to the GMC server are delayed in order to avoid overwhelming their
@@ -80,21 +81,14 @@ class ProjectCompassion(models.Model):
             log_period (int, optional): Write to the log every log_period requests.
                 Defaults to 100.
             max_projects_to_sync (int, optional): Maximum number of projects to sync.
-                Used for testing. Defaults to -1, which means: sync everything.
+                Used for testing. Defaults to None, which means: sync everything.
         """
-        # log every so many updated projects to the console
-        projects = self.search([])
-        projects_to_sync = list(filter(lambda p: p.sponsorships_count > 0, projects))
-
-        if max_projects_to_sync == 0:
-            raise ValueError(
-                f"Invalid parameter value {max_projects_to_sync=}. "
-                "Should be either -1 or strictly positive."
-            )
-        max_projects_to_sync = min(max_projects_to_sync, len(projects_to_sync))
-        if max_projects_to_sync > 0:
-            projects_to_sync = projects_to_sync[:max_projects_to_sync]
-
+        one_month_ago = fields.Date.today() - relativedelta(days=30)
+        projects_to_sync = self.search([
+            ("status", "in", ["Active", "Suspended"]),
+            ("last_update_date", "<", one_month_ago),
+            ("sponsorships_count", ">", 0)
+        ], limit=max_projects_to_sync)
         nb_projects_to_sync = len(projects_to_sync)
 
         _logger.info(
