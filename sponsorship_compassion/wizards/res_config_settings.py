@@ -36,3 +36,10 @@ class StaffNotificationSettings(models.TransientModel):
         # Default invoices for Christmas gift are due for two months before Christmas
         default=9,
     )
+    bypass_fcp_state = fields.Boolean(
+        help="Set True for generating invoices even if the fcp is in  "
+        "hold funds state",
+        config_parameter="sponsorship_compassion.bypass_fcp_state",
+        # by default take into account the project state
+        default=False,
+    )
