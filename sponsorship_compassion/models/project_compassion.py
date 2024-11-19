@@ -10,22 +10,32 @@
 
 import logging
 import time
-from odoo import fields, models
+
+from odoo import api, fields, models
 from odoo.tools import relativedelta
 
 _logger = logging.getLogger(__name__)
 
+
 class ProjectCompassion(models.Model):
     _inherit = "compassion.project"
 
-    sponsorships_count = fields.Integer(compute="_compute_sponsorships_count")
+    sponsorships_count = fields.Integer(
+        compute="_compute_sponsorships_count", store=True
+    )
 
+    contract_ids = fields.One2many(
+        "recurring.contract", inverse_name="project_id", readonly=True
+    )
+
+    @api.depends("contract_ids.project_id")
+    @api.depends("contract_ids.state")
     def _compute_sponsorships_count(self):
         for project in self:
-            project.sponsorships_count = self.env["recurring.contract"].search_count(
+            project.sponsorships_count = self.search_count(
                 [
-                    ("child_id.project_id", "=", project.id),
-                    ("state", "not in", ["cancelled", "terminated"]),
+                    ("contract_ids.project_id", "=", project.id),
+                    ("contract_ids.state", "not in", ["cancelled", "terminated"]),
                 ]
             )
 
@@ -62,8 +72,6 @@ class ProjectCompassion(models.Model):
         )
         contracts.reactivate_gifts()
 
-
-    
     def sync_projects_from_gmc(
         self, requests_throttle_seconds=1.0, log_period=100, max_projects_to_sync=None
     ):
@@ -84,11 +92,14 @@ class ProjectCompassion(models.Model):
                 Used for testing. Defaults to None, which means: sync everything.
         """
         one_month_ago = fields.Date.today() - relativedelta(days=30)
-        projects_to_sync = self.search([
-            ("status", "in", ["Active", "Suspended"]),
-            ("last_update_date", "<", one_month_ago),
-            ("sponsorships_count", ">", 0)
-        ], limit=max_projects_to_sync)
+        projects_to_sync = self.search(
+            [
+                ("status", "in", ["Active", "Suspended"]),
+                ("last_update_date", "<", one_month_ago),
+                ("sponsorships_count", ">", 0),
+            ],
+            limit=max_projects_to_sync,
+        )
         nb_projects_to_sync = len(projects_to_sync)
 
         _logger.info(

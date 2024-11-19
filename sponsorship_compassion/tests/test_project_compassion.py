@@ -6,7 +6,9 @@ child_compassion
 import random
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.tests import TransactionCase
+from odoo.tools import relativedelta
 
 PROJECT_COMPASSION_ADDON = (
     "odoo.addons.child_compassion.models.project_compassion.CompassionProject"
@@ -18,9 +20,14 @@ class TestProjectCompassion(TransactionCase):
         partner = self.env["res.partner"].create(
             {"name": "Test Partner", "portal_sponsorships": "all"}
         )
+        last_update = fields.Date.today() - relativedelta(days=142)
         project = self.env["compassion.project"].create(
-            {"fcp_id": f"test_fcp_id_{random.randint(1, 1e9)}"}
+            {
+                "fcp_id": f"test_fcp_id_{random.randint(1, 1e9)}",
+                "last_update_date": last_update,
+            }
         )
+        project.status = "Active"
         if with_sponsorship:
             child = self.env["compassion.child"].create(
                 {

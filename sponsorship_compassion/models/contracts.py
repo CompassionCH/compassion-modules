@@ -1073,10 +1073,9 @@ class SponsorshipContract(models.Model):
         # Don't generate gift for contract that are holding gifts or if they
         # don't have an amount for the gift
         for contract in self:
-            if (
-                    (contract.project_id.hold_gifts and not bypass_fcp_state)
-                or getattr(contract, f"{gift_type}_invoice") <= 0
-            ):
+            if (contract.project_id.hold_gifts and not bypass_fcp_state) or getattr(
+                contract, f"{gift_type}_invoice"
+            ) <= 0:
                 contracts -= contract
                 continue
 
