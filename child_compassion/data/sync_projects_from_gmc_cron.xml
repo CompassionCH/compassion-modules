@@ -1,0 +1,19 @@
+<odoo>
+    <data noupdate="1">
+        <record id="sync_projects_from_gmc_cron" model="ir.cron">
+            <field
+        name="name"
+      >[T1715] Update FCPs from GMC automatically. Warning: very slow (multiple hours)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="model_compassion_project" />
+            <field name="state">code</field>
+            <field name="code">model.sync_projects_from_gmc()</field>
+            <field name="active" eval="True" />
+            <!-- Active by default. This job can run for a long time (multiple hours) so
+            it is best to select a time where odoo is not very busy (e.g. at night/on
+            weekend) to run it. -->
+        </record>
+    </data>
+</odoo>

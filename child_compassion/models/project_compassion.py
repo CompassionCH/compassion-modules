@@ -10,6 +10,7 @@
 
 import logging
 import re
+import time
 from datetime import datetime, timedelta
 
 import requests
@@ -383,6 +384,7 @@ class CompassionProject(models.Model):
         "compassion.project.ile",
         compute="_compute_last_lifecycle",
         search="_search_last_lifecycle_id",
+        store=True
     )
     status_comment = fields.Text(related="last_lifecycle_id.details")
     hold_cdsp_funds = fields.Boolean(related="last_lifecycle_id.hold_cdsp_funds")
