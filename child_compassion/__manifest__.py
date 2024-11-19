@@ -101,7 +101,6 @@
         "data/fo.high.risk.csv",
         "data/fo.disaster.loss.csv",
         "data/queue_job.xml",
-        "data/sync_projects_from_gmc_cron.xml",
         "report/childpack.xml",
         "report/external_layout.xml",
         "report/child_picture.xml",

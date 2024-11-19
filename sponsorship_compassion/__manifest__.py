@@ -71,6 +71,7 @@
         "data/utm_data.xml",
         "data/res_partner_sequence.xml",
         "data/queue_job.xml",
+        "data/sync_projects_from_gmc_cron.xml",
         "security/ir.model.access.csv",
         "security/security.xml",
         "views/product_views.xml",
