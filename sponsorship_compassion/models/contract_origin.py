@@ -77,7 +77,7 @@ class ContractOrigin(models.Model):
             elif origin.type in ("event", "marketing"):
                 name = origin.analytic_id.name
             elif origin.type == "crowdfunding":
-                name = origin.event_id.name
+                name = origin.event_id.name + " " + origin.event_id.year
             elif origin.type == "transfer":
                 if origin.country_id:
                     name = _("Transfer from ") + origin.country_id.name
