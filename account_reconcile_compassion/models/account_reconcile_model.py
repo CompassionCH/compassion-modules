@@ -1,3 +1,5 @@
+import copy
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
@@ -16,6 +18,13 @@ class AccountReconcileModel(models.Model):
     user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
     only_this_month = fields.Boolean(
         default=False, help="Check to search only from the start of the month"
+    )
+
+    strict_reference_matching = fields.Boolean(
+        default=False,
+        help="If this option is enabled, only bank statement lines whose "
+        "label/reference EXACTLY matches a corresponding unpaid invoice for "
+        "the corresponding partner will be reconciled.",
     )
 
     @api.onchange("past_months_limit")
@@ -113,6 +122,64 @@ class AccountReconcileModel(models.Model):
             query = query.replace(" AND aml.date >= %(aml_date_limit)s", "")
 
         return query, params
+
+    def _apply_rules(self, st_lines, excluded_ids=None, partner_map=None):
+        reconciliations = super(AccountReconcileModel, self)._apply_rules(
+            st_lines, excluded_ids, partner_map
+        )
+        return self._filter_reconciliations_strict_ref(reconciliations, st_lines)
+
+    def _filter_reconciliations_strict_ref(
+        self, reconciliations: dict, st_lines
+    ) -> dict:
+        """
+        Filters the reconciliations, keeping only the ones where the statement's
+        label/reference exactly matches the reference of an unpaid invoice for the
+        matched partner.
+
+        Args:
+            reconciliations (dict): Original reconciliations returned by the base class.
+            st_lines (List["account.bank.statement.line"]): bank statement lines
+
+        Returns:
+            dict: strict_reconciliations
+        """
+        strict_reconciliations = copy.copy(reconciliations)
+        for rec_id, rec in reconciliations.items():
+            if (
+                ("partner" not in rec)  # No reconciliation found
+                or ("model" not in rec)  # No model for the reconciliation
+                or ("aml_ids" not in rec)  # No candidate aml found
+                # Not invoice_matching reconciliation model
+                or rec["model"].rule_type != "invoice_matching"
+                # Strict reference matching disabled
+                or not rec["model"].strict_reference_matching
+            ):
+                continue
+
+            # rec_id is the id of the bank statement line which we are trying to
+            # reconcile with an existing invoice
+            st_ref = st_lines.browse(rec_id).payment_ref
+            # aml_ids contains the ids of the unreconciled invoices which
+            # super()._apply_rules proposes to reconcile to the current bank statement
+            # line
+            aml_ids = rec["aml_ids"]
+            amls = self.env["account.move.line"].browse(aml_ids)
+            # We filter the proposed reconciliations, keeping only those where the
+            # payment_ref of the bank statement is identical to the payment_reference of
+            # the invoice
+            filtered_aml_ids = list(
+                map(
+                    lambda aml: aml.id,  # extract ids to conform to format
+                    filter(lambda aml: st_ref == aml.move_id.payment_reference, amls),
+                )
+            )
+            if len(filtered_aml_ids) == 0:
+                strict_reconciliations[rec_id] = {"aml_ids": []}
+            else:
+                strict_reconciliations[rec_id]["aml_ids"] = filtered_aml_ids
+
+        return strict_reconciliations
 
 
 class AccountReconcileModelLine(models.Model):

@@ -7,8 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from unittest.mock import patch
+
 import simplejson
-from mock import patch
 
 from odoo.tests.common import HttpCase
 

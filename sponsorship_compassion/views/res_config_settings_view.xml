@@ -58,6 +58,19 @@
                                     </div>
 
                                 </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label
+                      for="bypass_fcp_state"
+                      class="col-md-5 o_light_label"
+                    />
+                                        <field
+                      name="bypass_fcp_state"
+                      class="w-25"
+                    />
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
