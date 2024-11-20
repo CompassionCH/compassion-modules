@@ -531,12 +531,11 @@ class CompassionProject(models.Model):
             project.timezone = tf.timezone_at(
                 lng=project.gps_longitude, lat=project.gps_latitude
             )
+
     def _compute_google_link(self):
         for project in self:
             if project.gps_latitude and project.gps_longitude:
-                project.google_link = (
-                f'<a href="https://www.google.com/maps/search/?api=1&query={project.gps_latitude},{project.gps_longitude}" target="_blank" >show in Google maps</a>'
-                )
+                project.google_link = f'<a href="https://www.google.com/maps/search/?api=1&query={project.gps_latitude},{project.gps_longitude}" target="_blank" >show in Google maps</a>'
 
     def _compute_usd(self):
         usd = self.env.ref("base.USD")
