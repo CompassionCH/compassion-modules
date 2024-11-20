@@ -209,6 +209,7 @@ class CompassionChild(models.Model):
             ("Education", "Education"),
             ("Engineering", "Engineering"),
             ("English", "English"),
+            ("Environmental", "Environmental"),
             ("Fine Arts", "Fine Arts"),
             ("Government / Political Science", "Government / Political Science"),
             ("Graphic Arts", "Graphic Arts"),
@@ -539,29 +540,17 @@ class CompassionChild(models.Model):
 
     @api.model
     def update_all_children_description(self):
-        children = self.env["compassion.child"].sudo().search([])
-        infos = ""
+        children = self.env["compassion.child"].sudo().search([
+            ("state", "not in", ["F", "R"])
+        ])
         for child in children:
-            error = child.update_child_descriptions()
-            if len(error) > 0:
-                infos += "\n%s" % error
-        if len(infos) > 0:
-            raise UserError(infos)
+            child.with_delay(priority=50).update_child_descriptions()
 
     def update_child_descriptions(self):
-        descriptions = (
-            self.env["compassion.child.description"]
-            .sudo()
-            .search([("child_id", "=", self.id)], order="write_date desc", limit=1)
-        )
-        if len(descriptions) > 0:
-            description = descriptions[0]
-            description._generate_all_translations()
-            return ""
-        return "Error with %s (%s) : description not found" % (
-            self.name if self.name else "",
-            self.id,
-        )
+        self.ensure_one()
+        return self.env["compassion.child.description"].create({
+            "child_id": self.id,
+        })
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
