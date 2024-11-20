@@ -515,6 +515,9 @@ class Correspondence(models.Model):
         if not self.env.context.get("no_comm_kit"):
             letter.create_commkit()
 
+        # T1676 : Each page should contains at least one textbox (paragraph)
+        letter.create_text_boxes()
+
         return letter
 
     def write(self, vals):
