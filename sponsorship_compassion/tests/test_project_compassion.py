@@ -69,7 +69,6 @@ class TestProjectCompassion(TransactionCase):
         projects = self.env["compassion.project"]
         projects.sync_projects_from_gmc(
             requests_throttle_seconds=0.01,
-            log_period=expected_nb_projects_updated // 4,
         )
 
         self.assertEqual(
