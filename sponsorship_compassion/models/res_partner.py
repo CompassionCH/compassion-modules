@@ -369,7 +369,7 @@ class ResPartner(models.Model):
                 answer = message.get_answer_dict()
                 if isinstance(answer, dict):
                     error_info = answer.get("Error", {})
-                    error_message = error_info.get("ErrorMessage", "Erreur inconnue")
+                    error_message = error_info.get("ErrorMessage", _("Unknown error"))
 
                     # Format user-friendly error message
                     user_error_message = (
