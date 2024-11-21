@@ -548,6 +548,8 @@ class Correspondence(models.Model):
                     for _i in range(letter.nbr_pages, image_pdf.numPages):
                         letter.page_ids.create({"correspondence_id": letter.id})
 
+        # T1676 : Each page should contains at least one textbox (paragraph)
+        letters.create_text_boxes()
         return letters
 
     def write(self, vals):
@@ -896,6 +898,14 @@ class Correspondence(models.Model):
                                 "sequence": i,
                             }
                         )
+            # T1676 : Each page should contains at least one textbox (paragraph)
+            if len(page.paragraph_ids) == 0:
+                paragraphs.create(
+                    {
+                        "page_id": page.id,
+                        "sequence": 0,
+                    }
+                )
 
         return paragraphs
 
