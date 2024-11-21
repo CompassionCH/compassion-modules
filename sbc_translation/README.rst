@@ -56,8 +56,8 @@ To configure this module, you need to:
 
 1. Give access rights to users
 
-   - Front end translators need the User rights.
-   - Managers need the Manager rights for accessing the backend.
+   -  Front end translators need the User rights.
+   -  Managers need the Manager rights for accessing the backend.
 
 |image1|
 
@@ -70,11 +70,11 @@ To use this module, you need to:
 
 1. Go to /Sponsorship/Correspondence/Translation Platform/ menu
 
-   - Translation Pool is the list of all letters currently in
-     translation
-   - Translators is the list of translators
-   - Competences is the available skills of translations. It is also an
-     entry point to the translation pool, filtered by language.
+   -  Translation Pool is the list of all letters currently in
+      translation
+   -  Translators is the list of translators
+   -  Competences is the available skills of translations. It is also an
+      entry point to the translation pool, filtered by language.
 
 Changelog
 =========
@@ -82,7 +82,7 @@ Changelog
 12.0.1.0.0 (2023-02-28)
 -----------------------
 
-- First version
+-  First version
 
 Bug Tracker
 ===========
@@ -105,7 +105,7 @@ Authors
 Contributors
 ------------
 
-- Emanuel Cino <ecino@compassion.ch>
+-  Emanuel Cino <ecino@compassion.ch>
 
 Maintainers
 -----------

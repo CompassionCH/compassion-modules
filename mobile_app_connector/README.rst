@@ -47,15 +47,15 @@ This module adds REST controllers that will work with the mobile App
 developed by Compassion UK. It adds the following routes that can be
 accessed by the mobile app:
 
-- /mobile-app-api/login
-- /mobile-app-api/<odoo_model>/<odoo_method>
-- /mobile-app-api/hero/
-- /mobile-app-api/correspondence/letter_pdf
+-  /mobile-app-api/login
+-  /mobile-app-api/<odoo_model>/<odoo_method>
+-  /mobile-app-api/hero/
+-  /mobile-app-api/correspondence/letter_pdf
 
 Known issues / Roadmap
 ======================
 
-- Implement all messages needed
+-  Implement all messages needed
 
 Changelog
 =========
@@ -63,7 +63,7 @@ Changelog
 10.0.1.0.0 (2018-07-09)
 -----------------------
 
-- [ADD] Add the module with first set of messages.
+-  [ADD] Add the module with first set of messages.
 
 Bug Tracker
 ===========
@@ -86,9 +86,9 @@ Authors
 Contributors
 ------------
 
-- Emanuel Cino <ecino@compassion.ch>
-- Second Person <second.person@example.org> (optional company website
-  url)
+-  Emanuel Cino <ecino@compassion.ch>
+-  Second Person <second.person@example.org> (optional company website
+   url)
 
 Maintainers
 -----------
