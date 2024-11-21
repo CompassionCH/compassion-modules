@@ -137,7 +137,7 @@
             type="object"
             name="cancel_approve"
             string="Cancel approval"
-            attrs="{'invisible': ['|', ('state', '!=', 'approved'), '&amp;', ('is_editor', '=', False),('is_editor', '=', False)]}"
+            attrs="{'invisible': ['|', ('state', '!=', 'approved'), ('is_editor', '=', False)]}"
           />
 
                     <button

@@ -200,7 +200,6 @@ class CommunicationJob(models.Model):
                         QWebException,
                         TemplateSyntaxError,
                     ):
-                        self.env.clear()
                         record.pdf_page_count = 0
 
     def _inverse_ir_attachments(self):
