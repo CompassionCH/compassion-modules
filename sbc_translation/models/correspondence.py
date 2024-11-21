@@ -511,6 +511,11 @@ class Correspondence(models.Model):
                 else "Published to Global Partner",
             }
         )
+        # T2007 : If a TranslationLetterCounting wizard is active, the letter should be added to it
+        translation_letter_counting_wizards = self.env['translation.letter.counting.wizard'].search([])
+        for wizard in translation_letter_counting_wizards :
+            wizard.correspondence_ids = [(4, self.id)]
+
         if is_s2b:
             # Send to GMC
             self.sudo().create_commkit()
