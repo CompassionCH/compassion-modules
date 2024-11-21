@@ -41,20 +41,20 @@ a projects will be cancelled.
 If you want to change sponsorship with a fund donation, you can add the
 following key-value in the System Parameters:
 
-- sponsorship_compassion.suspend_product_id : product_id
+-  sponsorship_compassion.suspend_product_id : product_id
 
 Usage
 =====
 
 To use this module, you need to:
 
-- go to Sponsorship -> Sponsorships
+-  go to Sponsorship -> Sponsorships
 
 Known issues / Roadmap
 ======================
 
-- Tests for R4 : test the hold states when sending commitments to GMC
-- Test end sponsorship wizard
+-  Tests for R4 : test the hold states when sending commitments to GMC
+-  Test end sponsorship wizard
 
 Bug Tracker
 ===========
@@ -77,9 +77,9 @@ Authors
 Contributors
 ------------
 
-- Cyril Sester <cyril.sester@outlook.com>
-- Emanuel Cino <ecino@compassion.ch>
-- Quentin Gigon <gigon.quentin@gmail.com>
+-  Cyril Sester <cyril.sester@outlook.com>
+-  Emanuel Cino <ecino@compassion.ch>
+-  Quentin Gigon <gigon.quentin@gmail.com>
 
 Maintainers
 -----------

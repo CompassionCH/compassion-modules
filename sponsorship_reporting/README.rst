@@ -52,8 +52,8 @@ Authors
 Contributors
 ------------
 
-- Emanuel Cino <ecino@compassion.ch>
-- Simon Gonzalez <simon.gonzalez@bluewin.ch>
+-  Emanuel Cino <ecino@compassion.ch>
+-  Simon Gonzalez <simon.gonzalez@bluewin.ch>
 
 Maintainers
 -----------

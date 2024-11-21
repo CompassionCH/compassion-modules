@@ -35,7 +35,7 @@ Configuration
 
 Make sure the following variables are defined in your odoo.conf file:
 
-- \`firebase_api_key\`: Your Firebase API key
+-  \`firebase_api_key\`: Your Firebase API key
 
 Usage
 =====
@@ -46,7 +46,7 @@ mobile devices.
 Known issues / Roadmap
 ======================
 
-- Provide mass messaging
+-  Provide mass messaging
 
 Changelog
 =========
@@ -54,7 +54,7 @@ Changelog
 10.0.0.0.0 (2019-05-15)
 -----------------------
 
-- [ADD] Add the module
+-  [ADD] Add the module
 
 Bug Tracker
 ===========
@@ -77,7 +77,7 @@ Authors
 Contributors
 ------------
 
-- Nicolas Badoux <n.badoux@hotmail.com>
+-  Nicolas Badoux <n.badoux@hotmail.com>
 
 Maintainers
 -----------
