@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import functools
+import logging
 import random
 import string
 
@@ -16,9 +17,8 @@ from odoo.exceptions import UserError
 
 from .contracts import SPONSORSHIP_TYPE_LIST
 
-import logging
-
 _logger = logging.getLogger(__name__)
+
 
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
