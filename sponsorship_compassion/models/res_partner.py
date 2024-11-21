@@ -16,6 +16,9 @@ from odoo.exceptions import UserError
 
 from .contracts import SPONSORSHIP_TYPE_LIST
 
+import logging
+
+_logger = logging.getLogger(__name__)
 
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
@@ -376,11 +379,13 @@ class ResPartner(models.Model):
                         f"an error occurred during data anonymisation.\n\n"
                         f"Message : {error_message}"
                     )
+                    _logger.error(error_message)
                 else:
                     user_error_message = (
                         f"An internal error prevented the data from being anonymised.\n"
                         f"details: {message.failure_reason}"
                     )
+                    _logger.error(f"Internal error: {message.failure_reason}")
                 raise UserError(user_error_message)
         self.anonymize()
         # Reload the view
