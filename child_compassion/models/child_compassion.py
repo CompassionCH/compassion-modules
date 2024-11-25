@@ -544,17 +544,21 @@ class CompassionChild(models.Model):
 
     @api.model
     def update_all_children_description(self):
-        children = self.env["compassion.child"].sudo().search([
-            ("state", "not in", ["F", "R"])
-        ])
+        children = (
+            self.env["compassion.child"]
+            .sudo()
+            .search([("state", "not in", ["F", "R"])])
+        )
         for child in children:
             child.with_delay(priority=50).update_child_descriptions()
 
     def update_child_descriptions(self):
         self.ensure_one()
-        return self.env["compassion.child.description"].create({
-            "child_id": self.id,
-        })
+        return self.env["compassion.child.description"].create(
+            {
+                "child_id": self.id,
+            }
+        )
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
