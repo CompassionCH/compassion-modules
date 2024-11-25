@@ -1055,16 +1055,14 @@ class SponsorshipContract(models.Model):
             .get_param("sponsorship_compassion.bypass_fcp_state", False)
         )
 
-
         due_dates = {}  # Dict to store the due dates of the contracts
 
         # Don't generate gift for contract that are holding gifts or if they
         # don't have an amount for the gift
         for contract in self:
-            if (
-                    (contract.project_id.hold_gifts and not bypass_fcp_state)
-                or getattr(contract, f"{gift_type}_invoice") <= 0
-            ):
+            if (contract.project_id.hold_gifts and not bypass_fcp_state) or getattr(
+                contract, f"{gift_type}_invoice"
+            ) <= 0:
                 contracts -= contract
                 continue
 
