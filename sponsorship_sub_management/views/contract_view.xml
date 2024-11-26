@@ -10,56 +10,51 @@
         <field name="model">recurring.contract</field>
         <field name="arch" type="xml">
             <kanban
+        create="False"
+        edit="False"
+        delete="False"
+        records_draggable="False"
         default_group_by="sds_state"
         default_order="sds_state_date asc"
-        class="o_kanban_mobile"
       >
                 <field name="display_name" />
                 <field name="color" />
                 <field name="sds_state" />
                 <field name="state" />
+                <field name="sds_uid" />
+                <field name="child_id" />
                 <templates>
-                    <field name="sds_uid" />
-                    <field name="child_id" />
+                    <t t-name="kanban-menu">
+                        <div class="container">
+                            <a
+                name="action_sub"
+                type="object"
+                role="menuitem"
+                class="dropdown-item"
+                t-if="record.sds_state.raw_value == 'sub_waiting'"
+              ><span class="fa fa-plus" /> Create SUB Sponsorship</a>
+
+                            <a
+                name="action_no_sub"
+                type="object"
+                t-if="record.sds_state.raw_value == 'sub_waiting'"
+                role="menuitem"
+                class="dropdown-item"
+              ><span class="fa fa-times" /> No sub</a>
+
+                            <a
+                t-if="record.sds_state.raw_value == 'sub_waiting'"
+                name="action_sub_reject"
+                type="object"
+                role="menuitem"
+                class="dropdown-item"
+              ><span class="fa fa-minus-circle" /> SUB Reject</a>
+                        </div>
+                    </t>
                     <t t-name="kanban-box">
                         <div
               t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click"
             >
-                            <div class="o_dropdown_kanban dropdown">
-                                <a
-                  class="dropdown-toggle btn"
-                  data-toggle="dropdown"
-                  href="#"
-                  role="button"
-                >
-                                    <span
-                    class="fa fa-bars fa-lg"
-                    title="fa fa-bars fa-lg"
-                  />
-                                </a>
-                                <ul
-                  class="dropdown-menu"
-                  role="menu"
-                  aria-labelledby="dLabel"
-                >
-                                    <li
-                    t-if="record.sds_state.raw_value == 'sub_waiting'"
-                  ><a
-                      name="action_sub"
-                      type="object"
-                    >Create SUB Sponsorship</a></li>
-                                    <li
-                    t-if="record.sds_state.raw_value == 'sub_waiting'"
-                  ><a name="action_no_sub" type="object">No sub</a></li>
-                                    <li
-                    t-if="record.sds_state.raw_value == 'sub_waiting'"
-                  ><a name="action_sub_reject" type="object">SUB Reject</a></li>
-                                    <li><ul
-                      class="oe_kanban_colorpicker"
-                      data-field="color"
-                    /></li>
-                                </ul>
-                            </div>
                             <div class="oe_kanban_content">
                                 <div><strong><field
                       name="display_name"
