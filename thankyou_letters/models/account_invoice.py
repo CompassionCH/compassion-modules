@@ -144,6 +144,7 @@ class AccountInvoice(models.Model):
         """
         return self.filtered(
             lambda i: i.move_type == "out_invoice"
+            and i.payment_state == "paid"
             and not i.avoid_thankyou_letter
             and any(i.line_ids.mapped("product_id.requires_thankyou"))
             and (
