@@ -88,7 +88,10 @@
                 <div
         t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}"
       >
-                    <div class="left">
+                    <div
+          class="left"
+          style="border: none; border-collapse: collapse; border-spacing: 0;"
+        >
                         <t t-raw="o.description_left" />
                         <h6 t-if="o.project_id.description_left">
                             <span>About the child development center</span>
@@ -96,7 +99,10 @@
                         <t t-raw="o.project_id.description_left" />
                         <p t-field="o.local_id" class="child-ref" />
                     </div>
-                    <div class="right">
+                    <div
+          class="right"
+          style="border: none; border-collapse: collapse; border-spacing: 0;"
+        >
                         <t t-raw="o.description_right" />
                         <h6 t-if="not o.project_id.description_left">
                             <span>About the child development center</span>
@@ -294,6 +300,9 @@
             /* This doesn't work with wkhtmltopdf so we added a t-if in the base template of odoo */
             .header,.footer {
                 display: none;
+            }
+            * {
+                border: none !important;
             }
         </style>
     </template>
