@@ -4,7 +4,7 @@
         <field name="name">compassion.global.intervention.tree</field>
         <field name="model">compassion.global.intervention</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree delete="False">
                 <field name="name" />
                 <field name="category_id" />
                 <field name="intervention_id" />
@@ -23,7 +23,7 @@
         <field name="name">compassion.global.intervention.form</field>
         <field name="model">compassion.global.intervention</field>
         <field name="arch" type="xml">
-            <form readonly="1">
+            <form edit="False" create="False" delete="False">
                 <header>
                     <field name="can_be_funded" invisible="1" />
                     <button
