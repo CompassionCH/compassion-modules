@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="translation_letter_counting_wizard" model="ir.ui.view">
+        <field name="name">Counting of translation letters</field>
+        <field name="model">translation.letter.counting.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="start_of_counting"/>
+                    <field name="counting"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action Definition -->
+    <record model="ir.actions.server" id="action_translation_letter_counting">
+        <field name="name">Counting of translation letters</field>
+        <field name="model_id" ref="model_translation_letter_counting_wizard"/>
+        <field name="binding_model_id" ref="model_translation_letter_counting_wizard" />
+        <field name="state">code</field>
+        <field name="code">
+            action = env["translation.letter.counting.wizard"].action_open_wizard()
+        </field>
+    </record>
+
+    <!-- Menu Definition -->
+    <menuitem
+    id="translation_letter_counting_menu"
+    parent="sbc_compassion.menu_correspondence"
+    name="Counting of translation letters"
+    action="action_translation_letter_counting"
+    />
+
+    <template id="asset_backend" name="Translation letter counting js" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="sbc_translation/js/translation_letter_counting_js.js"></script>
+        </xpath>
+    </template>
+</odoo>
