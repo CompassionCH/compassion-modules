@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
@@ -22,6 +22,8 @@ class ResPartner(models.Model):
         store=True,
     )
 
+    @api.depends("user_ids", "user_ids.translator_id", "user_ids.translator_id.active",
+                 "user_ids.partner_id")
     def _compute_translator(self):
         for partner in self:
             partner.translation_user_id = self.env["translation.user"].search(
