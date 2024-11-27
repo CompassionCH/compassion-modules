@@ -9,3 +9,4 @@ class MisBudgetByAccountItem(models.Model):
 
     payment_state = fields.Char(default="paid")
     move_id = fields.Many2one("account.move", string="Move entry", readonly=True)
+    product_id = fields.Many2one("product.product", string="fund type", readonly=True)
