@@ -306,9 +306,11 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
-            self.import_completed = False
-            self.failed_file_name = file_name
-            self.state = "failed"
+            self.write({
+                "import_completed": False,
+                "failed_file_name": file_name,
+                "state": "failed"
+            })
             self.env.user.notify_danger(f"Couldn't import file {file_name}")
             self._compute_state = False
             return
