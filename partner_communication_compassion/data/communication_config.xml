@@ -418,5 +418,17 @@
             <field name="send_mode">digital</field>
             <field name="model_id" ref="model_compassion_hold" />
         </record>
+
+        <record
+      id="user_account_confirmation"
+      model="partner.communication.config"
+    >
+            <field name="name">Signup Account Confirmation</field>
+            <field name="send_mode">digital</field>
+            <field name="email_template_id" ref="set_password_email" />
+            <field name="print_if_not_email">False</field>
+            <field name="model_id" ref="base.model_res_partner" />
+        </record>
+
     </data>
 </odoo>

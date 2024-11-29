@@ -47,6 +47,7 @@
         "data/project_lifecycle_emails.xml",
         "data/other_emails.xml",
         "data/depart_communications.xml",
+        "data/signup_email_confirmation.xml",
         "data/communication_config.xml",
         "data/utm_data.xml",
         "views/communication_job_view.xml",
