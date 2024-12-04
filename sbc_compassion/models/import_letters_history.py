@@ -84,6 +84,8 @@ class ImportLettersHistory(models.Model):
         for import_letters in self:
             if import_letters.letters_ids:
                 import_letters.state = "done"
+            if import_letters.failed_file_name:
+                import_letters.state = "failed"
             elif import_letters.import_completed:
                 check = True
                 for i in import_letters.import_line_ids:
@@ -223,20 +225,12 @@ class ImportLettersHistory(models.Model):
         self.ensure_one()
         self.state = "pending"
         self.env.user.notify_info("Letters import started...")
-        try:
-            for current_file, nb_files_to_import, filename in generator():
-                logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
-                logger.info(f"File {filename} analyzed successfully.")
 
-        except Exception as e:
-            logger.error(f"Error during import: {str(e)}", exc_info=True)
-            self.import_completed = False
-            self.state = "failed"
-        else:
-            self.import_completed = True
-            self.env.user.notify_success("Letters import completed successfully!")
-            # remove all the files (now they are inside import_line_ids)
-            self.data.unlink()
+        for current_file, nb_files_to_import, filename in generator():
+            logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
+        # remove all the files (now they are inside import_line_ids)
+        self.data.unlink()
+        self.import_completed = True
 
     def pdf_to_image(self, pdf_data):
         pdf = fitz.Document(
@@ -312,5 +306,6 @@ class ImportLettersHistory(models.Model):
                 "state": "failed"
             })
             self.env.user.notify_danger(f"Couldn't import file {file_name}")
-            self._compute_state = False
+        else:
+            self.env.user.notify_success("Letters import completed !")
             return
