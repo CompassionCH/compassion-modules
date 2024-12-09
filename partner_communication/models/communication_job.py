@@ -653,12 +653,13 @@ class CommunicationJob(models.Model):
             setattr(self, key, val)
 
     def open_related(self):
-        object_ids = list(map(int, self.object_ids.split(",")))
+        object_strings = ",".join(self.mapped("object_ids"))
+        object_ids = list(map(int, object_strings.split(",")))
         action = {
             "name": _("Related objects"),
             "type": "ir.actions.act_window",
             "view_mode": "form,tree",
-            "res_model": self.config_id.model,
+            "res_model": self.mapped("config_id").model,
             "context": self.with_context(group_by=False).env.context,
             "target": "current",
         }
