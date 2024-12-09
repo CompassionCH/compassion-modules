@@ -11,7 +11,8 @@
                     <field
             name="state"
             widget="statusbar"
-            statusbar_visible="draft,open,done"
+            statusbar_visible="draft,open,ready,failed,done"
+            attrs="{'invisible': [('state', '!=', 'failed')]}"
           />
                     <field name="import_completed" invisible="1" />
                     <button
@@ -99,6 +100,7 @@
         decoration-info="state in ('open','pending')"
         decoration-success="state == 'ready'"
         decoration-muted="state == 'done'"
+        decoration-danger="state == 'failed'"
       >
                 <field name="create_date" />
                 <field name="write_date" />
