@@ -56,19 +56,26 @@ class AccountMoveLine(models.Model):
         # OVERRIDE
         # List in_payment invoices
 
-        all_lines = self + self.matched_debit_ids.debit_move_id + self.matched_credit_ids.credit_move_id
-        payments = all_lines.move_id.filtered(lambda move: move.payment_id or move.statement_line_id)
+        all_lines = (
+            self
+            + self.matched_debit_ids.debit_move_id
+            + self.matched_credit_ids.credit_move_id
+        )
+        payments = all_lines.move_id.filtered(
+            lambda move: move.payment_id or move.statement_line_id
+        )
 
         invoices = payments._get_reconciled_invoices()
 
         in_payment_invoices = invoices.filtered(
-            lambda move: move.is_invoice(include_receipts=True) and move.payment_state in ('in_payment')
+            lambda move: move.is_invoice(include_receipts=True)
+            and move.payment_state in ("in_payment")
         )
 
         res = super().reconcile()
 
         # Trigger action for paid invoices
-        in_payment_invoices \
-            .filtered(lambda move: move.payment_state in ('paid')) \
-            .action_invoice_paid()
+        in_payment_invoices.filtered(
+            lambda move: move.payment_state in ("paid")
+        ).action_invoice_paid()
         return res

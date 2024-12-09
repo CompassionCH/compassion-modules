@@ -90,6 +90,11 @@ class CorrespondenceTemplate(models.Model):
         readonly=False,
     )
 
+    is_christmas_letter = fields.Boolean(
+        default=False,
+        help="All the letters with this template will be held if not sent"
+        "during the Christmas period (defined in the settings)",
+    )
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
