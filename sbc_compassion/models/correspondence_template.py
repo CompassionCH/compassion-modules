@@ -70,6 +70,12 @@ class CorrespondenceTemplate(models.Model):
         domain=[("page_index", ">", 2)],
     )
 
+    is_christmas_letter = fields.Boolean(
+        default=False,
+        help="All the letters with this template will be held if not sent"
+        "during the Christmas period (defined in the settings)",
+    )
+
     def _compute_usage_count(self):
         for template in self:
             template.usage_count = self.env["correspondence"].search_count(

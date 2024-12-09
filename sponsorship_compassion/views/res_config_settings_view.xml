@@ -17,6 +17,18 @@
                     <setting id="christmas_inv_gen_month_setting">
                         <field name="christmas_inv_gen_month" />
                     </setting>
+                    <setting id="christmas_period_start_day_setting">
+                        <field name="christmas_period_start_day" />
+                    </setting>
+                    <setting id="christmas_period_start_month_setting">
+                        <field name="christmas_period_start_month" />
+                    </setting>
+                    <setting id="christmas_period_end_day_setting">
+                        <field name="christmas_period_end_day" />
+                    </setting>
+                    <setting id="christmas_period_end_month_setting">
+                        <field name="christmas_period_end_month" />
+                    </setting>
                     <setting id="bypass_fcp_state_setting">
                         <field name="bypass_fcp_state" />
                     </setting>

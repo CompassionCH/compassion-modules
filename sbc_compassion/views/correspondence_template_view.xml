@@ -46,6 +46,9 @@
               name="additional_page_id"
               context="{'default_template_id': id}"
             />
+                        <group>
+                            <field name="is_christmas_letter" />
+                        </group>
                     </group>
                 </sheet>
             </form>

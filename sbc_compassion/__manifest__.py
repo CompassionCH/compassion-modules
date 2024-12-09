@@ -66,6 +66,7 @@
         "data/gmc_action.xml",
         "data/queue_job.xml",
         "reports/correspondence_report.xml",
+        "data/correspondence_cron.xml",
     ],
     "demo": [
         "demo/correspondence_template.xml",
