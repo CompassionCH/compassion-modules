@@ -19,7 +19,7 @@ class StaffNotificationSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     @api.constrains("christmas_period_start_day", "christmas_period_start_month")
-    def _check_christmas_period(self, values):
+    def _check_christmas_period(self):
         if self.christmas_period_start_day and self.christmas_period_start_day == 31:
             if (
                 self.christmas_period_start_month
@@ -34,8 +34,8 @@ class StaffNotificationSettings(models.TransientModel):
                 raise ValidationError(
                     _(
                         "The Christmas period should work for all the years. "
-                        "Some days such like February 29 don't exist every years and are "
-                        "so blocked !"
+                        "Some days such like February 29 don't exist every year "
+                        "so they can't be used here!"
                     )
                 )
 
@@ -82,18 +82,18 @@ class StaffNotificationSettings(models.TransientModel):
             if end_christmas_period < begin_christmas_period:
                 end_christmas_period = datetime.date(
                     year_of_date_to_check + 1,
-                    int(self.christmas_period_end_month),
-                    int(self.christmas_period_end_day),
+                    int(self.get_christmas_period_start_month()),
+                    int(self.get_christmas_period_end_day()),
                 )
             if (date_to_check >= begin_christmas_period) and (
                 date_to_check <= end_christmas_period
             ):
                 return True
-            else:
-                # When no Christmas period is defined,
-                # we consider that we are always in the Christmas period
-                # for avoiding blocking any letter.
-                return True
+        else:
+            # When no Christmas period is defined,
+            # we consider that we are always in the Christmas period
+            # for avoiding blocking any letter.
+            return True
         return False
 
     @api.model

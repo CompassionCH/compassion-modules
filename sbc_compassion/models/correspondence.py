@@ -561,7 +561,7 @@ class Correspondence(models.Model):
     ##########################################################################
     def create_commkit(self):
         valid_christmas_period = self.env["res.config.settings"].is_in_christmas_period(
-            datetime.datetime.now()
+            datetime.date.today()
         )
         messages = self.env["gmc.message"]
         for letter in self:
