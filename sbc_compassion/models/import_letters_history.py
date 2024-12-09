@@ -38,6 +38,7 @@ class ImportLettersHistory(models.Model):
             ("pending", _("Analyzing")),
             ("open", _("Open")),
             ("ready", _("Ready")),
+            ("failed", _("Failed")),
             ("done", _("Done")),
         ],
         compute="_compute_state",
@@ -62,6 +63,12 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
+    failed_file_name = fields.Char(
+        string="failed file name",
+        help="Displays the name of the file that failed the PDF analysis.",
+        readonly=True,
+    )
+
     @api.depends(
         "import_line_ids",
         "import_line_ids.status",
@@ -76,6 +83,8 @@ class ImportLettersHistory(models.Model):
         for import_letters in self:
             if import_letters.letters_ids:
                 import_letters.state = "done"
+            if import_letters.failed_file_name:
+                import_letters.state = "failed"
             elif import_letters.import_completed:
                 check = True
                 for i in import_letters.import_line_ids:
@@ -135,14 +144,33 @@ class ImportLettersHistory(models.Model):
         for letters_h in self:
             if letters_h.state != "ready":
                 raise UserError(_("Some letters are not ready"))
+        all_imports_successful = True
         # save the imports
         for letters in self:
             correspondence_vals = letters.import_line_ids.get_letter_data()
             # letters_ids should be empty before this line
             for vals in correspondence_vals:
-                letters.letters_ids.create(vals)
-            letters.import_line_ids.unlink()
-        return True
+                try:
+                    pdf_data = vals.get("pdf_data")
+                    pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
+                    if pdf_document.page_count == 0:
+                        raise ValueError("page count is 0")
+                    letters.letters_ids.create(vals)
+                except Exception:
+                    all_imports_successful = False
+                    self.env.user.notify_danger(
+                        f"Couldn't import file: {vals.get('file_name')}"
+                    )
+                    letters.failed_file_name = vals.get("file_name")
+            if not all_imports_successful:
+                letters.state = "failed"
+                letters.import_completed = False
+                self.state = "failed"
+                return False
+            else:
+                letters.import_line_ids.unlink()
+                letters.import_completed = True
+                return True
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
@@ -263,12 +291,13 @@ class ImportLettersHistory(models.Model):
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
-            message = f"Couldn't import file {file_name}"
-            logger.error(
-                message,
-                exc_info=True,
+            self.write(
+                {
+                    "import_completed": False,
+                    "failed_file_name": file_name,
+                    "state": "failed",
+                }
             )
-            return
 
     def open_letters(self):
         return {

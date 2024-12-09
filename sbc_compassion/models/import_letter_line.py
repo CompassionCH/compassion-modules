@@ -162,6 +162,7 @@ class ImportLetterLine(models.Model):
                     "source": line.source,
                     "import_id": line.import_id.id,
                     "state": "Received in the system",
+                    "file_name": line.file_name,
                 }
             )
 
