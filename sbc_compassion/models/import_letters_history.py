@@ -116,7 +116,7 @@ class ImportLettersHistory(models.Model):
         correspondence_vals = self.import_line_ids.get_letter_data()
         # letters_ids should be empty before this line
         for import_line, vals in zip(
-            self.import_line_ids, correspondence_vals, strict=True
+            self.import_line_ids, correspondence_vals
         ):
             try:
                 with self.env.cr.savepoint():
