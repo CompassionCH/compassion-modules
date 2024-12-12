@@ -15,6 +15,7 @@ import base64
 import io
 import logging
 
+from PyPDF2 import PdfFileReader
 from pdf2image import convert_from_bytes
 
 from odoo import _, api, fields, models
@@ -35,17 +36,16 @@ class ImportLettersHistory(models.Model):
     state = fields.Selection(
         [
             ("draft", _("Draft")),
-            ("pending", _("Analyzing")),
-            ("open", _("Open")),
-            ("ready", _("Ready")),
-            ("failed", _("Failed")),
+            ("pending", _("Analyzing Files")),
+            ("open", _("In Review")),
+            ("ready", _("Ready to import")),
             ("done", _("Done")),
         ],
-        compute="_compute_state",
-        store=True,
         tracking=True,
+        default="draft",
+        copy=False,
+        required=True,
     )
-    import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         "Number of files", readonly=True, compute="_compute_nber_letters"
     )
@@ -64,40 +64,11 @@ class ImportLettersHistory(models.Model):
     )
 
     failed_file_name = fields.Char(
-        string="failed file name",
+        string="Files with errors",
         help="Displays the name of the file that failed the PDF analysis.",
         readonly=True,
+        default="",
     )
-
-    @api.depends(
-        "import_line_ids",
-        "import_line_ids.status",
-        "letters_ids",
-        "data",
-        "import_completed",
-    )
-    def _compute_state(self):
-        """Check in which state self is by counting the number of elements in
-        each Many2many
-        """
-        for import_letters in self:
-            if import_letters.letters_ids:
-                import_letters.state = "done"
-            if import_letters.failed_file_name:
-                import_letters.state = "failed"
-            elif import_letters.import_completed:
-                check = True
-                for i in import_letters.import_line_ids:
-                    if i.status != "ok":
-                        check = False
-                if check:
-                    import_letters.state = "ready"
-                else:
-                    import_letters.state = "open"
-            elif import_letters.import_line_ids:
-                import_letters.state = "pending"
-            else:
-                import_letters.state = "draft"
 
     @api.onchange("data")
     def _compute_nber_letters(self):
@@ -127,8 +98,11 @@ class ImportLettersHistory(models.Model):
         return super().create(vals_list)
 
     def button_import(self):
-        for letters_import in self:
-            letters_import.with_delay().run_analyze()
+        self.ensure_one()
+        self.state = "pending"
+        job = self.delayable().run_analyze()
+        after_job = self.delayable().write({"state": "open"})
+        job.on_done(after_job).delay()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -141,36 +115,43 @@ class ImportLettersHistory(models.Model):
 
     def button_save(self):
         # check if all the imports are OK
-        for letters_h in self:
-            if letters_h.state != "ready":
-                raise UserError(_("Some letters are not ready"))
-        all_imports_successful = True
+        self.ensure_one()
+        if self.state != "ready":
+            raise UserError(_("Some letters are not ready"))
+        self.failed_file_name = False
         # save the imports
-        for letters in self:
-            correspondence_vals = letters.import_line_ids.get_letter_data()
-            # letters_ids should be empty before this line
-            for vals in correspondence_vals:
-                try:
-                    pdf_data = vals.get("pdf_data")
-                    pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
-                    if pdf_document.page_count == 0:
+        failed_names = []
+        correspondence_vals = self.import_line_ids.get_letter_data()
+        # letters_ids should be empty before this line
+        for import_line, vals in zip(
+            self.import_line_ids, correspondence_vals, strict=True
+        ):
+            try:
+                with self.env.cr.savepoint():
+                    pdf_data = base64.b64decode(vals.get("pdf_data"))
+                    pdf_buffer = io.BytesIO(pdf_data)
+                    pdf_document = PdfFileReader(pdf_buffer)
+                    if pdf_document.getNumPages() == 0:
                         raise ValueError("page count is 0")
-                    letters.letters_ids.create(vals)
-                except Exception:
-                    all_imports_successful = False
-                    self.env.user.notify_danger(
-                        f"Couldn't import file: {vals.get('file_name')}"
-                    )
-                    letters.failed_file_name = vals.get("file_name")
-            if not all_imports_successful:
-                letters.state = "failed"
-                letters.import_completed = False
-                self.state = "failed"
-                return False
-            else:
-                letters.import_line_ids.unlink()
-                letters.import_completed = True
-                return True
+                    self.letters_ids.create(vals)
+                    import_line.unlink()
+            except Exception:
+                logger.error("", exc_info=True)
+                failed_names.append(vals.get("file_name"))
+        if failed_names:
+            self.write(
+                {
+                    "failed_file_name": "\n".join(failed_names),
+                }
+            )
+            return False
+        else:
+            self.write(
+                {
+                    "state": "done",
+                }
+            )
+            return True
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
@@ -238,7 +219,6 @@ class ImportLettersHistory(models.Model):
 
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
-        self.import_completed = True
 
     @staticmethod
     def create_preview(image):
@@ -293,9 +273,7 @@ class ImportLettersHistory(models.Model):
         except Exception:
             self.write(
                 {
-                    "import_completed": False,
                     "failed_file_name": file_name,
-                    "state": "failed",
                 }
             )
 
