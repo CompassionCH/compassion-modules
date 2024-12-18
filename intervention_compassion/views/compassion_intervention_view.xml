@@ -27,7 +27,7 @@
           />
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="buttons">
+                    <div name="button_box">
                         <button
               name="get_infos"
               type="object"
@@ -104,6 +104,7 @@
                 name="subcategory_ids"
                 domain="[('category_ids', '=', category_id)]"
                 readonly="1"
+                widget="many2many_tags"
               />
                             <field name="type" readonly="1" />
                             <field
