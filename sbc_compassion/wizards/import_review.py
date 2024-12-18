@@ -110,6 +110,10 @@ class ImportReview(models.TransientModel):
         self.ensure_one()
         import_history = self.current_line_id.import_id
         import_history.import_line_ids._compute_check_status()
+        if all(
+            status == "ok" for status in import_history.import_line_ids.mapped("status")
+        ):
+            import_history.state = "ready"
         return {
             "type": "ir.actions.act_window",
             "view_type": "form",
@@ -127,7 +131,6 @@ class ImportReview(models.TransientModel):
         current_import = self.current_line_id.import_id
         if not postpone_import:
             import_vals = current_import.get_correspondence_metadata()
-            import_vals["import_completed"] = True
             postpone_import = self.env["import.letters.history"].create(import_vals)
             self.postpone_import_id = postpone_import
         self.current_line_id.import_id = postpone_import

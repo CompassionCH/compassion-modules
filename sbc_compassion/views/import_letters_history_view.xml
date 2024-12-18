@@ -6,14 +6,14 @@
         <field name="name">import.letters.history.form</field>
         <field name="model">import.letters.history</field>
         <field name="arch" type="xml">
-            <form string="Imports">
+            <form>
                 <header>
                     <field
             name="state"
             widget="statusbar"
-            statusbar_visible="draft,open,done"
+            statusbar_visible="draft,open,ready,done"
+            options="{'clickable': True}"
           />
-                    <field name="import_completed" invisible="1" />
                     <button
             name="button_save"
             string="Import Letters"
@@ -47,6 +47,11 @@
                         <field name="physical_attachments" />
                         <field name="attachments_description" />
                         <field name="template_id" states="draft,open" />
+                        <field
+              name="failed_file_name"
+              attrs="{'invisible': [('failed_file_name', '=', False)]}"
+              widget="text"
+            />
                     </group>
                     <group>
                         <field
@@ -99,12 +104,14 @@
         decoration-info="state in ('open','pending')"
         decoration-success="state == 'ready'"
         decoration-muted="state == 'done'"
+        decoration-danger="failed_file_name != False"
       >
                 <field name="create_date" />
                 <field name="write_date" />
                 <field name="nber_letters" />
                 <field name="config_id" />
                 <field name="state" />
+                <field name="failed_file_name" invisible="1" />
             </tree>
         </field>
     </record>

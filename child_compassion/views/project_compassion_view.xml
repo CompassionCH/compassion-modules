@@ -38,6 +38,13 @@
               icon="fa-globe"
               class="oe_stat_button"
             />
+                        <button
+              name="open_google_maps"
+              type="object"
+              string="Google Maps"
+              icon="fa-external-link"
+              class="oe_stat_button"
+            />
                     </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
