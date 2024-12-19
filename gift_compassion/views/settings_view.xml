@@ -75,42 +75,6 @@
         </field>
     </record>
 
-    <record id="gift_accounting_settings_form" model="ir.ui.view">
-        <field name="name">gift.accounting.settings.form</field>
-        <field name="model">res.config.settings</field>
-        <field
-      name="inherit_id"
-      ref="message_center_compassion.compassion_settings"
-    />
-        <field name="arch" type="xml">
-            <xpath expr="//app[@name='compassion_settings']" position="inside">
-                <block title="Accounting">
-                    <setting>
-                    <field
-              name="gift_income_account_id"
-              domain="[('company_id', '=', company_id)]"
-            />
-                    </setting>
-                    <setting>
-                        <field
-              name="gift_expense_account_id"
-              domain="[('company_id', '=', company_id)]"
-            />
-                    </setting>
-                    <setting>
-                        <field
-              name="gift_journal_id"
-              domain="[('company_id', '=', company_id)]"
-            />
-                    </setting>
-                    <setting>
-                        <field name="gift_analytic_distribution_model_id" />
-                    </setting>
-                </block>
-            </xpath>
-        </field>
-    </record>
-
     <record
     id="open_view_gift_threshold_settings"
     model="ir.actions.act_window"
