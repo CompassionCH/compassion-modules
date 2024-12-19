@@ -1041,13 +1041,19 @@ class SponsorshipContract(models.Model):
         )
         # if generate current month is set, we can keep today as current day,
         # but if not we need to forward to the next month
-        settings_obj = (self.env["res.config.settings"].
-                        sudo().with_company(contracts[0].company_id.id))
+        settings_obj = (
+            self.env["res.config.settings"].
+            sudo().
+            with_company(contracts[0].company_id.id)
+        )
         curr_month = settings_obj.get_param_multi_company(
             "recurring_contract.do_generate_curr_month"
         )
-        current_date = date.today() if curr_month == "True" \
+        current_date = (
+            date.today()
+            if curr_month == "True"
             else (date.today() + relativedelta(months=1))
+        )
         current_year = current_date.year
         start_of_year = fields.Datetime.from_string(f"{current_year}-01-01")
         end_of_year = fields.Datetime.from_string(f"{current_year}-12-31")
