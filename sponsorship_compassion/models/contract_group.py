@@ -45,8 +45,9 @@ class ContractGroup(models.Model):
         )._generate_invoices(invoicer, contract_id)
         # We don't generate gift if the contract isn't active
         contracts = self.mapped("contract_ids").filtered(lambda c: c.state == "active")
-        contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        if contracts:
+            contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
+            contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
 
     def build_inv_line_data(
