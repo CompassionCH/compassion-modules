@@ -12,8 +12,8 @@
             <tree
         decoration-info="state == 'draft'"
         decoration-success="state == 'verify'"
-        decoration-danger="state == 'error'"
-        decoration-muted="state == 'fund_delivered'"
+        decoration-danger="state in ('suspended', 'open')"
+        decoration-muted="state in ('Delivered', 'Undeliverable')"
       >
                 <field name="gmc_gift_id" />
                 <field name="create_date" />
@@ -51,12 +51,13 @@
             class="oe_highlight"
             invisible="state not in ('draft', 'open')"
             context="{'async_mode': False}"
+            icon="fa-paper-plane"
           />
                     <button
             name="action_verify"
             type="object"
             string="To Verify"
-            invisible="state not in ('draft', 'error')"
+            invisible="state != 'draft'"
           />
                     <button
             name="action_ok"
@@ -81,7 +82,7 @@
           />
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="buttons">
+                    <div name="button_box">
                         <button
               name="%(action_collect_invoices)d"
               string="Collect invoices"
@@ -97,19 +98,6 @@
               icon="fa-pencil-square-o"
               class="oe_stat_button"
             />
-                    </div>
-                    <!-- Alert to warn on the no payment generation -->
-                    <field name="is_param_set" invisible="True" readonly="1" />
-                    <div
-            class="alert alert-warning text-center o_form_header"
-            role="alert"
-            invisible="is_param_set or state != 'draft'"
-          >
-
-                        <a class="close" data-dismiss="alert" href="#">x</a>
-                        <div>
-                            GMC gift payment accounting entries are disabled. (compassion accounting settings)
-                        </div>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -154,14 +142,6 @@
                             <field
                 name="message_id"
                 groups="message_center_compassion.group_gmc_user"
-              />
-                            <field
-                name="payment_id"
-                invisible="is_param_set == False"
-              />
-                            <field
-                name="inverse_payment_id"
-                invisible="inverse_payment_id == False"
               />
                         </group>
                         <group>

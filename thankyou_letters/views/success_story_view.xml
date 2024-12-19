@@ -21,12 +21,10 @@
                 name="date_start"
                 invisible="type == 'sentence'"
                 readonly="state != 'new'"
-                widget="daterange" options="{'end_date_field': 'date_stop'}"
+                widget="daterange"
+                options="{'end_date_field': 'date_stop'}"
               />
-                            <field
-                name="date_stop"
-                invisible="True"
-              />
+                            <field name="date_stop" invisible="True" />
                             <field
                 name="is_active"
                 invisible="type == 'story'"
