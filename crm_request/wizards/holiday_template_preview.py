@@ -13,21 +13,21 @@ class AssignRequestWizard(models.TransientModel):
     @api.model
     def get_default(self):
         template = self.env.ref("crm_request.business_closed_email_template")
-        fake_claim = self.env["crm.claim"].create(
-            {
-                "partner_id": self.env.user.partner_id.id,
-                "name": "Holiday preview",
-                "holiday_closure_id": self.env.context.get("active_id"),
-            }
-        )
         res = ""
         for lang in self.env["res.lang"].search([]):
             res += f"<h2>{lang.name}:</h2>"
-            fake_claim.language = lang.code
+            fake_claim = self.env["crm.claim"].create(
+                {
+                    "partner_id": self.env.user.partner_id.id,
+                    "name": "Holiday preview",
+                    "holiday_closure_id": self.env.context.get("active_id"),
+                    "language": lang.code,
+                }
+            )
             rendered = template.with_context(
                 lang=lang.code, salutation_language=lang.code
             )._render_template(template.body_html, template.model, [fake_claim.id])
             res += rendered[fake_claim.id]
             res += "<br/><br/>"
-        fake_claim.unlink()
+            fake_claim.unlink()
         return res
