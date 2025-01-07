@@ -77,7 +77,7 @@
                     <group>
                         <field name="subject" readonly="1" />
                         <field name="has_attachment" readonly="1" />
-                        <field name="body" readonly="1" />
+                        <field name="body" readonly="1" class="text-break" />
                     </group>
                 </sheet>
             </form>
