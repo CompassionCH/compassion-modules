@@ -63,6 +63,8 @@ class ContractGroup(models.Model):
             res[
                 "analytic_account_id"
             ] = contract_line.contract_id.origin_id.analytic_id.id
+            if contract_line.contract_id.type == "G":
+                res["contract_id"] = contract_line.sponsorship_id
         return res
 
     def _get_partner_for_contract(self, contract, gift_wizard=False):
