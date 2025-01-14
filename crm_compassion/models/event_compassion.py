@@ -171,7 +171,7 @@ class EventCompassion(models.Model):
             expenses = event.expense_line_ids.filtered(lambda line: line.amount < 0)
             event.total_expense = abs(sum(expenses.mapped("amount") or [0]))
 
-    @api.depends("invoice_line_ids.payment_state")
+    @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
         for event in self:
             incomes = event.income_line_ids
@@ -388,14 +388,13 @@ class EventCompassion(models.Model):
             "name": _("Expenses"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "res_model": "account.analytic.line",
+            "res_model": "account.move.line",
             "context": {
-                "default_account_id": self.analytic_id.id,
                 "expense_from_event": True,
-                "default_company_id": self.company_id.id,
-                "search_default_account_id": self.analytic_id.id,
+                "search_view_ref": "crm_compassion.event_income_search",
+                "tree_view_ref": "crm_compassion.event_income_tree",
             },
-            "domain": [("id", "in", self.expense_line_ids.ids)],
+            "domain": [("id", "in", self.expense_line_ids.mapped("move_id").ids)],
         }
 
     def show_income(self):
@@ -404,14 +403,20 @@ class EventCompassion(models.Model):
             "name": _("Income"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "res_model": "account.move",
+            "res_model": "account.move.line",
             "context": self.with_context(
                 default_analytic_account_id=self.analytic_id.id,
                 default_company_id=self.company_id.id,
                 default_move_type="out_invoice",
                 search_default_paid=True,
+                search_view_ref="crm_compassion.event_income_search",
+                tree_view_ref="crm_compassion.event_income_tree",
             ).env.context,
-            "domain": [("id", "in", self.invoice_line_ids.mapped("move_id").ids)],
+            "domain": [
+                ("id", "in", self.invoice_line_ids.ids),
+                ("contract_id", "=", False),
+                ("move_id.move_type", "=", "out_invoice"),
+            ],
         }
 
     def show_children(self):

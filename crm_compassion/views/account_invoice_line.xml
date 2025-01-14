@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <odoo>
+    <!--  Search views  -->
     <record id="view_account_invoice_filter_compassion" model="ir.ui.view">
         <field name="name">inherit.account.move.compassion.select</field>
         <field name="model">account.move.line</field>
@@ -33,6 +34,29 @@
           context="{'group_by':'due_date'}"
         />
             </filter>
+        </field>
+    </record>
+
+    <record id="event_income_search" model="ir.ui.view">
+        <field name="name">Event move lines search</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id" />
+                <field name="event_id" />
+                <group expand="0" string="Group By">
+                    <filter
+            name="group_user"
+            string="Ambassador"
+            context="{'group_by':'user_id'}"
+          />
+                    <filter
+            name="group_event"
+            string="Event"
+            context="{'group_by':'event_id'}"
+          />
+                </group>
+            </search>
         </field>
     </record>
 
@@ -113,6 +137,22 @@
             <field name="price_subtotal" position="after">
                 <field name="currency_id" />
             </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="event_income_tree">
+        <field name="name">Event move lines tree</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date" />
+                <field name="partner_id" />
+                <field name="name" />
+                <field name="user_id" />
+                <field name="event_id" optional="hide" />
+                <field name="debit" sum="Total" />
+                <field name="credit" sum="Total" />
+            </tree>
         </field>
     </record>
 
