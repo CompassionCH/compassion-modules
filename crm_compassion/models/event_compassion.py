@@ -413,9 +413,7 @@ class EventCompassion(models.Model):
                 tree_view_ref="crm_compassion.event_income_tree",
             ).env.context,
             "domain": [
-                ("id", "in", self.invoice_line_ids.ids),
-                ("contract_id", "=", False),
-                ("move_id.move_type", "=", "out_invoice"),
+                ("id", "in", self.income_line_ids.ids),
             ],
         }
 
