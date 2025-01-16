@@ -69,7 +69,9 @@ class SponsorshipGift(models.Model):
     name = fields.Char(compute="_compute_name", translate=False)
     gmc_gift_id = fields.Char(copy=False)
     gift_date = fields.Date(
-        compute="_compute_invoice_fields", inverse="_inverse_gift_date", store=True
+        compute="_compute_invoice_fields",
+        store=True,
+        readonly=False,
     )
     date_partner_paid = fields.Date(
         compute="_compute_invoice_fields", inverse=lambda g: True, store=True
@@ -186,28 +188,22 @@ class SponsorshipGift(models.Model):
         "invoice_line_ids.amount_currency",
     )
     def _compute_invoice_fields(self):
-        for gift in self.filtered("invoice_line_ids"):
+        for gift in self:
             invoice_lines = gift.invoice_line_ids
-            pay_dates = invoice_lines.filtered("last_payment").mapped(
-                "last_payment"
-            ) or [False]
+            pay_dates = (
+                invoice_lines.filtered("last_payment").mapped("last_payment")
+                or invoice_lines.mapped("date")
+                or [fields.Date.today()]
+            )
             gift.date_partner_paid = fields.Date.to_string(max(d for d in pay_dates))
-            gift.gift_date = max(
-                invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
+            gift.gift_date = (
+                max(
+                    invoice_lines.mapped("move_id").mapped("invoice_date")
+                    or invoice_lines.mapped("date")
+                )
+                or fields.Date.today()
             )
             gift.amount = sum(invoice_lines.mapped(lambda il: -il.amount_currency))
-
-    def _inverse_gift_date(self):
-        # Postpone message if gift date is in the future
-        for gift in self:
-            if gift.gift_date > fields.Date.today() and gift.message_id.state == "new":
-                gift.message_id.write({"state": "postponed"})
-            elif (
-                gift.gift_date <= fields.Date.today()
-                and gift.message_id.state == "postponed"
-                and gift.state != "verify"
-            ):
-                gift.message_id.write({"state": "new"})
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -261,12 +257,7 @@ class SponsorshipGift(models.Model):
         new_gift = super().create(vals)
         if new_gift.invoice_line_ids:
             new_gift.invoice_line_ids.write({"gift_id": new_gift.id})
-        else:
-            # Prevent computed fields to reset their values
-            vals.pop("message_follower_ids")
-            new_gift.write(vals)
         new_gift._create_gift_message()
-        new_gift._inverse_gift_date()
         return new_gift
 
     def _search_for_similar_pending_gifts(self, vals):
@@ -321,7 +312,7 @@ class SponsorshipGift(models.Model):
             self.write({"invoice_line_ids": invl_write})
 
         else:
-            aggregated_amounts = self.amount + other_gift_vals["amount"]
+            aggregated_amounts = self.amount + other_gift_vals.get("amount", 0)
             self.write({"amount": aggregated_amounts})
         instructions = [self.instructions, other_gift_vals["instructions"]]
         self.instructions = "; ".join([x for x in instructions if x])
@@ -377,9 +368,8 @@ class SponsorshipGift(models.Model):
             gift = self.create(gift_vals)
             eligible, message = gift.is_eligible()
             if not eligible:
-                gift.state = "verify"
                 gift.message_post(body=message)
-                gift.message_id.state = "postponed"
+                gift.action_verify()
             return gift
         else:
             for reversal_gift in self._get_gift_from_reversal_invoice_line(
@@ -430,6 +420,8 @@ class SponsorshipGift(models.Model):
         self.ensure_one()
         self = self.with_company(self.company_id)
         sponsorship = self.sponsorship_id
+        if not sponsorship.is_active:
+            return False, "Sponsorship is not active"
         if sponsorship.project_id.hold_gifts:
             return False, "Sponsorship may have a project with hold gifts"
 

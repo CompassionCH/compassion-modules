@@ -9,8 +9,8 @@
 ##############################################################################
 
 from . import (
-    account_invoice,
-    account_invoice_line,
+    account_move,
+    account_move_line,
     partner_communication,
     product,
     res_partner,

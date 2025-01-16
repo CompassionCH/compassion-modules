@@ -330,21 +330,6 @@ class ResPartner(models.Model):
             "domain": self._get_active_sponsorships_domain(),
         }
 
-    def open_sponsored_children(self):
-        self.ensure_one()
-        children = (
-            self.env["recurring.contract"]
-            .search(self._get_active_sponsorships_domain())
-            .mapped("child_id")
-        )
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Children",
-            "res_model": "compassion.child",
-            "view_mode": "tree,form",
-            "domain": [("id", "in", children.ids)],
-        }
-
     @api.onchange("lastname", "firstname")
     def onchange_preferred_name(self):
         self.preferred_name = self.firstname or self.name
@@ -467,6 +452,29 @@ class ResPartner(models.Model):
             .search([("model", "=", self._name), ("res_id", "in", self.ids)])
             .unlink()
         )
+
+    def action_view_partner_donations(self):
+        self.ensure_one()
+        return {
+            "name": _("Donations"),
+            "type": "ir.actions.act_window",
+            "res_model": "account.move.line",
+            "view_mode": "tree,form",
+            "domain": [
+                ("product_id", "!=", False),
+                ("account_id.account_type", "=", "income"),
+                ("parent_state", "=", "posted"),
+                "|",
+                ("product_id.categ_name", "!=", "Sponsorship"),
+                ("move_type", "=", "out_invoice"),
+            ],
+            "context": {
+                "tree_view_ref": "sponsorship_compassion.view_move_line_donations",
+                "search_view_ref": "sponsorship_compassion.view_donation_filter",
+                "search_default_partner_id": self.id,
+                "search_default_group_contract": 1,
+            },
+        }
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
