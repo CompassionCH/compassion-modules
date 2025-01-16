@@ -71,50 +71,106 @@
             </tree>
         </field>
     </record>
+    <record id="view_move_line_donations" model="ir.ui.view">
+        <field name="name">account.move.line.donations.tree</field>
+        <field name="model">account.move.line</field>
+        <field eval="18" name="priority" />
+        <field name="arch" type="xml">
+            <tree
+        create="False"
+        edit="False"
+        delete="False"
+        default_order="date desc"
+        groups_limit="100"
+        decoration-danger="move_type == 'out_invoice' and payment_state == 'not_paid'"
+        decoration-success="move_category == 'fund'"
+        decoration-primary="move_category == 'gift'"
+      >
+                <header>
+                    <button
+            type="object"
+            string="Sponsorship impact"
+            name="action_automatic_entry"
+            icon="fa-file-text-o "
+            display="always"
+          />
+                </header>
+                <field name="move_id" column_invisible="1" />
+                <field
+          name="move_name"
+          string="Journal Entry"
+          widget="open_move_widget"
+        />
+                <field name="date" />
+                <field name="last_payment" optional="hide" />
+                <field name="move_category" />
+                <field name="product_id" domain="[('categ_name')]" />
+                <field name="account_id" optional="hide" />
+                <field name="name" />
+                <field name="contract_id" />
+                <field name="company_currency_id" column_invisible="1" />
+                <field name="credit" sum="Total" decoration-bf="1" />
+                <field name="move_type" optional="hide" />
+                <field
+          name="payment_state"
+          optional="hide"
+          invisible="move_type == 'entry'"
+        />
 
-    <record id="view_invoice_line_compassion_filter" model="ir.ui.view">
-        <field name="name">invoice.line.compassion.select</field>
+                <groupby name="move_id">
+                    <button
+            type="edit"
+            name="edit"
+            icon="fa-edit"
+            title="Edit"
+          />
+                </groupby>
+                <groupby name="contract_id">
+                    <button
+            type="edit"
+            name="edit"
+            icon="fa-edit"
+            title="Edit"
+          />
+                </groupby>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_donation_filter" model="ir.ui.view">
+        <field name="name">move.line.donation.select</field>
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
-            <search string="Search invoice lines">
+            <search>
                 <filter
-          name="draft"
-          string="Draft"
-          domain="[('parent_state','=','draft')]"
-          help="Draft invoice lines"
+          name="filter_sponsorship"
+          string="Sponsorship"
+          domain="[('move_category','=','sponsorship')]"
         />
                 <filter
-          name="open"
-          string="Open"
-          domain="[('parent_state','=','posted')]"
-          help="Open invoice lines"
+          name="filter_gift"
+          string="Gift"
+          domain="[('move_category','=','gift')]"
         />
                 <filter
-          name="paid"
-          string="Paid"
-          domain="[('payment_state','=','paid')]"
-          help="Paid invoice lines"
-        />
-                <filter
-          name="cancel"
-          string="Cancelled"
-          domain="[('parent_state','=','cancel')]"
-          help="Cancelled invoice lines"
+          name="filter_fund"
+          string="Fund"
+          domain="[('move_category','=','fund')]"
         />
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner" />
                 <group expand="0" string="Group By...">
                     <filter
-            string="Partner"
-            name="partner"
+            string="Move"
+            name="group_move"
             domain="[]"
-            context="{'group_by':'partner_id'}"
+            context="{'group_by':'move_id'}"
           />
                     <filter
-            name="group_product"
-            string="Product"
+            string="Date"
+            name="group_date"
             domain="[]"
-            context="{'group_by':'product_id'}"
+            context="{'group_by':'date'}"
           />
                     <filter
             name="group_contract"
@@ -123,22 +179,10 @@
             context="{'group_by':'contract_id'}"
           />
                     <filter
-            string="State"
-            name="state"
+            name="group_product"
+            string="Product"
             domain="[]"
-            context="{'group_by':'parent_state'}"
-          />
-                    <filter
-            string="Last payment"
-            name="last_payment"
-            domain="[]"
-            context="{'group_by':'last_payment'}"
-          />
-                    <filter
-            string="Invoice"
-            name="invoice"
-            domain="[]"
-            context="{'group_by':'move_id'}"
+            context="{'group_by':'product_id'}"
           />
                 </group>
             </search>

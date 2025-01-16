@@ -43,6 +43,7 @@
         "web_m2x_options",  # oca/web
         "partner_firstname",  # oca/partner-contact
         "sale",
+        "base_fontawesome",  # OCA/server-tools
     ],
     "data": [
         "views/invoice_line_view.xml",

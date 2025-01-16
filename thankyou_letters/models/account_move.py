@@ -34,9 +34,25 @@ class AccountInvoice(models.Model):
         (no sponsorship product inside)
         """
         super()._invoice_paid_hook()
-        invoices = self._filter_invoice_to_thank()
-        if invoices:
-            invoices.generate_thank_you()
+        invoices = self._filter_move_to_thank(move_type="out_invoice")
+        invoices.generate_thank_you()
+
+    def _post(self, soft=True):
+        posted = super()._post(soft=soft)
+        to_thank = posted._filter_move_to_thank(move_type="entry")
+        to_thank.generate_thank_you()
+        return posted
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "line_ids" in vals:
+            to_thank = self._filter_move_to_thank(move_type="entry")
+            to_thank.generate_thank_you()
+        return res
+
+    def button_draft(self):
+        super().button_draft()
+        self.filtered("communication_id").cancel_thankyou_letter()
 
     def _compute_amount(self):
         """When invoice is open again, remove it from donation receipt."""
@@ -50,7 +66,9 @@ class AccountInvoice(models.Model):
                 and new_payment_states[i] != "paid"
                 and invoice.communication_id.state == "pending"
             ):
-                invoice.with_delay().cancel_thankyou_letter()
+                invoice.with_delay(
+                    channel="root.thankyou_letters", priority=50
+                ).cancel_thankyou_letter()
 
     def group_by_partner(self):
         """Returns a dict with {partner_id: invoices}"""
@@ -68,45 +86,52 @@ class AccountInvoice(models.Model):
         )
 
     def generate_thank_you(self):
-        """
-        Creates a thankyou letter communication.
-        """
+        """Creates a thankyou letter communication."""
         partners = self.mapped("partner_id").filtered(
             lambda p: p.thankyou_preference != "none"
         )
         for partner in partners.mapped("commercial_partner_id"):
-            invoice_lines = self.mapped("invoice_line_ids").filtered(
+            move_lines = self.mapped("line_ids").filtered(
                 lambda line, p_partner=partner: line.partner_id == p_partner
+                and line.product_id.requires_thankyou
             )
-            if invoice_lines:
-                invoice_lines.with_delay().generate_thank_you()
+            if move_lines:
+                move_lines.with_delay(
+                    channel="root.thankyou_letters", priority=50
+                ).generate_thank_you()
 
     def cancel_thankyou_letter(self):
-        self.ensure_one()
-        comm = self.communication_id
-        object_ids = comm.object_ids or ""
-        comm.unlink()
-        # Check if the communication needs to be refreshed.
-        for line in self.invoice_line_ids:
-            object_ids = (
-                object_ids.replace(str(line.id), "").replace(",,", "").strip(",")
-            )
-        if object_ids:
-            # Refresh donation receipt
-            remaining_lines = self.env["account.move.line"].browse(
-                [int(i) for i in object_ids.split(",")]
-            )
-            remaining_lines.generate_thank_you()
+        for move in self:
+            comm = move.communication_id
+            if comm.state in ("done", "cancel"):
+                continue
+            object_ids = comm.object_ids or ""
+            comm.unlink()
+            # Check if the communication needs to be refreshed.
+            for line in move.line_ids:
+                object_ids = (
+                    object_ids.replace(str(line.id), "").replace(",,", "").strip(",")
+                )
+            if object_ids:
+                # Refresh donation receipt
+                remaining_lines = self.env["account.move.line"].browse(
+                    [int(i) for i in object_ids.split(",")]
+                )
+                remaining_lines.with_delay(
+                    channel="root.thankyou_letters", priority=50
+                ).generate_thank_you()
 
-    def _filter_invoice_to_thank(self):
+    def _filter_move_to_thank(self, move_type=None):
         """
         Given a recordset of paid invoices, return only those that have
         to be thanked.
         :return: account.invoice recordset
         """
         return self.filtered(
-            lambda i: i.move_type == "out_invoice"
-            and not i.avoid_thankyou_letter
+            lambda i: not i.avoid_thankyou_letter
             and any(i.line_ids.mapped("product_id.requires_thankyou"))
             and (not i.communication_id or i.communication_id.state == "pending")
+            and (not move_type or i.move_type == move_type)
+            and i.state == "posted"
+            and (i.payment_state == "paid" or i.move_type == "entry")
         )

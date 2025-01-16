@@ -9,6 +9,15 @@
             records.mapped("message_id").write({"state": "new"})
         </field>
     </record>
+    <record id="action_postpone_gift" model="ir.actions.server">
+        <field name="name">Postpone Gift</field>
+        <field name="model_id" ref="model_sponsorship_gift" />
+        <field name="state">code</field>
+        <field name="usage">base_automation</field>
+        <field name="code">
+            records.mapped("message_id").write({"state": "postponed"})
+        </field>
+    </record>
 
     <!-- Automation Rule to enable postponed gifts -->
     <record model="base.automation" id="enable_postponed_gifts">
@@ -24,6 +33,20 @@
         <field
       name="action_server_ids"
       eval="[(6, 0, [ref('action_enable_postponed_gifts')])]"
+    />
+    </record>
+
+    <!-- Automation Rule to postpone future gifts -->
+    <record model="base.automation" id="postpone_future_gifts_automation">
+        <field name="name">Postpone future gifts</field>
+        <field name="model_id" ref="model_sponsorship_gift" />
+        <field name="trigger">on_create_or_write</field>
+        <field
+      name="filter_domain"
+    >[('gift_date', '>', datetime.date.today()),('message_id.state', '=', 'new')]</field>
+        <field
+      name="action_server_ids"
+      eval="[(6, 0    , ref('action_postpone_gift'))]"
     />
     </record>
 </odoo>

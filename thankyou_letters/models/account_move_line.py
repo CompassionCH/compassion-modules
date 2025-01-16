@@ -35,8 +35,7 @@ class AccountInvoiceLine(models.Model):
         return total_string, res_name
 
     def generate_thank_you(self):
-        """
-        Creates a thank you letter communication.
+        """Creates a thankyou letter communication.
         Must be called only on a single partner at a time.
         """
         new_invoice_lines = self.filtered("product_id.requires_thankyou")

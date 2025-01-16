@@ -7,7 +7,7 @@
       name="inherit_id"
       ref="partner_personal_info.view_partner_form_compassion_personal"
     />
-        <field name="priority">2</field>
+        <field name="priority">1</field>
         <field name="arch" type="xml">
 
             <!-- Add the church-->
@@ -27,6 +27,18 @@
                 <button
           class="oe_inline oe_stat_button"
           type="object"
+          name="action_view_partner_donations"
+          icon="fa-hand-holding-heart"
+          groups="child_compassion.group_sponsorship"
+          string="Donations"
+        >
+                    <div class="o_stat_info">
+                            <span class="o_stat_text">Donations</span>
+                        </div>
+                </button>
+                <button
+          class="oe_inline oe_stat_button"
+          type="object"
           name="open_contracts"
           icon="fa-book"
           groups="child_compassion.group_sponsorship"
@@ -37,36 +49,6 @@
             widget="statinfo"
           />
                 </button>
-                <button
-          class="oe_inline oe_stat_button"
-          type="object"
-          name="open_sponsored_children"
-          icon="fa-child"
-          groups="child_compassion.group_sponsorship"
-        >
-                    <field
-            string="Sponsored children"
-            name="number_children"
-            widget="statinfo"
-          />
-                </button>
-                <button
-          class="oe_inline oe_stat_button"
-          type="object"
-          string="Sponsorship impact"
-          groups="child_compassion.group_sponsorship"
-          name="open_sponsorship_report"
-          icon="fa-file-text-o "
-        />
-                <button
-          class="oe_inline oe_stat_button"
-          string="Forget me"
-          groups="child_compassion.group_sponsorship"
-          confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?"
-          type="object"
-          name="forget_me"
-          icon="fa-eraser"
-        />
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page
@@ -196,5 +178,16 @@
         <field
       name="context"
     >{'res_partner_search_mode': 'customer', 'search_default_type_supporter': 1}</field>
+    </record>
+
+    <record model="ir.actions.server" id="forget_me_action">
+        <field name="name">Forget me</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="binding_view_types">form</field>
+        <field name="binding_model_id" ref="base.model_res_partner" />
+        <field name="state">code</field>
+        <field name="code">
+            action = records.forget_me()
+        </field>
     </record>
 </odoo>

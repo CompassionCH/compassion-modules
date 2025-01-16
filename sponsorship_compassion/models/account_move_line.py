@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import _, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 from .product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
@@ -16,6 +16,8 @@ from .product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
 
 class MoveLine(models.Model):
     _inherit = "account.move.line"
+
+    move_category = fields.Selection(related="move_id.invoice_category")
 
     def _update_invoice_lines_from_contract(self, modified_contract):
         """

@@ -12,8 +12,6 @@ import datetime
 
 from odoo import _, fields, models
 
-from odoo.addons.sponsorship_compassion.models.product_names import GIFT_CATEGORY
-
 
 class SponsorshipContract(models.Model):
     _inherit = "recurring.contract"
@@ -31,29 +29,6 @@ class SponsorshipContract(models.Model):
                     ("sponsorship_id", "in", sponsorship_ids),
                 ]
             )
-
-    def invoice_paid(self, invoice):
-        """Prevent to reconcile invoices for fund-suspended projects
-        or sponsorships older than 3 months."""
-        for invl in invoice.invoice_line_ids:
-            existing_gift_for_invl = self.env["sponsorship.gift"].search(
-                [("invoice_line_ids", "in", invl.id)]
-            )
-            if (
-                invl.product_id.categ_name == GIFT_CATEGORY
-                and invl.contract_id.child_id
-                and not existing_gift_for_invl
-            ):
-                # Create the Sponsorship Gift
-                gifts = self.env["sponsorship.gift"].create_from_invoice_line(invl)
-
-                if not invl.contract_id.is_active:
-                    # pylint: disable=translation-required
-                    for gift in gifts:
-                        gift.message_post(body="Associated contract is not active")
-                        gift.state = "verify"
-
-        super().invoice_paid(invoice)
 
     def contract_active(self):
         res = super().contract_active()
@@ -79,7 +54,6 @@ class SponsorshipContract(models.Model):
             "view_mode": "tree,form",
             "res_model": "sponsorship.gift",
             "domain": [("sponsorship_id", "in", sponsorship_ids)],
-            "context": self.env.context,
             "target": "current",
         }
 
