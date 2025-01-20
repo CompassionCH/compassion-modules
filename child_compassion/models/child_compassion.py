@@ -587,7 +587,6 @@ class CompassionChild(models.Model):
         - Difference between two last pictures is at least 6 months
         - Last picture is no older than 6 months
         """
-        # Update child's pictures
         for child in self:
             # last_picture return false is there is no new pictures
             if child._get_last_pictures() and len(child.pictures_ids) > 1:
@@ -736,10 +735,11 @@ class CompassionChild(models.Model):
         self.ensure_one()
 
         pictures_obj = self.env["compassion.child.pictures"]
+        existing = self.pictures_ids
         pictures = pictures_obj.create(
             {"child_id": self.id, "image_url": self.image_url}
         )
-        if pictures:
+        if pictures and pictures not in existing:
             # Add a note in child
             self.message_post(
                 body=_("The picture has been updated."),
