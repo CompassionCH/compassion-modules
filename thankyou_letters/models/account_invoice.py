@@ -13,7 +13,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import api, fields, models, SUPERUSER_ID
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +117,7 @@ class AccountInvoice(models.Model):
                 lambda line, p_partner=partner: line.partner_id == p_partner
             )
             if invoice_lines:
-                invoice_lines.with_delay().generate_thank_you()
+                invoice_lines.with_user(SUPERUSER_ID).with_delay().generate_thank_you()
 
     def cancel_thankyou_letter(self):
         self.ensure_one()
