@@ -77,7 +77,6 @@ class ContractGroup(models.Model):
             return super()._should_skip_invoice_generation(invoicing_date)
 
         search_filter = [
-            ("state", "!=", "cancel"),
             ("invoice_date_due", "=", invoicing_date),
             ("partner_id", "=", self.partner_id.id),
             ("move_type", "=", "out_invoice"),
