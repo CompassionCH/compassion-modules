@@ -23,6 +23,7 @@
           class="oe_stat_button"
           name="open_translation_view"
           icon="fa-edit"
+          title="Edit raw translations"
           string="Edit raw translations"
           type="object"
           groups="base.group_system"
@@ -57,6 +58,7 @@
                   name="edit_proposition"
                   type="object"
                   icon="fa-file"
+                  title="Edit revision text"
                   context="{'config_id': config_id}"
                   string="Edit revision text"
                   invisibile="state in ('approved', 'active')"
@@ -74,12 +76,14 @@
                   name="show_revision"
                   type="object"
                   icon="fa-eye"
+                  title="Show active text"
                   string="Show active text"
                 />
                                 <button
                   name="edit_revision"
                   type="object"
                   icon="fa-edit"
+                  title="Correct active text"
                   string="Correct active text"
                   invisibile="is_old_version"
                 />
@@ -87,6 +91,7 @@
                   name="new_revision"
                   type="object"
                   icon="fa-plus-square"
+                  title="New revision"
                   groups="base.group_erp_manager"
                   invisibile="is_old_version or state != 'approved'"
                 />
@@ -94,6 +99,7 @@
                   name="duplicate_revision"
                   type="object"
                   icon="fa-copy"
+                  title="Duplicate revision"
                   string="Duplicate"
                   invisibile="not is_old_version"
                 />
