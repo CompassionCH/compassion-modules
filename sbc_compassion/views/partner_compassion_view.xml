@@ -15,6 +15,7 @@
           type="object"
           name="open_letters"
           icon="fa-pencil"
+          title="Letters"
           groups="child_compassion.group_sponsorship"
         >
                     <field

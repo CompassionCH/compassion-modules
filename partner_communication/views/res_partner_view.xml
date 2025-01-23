@@ -13,6 +13,7 @@
           type="action"
           class="oe_stat_button oe_inline"
           icon="fa-file-text-o"
+          title="Communications"
           groups="base.group_user"
         >
                     <field

@@ -75,6 +75,7 @@
           string="Send Now"
           type="object"
           icon="fa-paper-plane-o"
+          title="Send Now"
           invisible="state != 'pending'"
         />
                 <button
@@ -82,6 +83,7 @@
           string="Retry"
           type="object"
           icon="fa-undo"
+          title="Retry"
           invisible="state not in ('done','cancel')"
         />
                 <button
@@ -89,6 +91,7 @@
           string="Cancel"
           type="object"
           icon="fa-ban"
+            title="Cancel"
           invisible="state != 'pending'"
         />
             </tree>

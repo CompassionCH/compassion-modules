@@ -294,6 +294,7 @@
           name="open_contract"
           type="object"
           icon="fa-external-link"
+          title="Open Contract"
           string=""
         />
                                 <field
