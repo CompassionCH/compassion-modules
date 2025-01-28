@@ -32,13 +32,17 @@ class OCR(models.AbstractModel):
 
     def image_to_string(self, image):
         # use greyscale, cause some letters use color pencils
-        image = ImageOps.grayscale(image)
+        text = ""
+        try:
+            image = ImageOps.grayscale(image)
 
-        image = ImageEnhance.Contrast(image).enhance(1.5)
+            image = ImageEnhance.Contrast(image).enhance(1.5)
 
-        logger.debug(self._config)
-        text = pytesseract.image_to_string(image, config=self._config)
-        # remove every invisible character (line breaks, etc..) by spaces
-        text = re.sub(r"\s+", " ", text)
-        logger.debug(text)
+            logger.debug(self._config)
+            text = pytesseract.image_to_string(image, config=self._config)
+            # remove every invisible character (line breaks, etc..) by spaces
+            text = re.sub(r"\s+", " ", text)
+            logger.debug(text)
+        except Exception:
+            logger.error("Error in OCR", exc_info=True)
         return text, image

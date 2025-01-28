@@ -63,9 +63,9 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
-    failed_file_name = fields.Char(
+    failed_file_name = fields.Text(
         string="Files with errors",
-        help="Displays the name of the file that failed the PDF analysis.",
+        help="Displays the name of the files that failed the PDF analysis.",
         readonly=True,
         default="",
     )
@@ -134,8 +134,9 @@ class ImportLettersHistory(models.Model):
                     self.letters_ids.create(vals)
                     import_line.unlink()
             except Exception:
-                logger.error("", exc_info=True)
+                logger.error("Error while saving import", exc_info=True)
                 failed_names.append(vals.get("file_name"))
+
         if failed_names:
             self.write(
                 {
@@ -243,18 +244,19 @@ class ImportLettersHistory(models.Model):
             image = convert_from_bytes(pdf_data, 100, last_page=1)[0]
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
             letter_str, _ = self.env["ocr"].image_to_string(self.crop(image))
-            data["letter_language_id"] = (
-                self.env["langdetect"].detect_language(letter_str).id
-            )
+            if letter_str:
+                data["letter_language_id"] = (
+                    self.env["langdetect"].detect_language(letter_str).id
+                )
             data["letter_image_preview"] = self.create_preview(image)
 
-            partner = self.env["res.partner"].search(
-                [("ref", "=", partner_code), ("has_sponsorships", "=", True)]
+            partner_obj = self.env["res.partner"]
+            partner = partner_obj.search(
+                [("ref", "=", partner_code), ("has_sponsorships", "=", True)], limit=2
             )
+            if len(partner) == 2:
+                partner = partner_obj
 
-            # since the child code and local_id accept NULL
-            # this ensure that even if the child_code is None we don't retrieve
-            # one for those
             child = self.env["compassion.child"]
             if child_code:
                 child = child.search([("local_id", "=", child_code)], limit=1)
@@ -264,17 +266,21 @@ class ImportLettersHistory(models.Model):
 
             self.env["import.letter.line"].create(data)
             # this commit is really important
-            # it avoid having to keep the "data"s in memory until the whole process is
+            # it avoids having to keep the "data"s in memory until the whole process is
             # finished each time a letter is scanned, it is also inserted in the DB
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
+            failed_files = self.failed_file_name or ""
+            if failed_files:
+                failed_files += "\n"
+            failed_files += file_name
             self.write(
                 {
-                    "failed_file_name": file_name,
+                    "failed_file_name": failed_files,
                 }
             )
-            logger.error("Import file failed", exc_info=True)
+            logger.error("Import file %s failed", file_name, exc_info=True)
 
     def open_letters(self):
         return {
