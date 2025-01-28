@@ -285,6 +285,7 @@ class ImportLettersHistory(models.Model):
                 }
             )
             self.env.user.notify_danger(f"Couldn't import file {file_name}")
+            logger.error("Import file failed", exc_info=True)
         else:
             self.env.user.notify_success("Letters import completed !")
             return
