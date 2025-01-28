@@ -274,6 +274,7 @@ class ImportLettersHistory(models.Model):
                     "failed_file_name": file_name,
                 }
             )
+            logger.error("Import file failed", exc_info=True)
 
     def open_letters(self):
         return {
