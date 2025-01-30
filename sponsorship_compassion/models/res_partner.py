@@ -431,7 +431,6 @@ class ResPartner(models.Model):
                 "title": False,
                 "country_id": False,
                 "uuid": False,
-                "zip_id": False,
             }
         )
         partner.env["mail.mail"].search([("recipient_ids", "=", partner.id)]).unlink()
