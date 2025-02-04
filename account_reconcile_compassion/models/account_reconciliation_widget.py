@@ -72,7 +72,9 @@ class AccountReconciliationWidget(models.AbstractModel):
     @api.model
     def process_bank_statement_line(self, st_line_ids, data):
         # Execute a job to speedup the interface. The returned data is not used anyway.
-        self.with_delay()._process_bank_statement_line(st_line_ids, data)
+        self.with_delay(
+            channel="root.reconcile_compassion"
+        )._process_bank_statement_line(st_line_ids, data)
         return {}
 
     @api.model
