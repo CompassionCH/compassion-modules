@@ -12,6 +12,7 @@ import datetime
 import logging
 import uuid
 
+from collections import defaultdict
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
@@ -955,47 +956,40 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         page_commands = letter_vals.get("page_ids")
-        if page_commands and any(
-            (self.english_text, self.original_text, self.translated_text)
+        if (
+            not page_commands
+            or not isinstance(page_commands, list)
+            or not any((self.english_text, self.original_text, self.translated_text))
         ):
-            if not isinstance(page_commands, list):
-                return
-            page_index = 0
-            updated_commands = page_commands.copy()
-            _fields = ["original_text", "english_text", "translated_text"]
-            merged_text = {
-                _field: "" for _field in _fields if not getattr(self, _field, False)
-            }
-            nb_pop = 0
-            for command_index, page_command in enumerate(page_commands):
-                if not isinstance(page_command, tuple) or len(page_command) != 3:
-                    continue
-                page_vals = page_command[2]
-                existing_page = self.page_ids[page_index]
-                if not isinstance(page_vals, dict) or not existing_page:
-                    continue
+            return
 
-                for _field in _fields:
-                    if _field in merged_text:
-                        merged_text[_field] += (
-                            page_vals.get(_field, "") + PAGE_SEPARATOR
-                        )
-                    page_vals.pop(_field, None)
+        # Remove the clear command (5, 0, 0)
+        page_commands.remove((5, 0, 0))
+        text_fields = ["original_text", "english_text", "translated_text"]
+        merged_text = defaultdict(str)
 
-                if page_vals:
-                    # Other fields than text content. Keep them.
-                    updated_commands[command_index] = (1, existing_page.id, page_vals)
+        for page_index, command in enumerate(page_commands.copy()):
+            if isinstance(command, tuple) and len(command) == 3:
+                page_vals = command[2]
+                if not isinstance(page_vals, dict):
+                    continue
+                for field in text_fields:
+                    if page_vals.get(field):
+                        merged_text[field] += page_vals.pop(field) + PAGE_SEPARATOR
+                if not page_vals:
+                    page_commands.remove(command)
                 else:
-                    updated_commands.pop(command_index - nb_pop)
-                    nb_pop += 1
-            if updated_commands != page_commands:
-                # Remove the clear command (5, 0, 0)
-                updated_commands.pop(0)
-                if updated_commands:
-                    letter_vals["page_ids"] = updated_commands
-                else:
-                    letter_vals.pop("page_ids")
-            letter_vals.update(merged_text)
+                    page_id = self.page_ids[page_index : page_index + 1].id
+                    if page_id:
+                        page_commands[page_index] = (1, page_id, page_vals)
+
+        for field, text in merged_text.items():
+            strip_text = text.rstrip(PAGE_SEPARATOR).strip()
+            if strip_text and not getattr(self, field, False):
+                letter_vals[field] = strip_text
+
+        if not page_commands:
+            letter_vals.pop("page_ids", None)
 
     def get_attachments_per_page(self, flatten=False):
         """
