@@ -9,6 +9,7 @@
 ##############################################################################
 import base64
 import logging
+from urllib.error import URLError, HTTPError
 from urllib.request import Request, urlopen
 
 from odoo import _, api, fields, models
@@ -92,15 +93,15 @@ class ChildPictures(models.Model):
 
         picture = super().create(vals)
         # Fetch the image from the webservice
-        image_date = self._fetch_and_attach_pictures(picture)
+        image_date = picture._fetch_and_attach_pictures()
 
         # Handle the case where the picture cannot be fetched
         if not image_date:
-            self._handle_picture_fetch_failure(picture)
+            picture._handle_picture_fetch_failure()
 
         # Find if same pictures already exist
         if picture._find_same_picture():
-            self._handle_duplicate_picture(picture)
+            picture._handle_duplicate_picture()
 
         picture.write({"date": image_date})
         return picture
@@ -108,27 +109,25 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _fetch_and_attach_pictures(self, picture):
+    def _fetch_and_attach_pictures(self):
         """Fetch the pictures from the webservice and attach them to the record."""
-        headshot_fetched = picture._get_picture("Headshot", width=180, height=180)
-        fullshot_fetched = picture._get_picture("Fullshot", width=800, height=1200)
+        headshot_fetched = self._get_picture("Headshot", width=180, height=180)
+        fullshot_fetched = self._get_picture("Fullshot", width=800, height=1200)
         return headshot_fetched and fullshot_fetched
 
-    def _handle_picture_fetch_failure(self, picture):
+    def _handle_picture_fetch_failure(self):
         """Handle the failure of fetching the picture from the webservice."""
         message = _("Image cannot be fetched: No image URL available.")
         logger.warning(message)
-        picture.child_id.message_post(body=message, subject=_("Picture update"))
-        picture.unlink()
-        raise UserError(message)
+        self.child_id.message_post(body=message, subject=_("Picture update"))
+        self.unlink()
 
-    def _handle_duplicate_picture(self, picture):
+    def _handle_duplicate_picture(self):
         """Handle the case where the picture is the same as the previous one."""
         message = _("The picture was the same.")
         logger.warning(message)
-        picture.child_id.message_post(body=message, subject=_("Picture update"))
-        picture.unlink()
-        raise UserError(message)
+        self.child_id.message_post(body=message, subject=_("Picture update"))
+        self.unlink()
 
     def _find_same_picture(self):
         self.ensure_one()
@@ -179,8 +178,8 @@ class ChildPictures(models.Model):
                     self.headshot = data
                 elif pic_type.lower() == "fullshot":
                     self.fullshot = data
-            except Exception as e:
-                logger.error(f"Failed to fetch image from {picture.image_url}: {e}")
-                raise UserError(_(f"Failed to fetch image from URL: {picture.image_url}"))
+            except (AttributeError, ValueError, URLError, HTTPError, TypeError):
+                logger.error("Failed to fetch image from %s",
+                             picture.image_url, exc_info=True)
 
         return _image_date
