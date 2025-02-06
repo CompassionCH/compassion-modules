@@ -9,11 +9,10 @@
 ##############################################################################
 import base64
 import logging
-from urllib.error import URLError, HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
 from odoo.http import request
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ logger = logging.getLogger(__name__)
 # This User-Agent simulate a browser, so that the fetch is not blocked
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; "
-                  "en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
+    "en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
 }
 
 
@@ -63,12 +62,14 @@ class ChildPictures(models.Model):
             pictures.hname = code + " " + date + " headshot.jpg"
 
     def _compute_image_url_compassion(self):
-        #new logic : verification is only done once
+        # new logic : verification is only done once
         config = self.env["ir.config_parameter"].sudo()
-        if hasattr(request, 'website'):
+        if hasattr(request, "website"):
             base_url = request.website.domain
         else:
-            base_url = config.get_param("web.external.url", config.get_param("web.base.url"))
+            base_url = config.get_param(
+                "web.external.url", config.get_param("web.base.url")
+            )
 
         endpoint = f"{base_url}/web/image/compassion.child.pictures"
 
@@ -76,7 +77,6 @@ class ChildPictures(models.Model):
             image.image_url_compassion = (
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
             )
-
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -132,11 +132,12 @@ class ChildPictures(models.Model):
     def _find_same_picture(self):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
-        pics = reference.search([
-            ("child_id", "=", self.child_id.id), ("id", "!=", self.id)
-        ], limit=1)
+        pics = reference.search(
+            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)], limit=1
+        )
         same_pics = pics.filtered(
-            lambda record: record.fullshot == reference.fullshot and record.headshot == reference.headshot
+            lambda record: record.fullshot == reference.fullshot
+            and record.headshot == reference.headshot
         )
         return same_pics
 
@@ -144,9 +145,9 @@ class ChildPictures(models.Model):
         existing_picture = self.search(
             [
                 ("child_id", "=", vals.get("child_id")),
-                ("image_url", "=", vals.get("image_url"))
+                ("image_url", "=", vals.get("image_url")),
             ],
-            limit=1
+            limit=1,
         )
         return existing_picture
 
@@ -155,7 +156,7 @@ class ChildPictures(models.Model):
         self.ensure_one()
         if pic_type.lower() == "headshot":
             cloudinary = (
-                    "g_face,c_thumb,h_" + str(height) + ",w_" + str(width) + ",z_1.2"
+                "g_face,c_thumb,h_" + str(height) + ",w_" + str(width) + ",z_1.2"
             )
         elif pic_type.lower() == "fullshot":
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
@@ -179,7 +180,8 @@ class ChildPictures(models.Model):
                 elif pic_type.lower() == "fullshot":
                     self.fullshot = data
             except (AttributeError, ValueError, URLError, HTTPError, TypeError):
-                logger.error("Failed to fetch image from %s",
-                             picture.image_url, exc_info=True)
+                logger.error(
+                    "Failed to fetch image from %s", picture.image_url, exc_info=True
+                )
 
         return _image_date
