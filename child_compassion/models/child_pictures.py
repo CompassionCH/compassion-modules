@@ -42,6 +42,7 @@ class ChildPictures(models.Model):
     fname = fields.Char(compute="_compute_filename")
     hname = fields.Char(compute="_compute_filename")
 
+    funct_new_photo_called = fields.Boolean(default=False)
     _sql_constraints = [
         (
             "unique_picture_per_child",
