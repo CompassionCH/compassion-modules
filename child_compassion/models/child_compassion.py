@@ -596,10 +596,14 @@ class CompassionChild(models.Model):
                 new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
+
                 if (
-                    len(pictures) == 2 or diff_pic.months >= 6 or diff_pic.years > 0
-                ) and (diff_today.months <= 6 and diff_today.years == 0):
+                    (diff_pic.months >= 6 or diff_pic.years > 0)
+                    and (diff_today.months <= 6 and diff_today.years == 0)
+                    and not pictures[0].funct_new_photo_called
+                ):
                     child.new_photo()
+                    pictures[0].funct_new_photo_called = True
 
     # Lifecycle methods
     ###################
