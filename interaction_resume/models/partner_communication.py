@@ -35,6 +35,7 @@ class PartnerCommunication(models.Model):
                 "body": html2plaintext(rec.body_html).replace("\n\n", "\n"),
                 "has_attachment": bool(rec.attachment_ids),
                 "tracking_status": rec.email_id.mail_tracking_ids[:1].state or "sent",
+                "user_id": rec.user_id.id,
             }
             for rec in self
         ]

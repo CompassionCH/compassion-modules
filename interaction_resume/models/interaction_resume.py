@@ -19,6 +19,7 @@ class InteractionResume(models.Model):
     partner_id = fields.Many2one(
         "res.partner", "Partner", required=True, index=True, ondelete="cascade"
     )
+    user_id = fields.Many2one("res.users", "User", required=False, index=True)
     email = fields.Char()
     communication_type = fields.Selection(
         [

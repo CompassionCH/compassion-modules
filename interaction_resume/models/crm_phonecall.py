@@ -29,6 +29,7 @@ class CrmPhonecall(models.Model):
                 "subject": rec.name,
                 "body": rec.description or rec.name,
                 "tracking_status": TRACKING_STATUS_MAPPING.get(rec.state),
+                "user_id": rec.user_id.id,
             }
             for rec in self
         ]
