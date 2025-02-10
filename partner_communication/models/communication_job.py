@@ -118,6 +118,7 @@ class CommunicationJob(models.Model):
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
             ("failure", _("Failure")),
+            ("processing", _("Processing")),
         ],
         default="pending",
         tracking=True,
@@ -468,42 +469,32 @@ class CommunicationJob(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def send(self):
-        """Executes the job."""
+        """
+        Executes the job asynchronously for each communication task.
+        This ensures that each job is processed independently in the queue.
+        """
+        # Filter "pending" tasks
         todo = self.filtered(
             lambda j: j.state == "pending"
             and not (j.need_call == "before_sending" and j.activity_ids)
         )
+        todo.write({"state": "processing"})
 
-        # Filter jobs for SMS
-        sms_jobs = self.filtered(lambda j: j.send_mode == "sms")
-        sms_jobs.send_by_sms()
+        # Process SMS jobs asynchronously
+        sms_jobs = todo.filtered(lambda j: j.send_mode == "sms")
+        if sms_jobs:
+            sms_jobs.send_by_sms()
 
+        # Process physical print jobs asynchronously
         to_print = todo.filtered(lambda j: j.send_mode == "physical")
-        for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
-            origin = self.env.context.get("origin")
-            # if we print first in a communication with send_mode == both
-            if origin == "both_print" and job.send_mode == "both":
-                job.send_mode = "digital"
-                return job._print_report()
-
-            state = job._send_mail()
-            if job.send_mode != "both":
-                job.write(
-                    {
-                        "state": state,
-                        "sent_date": state != "pending" and fields.Datetime.now(),
-                    }
-                )
-            else:
-                # Job was sent by e-mail and must now be printed
-                job.send_mode = "physical"
-                job.refresh_text()
-
-            # if the call must be done after the sending, an activity is scheduled
-            if job.need_call == "after_sending":
-                job.with_user(job.user_id.id).schedule_call()
         if to_print:
-            return to_print._print_report()
+            to_print._print_report()
+
+        # Process email jobs (digital or both) asynchronously
+        email_jobs = todo.filtered(lambda j: j.send_mode in ("both", "digital"))
+        for job in email_jobs:
+            job.with_delay()._process_email_job_asynchronous()
+
         return self.download_data()
 
     def schedule_call(self):
@@ -544,35 +535,9 @@ class CommunicationJob(models.Model):
         for job in self.filtered(
             lambda j: j.state == "pending" and j.partner_id.mobile
         ):
-            sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
-            sms_texts.append(sms_text)
-            sanitize_res = phone_validation.phone_sanitize_numbers_w_record(
-                [job.partner_id.mobile], job.partner_id
+            job.with_delay()._send_by_sms_asynchronous(
+                link_pattern, sms_medium_id, sms_texts
             )
-            sanitized_numbers = [
-                info["sanitized"] for info in sanitize_res.values() if info["sanitized"]
-            ]
-            invalid_numbers = [
-                number for number, info in sanitize_res.items() if info["code"]
-            ]
-            if invalid_numbers:
-                raise UserError(
-                    _("Invalid phone numbers: %s") % ", ".join(invalid_numbers)
-                )
-            self.env["sms.sms"].create(
-                {
-                    "number": sanitized_numbers[0],
-                    "body": sms_text,
-                    "partner_id": job.partner_id.id,
-                }
-            ).send()
-            job.write(
-                {
-                    "state": "done",
-                    "sent_date": fields.Datetime.now(),
-                }
-            )
-            _logger.debug("SMS length: %s", len(sms_text))
         return sms_texts
 
     def convert_html_for_sms(self, link_pattern, sms_medium_id):
@@ -818,6 +783,38 @@ class CommunicationJob(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _process_email_job_asynchronous(self):
+        """
+        Processes a single communication job for email (digital or both).
+        This method will be executed in the queue using with_delay().
+        """
+        # Ensure only one job is processed at a time
+        self.ensure_one()
+        try:
+            # Send the email
+            state = self._send_mail()
+            if self.send_mode != "both":
+                self.write(
+                    {
+                        "state": state,
+                        "sent_date": state != "pending" and fields.Datetime.now(),
+                    }
+                )
+            else:
+                # After sending the email, switch to "physical" for printing
+                self.send_mode = "physical"
+                self.state = "pending"
+                self.refresh_text()
+
+            # Schedule a call if required after sending
+            if self.need_call == "after_sending":
+                self.with_user(self.user_id.id).schedule_call()
+
+        except Exception as e:
+            _logger.error(
+                f"Error processing email job {self.id}: {str(e)}", exc_info=True
+            )
+
     def _send_mail(self):
         """
         Called for sending the communication by e-mail.
@@ -866,10 +863,7 @@ class CommunicationJob(models.Model):
 
     def _print_report(self):
         name = self.env.user.name
-        origin = self.env.context.get("origin")
         state = "done"
-        if origin == "both_print":
-            state = "pending"
 
         # Batch print communications of same type (if no attachments)
         batch_print = {
@@ -881,14 +875,9 @@ class CommunicationJob(models.Model):
                 try:
                     # Print letter
                     print_name = name[:3] + " " + (job.subject or "")
-                    print_options = job.print_letter(print_name)
-                    output_tray = print_options["output_tray"]
 
-                    # Print attachments in the same output_tray
-                    job.attachment_ids.print_attachments(
-                        output_tray=output_tray,
-                    )
-                    job.write({"state": state, "sent_date": fields.Datetime.now()})
+                    job.with_delay()._print_job_asynchronous(print_name, state)
+
                 except Exception:
                     _logger.error("Error printing job %s", [job.id], exc_info=True)
             else:
@@ -898,13 +887,56 @@ class CommunicationJob(models.Model):
             for config, jobs in configs.items():
                 try:
                     print_name = name[:3] + " " + config
-                    jobs.print_letter(print_name)
-                    jobs.write({"state": state, "sent_date": fields.Datetime.now()})
+
+                    # Only one asynchronous job for all the jobs
+                    jobs[:1].with_delay()._print_job_asynchronous(print_name, state)
+
                 except Exception:
                     _logger.error(
                         "Error while printing jobs %s", str(jobs.ids), exc_info=True
                     )
         return self.download_data()
+
+    def _print_job_asynchronous(self, print_name, state):
+        # Print letter
+        print_options = self.print_letter(print_name)
+        output_tray = print_options["output_tray"]
+
+        # Print attachments in the same output_tray
+        self.attachment_ids.print_attachments(
+            output_tray=output_tray,
+        )
+        self.write({"state": state, "sent_date": fields.Datetime.now()})
+
+    def _send_by_sms_asynchronous(self, link_pattern, sms_medium_id, sms_texts):
+        sms_text = self.convert_html_for_sms(link_pattern, sms_medium_id)
+        sms_texts.append(sms_text)
+        sanitize_res = phone_validation.phone_sanitize_numbers_w_record(
+            [self.partner_id.mobile], self.partner_id
+        )
+        sanitized_numbers = [
+            info["sanitized"] for info in sanitize_res.values() if info["sanitized"]
+        ]
+        invalid_numbers = [
+            number for number, info in sanitize_res.items() if info["code"]
+        ]
+        if invalid_numbers:
+            raise UserError(_("Invalid phone numbers: %s") % ", ".join(invalid_numbers))
+        # send SMS : must be asynchronous
+        self.env["sms.sms"].create(
+            {
+                "number": sanitized_numbers[0],
+                "body": sms_text,
+                "partner_id": self.partner_id.id,
+            }
+        ).send()
+        self.write(
+            {
+                "state": "done",
+                "sent_date": fields.Datetime.now(),
+            }
+        )
+        _logger.debug("SMS length: %s", len(sms_text))
 
     def _notify_get_reply_to(
         self, default=None, records=None, company=None, doc_names=None
