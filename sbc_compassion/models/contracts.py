@@ -98,26 +98,27 @@ class Contracts(models.Model):
     #                              ORM METHODS                               #
     ##########################################################################
 
-    @api.model
-    def create(self, vals):
-        if (
-            "child_id" in vals
-            and "correspondent_id" in vals
-            and "reading_language" not in vals
-        ):
-            child = self.env["compassion.child"].browse(vals["child_id"])
-            correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
-            english = self.env.ref("advanced_translation.lang_compassion_english")
-            spoken_langs = correspondent.spoken_lang_ids
-            reading_language = (
-                (spoken_langs & child.correspondence_language_id)
-                or (spoken_langs & english)
-                or spoken_langs.filtered(
-                    lambda lang: lang.lang_id.code == correspondent.lang
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if (
+                "child_id" in vals
+                and "correspondent_id" in vals
+                and "reading_language" not in vals
+            ):
+                child = self.env["compassion.child"].browse(vals["child_id"])
+                correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
+                english = self.env.ref("advanced_translation.lang_compassion_english")
+                spoken_langs = correspondent.spoken_lang_ids
+                reading_language = (
+                    (spoken_langs & child.correspondence_language_id)
+                    or (spoken_langs & english)
+                    or spoken_langs.filtered(
+                        lambda lang, c=correspondent: lang.lang_id.code == c.lang
+                    )
                 )
-            )
-            vals["reading_language"] = reading_language.id
-        return super().create(vals)
+                vals["reading_language"] = reading_language.id
+        return super().create(vals_list)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

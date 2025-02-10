@@ -307,15 +307,16 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        if vals.get("service_level") != "Level 1":
-            vals["state"] = "sla"
-        vals["commited_percentage"] = 0
-        intervention = super().create(vals)
-        intervention.get_infos()
-        intervention.fcp_ids.get_lifecycle_event()
-        return intervention
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("service_level") != "Level 1":
+                vals["state"] = "sla"
+            vals["commited_percentage"] = 0
+        interventions = super().create(vals_list)
+        interventions.get_infos()
+        interventions.mapped("fcp_ids").get_lifecycle_event()
+        return interventions
 
     def write(self, vals):
         """

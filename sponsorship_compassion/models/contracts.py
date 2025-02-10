@@ -508,69 +508,69 @@ class SponsorshipContract(models.Model):
     #                              ORM METHODS                               #
     ##########################################################################
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Perform various checks on contract creations"""
-        # Force the commitment_number
-        partner_ids = []
-        partner_id = vals.get("partner_id")
-        if partner_id:
-            partner_ids.append(partner_id)
-        correspondent_id = vals.get("correspondent_id")
-        if correspondent_id and correspondent_id != partner_id:
-            partner_ids.append(correspondent_id)
-        if not correspondent_id:
-            vals["correspondent_id"] = partner_id
-        if partner_ids:
-            other_nums = self.search(
-                [
-                    "|",
-                    ("partner_id", "in", partner_ids),
-                    ("correspondent_id", "in", partner_ids),
-                    ("state", "not in", ["cancelled", "terminated"]),
-                ]
-            ).mapped("commitment_number")
-            vals["commitment_number"] = max(other_nums or [0]) + 1
-        else:
-            vals["commitment_number"] = 1
-
-        child = self.env["compassion.child"].browse(vals.get("child_id"))
-        sponsor_id = vals.get("correspondent_id", vals.get("partner_id"))
-        if "S" in vals.get("type", "") and child and sponsor_id:
-            child.with_context({}).child_sponsored(sponsor_id)
-
-        # Generates commitment number for contracts BVRs
-        if "commitment_number" not in vals:
+        for vals in vals_list:
+            # Force the commitment_number
+            partner_ids = []
             partner_id = vals.get("partner_id")
-            correspondent_id = vals.get("correspondent_id", partner_id)
             if partner_id:
+                partner_ids.append(partner_id)
+            correspondent_id = vals.get("correspondent_id")
+            if correspondent_id and correspondent_id != partner_id:
+                partner_ids.append(correspondent_id)
+            if not correspondent_id:
+                vals["correspondent_id"] = partner_id
+            if partner_ids:
                 other_nums = self.search(
                     [
                         "|",
-                        "|",
-                        "|",
-                        ("partner_id", "=", partner_id),
-                        ("partner_id", "=", correspondent_id),
-                        ("correspondent_id", "=", partner_id),
-                        ("correspondent_id", "=", correspondent_id),
+                        ("partner_id", "in", partner_ids),
+                        ("correspondent_id", "in", partner_ids),
+                        ("state", "not in", ["cancelled", "terminated"]),
                     ]
                 ).mapped("commitment_number")
-
-                vals["commitment_number"] = max(other_nums or [-1]) + 1
+                vals["commitment_number"] = max(other_nums or [0]) + 1
             else:
                 vals["commitment_number"] = 1
 
-        new_sponsorship = super().create(vals)
+            child = self.env["compassion.child"].browse(vals.get("child_id"))
+            sponsor_id = vals.get("correspondent_id", vals.get("partner_id"))
+            if "S" in vals.get("type", "") and child and sponsor_id:
+                child.with_context({}).child_sponsored(sponsor_id)
 
-        # Set the sub_sponsorship_id in the current parent_id and take
-        # sponsorship line id
-        if "parent_id" in vals and vals["parent_id"]:
-            sponsorship = self.env["recurring.contract"].browse(vals["parent_id"])
+            # Generates commitment number for contracts BVRs
+            if "commitment_number" not in vals:
+                partner_id = vals.get("partner_id")
+                correspondent_id = vals.get("correspondent_id", partner_id)
+                if partner_id:
+                    other_nums = self.search(
+                        [
+                            "|",
+                            "|",
+                            "|",
+                            ("partner_id", "=", partner_id),
+                            ("partner_id", "=", correspondent_id),
+                            ("correspondent_id", "=", partner_id),
+                            ("correspondent_id", "=", correspondent_id),
+                        ]
+                    ).mapped("commitment_number")
 
-            sponsorship.sub_sponsorship_id = new_sponsorship
-            new_sponsorship.sponsorship_line_id = sponsorship.sponsorship_line_id
+                    vals["commitment_number"] = max(other_nums or [-1]) + 1
+                else:
+                    vals["commitment_number"] = 1
 
-        return new_sponsorship
+        new_sponsorships = super().create(vals_list)
+
+        for sub_sponsorship in new_sponsorships.filtered("parent_id"):
+            # Set the sub_sponsorship_id in the current parent_id and take
+            # sponsorship line id
+            sponsorship = sub_sponsorship.parent_id
+            sponsorship.sub_sponsorship_id = sub_sponsorship
+            sub_sponsorship.sponsorship_line_id = sponsorship.sponsorship_line_id
+
+        return new_sponsorships
 
     def write(self, vals):
         """Perform various checks on contract modification"""

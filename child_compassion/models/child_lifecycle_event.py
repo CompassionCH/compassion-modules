@@ -367,20 +367,23 @@ class ChildLifecycleEvent(models.Model):
         ("global_id", "unique(global_id)", "The lifecycle already exists in database.")
     ]
 
-    @api.model
-    def create(self, vals):
-        lifecycle = self.search([("global_id", "=", vals["global_id"])])
-        if lifecycle:
-            lifecycle.write(vals)
-        else:
-            lifecycle = super().create(vals)
-            child = lifecycle.child_id
+    @api.model_create_multi
+    def create(self, vals_list):
+        events = self
+        for vals in vals_list.copy():
+            lifecycle = self.search([("global_id", "=", vals["global_id"])])
+            if lifecycle:
+                lifecycle.write(vals)
+            else:
+                lifecycle = super().create(vals)
+            events += lifecycle
             # Process lifecycle event
+            child = lifecycle.child_id
             if "Exit" in lifecycle.type:
                 child.child_departed()
             else:
-                lifecycle.child_id.with_context(async_mode=False).get_infos()
-        return lifecycle
+                child.with_context(async_mode=False).get_infos()
+            return events
 
     @api.model
     def process_commkit(self, commkit_data):

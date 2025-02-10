@@ -29,11 +29,14 @@ class ChildNote(models.Model):
     visibility = fields.Char()
     source_code = fields.Char()
 
-    @api.model
-    def create(self, vals):
-        note = super().create(vals)
-        note.child_id.message_post(body=note.body, subject=_("New beneficiary notes"))
-        return note
+    @api.model_create_multi
+    def create(self, vals_list):
+        notes = super().create(vals_list)
+        for note in notes:
+            note.child_id.message_post(
+                body=note.body, subject=_("New beneficiary notes")
+            )
+        return notes
 
     @api.model
     def process_commkit(self, commkit_data):

@@ -211,7 +211,7 @@ class ResPartner(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         # Put a preferred name
         partners = super().create(vals_list)

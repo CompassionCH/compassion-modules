@@ -227,18 +227,19 @@ class Household(models.Model):
     ##########################################################################
     #                             ORM METHODS                                #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        role = vals.get("role")
-        if role and role not in [t[0] for t in self._get_roles()]:
-            vals["unknown_role"] = vals.pop("role")
-
-        res = self.search([("household_id", "=", vals.get("household_id"))])
-        if res:
-            res.write(vals)
-        else:
-            res = super().create(vals)
-        return res
+    @api.model_create_multi
+    def create(self, vals_list):
+        updated = self
+        for vals in vals_list.copy():
+            role = vals.get("role")
+            if role and role not in [t[0] for t in self._get_roles()]:
+                vals["unknown_role"] = vals.pop("role")
+            res = self.search([("household_id", "=", vals.get("household_id"))])
+            if res:
+                res.write(vals)
+                updated += res
+                vals_list.remove(vals)
+        return super().create(vals_list) + updated
 
 
 class HouseholdMembers(models.Model):

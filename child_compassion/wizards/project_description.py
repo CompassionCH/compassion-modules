@@ -43,17 +43,17 @@ class ProjectDescription(models.TransientModel):
         ondelete="cascade",
     )
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """This will automatically generate all descriptions and save them
         in the related child.
         """
-        generator = super().create(vals)
-        for lang, field in self._supported_languages().items():
-            desc = generator.with_context(lang=lang)._generate_translation()
-            generator.project_id.write({field: desc})
-
-        return generator
+        generators = super().create(vals_list)
+        for generator in generators:
+            for lang, field in self._supported_languages().items():
+                desc = generator.with_context(lang=lang)._generate_translation()
+                generator.project_id.write({field: desc})
+        return generators
 
     @api.model
     def _supported_languages(self):

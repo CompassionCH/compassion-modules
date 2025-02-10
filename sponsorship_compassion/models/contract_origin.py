@@ -117,36 +117,37 @@ class ContractOrigin(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Try to find existing origin instead of raising an error."""
-        try:
-            res = super().create(vals)
-        except IntegrityError as error:
-            # Find the origin
-            logger.error(str(error))
-            self.env.cr.rollback()
-            self.env.clear()
-            origin = self._find_same_origin(vals)
-            if origin:
-                res = origin
-            else:
-                raise
-
-        # Put analytic account of the user if it exists
-        partner = res.partner_id
-        if res.type == "partner" and partner and not res.analytic_id:
-            partner_name = partner.name
-            if partner.parent_id:
-                partner_name = partner.parent_id.name + ", " + partner_name
-            analytic_account = (
-                self.env["account.analytic.account"]
-                .with_context(lang="en_US")
-                .search([("name", "=", partner_name)], limit=1)
-            )
-            res.analytic_id = analytic_account
-
-        return res
+        result = self
+        partner_obj = self.env["res.partner"]
+        for vals in vals_list:
+            # Put analytic account of the user if it exists
+            partner_id = vals.get("partner_id")
+            analytic_id = vals.get("analytic_id")
+            if vals["type"] == "partner" and partner_id and not analytic_id:
+                partner_name = partner_obj.browse(partner_id).complete_name
+                analytic_account = (
+                    self.env["account.analytic.account"]
+                    .with_context(lang="en_US")
+                    .search([("name", "=", partner_name)], limit=1)
+                )
+                vals["analytic_id"] = analytic_account.id
+            try:
+                with self.env.cr.savepoint():
+                    result += super().create(vals)
+            except IntegrityError as error:
+                # Find the origin
+                logger.error(str(error))
+                self.env.cr.rollback()
+                self.env.clear()
+                origin = self._find_same_origin(vals)
+                if origin:
+                    result += origin
+                else:
+                    raise
+        return result
 
     def _find_same_origin(self, vals):
         return self.search(

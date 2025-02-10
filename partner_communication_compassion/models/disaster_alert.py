@@ -47,24 +47,23 @@ class ChildImpact(models.Model):
     )
     state = fields.Selection(related="communication_id.state")
 
-    @api.model
-    def create(self, vals):
-        impact = super().create(vals)
-        partner = impact.child_id.sponsor_id
-        if partner:
-            communication_config = self.env.ref(
-                "partner_communication_compassion.disaster_alert"
+    @api.model_create_multi
+    def create(self, vals_list):
+        impacts = super().create(vals_list)
+        communication_config = self.env.ref(
+            "partner_communication_compassion.disaster_alert"
+        )
+        for impact in impacts.filtered("child_id.sponsor_id"):
+            partner = impact.child_id.sponsor_id
+            sponsorships = partner.sponsorship_ids.filtered(
+                lambda s, i=impact: s.child_id == i.child_id
             )
-            if communication_config.active:
-                sponsorships = partner.sponsorship_ids.filtered(
-                    lambda s: s.child_id == impact.child_id
-                )
-                comm = self.env["partner.communication.job"].create(
-                    {
-                        "partner_id": partner.id,
-                        "config_id": communication_config.id,
-                        "object_ids": sponsorships.ids,
-                    }
-                )
-                impact.communication_id = comm
-        return impact
+            comm = self.env["partner.communication.job"].create(
+                {
+                    "partner_id": partner.id,
+                    "config_id": communication_config.id,
+                    "object_ids": sponsorships.ids,
+                }
+            )
+            impact.communication_id = comm
+        return impacts

@@ -100,21 +100,22 @@ class ImportLettersHistory(models.Model):
             elif letter.state is False or letter.state == "draft":
                 letter.nber_letters = len(letter.data)
 
-    @api.model
-    def create(self, vals):
-        if vals.get("config_id"):
-            other_import = self.search_count(
-                [("config_id", "=", vals["config_id"]), ("state", "!=", "done")]
-            )
-            if other_import:
-                raise UserError(
-                    _(
-                        "Another import with the same configuration is "
-                        "already open. Please finish it before creating a new "
-                        "one."
-                    )
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("config_id"):
+                other_import = self.search_count(
+                    [("config_id", "=", vals["config_id"]), ("state", "!=", "done")]
                 )
-        return super().create(vals)
+                if other_import:
+                    raise UserError(
+                        _(
+                            "Another import with the same configuration is "
+                            "already open. Please finish it before creating a new "
+                            "one."
+                        )
+                    )
+        return super().create(vals_list)
 
     def button_import(self):
         for letters_import in self:

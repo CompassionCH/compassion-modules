@@ -53,37 +53,39 @@ class CommunicationAttachment(models.Model):
         for attachment in self:
             attachment.data = base64.b64decode(attachment.attachment_id.datas)
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """
         Allows to send binary data for attachment instead of record.
         :param vals: vals for creation
         :return: record created
         """
+        res = self.env[self._name]
+        for vals in vals_list:
+            if not vals.get("report_id"):
+                vals["report_id"] = (
+                    self.env["ir.actions.report"]
+                    ._get_report_from_name(vals.get("report_name"))
+                    .id
+                )
 
-        if not vals.get("report_id"):
-            vals["report_id"] = (
-                self.env["ir.actions.report"]
-                ._get_report_from_name(vals.get("report_name"))
-                .id
-            )
+            new_record = "data" in vals and "attachment_id" not in vals
+            if new_record:
+                name = vals["name"]
+                attachment = self.env["ir.attachment"].create(
+                    {
+                        "res_model": "partner.communication.job",
+                        "datas": vals["data"],
+                        "name": name,
+                        "report_id": vals["report_id"],
+                    }
+                )
+                vals["attachment_id"] = attachment.id
 
-        new_record = "data" in vals and "attachment_id" not in vals
-        if new_record:
-            name = vals["name"]
-            attachment = self.env["ir.attachment"].create(
-                {
-                    "res_model": "partner.communication.job",
-                    "datas": vals["data"],
-                    "name": name,
-                    "report_id": vals["report_id"],
-                }
-            )
-            vals["attachment_id"] = attachment.id
-
-        res = super().create(vals)
-        if new_record:
-            res.attachment_id.res_id = res.communication_id.id
+            record = super().create(vals_list)
+            res += record
+            if new_record:
+                record.attachment_id.res_id = res.communication_id.id
         return res
 
     def unlink(self):

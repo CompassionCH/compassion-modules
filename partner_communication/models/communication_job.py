@@ -312,72 +312,84 @@ class CommunicationJob(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """If a pending communication for same partner exists,
         add the object_ids to it. Otherwise, create a new communication.
         opt-out partners won't create any communication.
         """
-        # Object ids accept lists, integer or string values. It should contain
-        # a comma separated list of integers
-        object_ids = vals.get("object_ids")
-        if isinstance(object_ids, list):
-            vals["object_ids"] = ",".join(map(str, object_ids))
-        elif object_ids:
-            vals["object_ids"] = str(object_ids)
-        else:
-            vals["object_ids"] = str(vals["partner_id"])
+        updated = self.env[self._name]
+        for vals in vals_list.copy():
+            # Object ids accept lists, integer or string values. It should contain
+            # a comma separated list of integers
+            object_ids = vals.get("object_ids")
+            if isinstance(object_ids, list):
+                vals["object_ids"] = ",".join(map(str, object_ids))
+            elif object_ids:
+                vals["object_ids"] = str(object_ids)
+            else:
+                vals["object_ids"] = str(vals["partner_id"])
 
-        same_job_search = [
-            ("partner_id", "=", vals.get("partner_id")),
-            ("config_id", "=", vals.get("config_id")),
-            (
-                "config_id",
-                "!=",
-                self.env.ref("partner_communication.default_communication").id,
-            ),
-            ("state", "in", ["pending", "failure"]),
-        ] + self.env.context.get("same_job_search", [])
-        job = self.search(same_job_search, limit=1)
+            same_job_search = [
+                ("partner_id", "=", vals.get("partner_id")),
+                ("config_id", "=", vals.get("config_id")),
+                (
+                    "config_id",
+                    "!=",
+                    self.env.ref("partner_communication.default_communication").id,
+                ),
+                ("state", "in", ["pending", "failure"]),
+            ] + self.env.context.get("same_job_search", [])
+            job = self.search(same_job_search, limit=1)
 
-        if job and not job.config_id.forbid_merging:
-            job.object_ids = job.object_ids + "," + vals["object_ids"]
-            job.refresh_text()
+            if job and not job.config_id.forbid_merging:
+                job.object_ids = job.object_ids + "," + vals["object_ids"]
+                job.refresh_text()
+                if job.auto_send:
+                    job.send()
+                updated += job
+                vals_list.remove(vals)
+
+            self._get_default_vals(vals)
+
+        created = super().create(vals_list)
+
+        for vals, job in zip(vals_list, created, strict=True):
+            # Prevent creating unwanted jobs (inactive config)
+            if not job.config_id.active:
+                created -= job
+                job.unlink()
+                continue
+
+            # Determine send mode
+            send_mode = job.config_id.get_inform_mode(job.partner_id)
+
+            if "send_mode" not in vals and "default_send_mode" not in self.env.context:
+                job.send_mode = send_mode[0]
+            if (
+                "auto_send" not in vals
+                and "default_auto_send" not in self.env.context
+                and send_mode[1]
+            ):
+                job.auto_send = send_mode[1]
+
+            job.set_attachments()
+            if job.send_mode in ("both", "physical"):
+                job.count_pdf_page()
+
+            # Difference between send_mode of partner and send_mode of job
+            if send_mode[0] != job.send_mode:
+                if "only" in job.partner_id.global_communication_delivery_preference:
+                    # Send_mode chosen by the employee is not compatible
+                    # So we remove it and an employee must set it manually afterward
+                    job.send_mode = ""
+
+            if job.need_call == "before_sending":
+                job.schedule_call()
             if job.auto_send:
                 job.send()
-            return job
 
-        self._get_default_vals(vals)
-        job = super().create(vals)
-
-        # Determine send mode
-        send_mode = job.config_id.get_inform_mode(job.partner_id)
-
-        if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-            job.send_mode = send_mode[0]
-        if (
-            "auto_send" not in vals
-            and "default_auto_send" not in self.env.context
-            and send_mode[1]
-        ):
-            job.auto_send = send_mode[1]
-
-        job.set_attachments()
-        if job.send_mode in ("both", "physical"):
-            job.count_pdf_page()
-
-        # Difference between send_mode of partner and send_mode of job
-        if send_mode[0] != job.send_mode:
-            if "only" in job.partner_id.global_communication_delivery_preference:
-                # Send_mode chosen by the employee is not compatible with the partner
-                # So we remove it and an employee must set it manually afterward
-                job.send_mode = ""
-
-        if job.need_call == "before_sending":
-            job.schedule_call()
-        if job.auto_send:
-            job.send()
-        return job
+        return updated + created
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):

@@ -59,12 +59,12 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Push parent contract in SUB state."""
-        contract = super().create(vals)
-        contract.parent_id._trigger_sub()
-        return contract
+        contracts = super().create(vals_list)
+        contracts.mapped("parent_id")._trigger_sub()
+        return contracts
 
     def write(self, vals):
         if "sds_state" in vals:

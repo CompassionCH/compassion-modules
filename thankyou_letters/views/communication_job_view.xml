@@ -91,7 +91,7 @@
           string="Cancel"
           type="object"
           icon="fa-ban"
-            title="Cancel"
+          title="Cancel"
           invisible="state != 'pending'"
         />
             </tree>

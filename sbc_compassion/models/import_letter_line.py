@@ -67,14 +67,17 @@ class ImportLetterLine(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         # Fetch default values in import configuration.
-        create_vals = dict()
-        if vals.get("import_id"):
-            config = self.env["import.letters.history"].browse(vals["import_id"])
-            create_vals = config.get_correspondence_metadata()
-        create_vals.update(vals)
+        create_vals = []
+        for vals in vals_list:
+            config_vals = {}
+            if vals.get("import_id"):
+                config = self.env["import.letters.history"].browse(vals["import_id"])
+                config_vals = config.get_correspondence_metadata()
+            config_vals.update(vals)
+            create_vals.append(config_vals)
         return super().create(create_vals)
 
     ##########################################################################

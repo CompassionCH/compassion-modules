@@ -551,12 +551,9 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """Avoid creating an already existing FCP."""
-        if isinstance(vals_list, dict):
-            vals_list = [vals_list]
-
         result = self
         for vals in vals_list:
             fcp_id = vals.get("fcp_id")

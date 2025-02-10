@@ -193,16 +193,19 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         # Avoid duplicating Holds
-        hold_id = vals.get("hold_id")
-        if hold_id:
-            hold = self.search([("hold_id", "=", hold_id)])
-            if hold:
-                hold.write(vals)
-                return hold
-        return super().create(vals)
+        existing = self
+        for vals in vals_list.copy():
+            hold_id = vals.get("hold_id")
+            if hold_id:
+                hold = self.search([("hold_id", "=", hold_id)])
+                if hold:
+                    existing += hold
+                    hold.write(vals)
+                    vals_list.remove(vals)
+        return super().create(vals_list) + existing
 
     def write(self, vals):
         if "expiration_date" in vals and self.filtered(

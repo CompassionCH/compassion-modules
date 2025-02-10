@@ -237,28 +237,35 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Try to find existing gifts before creating a new one."""
-        previous_gift = self._search_for_similar_pending_gifts(vals)
-        if previous_gift:
-            return previous_gift._blend_in_other_gift(vals)
+        gifts = self
+        for vals in vals_list.copy():
+            previous_gift = self._search_for_similar_pending_gifts(vals)
+            if previous_gift:
+                gifts += previous_gift._blend_in_other_gift(vals)
+                vals_list.remove(vals)
+                continue
 
-        # If a gift for the same partner is to verify, put as well
-        # the new one to verify.
-        partner_id = (
-            self.env["recurring.contract"].browse(vals["sponsorship_id"]).partner_id.id
-        )
-        gift_to_verify = self.search_count(
-            [("partner_id", "=", partner_id), ("state", "=", "verify")]
-        )
-        if gift_to_verify:
-            vals["state"] = "verify"
-        new_gift = super().create(vals)
-        if new_gift.invoice_line_ids:
-            new_gift.invoice_line_ids.write({"gift_id": new_gift.id})
-        new_gift._create_gift_message()
-        return new_gift
+            # If a gift for the same partner is to verify, put as well
+            # the new one to verify.
+            partner_id = (
+                self.env["recurring.contract"]
+                .browse(vals["sponsorship_id"])
+                .partner_id.id
+            )
+            gift_to_verify = self.search_count(
+                [("partner_id", "=", partner_id), ("state", "=", "verify")]
+            )
+            if gift_to_verify:
+                vals["state"] = "verify"
+        new_gifts = super().create(vals_list)
+        for new_gift in new_gifts:
+            if new_gift.invoice_line_ids:
+                new_gift.invoice_line_ids.write({"gift_id": new_gift.id})
+            new_gift._create_gift_message()
+        return gifts + new_gifts
 
     def _search_for_similar_pending_gifts(self, vals):
         gift_date = vals.get("gift_date")

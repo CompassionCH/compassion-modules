@@ -62,6 +62,7 @@ class CommunicationDefaultConfig(models.Model):
         help="This config will only apply for communications from this user",
     )
 
+    @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("user_id") and not vals.get("lang_id"):

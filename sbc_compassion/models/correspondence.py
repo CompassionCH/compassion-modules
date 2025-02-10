@@ -498,51 +498,57 @@ class Correspondence(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        """ """
-        contract = self.env["recurring.contract"].browse(vals["sponsorship_id"])
-        if vals["direction"] == "Supporter To Beneficiary":
-            vals["communication_type_ids"] = [
-                (4, self.env.ref("sbc_compassion.correspondence_type_supporter").id)
-            ]
-            if not vals.get("translation_language_id"):
-                vals["translation_language_id"] = vals.get("original_language_id")
-            contract.last_sponsor_letter = fields.Date.today()
-        else:
-            vals["status_date"] = fields.Datetime.now()
-            if "communication_type_ids" not in vals:
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            contract = self.env["recurring.contract"].browse(vals["sponsorship_id"])
+            if vals["direction"] == "Supporter To Beneficiary":
                 vals["communication_type_ids"] = [
-                    (4, self.env.ref("sbc_compassion.correspondence_type_scheduled").id)
+                    (4, self.env.ref("sbc_compassion.correspondence_type_supporter").id)
                 ]
-            # Allows manually creating a B2S letter
-            if vals.get("state", "Draft") == "Draft":
-                vals["state"] = "Published to Global Partner"
+                if not vals.get("translation_language_id"):
+                    vals["translation_language_id"] = vals.get("original_language_id")
+                contract.last_sponsor_letter = fields.Date.today()
+            else:
+                vals["status_date"] = fields.Datetime.now()
+                if "communication_type_ids" not in vals:
+                    vals["communication_type_ids"] = [
+                        (
+                            4,
+                            self.env.ref(
+                                "sbc_compassion.correspondence_type_scheduled"
+                            ).id,
+                        )
+                    ]
+                # Allows manually creating a B2S letter
+                if vals.get("state", "Draft") == "Draft":
+                    vals["state"] = "Published to Global Partner"
 
-        if "partner_id" not in vals:
-            vals["partner_id"] = contract.correspondent_id.id
+            if "partner_id" not in vals:
+                vals["partner_id"] = contract.correspondent_id.id
 
-        letter = super().create(vals)
-        if letter.state == "Received in the system" and not self.env.context.get(
-            "no_comm_kit"
-        ):
-            letter.create_commkit()
-        letter.file_name = letter._get_file_name()
-        attachment = self.env["ir.attachment"].search(
-            [
-                ("res_model", "=", "correspondence"),
-                ("res_field", "=", "sponsor_letter_scan"),
-                ("res_id", "=", letter.id),
-            ]
-        )
-        if attachment:
-            # Set the correct number of pages
-            image_pdf = PdfFileReader(to_pdf_stream(attachment))
-            if letter.nbr_pages < image_pdf.numPages:
-                for _i in range(letter.nbr_pages, image_pdf.numPages):
-                    letter.page_ids.create({"correspondence_id": letter.id})
+        letters = super().create(vals_list)
+        for letter in letters:
+            if letter.state == "Received in the system" and not self.env.context.get(
+                "no_comm_kit"
+            ):
+                letter.create_commkit()
+            letter.file_name = letter._get_file_name()
+            attachment = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", "correspondence"),
+                    ("res_field", "=", "sponsor_letter_scan"),
+                    ("res_id", "=", letter.id),
+                ]
+            )
+            if attachment:
+                # Set the correct number of pages
+                image_pdf = PdfFileReader(to_pdf_stream(attachment))
+                if letter.nbr_pages < image_pdf.numPages:
+                    for _i in range(letter.nbr_pages, image_pdf.numPages):
+                        letter.page_ids.create({"correspondence_id": letter.id})
 
-        return letter
+        return letters
 
     def write(self, vals):
         """Keep track of state changes."""

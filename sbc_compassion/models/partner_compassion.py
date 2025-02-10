@@ -89,24 +89,25 @@ class ResPartner(models.Model):
             )
             partner.last_writing_date = last_letter.last_write_date
 
-    @api.model
-    def create(self, vals):
-        lang_id = (
-            self.env["res.lang.compassion"]
-            .search([("lang_id.code", "=", vals.get("lang", self.env.lang))])
-            .ids
-        )
-        if "spoken_lang_ids" not in vals:
-            vals["spoken_lang_ids"] = [(6, 0, lang_id)]
-        elif lang_id:
-            base_language = (4, lang_id[0])
-            spoken_languages = vals["spoken_lang_ids"]
-            # If the base language is not in the list of the spoken languages,
-            # we have to add it
-            if base_language not in spoken_languages:
-                spoken_languages.append(base_language)
-                vals["spoken_lang_ids"] = spoken_languages
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            lang_id = (
+                self.env["res.lang.compassion"]
+                .search([("lang_id.code", "=", vals.get("lang", self.env.lang))])
+                .ids
+            )
+            if "spoken_lang_ids" not in vals:
+                vals["spoken_lang_ids"] = [(6, 0, lang_id)]
+            elif lang_id:
+                base_language = (4, lang_id[0])
+                spoken_languages = vals["spoken_lang_ids"]
+                # If the base language is not in the list of the spoken languages,
+                # we have to add it
+                if base_language not in spoken_languages:
+                    spoken_languages.append(base_language)
+                    vals["spoken_lang_ids"] = spoken_languages
+        return super().create(vals_list)
 
     def open_letters(self):
         """Open the tree view correspondence of partner"""

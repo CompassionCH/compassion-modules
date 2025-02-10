@@ -426,21 +426,24 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """
         If child with global_id already exists, update it instead of creating
         a new one.
         """
-        global_id = vals.get("global_id")
-        child = self.search([("global_id", "=", global_id)])
-        if child:
-            child.write(vals)
-        else:
-            child = super().create(vals)
-            # directly fetch picture to have it before get_infos
-            child.with_delay().update_child_pictures()
-        return child
+        children = self
+        for vals in vals_list.copy():
+            global_id = vals.get("global_id")
+            child = self.search([("global_id", "=", global_id)])
+            if child:
+                children += child
+                child.write(vals)
+                vals_list.remove(vals)
+        children += super().create(vals)
+        # directly fetch picture to have it before get_infos
+        children.with_delay().update_child_pictures()
+        return children
 
     def unlink(self):
         holds = self.mapped("hold_id").filtered(

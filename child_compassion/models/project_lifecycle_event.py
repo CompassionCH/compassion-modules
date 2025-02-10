@@ -101,33 +101,36 @@ class ProjectLifecycle(models.Model):
             ("Transitioned", _("Transitioned")),
         ]
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Call suspension and reactivation process on projects."""
-        project = self.env["compassion.project"].browse(vals.get("project_id"))
-        fund_suspended = project.suspension == "fund-suspended"
-        hold_gifts = project.hold_gifts
-        hold_letters = project.hold_s2b_letters
-        lifecycle = self.search([("name", "=", vals["name"])])
-        if lifecycle:
-            lifecycle.write(vals)
-        else:
-            lifecycle = super().create(vals)
-        if lifecycle.type == "Suspension":
-            if lifecycle.hold_cdsp_funds and not fund_suspended:
-                project.with_delay().suspend_funds()
-            if lifecycle.hold_gifts and not hold_gifts:
-                project.hold_gifts_action()
-            if lifecycle.hold_s2b_letters and not hold_letters:
-                project.with_delay().hold_letters_action()
-        if lifecycle.type == "Reactivation":
-            if fund_suspended:
-                project.with_delay().reactivate_project()
-            if hold_gifts and not lifecycle.hold_gifts:
-                project.with_delay().reactivate_gifts()
-            if hold_letters and not lifecycle.hold_s2b_letters:
-                project.with_delay().reactivate_letters()
-        return lifecycle
+        events = self
+        for vals in vals_list:
+            project = self.env["compassion.project"].browse(vals.get("project_id"))
+            fund_suspended = project.suspension == "fund-suspended"
+            hold_gifts = project.hold_gifts
+            hold_letters = project.hold_s2b_letters
+            lifecycle = self.search([("name", "=", vals["name"])])
+            if lifecycle:
+                lifecycle.write(vals)
+            else:
+                lifecycle = super().create(vals)
+            events += lifecycle
+            if lifecycle.type == "Suspension":
+                if lifecycle.hold_cdsp_funds and not fund_suspended:
+                    project.with_delay().suspend_funds()
+                if lifecycle.hold_gifts and not hold_gifts:
+                    project.hold_gifts_action()
+                if lifecycle.hold_s2b_letters and not hold_letters:
+                    project.with_delay().hold_letters_action()
+            if lifecycle.type == "Reactivation":
+                if fund_suspended:
+                    project.with_delay().reactivate_project()
+                if hold_gifts and not lifecycle.hold_gifts:
+                    project.with_delay().reactivate_gifts()
+                if hold_letters and not lifecycle.hold_s2b_letters:
+                    project.with_delay().reactivate_letters()
+        return events
 
     @api.model
     def process_commkit(self, commkit_data):

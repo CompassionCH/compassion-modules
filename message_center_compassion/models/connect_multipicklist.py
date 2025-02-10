@@ -29,7 +29,7 @@ class ConnectMultipicklist(models.AbstractModel):
         )
     ]
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """Sometimes we get from Connect a same value in several fields trying to
         create at the same time. We therefore try to find an already existing record

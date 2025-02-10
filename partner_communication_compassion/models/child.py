@@ -212,22 +212,21 @@ class Household(models.Model):
 class ChildNotes(models.Model):
     _inherit = "compassion.child.note"
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Inform sponsor when receiving new Notes."""
-        note = super().create(vals)
-        child = note.child_id
-        if child.sponsor_id:
-            communication_config = self.env.ref(
-                "partner_communication_compassion.child_notes"
+        notes = super().create(vals_list)
+        communication_config = self.env.ref(
+            "partner_communication_compassion.child_notes"
+        )
+        for note in notes.filtered("child_id.sponsor_id"):
+            child = note.child_id
+            self.env["partner.communication.job"].create(
+                {
+                    "config_id": communication_config.id,
+                    "partner_id": child.sponsor_id.id,
+                    "object_ids": child.id,
+                    "user_id": communication_config.user_id.id,
+                }
             )
-            if communication_config.active:
-                self.env["partner.communication.job"].create(
-                    {
-                        "config_id": communication_config.id,
-                        "partner_id": child.sponsor_id.id,
-                        "object_ids": child.id,
-                        "user_id": communication_config.user_id.id,
-                    }
-                )
-        return note
+        return notes

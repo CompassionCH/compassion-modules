@@ -92,24 +92,11 @@ class GmcMessage(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
-        message = False
-        if "object_id" in vals:
-            message = self.search(
-                [
-                    ("object_id", "=", vals["object_id"]),
-                    ("state", "in", ("new", "pending")),
-                    ("action_id", "=", vals["action_id"]),
-                ]
-            )
-
-        if not message:
-            message = super().create(vals)
-
-        if message.action_id.auto_process:
-            message.process_messages()
-        return message
+    @api.model_create_multi
+    def create(self, vals_list):
+        messages = super().create(vals_list)
+        messages.filtered("action_id.auto_process").process_messages()
+        return messages
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

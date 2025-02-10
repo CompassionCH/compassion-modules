@@ -44,7 +44,7 @@ class CorrespondenceParagraph(models.Model):
         )
     ]
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
         if not self.env.context.get("from_correspondence_text"):

@@ -115,17 +115,17 @@ class ChildDisasterImpact(models.Model):
                 [("global_id", "=", impact.child_global_id)], limit=1
             )
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Log a note in child when new disaster impact is registered."""
-        impact = super().create(vals)
-        if impact.child_id:
+        impacts = super().create(vals_list)
+        for impact in impacts.filtered("child_id"):
             impact.child_id.message_post(
                 body=_("Child was affected by the natural disaster %s")
                 % impact.disaster_id.name,
                 subject=_("Disaster Alert"),
             )
-        return impact
+        return impacts
 
 
 class DisasterLoss(models.Model):
@@ -255,34 +255,37 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Update if disaster already exists."""
-        disaster_id = vals.get("disaster_id")
-        disaster = self.search([("disaster_id", "=", disaster_id)])
-        # Notify users
         notify_ids = (
             self.env["res.config.settings"].sudo().get_param("disaster_notify_ids")
         )
-        if disaster:
-            disaster.write(vals)
-            if notify_ids:
+        updated = self.env[self._name]
+        for vals in vals_list.copy():
+            disaster_id = vals.get("disaster_id")
+            disaster = self.search([("disaster_id", "=", disaster_id)])
+            if disaster:
+                disaster.write(vals)
+                vals_list.remove(vals)
+                updated += disaster
+        created = super().create(vals_list)
+        if notify_ids:
+            for disaster in updated:
                 disaster.message_post(
                     body=_("The Disaster Alert was just updated."),
                     subject=_("Disaster Alert Update"),
                     partner_ids=notify_ids,
                     subtype_xmlid="mail.mt_comment",
                 )
-        else:
-            disaster = super().create(vals)
-            if notify_ids:
+            for disaster in created:
                 disaster.message_post(
                     body=_("The disaster alert has just been received."),
                     subject=_("New Disaster Alert"),
                     partner_ids=notify_ids,
                     subtype_xmlid="mail.mt_comment",
                 )
-        return disaster
+        return updated + created
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

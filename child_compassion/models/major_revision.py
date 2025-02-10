@@ -43,17 +43,20 @@ class MajorRevision(models.Model):
         "compassion.household", ondelete="cascade", readonly=False
     )
 
-    @api.model
-    def create(self, vals):
-        try:
-            major_field = super().create(vals)
-        except ValueError:
-            if vals["name"] == "RevisedValuesToUpdate":
-                # Nothing to do in this case
-                return self
-            raise
-        major_field.old_value = major_field.get_field_value()
-        return major_field
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = self
+        for vals in vals_list:
+            try:
+                major_field = super().create(vals)
+                major_field.old_value = major_field.get_field_value()
+                res += major_field
+            except ValueError:
+                if vals["name"] == "RevisedValuesToUpdate":
+                    # Nothing to do in this case
+                    continue
+                raise
+        return res
 
     @api.model
     def get_field_mapping(self):
