@@ -19,6 +19,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.image import image_process
 from odoo.tools.pdf import to_pdf_stream
+from odoo.tools import html2plaintext
 
 from ..tools.onramp_connector import SBCConnector
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
@@ -984,7 +985,7 @@ class Correspondence(models.Model):
                         page_commands[page_index] = (1, page_id, page_vals)
 
         for field, text in merged_text.items():
-            strip_text = text.rstrip(PAGE_SEPARATOR).strip()
+            strip_text = html2plaintext((text.rstrip(PAGE_SEPARATOR)))
             if strip_text and not getattr(self, field, False):
                 letter_vals[field] = strip_text
 
