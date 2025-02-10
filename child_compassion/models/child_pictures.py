@@ -33,11 +33,11 @@ class ChildPictures(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     child_id = fields.Many2one(
-        "compassion.child", "Child", required=True, ondelete="cascade", readonly=False
+        "compassion.child", "Child", required=True, ondelete="cascade"
     )
     fullshot = fields.Image()
     headshot = fields.Image()
-    image_url = fields.Char()
+    image_url = fields.Char(required=True)
     image_url_compassion = fields.Char(compute="_compute_image_url_compassion")
     date = fields.Date("Date of pictures", default=fields.Date.today)
     fname = fields.Char(compute="_compute_filename")
@@ -62,7 +62,6 @@ class ChildPictures(models.Model):
             pictures.hname = code + " " + date + " headshot.jpg"
 
     def _compute_image_url_compassion(self):
-        # new logic : verification is only done once
         config = self.env["ir.config_parameter"].sudo()
         if hasattr(request, "website"):
             base_url = request.website.domain
@@ -97,11 +96,16 @@ class ChildPictures(models.Model):
 
         # Handle the case where the picture cannot be fetched
         if not image_date:
-            picture._handle_picture_fetch_failure()
+            picture._handle_picture_issue(
+                _("Image cannot be fetched: No image URL available.")
+            )
+            return self
 
         # Find if same pictures already exist
-        if picture._find_same_picture():
-            picture._handle_duplicate_picture()
+        duplicate = picture._find_same_picture()
+        if duplicate:
+            picture._handle_picture_issue(_("The picture was the same."))
+            return duplicate
 
         picture.write({"date": image_date})
         return picture
@@ -115,16 +119,8 @@ class ChildPictures(models.Model):
         fullshot_fetched = self._get_picture("Fullshot", width=800, height=1200)
         return headshot_fetched and fullshot_fetched
 
-    def _handle_picture_fetch_failure(self):
-        """Handle the failure of fetching the picture from the webservice."""
-        message = _("Image cannot be fetched: No image URL available.")
-        logger.warning(message)
-        self.child_id.message_post(body=message, subject=_("Picture update"))
-        self.unlink()
-
-    def _handle_duplicate_picture(self):
-        """Handle the case where the picture is the same as the previous one."""
-        message = _("The picture was the same.")
+    def _handle_picture_issue(self, message):
+        """Handle issues with the picture, such as fetch failure or duplication."""
         logger.warning(message)
         self.child_id.message_post(body=message, subject=_("Picture update"))
         self.unlink()
@@ -162,26 +158,22 @@ class ChildPictures(models.Model):
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         _image_date = False
-        for picture in self.filtered("image_url"):
-            try:
-                image_split = picture.image_url.split("/")
-                if "upload" in picture.image_url:
-                    ind = image_split.index("upload")
-                else:
-                    ind = image_split.index("media.ci.org")
-                image_split[ind + 1] = cloudinary
-                url = "/".join(image_split)
+        try:
+            image_split = self.image_url.split("/")
+            if "upload" in self.image_url:
+                ind = image_split.index("upload")
+            else:
+                ind = image_split.index("media.ci.org")
+            image_split[ind + 1] = cloudinary
+            url = "/".join(image_split)
 
-                data = urlopen(Request(url, None, HEADERS)).read()
-                data = base64.encodebytes(data)
-                _image_date = picture.child_id.last_photo_date or fields.Date.today()
-                if pic_type.lower() == "headshot":
-                    self.headshot = data
-                elif pic_type.lower() == "fullshot":
-                    self.fullshot = data
-            except (AttributeError, ValueError, URLError, HTTPError, TypeError):
-                logger.error(
-                    "Failed to fetch image from %s", picture.image_url, exc_info=True
-                )
-
+            data = urlopen(Request(url, None, HEADERS)).read()
+            data = base64.encodebytes(data)
+            _image_date = self.child_id.last_photo_date or fields.Date.today()
+            if pic_type.lower() == "headshot":
+                self.headshot = data
+            elif pic_type.lower() == "fullshot":
+                self.fullshot = data
+        except (AttributeError, ValueError, URLError, HTTPError, TypeError):
+            logger.error("Failed to fetch image from %s", self.image_url, exc_info=True)
         return _image_date

@@ -74,7 +74,7 @@ class AccountStatement(models.Model):
     def button_post(self):
         self.invoice_ids.filtered(lambda i: i.state == "draft").action_post()
         super().button_post()
-        self.with_delay()._auto_reconcile()
+        self.with_delay(channel="root.reconcile_compassion")._auto_reconcile()
 
     def button_validate(self):
         """
@@ -104,9 +104,9 @@ class AccountStatement(models.Model):
     def auto_reconcile(self):
         """Auto reconcile matching invoices through jobs to avoid timeouts"""
         if self.env.context.get("async_mode", True):
-            self.with_company(
-                self.journal_id.company_id.id
-            ).with_delay()._auto_reconcile()
+            self.with_company(self.journal_id.company_id.id).with_delay(
+                channel="root.reconcile_compassion"
+            )._auto_reconcile()
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
@@ -139,7 +139,9 @@ class AccountStatement(models.Model):
             matching_amls = reconcile_model._apply_rules(bank_statement.line_ids)
 
             for line_id, result in matching_amls.items():
-                self.with_delay()._reconcile_single_line(
+                self.with_delay(
+                    channel="root.reconcile_compassion"
+                )._reconcile_single_line(
                     line_id, result, bank_statement, reconcile_model
                 )
 

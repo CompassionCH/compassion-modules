@@ -67,6 +67,23 @@ class CorrespondencePage(models.Model):
             )
         return True
 
+    def set_text(self, field, text):
+        """Make sure the text is split into paragraphs"""
+        self.ensure_one()
+        paragraphs = text.split(BOX_SEPARATOR)
+        for index, paragraph in enumerate(paragraphs):
+            if index < len(self.paragraph_ids):
+                self.paragraph_ids[index][field] = paragraph
+            else:
+                self.paragraph_ids.create(
+                    {
+                        field: paragraph,
+                        "sequence": index,
+                        "page_id": self.id,
+                    }
+                )
+        return self.write({field: text})
+
     @api.model
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)

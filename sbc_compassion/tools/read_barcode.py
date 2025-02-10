@@ -1,3 +1,4 @@
+import logging
 import re
 
 from PIL import ImageEnhance, ImageFilter
@@ -13,6 +14,9 @@ reg_partner_child = re.compile(
 reg_child_partner = re.compile(
     reg_child + reg_optional_separator + reg_partner, re.IGNORECASE
 )
+
+
+_logger = logging.getLogger(__name__)
 
 
 def detect_barcode_in_image(image):
@@ -76,6 +80,10 @@ def get_info_from_barcode(code):
 
 
 def letter_barcode_detection(original):
-    barcode = find_barcode_using_multiple_strategies(original)
-    partner, child = get_info_from_barcode(barcode)
+    partner, child = None, None
+    try:
+        barcode = find_barcode_using_multiple_strategies(original)
+        partner, child = get_info_from_barcode(barcode)
+    except Exception:
+        _logger.error("Could not find barcode in image", exc_info=True)
     return partner, child

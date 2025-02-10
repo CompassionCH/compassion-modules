@@ -12,10 +12,12 @@ import datetime
 import logging
 import threading
 import uuid
+from collections import defaultdict
 from io import BytesIO
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import html2plaintext
 
 from ..tools.onramp_connector import SBCConnector
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
@@ -362,19 +364,26 @@ class Correspondence(models.Model):
             if letter.page_ids:
                 if len(pages_text) <= len(letter.page_ids):
                     for i in range(0, len(pages_text)):
-                        setattr(letter.page_ids[i], field, pages_text[i].strip("\n"))
+                        letter.page_ids[i].set_text(field, pages_text[i].strip("\n"))
                 else:
                     for i in range(0, len(letter.page_ids)):
-                        setattr(letter.page_ids[i], field, pages_text[i].strip("\n"))
+                        letter.page_ids[i].set_text(field, pages_text[i].strip("\n"))
                     last_page_text = getattr(letter.page_ids[i], field)
                     last_page_text += "\n\n" + "\n\n".join(pages_text[i + 1 :])
-                    setattr(letter.page_ids[i], field, last_page_text)
+                    letter.page_ids[i].set_text(field, last_page_text)
             else:
                 for i in range(0, len(pages_text)):
+                    page_text = pages_text[i].strip("\n")
                     letter.page_ids.create(
                         {
-                            field: pages_text[i].strip("\n"),
+                            field: page_text,
                             "correspondence_id": letter.id,
+                            "paragraph_ids": [
+                                (0, 0, {"sequence": index, field: text})
+                                for index, text in enumerate(
+                                    page_text.split(BOX_SEPARATOR)
+                                )
+                            ],
                         }
                     )
 
@@ -705,8 +714,7 @@ class Correspondence(models.Model):
                 # Avoid to publish twice a same letter
                 is_published = is_published and letter.state != published_state
                 if is_published or letter.state != published_state:
-                    if letter._will_erase_text(vals):
-                        vals.pop("page_ids", False)
+                    letter._process_gmc_text(vals)
                     letter.write(vals)
             else:
                 if "id" in vals:
@@ -1053,50 +1061,56 @@ class Correspondence(models.Model):
             note=f"Letter has {state}",
         )
 
-    def _will_erase_text(self, letter_vals):
-        """T1602 Checks if the text will be erased when saving the letter.
-        GMC sends back empty text content but we don't want to erase the text on
-        our side.
+    def _process_gmc_text(self, letter_vals):
+        """T1602 T2162 Checks if the text will be erased when saving the letter.
+        GMC sends back the text content but with incorrect formatting or empty content.
+        We always keep the text that is already stored in the database and only look
+        for new text to be added (mostly translations made by Field Offices).
 
         Args:
             letter_vals: A dictionary containing correspondence values like
             {'page_ids': [(0, 0, {'english_text': 'example'}]}.
 
         Returns:
-            True if the text will be erased, False otherwise.
+            None. The letter_vals dictionary is modified in place, like this:
+            {'english_text': 'example'}.
         """
         self.ensure_one()
-        if any((self.english_text, self.original_text, self.translated_text)):
-            return not self._has_text(letter_vals)
-        return False
-
-    @api.model
-    def _has_text(self, letter_vals):
-        """Checks if any text key has a non-empty value in the provided data.
-
-        Args:
-            letter_vals: A dictionary containing correspondence values like
-            {'page_ids': [(0, 0, {'english_text': 'example'}]}.
-
-        Returns:
-            True if any of the text keys has a non-empty value, False otherwise.
-        """
-        # Check for text in top level keys
-        if not isinstance(letter_vals, dict):
-            return False
+        page_commands = letter_vals.get("page_ids")
         if (
-            letter_vals.get("original_text")
-            or letter_vals.get("english_text")
-            or letter_vals.get("translated_text")
+            not page_commands
+            or not isinstance(page_commands, list)
+            or not any((self.english_text, self.original_text, self.translated_text))
         ):
-            return True
+            return
 
-        # Check for text in nested dictionaries
-        for item in letter_vals.get("page_ids", []):
-            if isinstance(item, tuple) and len(item) == 3 and self._has_text(item[2]):
-                return True
+        # Remove the clear command (5, 0, 0)
+        page_commands.remove((5, 0, 0))
+        text_fields = ["original_text", "english_text", "translated_text"]
+        merged_text = defaultdict(str)
 
-        return False
+        for page_index, command in enumerate(page_commands.copy()):
+            if isinstance(command, tuple) and len(command) == 3:
+                page_vals = command[2]
+                if not isinstance(page_vals, dict):
+                    continue
+                for field in text_fields:
+                    if page_vals.get(field):
+                        merged_text[field] += page_vals.pop(field) + PAGE_SEPARATOR
+                if not page_vals:
+                    page_commands.remove(command)
+                else:
+                    page_id = self.page_ids[page_index : page_index + 1].id
+                    if page_id:
+                        page_commands[page_index] = (1, page_id, page_vals)
+
+        for field, text in merged_text.items():
+            strip_text = html2plaintext(text.rstrip(PAGE_SEPARATOR))
+            if strip_text and not getattr(self, field, False):
+                letter_vals[field] = strip_text
+
+        if not page_commands:
+            letter_vals.pop("page_ids", None)
 
     @api.model
     def check_postponed_christmas_letters(self):

@@ -14,7 +14,7 @@ class PartnerCommunication(models.Model):
 
     def _get_interaction_partner_domain(self, partner):
         domain = super()._get_interaction_partner_domain(partner)
-        return domain + [("state", "=", "done")]
+        return domain + [("state", "=", "done"), ("send_mode", "!=", "sms")]
 
     def _get_interaction_data(self, partner_id):
         default_comm = self.env.ref("partner_communication.default_communication")
