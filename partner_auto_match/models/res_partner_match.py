@@ -136,12 +136,25 @@ class ResPartnerMatch(models.AbstractModel):
     @api.model
     def _match_email_and_name(self, vals):
         email = vals["email"].strip()
-        return self.env["res.partner"].search(
+
+        matching_email_and_name_partner = self.env["res.partner"].search(
             [
                 ("name", "ilike", vals["name"]),
                 ("email", "=ilike", email),
             ]
         )
+
+        matching_email = self.env["res.partner"].search(
+            [
+                ("email", "=ilike", email),
+            ]
+        )
+
+        if matching_email_and_name_partner:
+            return matching_email_and_name_partner
+
+        elif matching_email and len(matching_email) == 1:
+            return matching_email
 
     @api.model
     def _match_name_and_zip(self, vals):
