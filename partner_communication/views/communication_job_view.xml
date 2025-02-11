@@ -264,7 +264,7 @@
                 <filter
           string="Pending"
           name="pending"
-          domain="[('state', 'in', ['pending','failure'])]"
+          domain="[('state', 'in', ['pending','failure','processing'])]"
         />
                 <filter
           string="To Call"
