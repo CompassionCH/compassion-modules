@@ -493,7 +493,7 @@ class CommunicationJob(models.Model):
         # Process email jobs (digital or both) asynchronously
         email_jobs = todo.filtered(lambda j: j.send_mode in ("both", "digital"))
         for job in email_jobs:
-            job.with_delay()._process_email_job_asynchronous()
+            job.with_delay(channel="root.partner_communication")._process_email_job_asynchronous()
 
         return self.download_data()
 
@@ -876,7 +876,7 @@ class CommunicationJob(models.Model):
                     # Print letter
                     print_name = name[:3] + " " + (job.subject or "")
 
-                    job.with_delay()._print_job_asynchronous(print_name, state)
+                    job.with_delay(channel="root.partner_communication")._print_job_asynchronous(print_name, state)
 
                 except Exception:
                     _logger.error("Error printing job %s", [job.id], exc_info=True)
@@ -889,7 +889,7 @@ class CommunicationJob(models.Model):
                     print_name = name[:3] + " " + config
 
                     # Only one asynchronous job for all the jobs
-                    jobs[:1].with_delay()._print_job_asynchronous(print_name, state)
+                    jobs.with_delay(channel="root.partner_communication")._print_job_asynchronous(print_name, state)
 
                 except Exception:
                     _logger.error(
