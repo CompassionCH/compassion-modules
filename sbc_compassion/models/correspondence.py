@@ -985,7 +985,7 @@ class Correspondence(models.Model):
                         page_commands[page_index] = (1, page_id, page_vals)
 
         for field, text in merged_text.items():
-            strip_text = html2plaintext((text.rstrip(PAGE_SEPARATOR)))
+            strip_text = html2plaintext(text.rstrip(PAGE_SEPARATOR))
             if strip_text and not getattr(self, field, False):
                 letter_vals[field] = strip_text
 
