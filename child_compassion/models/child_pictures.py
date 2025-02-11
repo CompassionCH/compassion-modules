@@ -9,6 +9,7 @@
 ##############################################################################
 import base64
 import logging
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from odoo import _, api, fields, models
@@ -92,7 +93,7 @@ class ChildPictures(models.Model):
 
         picture = super().create(vals)
         # Fetch the image from the webservice
-        image_date = self._fetch_and_attach_pictures(picture)
+        image_date = picture._fetch_and_attach_pictures()
 
         # Handle the case where the picture cannot be fetched
         if not image_date:
@@ -113,10 +114,10 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _fetch_and_attach_pictures(self, picture):
+    def _fetch_and_attach_pictures(self):
         """Fetch the pictures from the webservice and attach them to the record."""
-        headshot_fetched = picture._get_picture("Headshot", width=180, height=180)
-        fullshot_fetched = picture._get_picture("Fullshot", width=800, height=1200)
+        headshot_fetched = self._get_picture("Headshot", width=180, height=180)
+        fullshot_fetched = self._get_picture("Fullshot", width=800, height=1200)
         return headshot_fetched and fullshot_fetched
 
     def _handle_picture_issue(self, message):
@@ -174,7 +175,6 @@ class ChildPictures(models.Model):
                 self.headshot = data
             elif pic_type.lower() == "fullshot":
                 self.fullshot = data
-        except Exception:
+        except (AttributeError, ValueError, URLError, HTTPError, TypeError):
             logger.error("Failed to fetch image from %s", self.image_url, exc_info=True)
-
         return _image_date
