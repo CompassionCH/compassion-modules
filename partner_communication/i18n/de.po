@@ -6,7 +6,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr_CH\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,14 +15,14 @@ msgstr ""
 #. module: partner_communication
 #: model:mail.template,subject:partner_communication.default_communication_template
 msgid "${object.subject or ' '}"
-msgstr "\t${object.subject or ' '}"
+msgstr "${object.subject or ' '}"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_base_automation__partner_field
 #: model:ir.model.fields,help:partner_communication.field_ir_actions_server__partner_field
 #: model:ir.model.fields,help:partner_communication.field_ir_cron__partner_field
 msgid "'self' for record itself"
-msgstr "'self' for record itself"
+msgstr "'self' für den Datensatz selbst"
 
 #. module: partner_communication
 #: model:mail.template,body_html:partner_communication.default_communication_template
@@ -74,116 +74,125 @@ msgid ""
 "  </p>\n"
 " "
 msgstr ""
-"<span>\n"
-"    % set partner = object.partner_id\n"
-"    % set sponsorships = partner.sponsorship_ids.filtered('is_active')\n"
-"    % set lang = partner.lang\n"
-"    % set param = object.env['ir.config_parameter'].sudo()\n"
-"    % set christmas_fund_2022 = 265 in partner.category_id.ids\n"
-"</span>\n"
-"<p>\n"
-"    ${partner.salutation},\n"
-"</p>\n"
-"<p>\n"
-"    % if sponsorships:\n"
-"        Merci d’investir dans la vie de ${sponsorships.mapped('child_id')."
-"get_list('preferred_name', 3, 'plusieurs enfants', translate=False)}.\n"
-"    % else:\n"
-"        Merci d’investir dans la vie d'enfants démunis.\n"
-"    % endif\n"
-"</p>\n"
-"<p>\n"
-"    % if sponsorships:\n"
-"        Votre soutien à un enfant vivant dans l’extrême pauvreté est "
-"précieux. A Compassion, nous savons que vous êtes en train d’offrir à ${'un "
-"enfant' if len(sponsorships) == 1 else 'des enfants'} une vie digne et "
-"pleine d'espérance.\n"
-"    % else:\n"
-"        Votre soutien est précieux. A Compassion, nous savons que vous êtes "
-"en train d’offrir à des enfants une vie digne et pleine d'espérance.\n"
-"    % endif \n"
-"</p>\n"
-"<p>\n"
-"    Avec nos meilleures salutations et à bientôt,\n"
-"</p>\n"
-"<p>\n"
-"    % if object.send_mode != 'physical':\n"
-"        ${object.user_id.signature | safe}\n"
-"    % endif\n"
-"</p>"
+"<div style=\"font-size:13px;font-family:&quot;Lucida Grande&quot;, "
+"Helvetica, Verdana, Arial, sans-serif;\">\n"
+"   % set partner = object.partner_id\n"
+"   \n"
+"% set sponsorships = partner.sponsorship_ids.filtered('is_active')\n"
+"% set lang = partner.lang\n"
+"% set param = object.env['ir.config_parameter'].sudo()\n"
+"  </div>\n"
+"  <p style=\"margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida "
+"Grande&quot;, Helvetica, Verdana, Arial, sans-serif;\">\n"
+"   ${partner.salutation},\n"
+"   <br>\n"
+"   <br>\n"
+"   % if sponsorships:\n"
+"    Vielen Dank für die Investition in das Leben von\n"
+"   ${sponsorships.get_list('child_id.preferred_name', 3, 'many children', "
+"False)}.\n"
+"   <br>\n"
+"   <br>\n"
+"   <br>\n"
+"   <br>\n"
+"   % endif\n"
+"   <br>\n"
+"   <br>\n"
+"   % if Patenschaften:\n"
+"\tIhre Unterstützung für ein Kind in extremer Armut ist wertvoll. Compassion "
+"glaubt, dass Ihre Unterstützung einem Kind die Möglichkeit gibt, ein "
+"sinnvolles Leben zu führen.\n"
+"   % endif\n"
+"${object.success_sentence or ''}\n"
+"   <br>\n"
+"   <br>\n"
+"   Nochmals vielen Dank für Ihr Engagement, damit wir gemeinsam das Leben "
+"von derzeit mehr als 2,3 Millionen Kindern in 27 Ländern positiv verändern "
+"können.\n"
+"  </p>\n"
+"  <p style=\"margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida "
+"Grande&quot;, Helvetica, Verdana, Arial, sans-serif;\">\n"
+"   Mit freundlichen Grüßen,\n"
+"% if object.send_mode != 'physical':\n"
+"  <br>\n"
+"  <br>\n"
+"  ${object.user_id.signature | safe}\n"
+"% endif\n"
+"  </p>\n"
+" "
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "<span>Advanced options</span>"
-msgstr "<span>Options avancées</span>"
+msgstr "<span>Erweiterte Optionen</span>"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_needaction
 msgid "Action Needed"
-msgstr "A besoin d'une action"
+msgstr "Aktion notwendig"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_base_automation__state
 #: model:ir.model.fields,field_description:partner_communication.field_ir_actions_server__state
 #: model:ir.model.fields,field_description:partner_communication.field_ir_cron__state
 msgid "Action To Do"
-msgstr "Action à effectuer"
+msgstr "Folgeaktion"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__active
 msgid "Active"
-msgstr "Actif"
+msgstr "Aktiv"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_ids
 msgid "Activities"
-msgstr "Activités"
+msgstr "Aktivitäten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Activité d'exception de décoration"
+msgstr "Aktivität Ausnahme Dekoration"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_state
 msgid "Activity State"
-msgstr "Status de l'Activité"
+msgstr "Status der Aktivität"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Icône de type d'activité"
+msgstr "Aktivitätsart-Symbol"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_res_config_settings__module_partner_communication_omr
 msgid "Add OMR marks"
-msgstr "Ajouter des marques OMR"
+msgstr "OMR-Markierungen hinzufügen"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_res_config_settings__module_partner_communication_omr
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Add marks to printed communications for using folding machines."
 msgstr ""
-"Ajouter des marques sur les communications imprimées pour l'utilisation de "
-"machines à plier."
+"Hinzufügen von Markierungen zu gedruckten Mitteilungen für die Verwendung "
+"von Falzmaschinen."
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__need_call__after_sending
 #, python-format
 msgid "After the communication is sent"
-msgstr "After the communication is sent"
+msgstr "Nach dem Senden der Mitteilung"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__model_id
 msgid "Applies to"
-msgstr "S'applique à"
+msgstr "Gilt für"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_search
 msgid "Archived"
-msgstr "Archivé"
+msgstr "Archiviert"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
@@ -192,32 +201,32 @@ msgid ""
 "Attached report templates should be linked to partner.communication.job "
 "objects!"
 msgstr ""
-"Attached report templates should be linked to partner.communication.job "
-"objects!"
+"Angehängte Berichtsvorlagen sollten mit partner.communication.job-Objekten "
+"verknüpft werden!"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_ir_attachment
 msgid "Attachment"
-msgstr "Pièce jointe"
+msgstr "Dateianhang"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_attachment_count
 msgid "Attachment Count"
-msgstr "Nombre de pièces jointes"
+msgstr "# Anhänge"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr "Attachment from tray 1"
+msgstr "Aufsatz aus Fach 1"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr "Attachment from tray 2"
+msgstr "Aufsatz aus Fach 2"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__attachment_id
@@ -226,12 +235,12 @@ msgstr "Attachment from tray 2"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__ir_attachment_ids
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__ir_attachment_tmp
 msgid "Attachments"
-msgstr "Pièces jointes"
+msgstr "Dateianhänge"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__attachments_function
 msgid "Attachments Function"
-msgstr "Attachments Function"
+msgstr "Anhänge Funktion"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_base_automation__auto_send
@@ -239,89 +248,90 @@ msgstr "Attachments Function"
 #: model:ir.model.fields,field_description:partner_communication.field_ir_cron__auto_send
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__auto_send
 msgid "Auto Send"
-msgstr "Auto Send"
+msgstr "Automatisch senden"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/queue_job.py:0
 #, python-format
 msgid "Automation"
-msgstr "Automatisation"
+msgstr "Automazione"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__need_call__before_sending
 #, python-format
 msgid "Before the communication is sent"
-msgstr "Before the communication is sent"
+msgstr "Bevor die Mitteilung gesendet wird"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__body_html
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__body_html
 msgid "Body Html"
-msgstr "Body Html"
+msgstr "Körper Html"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Both"
-msgstr "Both"
+msgstr "Beide"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "By e-mail"
-msgstr "By e-mail"
+msgstr "Per E-Mail"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_tree
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Abbrechen"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__cancel
 #, python-format
 msgid "Cancelled"
-msgstr "Annulée"
+msgstr "Abgebrochen"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Cannot print multiple communication types at the same time."
-msgstr "Cannot print multiple communication types at the same time."
+msgstr ""
+"Es können nicht mehrere Kommunikationsarten gleichzeitig gedruckt werden."
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Cannot print multiple langs at the same time."
-msgstr "Cannot print multiple langs at the same time."
+msgstr "Es können nicht mehrere Langs gleichzeitig gedruckt werden."
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_change_text
 msgid "Change Text"
-msgstr "Changer les textes"
+msgstr "Text ändern"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__x_child_ref
 msgid "Child ref"
-msgstr "Réf. enfant"
+msgstr "Kind ref"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Clear data and close"
-msgstr "Des données claires et précises"
+msgstr "Daten löschen und schließen"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Close"
-msgstr "Fermer"
+msgstr "Schliessen"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Close and keep data"
-msgstr "Fermer et conserver les données"
+msgstr "Daten schließen und aufbewahren"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__communication_id
@@ -329,56 +339,56 @@ msgstr "Fermer et conserver les données"
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_search
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Communication"
-msgstr "Libellé"
+msgstr "Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_attachment
 msgid "Communication Attachment"
-msgstr "Communication Attachment"
+msgstr "Kommunikation Anlage"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_mail_mail__communication_config_id
 msgid "Communication Config"
-msgstr "Communication Config"
+msgstr "Kommunikation Konfig"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_config
 msgid "Communication Configuration"
-msgstr "Communication Configuration"
+msgstr "Kommunikation Konfiguration"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner__communication_count
 #: model:ir.model.fields,field_description:partner_communication.field_res_users__communication_count
 msgid "Communication Count"
-msgstr "Communication Count"
+msgstr "Kommunikation zählen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_default_config
 msgid "Communication Default Config"
-msgstr "Communication Configuration par défaut"
+msgstr "Kommunikation Standardkonfiguration"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_job
 #: model:ir.actions.act_window,name:partner_communication.action_communication_job_partner
 #: model:ir.model,name:partner_communication.model_partner_communication_job
 msgid "Communication Job"
-msgstr "Communication Job"
+msgstr "Kommunikation Job"
 
 #. module: partner_communication
 #: model:ir.ui.menu,name:partner_communication.menu_communication_config
 msgid "Communication Rules"
-msgstr "Communication Rules"
+msgstr "Regeln für die Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_communication_snippet
 #: model:ir.ui.menu,name:partner_communication.communication_snippet_menu
 msgid "Communication Snippet"
-msgstr "Communication Snippet"
+msgstr "Ausschnitt aus der Kommunikation"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_config
 msgid "Communication config"
-msgstr "Communication config"
+msgstr "Kommunikation konfigurieren"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_base_automation__config_id
@@ -386,7 +396,7 @@ msgstr "Communication config"
 #: model:ir.model.fields,field_description:partner_communication.field_ir_cron__config_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_default_config__config_id
 msgid "Communication type"
-msgstr "Communication type"
+msgstr "Art der Kommunikation"
 
 #. module: partner_communication
 #: code:addons/partner_communication/wizards/generate_communication_wizard.py:0
@@ -396,27 +406,27 @@ msgstr "Communication type"
 #: model_terms:ir.ui.view,arch_db:partner_communication.view_partner_form
 #, python-format
 msgid "Communications"
-msgstr "Communications"
+msgstr "Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__company_id
 msgid "Company"
-msgstr "Société"
+msgstr "Unternehmen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_res_config_settings
 msgid "Config Settings"
-msgstr "Paramètres de configuration"
+msgstr "Konfig-Einstellungen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_res_partner
 msgid "Contact"
-msgstr "Contact"
+msgstr "Kontakt"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__country_id
 msgid "Country"
-msgstr "Pays"
+msgstr "Land"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__create_uid
@@ -429,7 +439,7 @@ msgstr "Pays"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__create_uid
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__create_uid
 msgid "Created by"
-msgstr "Créé par"
+msgstr "Angelegt von"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__create_date
@@ -442,38 +452,38 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__create_date
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__create_date
 msgid "Created on"
-msgstr "Créé le"
+msgstr "Angelegt am"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__default_config_ids
 msgid "Custom Configuration"
-msgstr "Configuration personnalisée"
+msgstr "Benutzerdefinierte Konfiguration"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_form
 msgid "Custom configuration"
-msgstr "Configuration personnalisée"
+msgstr "Benutzerdefinierte Konfiguration"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__customize_template
 msgid "Customize Template"
-msgstr "Customize Template"
+msgstr "Vorlage anpassen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__data
 msgid "Data"
-msgstr "Données"
+msgstr "Persönliche Daten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__date
 msgid "Date"
-msgstr "Date "
+msgstr "Datum"
 
 #. module: partner_communication
 #: model:partner.communication.config,name:partner_communication.default_communication
 #: model:utm.source,name:partner_communication.default_communication_utm_source
 msgid "Default communication"
-msgstr "Default communication"
+msgstr "Standard-Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__attachments_function
@@ -484,17 +494,17 @@ msgid ""
 "file generated,report_name is the name of the report used for printing,"
 "b64_data is the binary of the attachment"
 msgstr ""
-"Define a function in the communication_job model that will return all the "
-"attachment information for the communication in a dict of following format: "
-"{attach_name: [report_name, b64_data]}where attach_name is the name of the "
-"file generated,report_name is the name of the report used for printing,"
-"b64_data is the binary of the attachment"
+"Definieren Sie eine Funktion im Modell communication_job, die alle "
+"Anhangsinformationen für die Kommunikation in einem Diktat des folgenden "
+"Formats zurückgibt: {attach_name: [report_name, b64_data]}wobei attach_name "
+"der Name der erzeugten Datei ist, report_name der Name des für den Druck "
+"verwendeten Berichts ist, b64_data die Binärdatei des Anhangs ist"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_res_partner__global_communication_delivery_preference
 #: model:ir.model.fields,help:partner_communication.field_res_users__global_communication_delivery_preference
 msgid "Delivery preference for Global Communication"
-msgstr "Delivery preference for Global Communication"
+msgstr "Bevorzugte Zustellung für globale Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__display_name
@@ -517,57 +527,57 @@ msgstr "Delivery preference for Global Communication"
 #: model:ir.model.fields,field_description:partner_communication.field_res_config_settings__display_name
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner__display_name
 msgid "Display Name"
-msgstr "Nom affiché"
+msgstr "Anzeigename"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Don't inform sponsor"
-msgstr "Ne pas informer la personne"
+msgstr "Sponsor nicht informieren"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__done
 #, python-format
 msgid "Done"
-msgstr "Fait"
+msgstr "Erledigt"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Download printed file"
-msgstr "Télécharger le fichier imprimé"
+msgstr "Gedruckte Datei herunterladen"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "E-mails"
-msgstr "E-mails"
+msgstr "E-Mails"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.change_text_wizard_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_snippet_tree
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Bearbeiten"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_mail_template_preview
 msgid "Email Template Preview"
-msgstr "Aperçu modèle e-mail"
+msgstr "Email Vorlagevorschau"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_mail_template
 msgid "Email Templates"
-msgstr "Modèles de courriel"
+msgstr "E-Mail-Vorlagen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_mail_compose_message
 msgid "Email composition wizard"
-msgstr "Assistant de composition de courriel"
+msgstr "E-Mail Assistent"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__email_template_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__email_template_id
 msgid "Email template"
-msgstr "Email template"
+msgstr "E-Mail-Vorlage"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_ir_attachment__enable_omr
@@ -575,66 +585,66 @@ msgstr "Email template"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_enable_marks
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_enable_marks
 msgid "Enable OMR"
-msgstr "Enable OMR"
+msgstr "OMR einschalten"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Error sending e-mail: %s"
-msgstr "Erreur d'envoi de l'e-mail : %s"
+msgstr "Fehler beim Senden einer E-Mail: %s"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__failed_message_ids
 msgid "Failed Messages"
-msgstr "Messages échoués"
+msgstr "Fehlgeschlagene Nachrichten"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__failure
 #, python-format
 msgid "Failure"
-msgstr "Echec"
+msgstr "Versagen"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Features"
-msgstr "Fonctionnalités"
+msgstr "Funzionalità"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_follower_ids
 msgid "Followers"
-msgstr "Abonnés"
+msgstr "Beobachter"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_channel_ids
 msgid "Followers (Channels)"
-msgstr "Abonnés (Canaux)"
+msgstr "Beobachter (Kanäle)"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Abonnés (Partenaires)"
+msgstr "Beobachter (Partner)"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Following field does not exist in res.partner: %s."
-msgstr "Following field does not exist in res.partner: %s."
+msgstr "Das folgende Feld existiert nicht in res.partner: %s."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Icône Font Awesome e.g. fa-tasks"
+msgstr "Fontawesome-Icon, z. B. fa-tasks"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__forbid_merging
 msgid "Forbid Merging"
-msgstr "Interdire la fusion"
+msgstr "Verbot des Zusammenschlusses"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__force_language
 msgid "Force Language"
-msgstr "Force Language"
+msgstr "Sprache erzwingen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__user_id
@@ -642,18 +652,18 @@ msgstr "Force Language"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__user_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__user_id
 msgid "From"
-msgstr "De"
+msgstr "Von"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_form
 msgid "General configuration"
-msgstr "Configuration générale"
+msgstr "Allgemeine Konfiguration"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.open_settings_communication
 #: model:ir.ui.menu,name:partner_communication.menu_communication_settings
 msgid "General settings"
-msgstr "Configuration générale"
+msgstr "Allgemeine Einstellungen"
 
 #. module: partner_communication
 #: code:addons/partner_communication/wizards/generate_communication_wizard.py:0
@@ -662,33 +672,33 @@ msgstr "Configuration générale"
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 #, python-format
 msgid "Generate Communications"
-msgstr "Generate Communications"
+msgstr "Kommunikation generieren"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Generated documents"
-msgstr "Documents générés"
+msgstr "Erstellte Dokumente"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__email_id
 msgid "Generated e-mail"
-msgstr "Generated e-mail"
+msgstr "Erstellte E-Mail"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner__global_communication_delivery_preference
 #: model:ir.model.fields,field_description:partner_communication.field_res_users__global_communication_delivery_preference
 msgid "Global Communication Delivery Preference"
-msgstr "Global Communication Delivery Preference"
+msgstr "Bevorzugte Zustellung globaler Kommunikation"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Go to records"
-msgstr "Go to records"
+msgstr "Zu den Aufzeichnungen gehen"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Group By"
-msgstr "Grouper par"
+msgstr "Gruppiert nach..."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__id
@@ -711,51 +721,55 @@ msgstr "Grouper par"
 #: model:ir.model.fields,field_description:partner_communication.field_res_config_settings__id
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner__id
 msgid "ID"
-msgstr "Identifiant"
+msgstr "ID"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__report_id
 msgid "ID of report used by the attachment"
-msgstr "ID of report used by the attachment"
+msgstr "ID des von der Anlage verwendeten Berichts"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_exception_icon
 msgid "Icon"
-msgstr "Icône"
+msgstr "Icona"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Icône indiquant une activité d'exception."
+msgstr "Symbol, um eine Ausnahmeaktivität anzuzeigen."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_attachment__report_name
 msgid "Identifier of the report used to print"
-msgstr "Identifier of the report used to print"
+msgstr "Kennung des zum Drucken verwendeten Berichts"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_needaction
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_unread
 msgid "If checked, new messages require your attention."
-msgstr "si elle est cochée, de nouveaux messages requièrent votre attention."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_has_error
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Si actif, certains messages ont une erreur de livraison."
+msgstr ""
+"Das Senden mancher Nachrichten ist fehlgeschlagen wenn dieses Fenster "
+"angekreuzt ist."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_ir_attachment__enable_omr
 msgid "If checked, the OMR marks will be print on the document"
-msgstr "If checked, the OMR marks will be print on the document"
+msgstr ""
+"Wenn diese Option aktiviert ist, werden die OMR-Markierungen auf das "
+"Dokument gedruckt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__forbid_merging
 msgid "If selected, disable the automatic merging of communications"
 msgstr ""
-"Si cette option est sélectionnée, la fusion automatique des communications "
-"est désactivée."
+"Falls ausgewählt, deaktivieren Sie die automatische Zusammenführung von "
+"Kommunikationen"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_1
@@ -765,8 +779,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
-"If set to True, the OMR mark for adding an attachment from back 1 is added "
-"to the communication."
+"Bei True wird die OMR-Markierung für das Hinzufügen eines Anhangs aus Back 1 "
+"der Mitteilung hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
@@ -776,8 +790,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
-"If set to True, the OMR mark for adding an attachment from tray 2 is added "
-"to the communication."
+"Wenn diese Option auf True gesetzt ist, wird die OMR-Markierung für das "
+"Hinzufügen eines Anhangs aus Fach 2 zur Kommunikation hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_should_close_envelope
@@ -787,15 +801,17 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
-"If set to True, the OMR mark for closing the envelope is added to the "
-"communication."
+"Wenn diese Option auf True gesetzt ist, wird die OMR-Markierung für das "
+"Schließen des Umschlags zur Mitteilung hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_enable_marks
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_defaults_omr_enable_marks
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
-msgstr "If set to True, the OMR marks are displayed in the communication."
+msgstr ""
+"Bei der Einstellung True werden die OMR-Markierungen in der Kommunikation "
+"angezeigt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__need_call
@@ -804,33 +820,34 @@ msgstr "If set to True, the OMR marks are displayed in the communication."
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_generate_wizard__need_call
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__need_call
 msgid "Indicates we should have a personal contact with the partner"
-msgstr "Indicates we should have a personal contact with the partner"
+msgstr ""
+"Zeigt an, dass wir einen persönlichen Kontakt mit dem Partner haben sollten"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Invalid phone numbers: %s"
-msgstr "Numéros de téléphone non valides : %s"
+msgstr "Ungültige Telefonnummern: %s"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_is_follower
 msgid "Is Follower"
-msgstr "Est un abonné"
+msgstr "Ist Beobachter"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__auto_send
 msgid "Job is processed at creation if set to true"
-msgstr "Job is processed at creation if set to true"
+msgstr "Auftrag wird bei der Erstellung verarbeitet, wenn auf true gesetzt"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_default_config__lang_id
 msgid "Language"
-msgstr "Langue"
+msgstr "Sprache"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Last 7 days sent communications"
-msgstr "Communications envoyées au cours des 7 derniers jours"
+msgstr "In den letzten 7 Tagen gesendete Mitteilungen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet____last_update
@@ -853,7 +870,7 @@ msgstr "Communications envoyées au cours des 7 derniers jours"
 #: model:ir.model.fields,field_description:partner_communication.field_res_config_settings____last_update
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner____last_update
 msgid "Last Modified on"
-msgstr "Dernière modification le"
+msgstr "Zuletzt geändert am"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__write_uid
@@ -866,7 +883,7 @@ msgstr "Dernière modification le"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__write_uid
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Dernière mise à jour par"
+msgstr "Zuletzt aktualisiert durch"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__write_date
@@ -879,65 +896,65 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__write_date
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__write_date
 msgid "Last Updated on"
-msgstr "Dernière mise à jour le"
+msgstr "Zuletzt aktualisiert am"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__communication_job_ids
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Letters"
-msgstr "Lettres"
+msgstr "Lettere"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_res_config_settings__module_partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Link communications with CRM phonecalls"
-msgstr "Lier les communications avec les appels téléphoniques du CRM"
+msgstr "Verknüpfung der Kommunikation mit CRM-Telefonanrufen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_main_attachment_id
 msgid "Main Attachment"
-msgstr "Pièce jointe principale"
+msgstr "Hauptanhänge"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__merged_data
 msgid "Merged Data"
-msgstr "Données fusionnées"
+msgstr "Zusammengeführte Daten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__merged_name
 msgid "Merged Name"
-msgstr "Nom fusionné"
+msgstr "Zusammengefasster Name"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Merged document"
-msgstr "Document fusionné"
+msgstr "Zusammengeführtes Dokument"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_has_error
 msgid "Message Delivery error"
-msgstr "Erreur d'envoi du message"
+msgstr "Error beim senden der Nachricht"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_ids
 msgid "Messages"
-msgstr "Messages"
+msgstr "Mitteilungen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__model
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__model
 msgid "Model"
-msgstr "Modèle"
+msgstr "Modell"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Mon délai d'activité"
+msgstr "Meine Aktivität Deadline"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "My Communications"
-msgstr "My Communications"
+msgstr "Meine Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__name
@@ -945,14 +962,14 @@ msgstr "My Communications"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__printed_pdf_name
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_search
 msgid "Name"
-msgstr "Nom"
+msgstr "Bezeichnung"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__send_mode_pref_field
 msgid ""
 "Name of the field in res.partner in which to find the delivery preference"
 msgstr ""
-"Name of the field in res.partner in which to find the delivery preference"
+"Name des Feldes in res.partner, in dem die Lieferpräferenz zu finden ist"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__need_call
@@ -961,59 +978,59 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__need_call
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__need_call
 msgid "Need Call"
-msgstr "Need Call"
+msgstr "Notruf"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Date limite de l'Activité à Venir"
+msgstr "Nächste Aktivitätsfrist"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_summary
 msgid "Next Activity Summary"
-msgstr "Résumé d'activité suivant"
+msgstr "Zusammenfassung nächste Aktion"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_type_id
 msgid "Next Activity Type"
-msgstr "Type d'Activités à Venir"
+msgstr "Nächster Aktivitätstyp"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_needaction_counter
 msgid "Number of Actions"
-msgstr "Nombre d'Actions"
+msgstr "Anzahl der Aktionen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_has_error_counter
 msgid "Number of errors"
-msgstr "Nombre d'erreurs"
+msgstr "Anzahl der Fehler"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr "Nombre de messages demandant une action"
+msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Nombre de messages avec des erreurs d'envoi"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_unread_counter
 msgid "Number of unread messages"
-msgstr "Nombre de messages non lus"
+msgstr "Anzahl ungelesene Nachrichten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr "OMR should close the envelope"
+msgstr "OMR sollte den Umschlag schließen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
 msgid "Omr Single Sided"
-msgstr "Omr Single Sided"
+msgstr "Omr Einseitig"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_x
@@ -1028,12 +1045,12 @@ msgstr "Omr Top Mark Y"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Options"
-msgstr "Options"
+msgstr "Optionen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_mail_mail
 msgid "Outgoing Mails"
-msgstr "Courriels sortants"
+msgstr "Postausgang"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__printer_output_tray_id
@@ -1047,7 +1064,7 @@ msgstr "Output Bin"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__pdf_page_count
 msgid "Page count"
-msgstr "Nombre de pages"
+msgstr "Anzahl der Seiten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__printer_input_tray_id
@@ -1056,72 +1073,70 @@ msgstr "Nombre de pages"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__printer_input_tray_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__printer_input_tray_id
 msgid "Paper Source"
-msgstr "Source de papier"
+msgstr "Papierquelle"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Partner"
-msgstr "Partenaire"
+msgstr "Partner"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_download_print_job_wizard
 msgid "Partner Communication - Download Print Job Wizard"
-msgstr ""
-"Communication avec les partenaires - Assistant de téléchargement de travail "
-"d'impression"
+msgstr "Partnerkommunikation - Druckauftragsassistent herunterladen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_pdf_wizard
 msgid "Partner Communication - PDF Wizard"
-msgstr "Partner Communication - PDF Wizard"
+msgstr "Partnerkommunikation - PDF-Assistent"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_change_text_wizard
 msgid "Partner Communication Change Text Wizard"
-msgstr "Partner Communication Change Text Wizard"
+msgstr "Assistent für Partnerkommunikation Text ändern"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_generate_wizard
 msgid "Partner Communication Generation Wizard"
-msgstr "Partner Communication Generation Wizard"
+msgstr "Assistent zur Erzeugung von Partnerkommunikation"
 
 #. module: partner_communication
 #: model:ir.ui.menu,name:partner_communication.menu_communication_jobs
 msgid "Partner Communications"
-msgstr "Communications Parrains"
+msgstr "Partner-Kommunikation"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Partner Selection"
-msgstr "Partner Selection"
+msgstr "Auswahl der Partner"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Partner communication"
-msgstr "Communications Parrain"
+msgstr "Partner-Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_base_automation__partner_field
 #: model:ir.model.fields,field_description:partner_communication.field_ir_actions_server__partner_field
 #: model:ir.model.fields,field_description:partner_communication.field_ir_cron__partner_field
 msgid "Partner field name"
-msgstr "Partner field name"
+msgstr "Name des Partnerfeldes"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__send_mode_pref_field
 msgid "Partner preference field"
-msgstr "Partner preference field"
+msgstr "Feld Partnerpräferenz"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Partner specific"
-msgstr "Dépend du partenaire"
+msgstr "Partnerspezifisch"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Partners"
-msgstr "Partenaires"
+msgstr "Partner"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
@@ -1129,30 +1144,31 @@ msgstr "Partenaires"
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 #, python-format
 msgid "Pending"
-msgstr "En attente"
+msgstr "Anstehend"
 
 #. module: partner_communication
 #: model:partner.communication.config,name:partner_communication.phonecall_communication
 #: model:utm.source,name:partner_communication.phonecall_communication_utm_source
 msgid "Phonecall"
-msgstr "Phonecall"
+msgstr "Telefonanruf"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_phonecall_id
 msgid "Phonecall log"
-msgstr "Phonecall log"
+msgstr "Protokoll eines Telefonats"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Please select a printing configuration for the attachments you add."
-msgstr "Please select a printing configuration for the attachments you add."
+msgstr ""
+"Bitte wählen Sie eine Druckkonfiguration für die hinzugefügten Anhänge."
 
 #. module: partner_communication
 #: code:addons/partner_communication/wizards/change_text_wizard.py:0
 #, python-format
 msgid "Please update only one language at a time."
-msgstr "Veuillez traiter une langue à la fois."
+msgstr "Bitte aktualisieren Sie immer nur eine Sprache auf einmal."
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
@@ -1162,7 +1178,7 @@ msgstr "Veuillez traiter une langue à la fois."
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 #, python-format
 msgid "Preview"
-msgstr "Prévisualiser"
+msgstr "Vorschau"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__print_if_not_email
@@ -1171,24 +1187,24 @@ msgstr "Prévisualiser"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__print_if_not_email
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__print_if_not_email
 msgid "Print If Not Email"
-msgstr "Print If Not Email"
+msgstr "Drucken Wenn nicht E-Mail"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.pdf_wizard_form
 msgid "Print Now"
-msgstr "Print Now"
+msgstr "Jetzt drucken"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_ir_attachment__report_id
 msgid "Print configuration"
-msgstr "Print configuration"
+msgstr "Konfiguration drucken"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Print letter"
-msgstr "Print letter"
+msgstr "Brief drucken"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
@@ -1199,66 +1215,66 @@ msgstr "Print letter"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__report_id
 #, python-format
 msgid "Print report"
-msgstr "Print report"
+msgstr "Bericht drucken"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__printed_pdf_data
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__printed_pdf_data
 msgid "Printed Pdf Data"
-msgstr "Données Pdf imprimées"
+msgstr "Gedruckte Pdf-Daten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__printed_pdf_name
 msgid "Printed Pdf Name"
-msgstr "Nom Pdf imprimé"
+msgstr "Gedruckter Pdf-Name"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__processing
 #, python-format
 msgid "Processing"
-msgstr "En cours de traitement"
+msgstr "Verarbeite"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__progress
 msgid "Progress"
-msgstr "Progress"
+msgstr "Fortschritt"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_queue_job
 msgid "Queue Job"
-msgstr "Queue de jobs"
+msgstr "Aufgabe in Warteschlange einreihen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__partner_ids
 msgid "Recipients"
-msgstr "Destinataires"
+msgstr "Empfänger"
 
 #. module: partner_communication
 #: model:ir.actions.server,name:partner_communication.refresh_action
 msgid "Refresh communication"
-msgstr "Regénérer"
+msgstr "Kommunikation auffrischen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__parent_id
 msgid "Related Company"
-msgstr "Société liée"
+msgstr "Verbundenes Unternehmen"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Related objects"
-msgstr "Objets reliés"
+msgstr "Verwandte Objekte"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
 msgid "Reload"
-msgstr "Reload"
+msgstr "Neu laden"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__report_name
 msgid "Report Name"
-msgstr "Nom du rapport"
+msgstr "Berichtsname"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_mail_template_preview__res_id
@@ -1268,18 +1284,18 @@ msgstr "Res"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__object_ids
 msgid "Resource ids"
-msgstr "Resource ids"
+msgstr "Ressourcen-IDs"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_user_id
 msgid "Responsible User"
-msgstr "Responsable"
+msgstr "Manager Veranstaltung"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_tree
 msgid "Retry"
-msgstr "Réessayer"
+msgstr "Wiederholen"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
@@ -1291,28 +1307,28 @@ msgstr "SMS"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "Erreur d'envoi de SMS"
+msgstr "SMS Zustellungsfehler"
 
 #. module: partner_communication
 #: code:addons/partner_communication/wizards/generate_communication_wizard.py:0
 #, python-format
 msgid "Schedule date must be in the future"
-msgstr "La date doit se situer dans le futur"
+msgstr "Das Datum des Zeitplans muss in der Zukunft liegen."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__scheduled_date
 msgid "Schedule generation"
-msgstr "Planifier l'envoi"
+msgstr "Zeitplanerstellung"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__selection_domain
 msgid "Selection Domain"
-msgstr "Selection Domain"
+msgstr "Auswahl Bereich"
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__ir_actions_server__state__communication
 msgid "Send Communication"
-msgstr "Envoyer la communication"
+msgstr "Kommunikation senden"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_base_automation__send_mode
@@ -1323,63 +1339,63 @@ msgstr "Envoyer la communication"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__send_mode
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__state
 msgid "Send Mode"
-msgstr "Send Mode"
+msgstr "Sende-Modus"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_tree
 #: model_terms:ir.ui.view,arch_db:partner_communication.pdf_wizard_form
 msgid "Send Now"
-msgstr "Envoyer maintenant"
+msgstr "Sofort senden"
 
 #. module: partner_communication
 #: model:ir.actions.server,name:partner_communication.send_action
 msgid "Send communication"
-msgstr "Envoyer la Communication"
+msgstr "Kommunikation senden"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Send e-mail + print letter"
-msgstr "Send e-mail + print letter"
+msgstr "E-Mail senden + Brief drucken"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Send e-mail automatically"
-msgstr "Envoi e-mail automatique"
+msgstr "E-Mails automatisch versenden"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "Send e-mail manually"
-msgstr "Send e-mail manually"
+msgstr "E-Mail manuell senden"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "Send result"
-msgstr "Résultat"
+msgstr "Ergebnis senden"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__partner_id
 msgid "Send to"
-msgstr "Envoi à"
+msgstr "Senden an"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__sent_date
 msgid "Sent Date"
-msgstr "Envoyé le"
+msgstr "Sendedatum"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_ir_actions_server
 msgid "Server Action"
-msgstr "Action-serveur"
+msgstr "Serveraktion"
 
 #. module: partner_communication
 #: model:ir.ui.menu,name:partner_communication.menu_communication_settings_root
 msgid "Settings"
-msgstr "Configuration"
+msgstr "Einstellungen"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__print_if_not_email
@@ -1390,22 +1406,22 @@ msgstr "Configuration"
 msgid ""
 "Should we print the communication if the sponsor don't have an e-mail address"
 msgstr ""
-"Should we print the communication if the sponsor don't have an e-mail address"
+"Sollen wir die Mitteilung drucken, wenn der Sponsor keine E-Mail-Adresse hat?"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__sms_cost
 msgid "Sms Cost"
-msgstr "Sms Cost"
+msgstr "SMS Kosten"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__snippet_text
 msgid "Snippet Text"
-msgstr "Snippet Text"
+msgstr "Schnipsel Text"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__name
 msgid "Source Name"
-msgstr "Nom de l'origine"
+msgstr "Bezeichnung der Herkunft"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_change_text_wizard__state
@@ -1413,12 +1429,12 @@ msgstr "Nom de l'origine"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__state
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__send_state
 msgid "State"
-msgstr "État"
+msgstr "Bundesland"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Status"
-msgstr "État"
+msgstr "Status"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_state
@@ -1428,20 +1444,20 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"Statut basé sur les activités\n"
-"En retard : la date d'échéance est déjà dépassée\n"
-"Aujourd'hui : la date d'activité est aujourd'hui\n"
-"Planifiée : activités futures"
+"Status basierend auf Aktivitäten\n"
+"Überfällig: Fälligkeitsdatum bereits überschritten\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
+"Geplant: anstehende Aktivitäten."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__subject
 msgid "Subject"
-msgstr "Objet"
+msgstr "Betreff"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_config_search
 msgid "Support"
-msgstr "SOUTENIR"
+msgstr "unterstützen"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_attachment__printed_pdf_data
@@ -1450,23 +1466,24 @@ msgid ""
 "Technical field used when the report was not sent to printer but to client "
 "in order to download the result afterwards."
 msgstr ""
-"Champ technique utilisé lorsque le rapport n'a pas été envoyé à l'imprimante "
-"mais au client afin de télécharger le résultat par la suite."
+"Technisches Feld, das verwendet wird, wenn der Bericht nicht an den Drucker, "
+"sondern an den Client gesendet wurde, um das Ergebnis anschließend "
+"herunterzuladen."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__model_id
 msgid "Template"
-msgstr "Modèle"
+msgstr "Vorlage"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_change_text_wizard__template_text
 msgid "Template Text"
-msgstr "Template Text"
+msgstr "Vorlage Text"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_snippet
 msgid "Text Snippets"
-msgstr "Text Snippets"
+msgstr "Text-Schnipsel"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
@@ -1474,8 +1491,9 @@ msgid ""
 "The communications are being generated! You can track here the progress by "
 "clicking the reload button, or close the wizard."
 msgstr ""
-"The communications are being generated! You can track here the progress by "
-"clicking the reload button, or close the wizard."
+"Die Mitteilungen werden erstellt! Sie können hier den Fortschritt verfolgen, "
+"indem Sie auf die Schaltfläche \"Neu laden\" klicken, oder den Assistenten "
+"schließen."
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
@@ -1484,49 +1502,47 @@ msgid ""
 "The config should apply at least for a user or a language, otherwise you can "
 "simply change the settings in the general configuration."
 msgstr ""
-"La configuration doit s'appliquer au moins à un utilisateur ou à une langue, "
-"sinon vous pouvez simplement modifier les paramètres dans la configuration "
-"générale."
+"Die Konfiguration sollte zumindest für einen Benutzer oder eine Sprache "
+"gelten, andernfalls können Sie die Einstellungen einfach in der allgemeinen "
+"Konfiguration ändern."
 
 #. module: partner_communication
 #: model:ir.model.constraint,message:partner_communication.constraint_res_partner_email_is_set_if_email_only
 msgid "The email address should not be empty if email_only is selected."
-msgstr "The email address should not be empty if email_only is selected."
+msgstr ""
+"Die E-Mail-Adresse sollte nicht leer sein, wenn email_only ausgewählt ist."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__model_id
 msgid "The kind of document with this communication can be used"
-msgstr "The kind of document with this communication can be used"
+msgstr "Die Art des Dokuments mit dieser Mitteilung kann verwendet werden"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__user_id
 msgid "This config will only apply for communications from this user"
-msgstr ""
-"Cette configuration ne s'appliquera qu'aux communications émanant de cet "
-"utilisateur."
+msgstr "Diese Konfiguration gilt nur für Mitteilungen von diesem Benutzer"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__lang_id
 msgid "This config will only apply to communications in selected language."
 msgstr ""
-"Cette configuration ne s'appliquera qu'aux communications dans la langue "
-"sélectionnée."
+"Diese Konfiguration gilt nur für Mitteilungen in der ausgewählten Sprache."
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_job.py:0
 #, python-format
 msgid "This is only possible for one template at time"
-msgstr "This is only possible for one template at time"
+msgstr "Dies ist nur für jeweils eine Vorlage möglich"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "To Call"
-msgstr "To Call"
+msgstr "Anrufen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__config_id
 msgid "Type"
-msgstr "Type"
+msgstr "Typ"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_base_automation__state
@@ -1543,77 +1559,79 @@ msgid ""
 "- 'Add Followers': add followers to a record (Discuss)\n"
 "- 'Create Next Activity': create an activity (Discuss)"
 msgstr ""
-"Type of server action. The following values are available:\n"
-"- 'Execute Python Code': a block of python code that will be executed\n"
-"- 'Create': create a new record with new values\n"
-"- 'Update a Record': update the values of a record\n"
-"- 'Execute several actions': define an action that triggers several other "
-"server actions\n"
-"- 'Send Email': automatically send an email (Discuss)\n"
-"- 'Add Followers': add followers to a record (Discuss)\n"
-"- 'Create Next Activity': create an activity (Discuss)"
+"Typ der Server-Aktion. Die folgenden Werte sind verfügbar:\n"
+"- 'Python-Code ausführen': ein Block von Python-Code, der ausgeführt wird\n"
+"- Erstellen\": einen neuen Datensatz mit neuen Werten erstellen\n"
+"- Datensatz aktualisieren\": die Werte eines Datensatzes aktualisieren\n"
+"- Mehrere Aktionen ausführen\": Definieren Sie eine Aktion, die mehrere "
+"andere Serveraktionen auslöst.\n"
+"- E-Mail senden\": automatisch eine E-Mail senden (Diskussion)\n"
+"- Follower hinzufügen\": Follower zu einem Datensatz hinzufügen "
+"(Diskutieren)\n"
+"- Nächste Aktivität erstellen\": eine Aktivität erstellen (Diskutieren)"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Type de l'activité d'exception enregistrée."
+msgstr "Art der aufgezeichneten Ausnahmeaktivität."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__source_id
 msgid "UTM Source"
-msgstr "UTM Source"
+msgstr "UTM-Quelle"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_unread
 msgid "Unread Messages"
-msgstr "Messages non lus"
+msgstr "Ungelesene Mitteilungen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_unread_counter
 msgid "Unread Messages Counter"
-msgstr "Compteur de messages non lus"
+msgstr "Zähler der ungelelesen Nachrichten"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.change_text_wizard_form
 msgid "Update texts"
-msgstr "Update texts"
+msgstr "Texte aktualisieren"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_res_config_settings__module_partner_communication_crm_phone
 msgid "Use CRM phone features"
-msgstr "Utiliser les fonctions du téléphone CRM"
+msgstr "CRM-Telefonfunktionen verwenden"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_default_config__user_id
 msgid "User"
-msgstr "Utilisateur"
+msgstr "Benutzer"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Various"
-msgstr "Divers"
+msgstr "Verschiedene"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__website_message_ids
 msgid "Website Messages"
-msgstr "Messages du site web"
+msgstr "Website Nachrichten"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__website_message_ids
 msgid "Website communication history"
-msgstr "Historique de communication du site web"
+msgstr "Website Kommunikationshistorie"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_single_sided
 msgid ""
 "Will put the OMR marks on every page if the document is printed single-sided."
 msgstr ""
-"Will put the OMR marks on every page if the document is printed single-sided."
+"Setzt die OMR-Markierungen auf jede Seite, wenn das Dokument einseitig "
+"bedruckt ist."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr "X position in millimeters of the first OMR mark in the page"
+msgstr "X-Position in Millimetern der ersten OMR-Markierung auf der Seite"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_y
@@ -1621,64 +1639,65 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
-"Y position in millimeters of the first OMR mark in the page, computed from "
-"the bottom of the page."
+"Y-Position in Millimetern der ersten OMR-Markierung auf der Seite, berechnet "
+"vom unteren Rand der Seite."
 
 #. module: partner_communication
 #: code:addons/partner_communication/wizards/change_text_wizard.py:0
 #, python-format
 msgid "You can only update text on one communication type at time."
-msgstr "Veuillez traiter un seul type de communication à la fois."
+msgstr ""
+"Sie können den Text immer nur für eine Kommunikationsart aktualisieren."
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__edit
 msgid "edit"
-msgstr "edit"
+msgstr "bearbeiten"
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__generation
 msgid "generation"
-msgstr "generation"
+msgstr "Generation"
 
 #. module: partner_communication
 #: model:ir.actions.report,name:partner_communication.report_a4_communication
 msgid "generic: A4 communication"
-msgstr "générique : A4 communication"
+msgstr "generisch: A4 Kommunikation"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "only by e-mail (send automatically)"
-msgstr "only by e-mail (send automatically)"
+msgstr "nur per E-Mail (automatischer Versand)"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "only by e-mail (send manually)"
-msgstr "only by e-mail (send manually)"
+msgstr "nur per E-Mail (manuell senden)"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_defaults
 msgid "partner.communication.defaults"
-msgstr "partner.communication.defaults"
+msgstr "partner.kommunikation.vorgaben"
 
 #. module: partner_communication
 #: code:addons/partner_communication/models/communication_config.py:0
 #, python-format
 msgid "partner.communication.job has no function called "
-msgstr "partner.communication.job has no function called "
+msgstr "partner.communication.job hat keine Funktion namens "
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__preview
 msgid "preview"
-msgstr "preview"
+msgstr "Vorschau"
 
 #. module: partner_communication
 #: model:partner.communication.config,mobile_notification_title:partner_communication.default_communication
 msgid "test"
-msgstr "test"
+msgstr "Test"
 
 #. module: partner_communication
 #: model:partner.communication.config,mobile_notification_body:partner_communication.default_communication
 msgid "this is a test"
-msgstr "ceci est un test"
+msgstr "Dies ist ein Test"
