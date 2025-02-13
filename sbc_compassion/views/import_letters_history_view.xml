@@ -76,7 +76,7 @@
             />
                         <field
               name="failed_file_name"
-              attrs="{'invisible': [('failed_file_name', '=', False)]}"
+              invisible="not failed_file_name"
               widget="text"
             />
                     </group>

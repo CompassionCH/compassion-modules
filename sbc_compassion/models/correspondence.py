@@ -11,15 +11,15 @@ import base64
 import datetime
 import logging
 import uuid
-
 from collections import defaultdict
+
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import html2plaintext
 from odoo.tools.image import image_process
 from odoo.tools.pdf import to_pdf_stream
-from odoo.tools import html2plaintext
 
 from ..tools.onramp_connector import SBCConnector
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR

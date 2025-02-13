@@ -21,7 +21,7 @@ class TestSWPConsistency(BaseSponsorshipTest):
 
     @mock.patch(mock_update_hold)
     def setUp(self, update_hold, *args, **kwargs):
-        super(TestSWPConsistency, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
 
         partner = self.env["res.partner"]
 

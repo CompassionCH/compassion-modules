@@ -15,7 +15,6 @@ import base64
 import io
 import logging
 
-from PyPDF2 import PdfFileReader
 from pdf2image import convert_from_bytes
 
 from odoo import _, api, fields, models
@@ -120,37 +119,19 @@ class ImportLettersHistory(models.Model):
             raise UserError(_("Some letters are not ready"))
         self.failed_file_name = False
         # save the imports
-        failed_names = []
         correspondence_vals = self.import_line_ids.get_letter_data()
         # letters_ids should be empty before this line
-        for import_line, vals in zip(self.import_line_ids, correspondence_vals):
-            try:
-                with self.env.cr.savepoint():
-                    pdf_data = base64.b64decode(vals.get("pdf_data"))
-                    pdf_buffer = io.BytesIO(pdf_data)
-                    pdf_document = PdfFileReader(pdf_buffer)
-                    if pdf_document.getNumPages() == 0:
-                        raise ValueError("page count is 0")
-                    self.letters_ids.create(vals)
-                    import_line.unlink()
-            except Exception:
-                logger.error("Error while saving import", exc_info=True)
-                failed_names.append(vals.get("file_name"))
+        for import_line, vals in zip(
+            self.import_line_ids, correspondence_vals, strict=True
+        ):
+            self.letters_ids.create(vals)
+            import_line.unlink()
 
-        if failed_names:
-            self.write(
-                {
-                    "failed_file_name": "\n".join(failed_names),
-                }
-            )
-            return False
-        else:
-            self.write(
-                {
-                    "state": "done",
-                }
-            )
-            return True
+        return self.write(
+            {
+                "state": "done",
+            }
+        )
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
