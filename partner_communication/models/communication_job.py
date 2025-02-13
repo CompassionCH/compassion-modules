@@ -54,6 +54,9 @@ def strip_tags(html):
     return s.get_data()
 
 
+_JOB_CHANNEL = "root.partner_communication"
+
+
 class CommunicationJob(models.Model):
     """Communication Jobs are task that will either generate and send
     an e-mail or print a document when executed.
@@ -114,6 +117,7 @@ class CommunicationJob(models.Model):
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
             ("failure", _("Failure")),
+            ("processing", _("Processing")),
         ],
         default="pending",
         tracking=True,
@@ -214,7 +218,6 @@ class CommunicationJob(models.Model):
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
                     except Exception:
-                        self.env.clear()
                         record.pdf_page_count = 0
 
     def _inverse_ir_attachments(self):
@@ -484,29 +487,42 @@ class CommunicationJob(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def send(self):
-        """Executes the job."""
+        """
+        Executes the job asynchronously for each communication task.
+        This ensures that each job is processed independently in the queue.
+        """
+        # If only one job is asked, run synchronously
+        if len(self) == 1:
+            self = self.with_context(queue_job__no_delay=True)
+
+        # Filter "pending" tasks
         todo = self.filtered(
             lambda j: j.state == "pending"
             and not (j.need_call == "before_sending" and j.activity_ids)
         )
+        todo.write({"state": "processing"})
 
-        # Filter jobs for SMS
-        sms_jobs = self.filtered(lambda j: j.send_mode == "sms")
-        sms_jobs.send_by_sms()
+        # Process SMS jobs asynchronously
+        sms_jobs = todo.filtered(lambda j: j.send_mode == "sms")
+        if sms_jobs:
+            sms_jobs._send_by_sms()
 
-        to_print = todo.filtered(lambda j: j.send_mode == "physical")
-        for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
-            origin = self.env.context.get("origin")
-            # if we print first in a communication with send_mode == both
-            if origin == "both_print" and job.send_mode == "both":
-                job.send_mode = "digital"
-                return job._print_report()
-            job._send_mail()
-            # if the call must be done after the sending, an activity is scheduled
-            if job.need_call == "after_sending":
-                job.with_user(job.user_id.id).schedule_call()
+        # Process physical print jobs asynchronously
+        physical_modes = ["physical"]
+        digital_modes = ["digital"]
+        if self.env.context.get("origin") == "both_print":
+            physical_modes.append("both")
+        else:
+            digital_modes.append("both")
+        to_print = todo.filtered(lambda j: j.send_mode in physical_modes)
         if to_print:
-            return to_print._print_report()
+            to_print._print_batch()
+
+        # Process email jobs (digital or both) asynchronously
+        email_jobs = todo.filtered(lambda j: j.send_mode in digital_modes)
+        for job in email_jobs:
+            job.with_delay(channel=_JOB_CHANNEL)._send_mail_asynchronous()
+
         return self.download_data()
 
     def schedule_call(self):
@@ -536,52 +552,25 @@ class CommunicationJob(models.Model):
         )
         return True
 
-    def send_by_sms(self):
+    def _send_by_sms(self):
         """
         Sends communication jobs with SMS 939 service.
         :return: list of sms_texts
         """
-        link_pattern = re.compile(r'<a href="([^<>]*)">([^<]*)</a>')
-        sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
-        sms_texts = []
-        for job in self.filtered(
-            lambda j: j.state == "pending" and j.partner_id.mobile
-        ):
-            sms_text = job.convert_html_for_sms(link_pattern, sms_medium_id)
-            sms_texts.append(sms_text)
-            try:
-                with self.env.cr.savepoint():
-                    self.env["sms.sms"].create(
-                        {
-                            "number": job.partner_id.mobile,
-                            "body": sms_text,
-                            "partner_id": job.partner_id.id,
-                        }
-                    ).send(raise_exception=True)
-                    job.write(
-                        {
-                            "state": "done",
-                            "sent_date": fields.Datetime.now(),
-                        }
-                    )
-                    _logger.debug("SMS length: %s", len(sms_text))
-            except Exception as e:
-                self.env.cr.rollback()
-                job.write({"state": "failure", "body_html": str(e)})
-        return sms_texts
+        for job in self.filtered("partner_id.mobile"):
+            job.with_delay(channel=_JOB_CHANNEL)._send_by_sms_asynchronous()
 
-    def convert_html_for_sms(self, link_pattern, sms_medium_id):
+    def _convert_html_for_sms(self):
         """
         Converts HTML into simple text for SMS.
         First replace links with short links using Link Tracker.
         Then clean HTML using BeautifulSoup library.
-        :param link_pattern: the regex pattern for replacing links
-        :param sms_medium_id: the associated utm.medium id for generated links
         :return: Clean text with short links for SMS use.
         """
         self.ensure_one()
         source_id = self.config_id.source_id.id
         paragraph_delimiter = "###P###"
+        sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
 
         def _replace_link(match):
             full_link = match.group(1).replace("&amp;", "&")
@@ -605,7 +594,7 @@ class CommunicationJob(models.Model):
         body = self.body_html.replace("\n", " ").replace(
             "</p>", "</p>" + paragraph_delimiter
         )
-        body = link_pattern.sub(_replace_link, body)
+        body = re.sub(r'<a href="([^<>]*)">([^<]*)</a>', _replace_link, body)
         body = re.sub(r"[ \t\r\f\v]+", " ", body)
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
@@ -654,12 +643,13 @@ class CommunicationJob(models.Model):
             setattr(self, key, val)
 
     def open_related(self):
-        object_ids = list(map(int, self.object_ids.split(",")))
+        object_strings = ",".join(self.mapped("object_ids"))
+        object_ids = list(map(int, object_strings.split(",")))
         action = {
             "name": _("Related objects"),
             "type": "ir.actions.act_window",
             "view_mode": "form,tree",
-            "res_model": self.config_id.model,
+            "res_model": self.mapped("config_id").model,
             "context": self.with_context(group_by=False).env.context,
             "target": "current",
         }
@@ -770,15 +760,10 @@ class CommunicationJob(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _send_mail(self):
-        """
-        Called for sending the communication by e-mail.
-        :return: state of the communication depending on if the e-mail was
-                 successfully sent or not.
-        """
+    def _send_mail_asynchronous(self):
+        """Called for sending the communication by e-mail."""
         self.ensure_one()
         partner = self.partner_id
-        # Send by e-mail
         email = self.email_id
         if not email:
             email_vals = {
@@ -798,36 +783,22 @@ class CommunicationJob(models.Model):
 
             email = self.env["mail.mail"].create(email_vals)
             self.email_id = email
-        try:
-            with self.env.cr.savepoint():
-                if email.state != "sent":
-                    email.send(raise_exception=True)
-                if self.send_mode != "both":
-                    self.write(
-                        {
-                            "state": "done",
-                            "sent_date": fields.Datetime.now(),
-                        }
-                    )
-                else:
-                    # Job was sent by e-mail and must now be printed
-                    self.send_mode = "physical"
-                    with self.env.cr.savepoint():
-                        self.refresh_text()
-        except Exception as e:
-            _logger.error("Couldn't refresh the communication for printing")
-            self.write({"state": "failure", "body_html": str(e)})
-        finally:
+
+        if email.state != "sent":
+            email.send(raise_exception=True)
+
+        if email.state != "exception":
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)
+            self._job_sent("digital")
+        else:
+            raise UserError(
+                _("Error sending e-mail: %s") % self.email_id.failure_reason
+            )
 
-    def _print_report(self):
+    def _print_batch(self):
         name = self.env.user.name
-        origin = self.env.context.get("origin")
-        state = "done"
-        if origin == "both_print":
-            state = "pending"
 
         # Batch print communications of same type (if no attachments)
         batch_print = {
@@ -836,33 +807,42 @@ class CommunicationJob(models.Model):
         }
         for job in self:
             if job.attachment_ids:
-                try:
-                    # Print letter
-                    print_name = name[:3] + " " + (job.subject or "")
-                    print_options = job.print_letter(print_name)
-                    output_tray = print_options["output_tray"]
-
-                    # Print attachments in the same output_tray
-                    job.attachment_ids.print_attachments(
-                        output_tray=output_tray,
-                    )
-                    job.write({"state": state, "sent_date": fields.Datetime.now()})
-                except Exception:
-                    _logger.error("Error printing job %s", [job.id], exc_info=True)
+                print_name = name[:3] + " " + (job.subject or "")
+                job.with_delay(channel=_JOB_CHANNEL)._print_job_asynchronous(print_name)
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += job
 
         for configs in batch_print.values():
             for config, jobs in configs.items():
-                try:
-                    print_name = name[:3] + " " + config
-                    jobs.print_letter(print_name)
-                    jobs.write({"state": state, "sent_date": fields.Datetime.now()})
-                except Exception:
-                    _logger.error(
-                        "Error while printing jobs %s", str(jobs.ids), exc_info=True
-                    )
+                print_name = name[:3] + " " + config
+                jobs.with_delay(channel=_JOB_CHANNEL)._print_job_asynchronous(
+                    print_name
+                )
         return self.download_data()
+
+    def _print_job_asynchronous(self, print_name):
+        # Print letters
+        print_options = self._print_letter(print_name)
+        output_tray = print_options["output_tray"]
+
+        # Print attachments in the same output_tray
+        self.mapped("attachment_ids").print_attachments(
+            output_tray=output_tray,
+        )
+        self._job_sent("physical")
+
+    def _send_by_sms_asynchronous(self):
+        self.ensure_one()
+        sms_text = self._convert_html_for_sms()
+        self.env["sms.sms"].create(
+            {
+                "number": self.partner_id.mobile,
+                "body": sms_text,
+                "partner_id": self.partner_id.id,
+            }
+        ).send(raise_exception=True)
+        self._job_sent("sms")
+        _logger.debug("SMS length: %s", len(sms_text))
 
     def _notify_get_reply_to(
         self, default=None, records=None, company=None, doc_names=None
@@ -872,7 +852,26 @@ class CommunicationJob(models.Model):
             res[job.id] = job.reply_to
         return res
 
-    def print_letter(self, print_name, **print_options):
+    def _job_sent(self, send_mode):
+        """Called when jobs were successfully sent.
+        :args: send_mode: the send_mode of the job (physical/digital)
+        """
+        both_mode = self.filtered(lambda j: j.send_mode == "both")
+        regular_modes = self - both_mode
+        regular_modes.write({"state": "done", "sent_date": fields.Datetime.now()})
+        for job in both_mode:
+            job.write(
+                {
+                    "state": "pending",
+                    "send_mode": "digital" if send_mode == "physical" else "physical",
+                }
+            )
+            job.refresh_text()
+        # Schedule a call if required after sending
+        for job in self.filtered(lambda j: j.need_call == "after_sending"):
+            job.with_user(job.user_id.id).schedule_call()
+
+    def _print_letter(self, print_name, **print_options):
         """
         Sends the communication to the printer.
         Returns all configuration needed for printing the jobs.

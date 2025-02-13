@@ -9,6 +9,7 @@
 ##############################################################################
 import base64
 import logging
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from odoo import _, api, fields, models
@@ -32,16 +33,24 @@ class ChildPictures(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     child_id = fields.Many2one(
-        "compassion.child", "Child", required=True, ondelete="cascade", readonly=False
+        "compassion.child", "Child", required=True, ondelete="cascade"
     )
     fullshot = fields.Image()
     headshot = fields.Image()
-    image_url = fields.Char()
+    image_url = fields.Char(required=True)
     image_url_compassion = fields.Char(compute="_compute_image_url_compassion")
     date = fields.Date("Date of pictures", default=fields.Date.today)
     fname = fields.Char(compute="_compute_filename")
     hname = fields.Char(compute="_compute_filename")
-    _error_msg = "Image cannot be fetched: No image url available"
+
+    funct_new_photo_called = fields.Boolean(default=False)
+    _sql_constraints = [
+        (
+            "unique_picture_per_child",
+            "UNIQUE(child_id,image_url)",
+            "You cannot set two identical images for the same child.",
+        )
+    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -54,15 +63,17 @@ class ChildPictures(models.Model):
             pictures.hname = code + " " + date + " headshot.jpg"
 
     def _compute_image_url_compassion(self):
+        config = self.env["ir.config_parameter"].sudo()
+        if hasattr(request, "website"):
+            base_url = request.website.domain
+        else:
+            base_url = config.get_param(
+                "web.external.url", config.get_param("web.base.url")
+            )
+
+        endpoint = f"{base_url}/web/image/compassion.child.pictures"
+
         for image in self:
-            try:
-                base_url = request.website.domain
-            except AttributeError:
-                config = self.env["ir.config_parameter"].sudo()
-                base_url = config.get_param(
-                    "web.external.url", config.get_param("web.base.url")
-                )
-            endpoint = str(base_url) + "/web/image/compassion.child.pictures"
             image.image_url_compassion = (
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
             )
@@ -76,53 +87,69 @@ class ChildPictures(models.Model):
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
+        existing_picture = self._child_picture_already_exists(vals)
+        if existing_picture:
+            return existing_picture
 
-        pictures = super().create(vals)
-        # Retrieve Headshot
-        image_date = pictures._get_picture("Headshot", width=180, height=180)
-        # Retrieve Fullshot
-        image_date = image_date and pictures._get_picture(
-            "Fullshot", width=800, height=1200
-        )
+        picture = super().create(vals)
+        # Fetch the image from the webservice
+        image_date = picture._fetch_and_attach_pictures()
+
+        # Handle the case where the picture cannot be fetched
         if not image_date:
-            # We could not retrieve a picture, we cancel the creation
-            pictures.child_id.message_post(
-                body=_(pictures._error_msg), subject=_("Picture update")
+            picture._handle_picture_issue(
+                _("Image cannot be fetched: No image URL available.")
             )
-            pictures.unlink()
             return self
 
         # Find if same pictures already exist
-        same_pictures = pictures._find_same_picture()
-        if same_pictures:
-            # That case is not likely to happens, it means that the url has
-            #  changed, while the picture stay unchanged.
-            pictures.child_id.message_post(
-                body=_("The picture was the same"), subject=_("Picture update")
-            )
-            pictures.unlink()
-            return self
+        duplicate = picture._find_same_picture()
+        if duplicate:
+            picture._handle_picture_issue(_("The picture was the same."))
+            return duplicate
 
-        pictures.write({"date": image_date})
-        return pictures
+        picture.write({"date": image_date})
+        return picture
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    def _fetch_and_attach_pictures(self):
+        """Fetch the pictures from the webservice and attach them to the record."""
+        headshot_fetched = self._get_picture("Headshot", width=180, height=180)
+        fullshot_fetched = self._get_picture("Fullshot", width=800, height=1200)
+        return headshot_fetched and fullshot_fetched
+
+    def _handle_picture_issue(self, message):
+        """Handle issues with the picture, such as fetch failure or duplication."""
+        logger.warning(message)
+        self.child_id.message_post(body=message, subject=_("Picture update"))
+        self.unlink()
+
     def _find_same_picture(self):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
         pics = reference.search(
             [("child_id", "=", self.child_id.id), ("id", "!=", self.id)], limit=1
-        )  # The last picture is most probably one that could be the same.
+        )
         same_pics = pics.filtered(
             lambda record: record.fullshot == reference.fullshot
             and record.headshot == reference.headshot
         )
         return same_pics
 
+    def _child_picture_already_exists(self, vals):
+        existing_picture = self.search(
+            [
+                ("child_id", "=", vals.get("child_id")),
+                ("image_url", "=", vals.get("image_url")),
+            ],
+            limit=1,
+        )
+        return existing_picture
+
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
-        """Gets a picture from Compassion webservice"""
+        """Gets a picture from Compassion webservice."""
         self.ensure_one()
         if pic_type.lower() == "headshot":
             cloudinary = (
@@ -132,29 +159,22 @@ class ChildPictures(models.Model):
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         _image_date = False
-        for picture in self.filtered("image_url"):
-            try:
-                image_split = picture.image_url.split("/")
-                if "upload" in picture.image_url:
-                    ind = image_split.index("upload")
-                else:
-                    ind = image_split.index("media.ci.org")
-                image_split[ind + 1] = cloudinary
-                url = "/".join(image_split)
+        try:
+            image_split = self.image_url.split("/")
+            if "upload" in self.image_url:
+                ind = image_split.index("upload")
+            else:
+                ind = image_split.index("media.ci.org")
+            image_split[ind + 1] = cloudinary
+            url = "/".join(image_split)
 
-                data = urlopen(Request(url, None, HEADERS)).read()
-                data = base64.encodebytes(data)
-                _image_date = picture.child_id.last_photo_date or fields.Date.today()
-                if pic_type.lower() == "headshot":
-                    self.headshot = data
-                elif pic_type.lower() == "fullshot":
-                    self.fullshot = data
-            except Exception:
-                self._error_msg = (
-                    "Image cannot be fetched, invalid image "
-                    "url : " + picture.image_url
-                )
-                logger.error("Image cannot be fetched : " + picture.image_url)
-                continue
-
+            data = urlopen(Request(url, None, HEADERS)).read()
+            data = base64.encodebytes(data)
+            _image_date = self.child_id.last_photo_date or fields.Date.today()
+            if pic_type.lower() == "headshot":
+                self.headshot = data
+            elif pic_type.lower() == "fullshot":
+                self.fullshot = data
+        except (AttributeError, ValueError, URLError, HTTPError, TypeError):
+            logger.error("Failed to fetch image from %s", self.image_url, exc_info=True)
         return _image_date

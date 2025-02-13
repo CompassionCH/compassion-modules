@@ -35,16 +35,16 @@ class ImportLettersHistory(models.Model):
     state = fields.Selection(
         [
             ("draft", _("Draft")),
-            ("pending", _("Analyzing")),
-            ("open", _("Open")),
-            ("ready", _("Ready")),
+            ("pending", _("Analyzing Files")),
+            ("open", _("In Review")),
+            ("ready", _("Ready to import")),
             ("done", _("Done")),
         ],
-        compute="_compute_state",
-        store=True,
         tracking=True,
+        default="draft",
+        copy=False,
+        required=True,
     )
-    import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         "Number of files", readonly=True, compute="_compute_nber_letters"
     )
@@ -62,33 +62,12 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
-    @api.depends(
-        "import_line_ids",
-        "import_line_ids.status",
-        "letters_ids",
-        "data",
-        "import_completed",
+    failed_file_name = fields.Text(
+        string="Files with errors",
+        help="Displays the name of the files that failed the PDF analysis.",
+        readonly=True,
+        default="",
     )
-    def _compute_state(self):
-        """Check in which state self is by counting the number of elements in
-        each Many2many
-        """
-        for import_letters in self:
-            if import_letters.letters_ids:
-                import_letters.state = "done"
-            elif import_letters.import_completed:
-                check = True
-                for i in import_letters.import_line_ids:
-                    if i.status != "ok":
-                        check = False
-                if check:
-                    import_letters.state = "ready"
-                else:
-                    import_letters.state = "open"
-            elif import_letters.import_line_ids:
-                import_letters.state = "pending"
-            else:
-                import_letters.state = "draft"
 
     @api.onchange("data")
     def _compute_nber_letters(self):
@@ -118,8 +97,11 @@ class ImportLettersHistory(models.Model):
         return super().create(vals_list)
 
     def button_import(self):
-        for letters_import in self:
-            letters_import.with_delay().run_analyze()
+        self.ensure_one()
+        self.state = "pending"
+        job = self.delayable().run_analyze()
+        after_job = self.delayable().write({"state": "open"})
+        job.on_done(after_job).delay()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -132,17 +114,24 @@ class ImportLettersHistory(models.Model):
 
     def button_save(self):
         # check if all the imports are OK
-        for letters_h in self:
-            if letters_h.state != "ready":
-                raise UserError(_("Some letters are not ready"))
+        self.ensure_one()
+        if self.state != "ready":
+            raise UserError(_("Some letters are not ready"))
+        self.failed_file_name = False
         # save the imports
-        for letters in self:
-            correspondence_vals = letters.import_line_ids.get_letter_data()
-            # letters_ids should be empty before this line
-            for vals in correspondence_vals:
-                letters.letters_ids.create(vals)
-            letters.import_line_ids.unlink()
-        return True
+        correspondence_vals = self.import_line_ids.get_letter_data()
+        # letters_ids should be empty before this line
+        for import_line, vals in zip(
+            self.import_line_ids, correspondence_vals, strict=True
+        ):
+            self.letters_ids.create(vals)
+            import_line.unlink()
+
+        return self.write(
+            {
+                "state": "done",
+            }
+        )
 
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
@@ -210,7 +199,6 @@ class ImportLettersHistory(models.Model):
 
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
-        self.import_completed = True
 
     @staticmethod
     def create_preview(image):
@@ -237,18 +225,19 @@ class ImportLettersHistory(models.Model):
             image = convert_from_bytes(pdf_data, 100, last_page=1)[0]
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
             letter_str, _ = self.env["ocr"].image_to_string(self.crop(image))
-            data["letter_language_id"] = (
-                self.env["langdetect"].detect_language(letter_str).id
-            )
+            if letter_str:
+                data["letter_language_id"] = (
+                    self.env["langdetect"].detect_language(letter_str).id
+                )
             data["letter_image_preview"] = self.create_preview(image)
 
-            partner = self.env["res.partner"].search(
-                [("ref", "=", partner_code), ("has_sponsorships", "=", True)]
+            partner_obj = self.env["res.partner"]
+            partner = partner_obj.search(
+                [("ref", "=", partner_code), ("has_sponsorships", "=", True)], limit=2
             )
+            if len(partner) == 2:
+                partner = partner_obj
 
-            # since the child code and local_id accept NULL
-            # this ensure that even if the child_code is None we don't retrieve
-            # one for those
             child = self.env["compassion.child"]
             if child_code:
                 child = child.search([("local_id", "=", child_code)], limit=1)
@@ -258,17 +247,21 @@ class ImportLettersHistory(models.Model):
 
             self.env["import.letter.line"].create(data)
             # this commit is really important
-            # it avoid having to keep the "data"s in memory until the whole process is
+            # it avoids having to keep the "data"s in memory until the whole process is
             # finished each time a letter is scanned, it is also inserted in the DB
             # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
-            message = f"Couldn't import file {file_name}"
-            logger.error(
-                message,
-                exc_info=True,
+            failed_files = self.failed_file_name or ""
+            if failed_files:
+                failed_files += "\n"
+            failed_files += file_name
+            self.write(
+                {
+                    "failed_file_name": failed_files,
+                }
             )
-            return
+            logger.error("Import file %s failed", file_name, exc_info=True)
 
     def open_letters(self):
         return {

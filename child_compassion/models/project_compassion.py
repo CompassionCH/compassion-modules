@@ -80,6 +80,7 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
+    google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
     cluster = fields.Char(readonly=True)
     territory = fields.Char(readonly=True)
@@ -383,6 +384,7 @@ class CompassionProject(models.Model):
         "compassion.project.ile",
         compute="_compute_last_lifecycle",
         search="_search_last_lifecycle_id",
+        store=True,
     )
     status_comment = fields.Text(related="last_lifecycle_id.details")
     hold_cdsp_funds = fields.Boolean(related="last_lifecycle_id.hold_cdsp_funds")
@@ -535,6 +537,21 @@ class CompassionProject(models.Model):
             project.timezone = tf.timezone_at(
                 lng=project.gps_longitude, lat=project.gps_latitude
             )
+
+    def _compute_google_link(self):
+        for project in self:
+            if project.gps_latitude and project.gps_longitude:
+                project.google_link = f"https://www.google.com/maps/search/?api=1&query={project.gps_latitude},{project.gps_longitude}"
+            else:
+                project.google_link = False
+
+    def open_google_maps(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "url": self.google_link,
+            "target": "new",
+        }
 
     def _compute_usd(self):
         usd = self.env.ref("base.USD")

@@ -810,8 +810,7 @@ class SponsorshipContract(models.Model):
             # Define the payer that will be sync to gmc
             contract.gmc_payer_partner_id = contract.partner_id
             # UpsertConstituent Message
-            partner = contract.correspondent_id
-            partner.upsert_constituent()
+            partners.upsert_constituent()
             contract.upsert_sponsorship()
         return True
 
@@ -1030,9 +1029,11 @@ class SponsorshipContract(models.Model):
                     (
                         "default_code",
                         "=",
-                        GIFT_PRODUCTS_REF[0]
-                        if gift_type == BIRTHDAY_GIFT
-                        else PRODUCT_GIFT_CHRISTMAS,
+                        (
+                            GIFT_PRODUCTS_REF[0]
+                            if gift_type == BIRTHDAY_GIFT
+                            else PRODUCT_GIFT_CHRISTMAS
+                        ),
                     )
                 ],
                 limit=1,
@@ -1067,7 +1068,6 @@ class SponsorshipContract(models.Model):
             .sudo()
             .get_param("sponsorship_compassion.bypass_fcp_state", False)
         )
-
         due_dates = {}  # Dict to store the due dates of the contracts
 
         # Don't generate gift for contract that are holding gifts or if they
@@ -1082,11 +1082,17 @@ class SponsorshipContract(models.Model):
             # checks if there is already a gift for this year which has been cancelled
             gift_this_year = self.env["account.move.line"].search(
                 [
-                    ("partner_id", "=", contract.partner_id.id),
                     ("product_id", "=", product_id),
                     ("date", ">=", start_of_year),
                     ("date", "<=", end_of_year),
                     ("contract_id", "=", contract.id),
+                    "|",
+                    "&",
+                    ("partner_id", "=", contract.correspondent_id.id),
+                    ("contract_id.send_gifts_to", "=", "correspondent_id"),
+                    "&",
+                    ("partner_id", "=", contract.partner_id.id),
+                    ("contract_id.send_gifts_to", "=", "partner_id"),
                 ]
             )
             if gift_this_year:
@@ -1327,3 +1333,27 @@ class SponsorshipContract(models.Model):
                     self.gmc_correspondent_commitment_id = commitment.get(
                         "CommitmentID"
                     )
+
+    def fix_inconsistent_SWP_contracts(self) -> list:
+        """
+        [T1924] : Finds the contracts with type Write&Pray ("SWP") and fixes the empty
+        contract lines problem which causes the sponsorships not to appear on
+        mycompassion.ch.
+        Returns:
+            list: fixed, previously inconsistent, contracts
+        """
+
+        inconsistent_contracts = self.search([("type", "=", "SWP")])
+        for contract in inconsistent_contracts:
+            if len(contract.contract_line_ids) == 0:
+                # Fix missing contract lines
+                contract._create_empty_lines_for_correspondence()
+                # Update contracts on the partner side
+                contract.correspondent_id._compute_related_contracts()
+
+        fixed_contract_ids = list(map(lambda c: c.id, inconsistent_contracts))
+        logger.info(
+            f"Fixed {len(inconsistent_contracts)} inconsistent SWP "
+            f"contracts with ids = {fixed_contract_ids}"
+        )
+        return inconsistent_contracts

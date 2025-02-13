@@ -121,9 +121,7 @@ class ChildDescription(models.TransientModel):
         """
         generators = super().create(vals_list)
         for generator in generators:
-            for lang, field in self._supported_languages().items():
-                desc = generator.with_context(lang=lang)._generate_translation()
-                generator.child_id.write({field: desc})
+            generator._generate_all_translations()
         return generators
 
     @api.model
@@ -134,6 +132,11 @@ class ChildDescription(models.TransientModel):
         {lang: description_field}
         """
         return {"en_US": "description_en"}
+
+    def _generate_all_translations(self):
+        for lang, field in self._supported_languages().items():
+            desc = self.with_context(lang=lang)._generate_translation()
+            self.child_id.write({field: desc})
 
     def _generate_translation(self):
         """Generate child description."""

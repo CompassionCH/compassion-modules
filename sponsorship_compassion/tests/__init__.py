@@ -8,4 +8,9 @@
 #
 ##############################################################################
 
-from . import test_sponsorship_compassion, test_sponsorship_impact
+from . import (
+    test_SWP_consistency,
+    test_sponsorship_compassion,
+    test_sponsorship_impact,
+    test_project_compassion,
+)

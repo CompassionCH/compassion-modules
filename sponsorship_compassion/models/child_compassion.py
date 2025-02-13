@@ -24,6 +24,9 @@ class ChildCompassion(models.Model):
         string="Sponsorships",
     )
     has_been_sponsored = fields.Boolean(compute="_compute_has_been_sponsored")
+    payer_id = fields.Many2one(
+        "res.partner", string="Payer", compute="_compute_payer", search="_search_payer"
+    )
 
     def _compute_has_been_sponsored(self):
         for child in self:
@@ -35,6 +38,27 @@ class ChildCompassion(models.Model):
             child.sponsorship_ids = con_obj.search(
                 [("child_id", "=", child.id), ("type", "like", "S")]
             )
+
+    def _compute_payer(self):
+        for child in self:
+            sponsorship = self.env["recurring.contract"].search(
+                [
+                    ("child_id", "=", child.id),
+                    ("state", "not in", ["terminated", "cancelled"]),
+                ],
+                limit=1,
+            )
+            child.payer_id = sponsorship.partner_id
+
+    def _search_payer(self, operator, value):
+        sponsorships = self.env["recurring.contract"].search(
+            [
+                ("partner_id", operator, value),
+                ("state", "not in", ["terminated", "cancelled"]),
+                ("child_id", "!=", False),
+            ]
+        )
+        return [("sponsor_id", "in", sponsorships.mapped("correspondent_id").ids)]
 
     def child_released(self, state="R"):
         """

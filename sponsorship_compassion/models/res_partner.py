@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import functools
+import logging
 import random
 import string
 
@@ -15,6 +16,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from .contracts import SPONSORSHIP_TYPE_LIST
+
+_logger = logging.getLogger(__name__)
 
 
 # For more flexibility we have split "res.partner" by functionality
@@ -355,12 +358,22 @@ class ResPartner(models.Model):
             if "failure" in message.state:
                 answer = message.get_answer_dict()
                 if isinstance(answer, dict):
-                    error_message = answer.get(
-                        "DataProtection Error", message.failure_reason
+                    error_info = answer.get("Error", {})
+                    error_message = error_info.get("ErrorMessage", _("Unknown error"))
+
+                    # Format user-friendly error message
+                    user_error_message = (
+                        f"an error occurred during data anonymisation.\n\n"
+                        f"Message : {error_message}"
                     )
+                    _logger.error(error_message)
                 else:
-                    error_message = message.failure_reason
-                raise UserError(error_message)
+                    user_error_message = (
+                        f"An internal error prevented the data from being anonymised.\n"
+                        f"details: {message.failure_reason}"
+                    )
+                    _logger.error(f"Internal error: {message.failure_reason}")
+                raise UserError(user_error_message)
         self.anonymize()
         # Reload the view
         return {"type": "ir.actions.client", "tag": "reload"}

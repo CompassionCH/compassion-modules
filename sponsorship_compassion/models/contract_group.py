@@ -47,6 +47,15 @@ class ContractGroup(models.Model):
             contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
 
+    def build_inv_line_data(
+        self, invoicing_date=False, gift_wizard=False, contract_line=False
+    ):
+        # Push parent sponsorship for gift contracts
+        res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
+        if contract_line and contract_line.contract_id.type == "G":
+            res["contract_id"] = contract_line.sponsorship_id
+        return res
+
     def _get_partner_for_contract(self, contract, gift_wizard=False):
         if gift_wizard and contract.send_gifts_to:
             return contract[contract.send_gifts_to]

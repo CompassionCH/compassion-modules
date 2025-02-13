@@ -53,8 +53,8 @@
                 <field
           name="correspondent_id"
           options="{'create': false, 'm2o_dialog': false}"
-          invisible="type not in ['S','SC','SWP']"
-          required="type in ['S','SC','SWP']"
+          invisible="type not in ['S','SC','SWP','CSP']"
+          required="type in ['S','SC','SWP','CSP']"
         />
                 <field name="send_gifts_to" />
             </field>

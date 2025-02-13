@@ -209,6 +209,7 @@ class CompassionChild(models.Model):
             ("Education", "Education"),
             ("Engineering", "Engineering"),
             ("English", "English"),
+            ("Environmental", "Environmental"),
             ("Fine Arts", "Fine Arts"),
             ("Government / Political Science", "Government / Political Science"),
             ("Graphic Arts", "Graphic Arts"),
@@ -541,6 +542,24 @@ class CompassionChild(models.Model):
         self._fetch_translations(self.env.ref("child_compassion.beneficiaries_details"))
         return {}
 
+    @api.model
+    def update_all_children_description(self):
+        children = (
+            self.env["compassion.child"]
+            .sudo()
+            .search([("state", "not in", ["F", "R"])])
+        )
+        for child in children:
+            child.with_delay(priority=50).update_child_descriptions()
+
+    def update_child_descriptions(self):
+        self.ensure_one()
+        return self.env["compassion.child.description"].create(
+            {
+                "child_id": self.id,
+            }
+        )
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -568,7 +587,6 @@ class CompassionChild(models.Model):
         - Difference between two last pictures is at least 6 months
         - Last picture is no older than 6 months
         """
-        # Update child's pictures
         for child in self:
             # last_picture return false is there is no new pictures
             if child._get_last_pictures() and len(child.pictures_ids) > 1:
@@ -578,10 +596,14 @@ class CompassionChild(models.Model):
                 new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
+
                 if (
-                    len(pictures) == 2 or diff_pic.months >= 6 or diff_pic.years > 0
-                ) and (diff_today.months <= 6 and diff_today.years == 0):
+                    (diff_pic.months >= 6 or diff_pic.years > 0)
+                    and (diff_today.months <= 6 and diff_today.years == 0)
+                    and not pictures[0].funct_new_photo_called
+                ):
                     child.new_photo()
+                    pictures[0].funct_new_photo_called = True
 
     # Lifecycle methods
     ###################
@@ -717,10 +739,11 @@ class CompassionChild(models.Model):
         self.ensure_one()
 
         pictures_obj = self.env["compassion.child.pictures"]
+        existing = self.pictures_ids
         pictures = pictures_obj.create(
             {"child_id": self.id, "image_url": self.image_url}
         )
-        if pictures:
+        if pictures and pictures not in existing:
             # Add a note in child
             self.message_post(
                 body=_("The picture has been updated."),
