@@ -42,7 +42,7 @@ class ResPartnerMatch(models.AbstractModel):
             partner = partner_obj.browse(partner_id).exists()
 
         for rule in self._match_get_rules_order():
-            if len(partner) == 1:
+            if partner and len(partner) == 1:
                 # Found a unique partner, match succeeded
                 break
 
