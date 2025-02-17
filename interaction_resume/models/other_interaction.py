@@ -47,6 +47,7 @@ class OtherInteractions(models.Model):
                 "body": html2plaintext(rec.body).replace("\n\n", "\n"),
                 "subject": rec.subject,
                 "other_type": rec.other_type,
+                "user_id": rec.create_uid.id,
             }
             for rec in self
         ]
