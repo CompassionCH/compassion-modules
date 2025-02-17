@@ -56,8 +56,10 @@ class AccountInvoice(models.Model):
 
     def _compute_amount(self):
         """When invoice is open again, remove it from donation receipt."""
-        payment_states = self.mapped("payment_state")
+        # Computes values before treatments
         super()._compute_amount()
+        super()._compute_payment_state()
+        payment_states = self.mapped("payment_state")
         new_payment_states = self.mapped("payment_state")
         for i, state in enumerate(payment_states):
             invoice = self[i]
