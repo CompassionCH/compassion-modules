@@ -23,6 +23,7 @@ class CrmRequest(models.Model):
                         "body": html2plaintext(claim.description).replace("\n\n", "\n"),
                         "has_attachment": bool(claim.message_attachment_count),
                         "tracking_status": "delivered",
+                        "user_id": claim.user_id.id,
                     }
                 )
             messages = claim.message_ids.filtered(

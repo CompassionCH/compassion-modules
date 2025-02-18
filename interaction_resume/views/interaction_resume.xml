@@ -33,6 +33,7 @@
                 <field name="other_type" />
                 <field name="direction" invisible="1" />
                 <field name="email" />
+                <field name="user_id" />
                 <field name="tracking_status" />
                 <field name="has_attachment" invisible="1" />
                 <button

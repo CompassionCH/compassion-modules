@@ -22,6 +22,7 @@ class Sms(models.Model):
                 "body": rec.body,
                 "subject": "SMS",
                 "tracking_status": rec.state,
+                "user_id": rec.create_uid.id,
             }
             for rec in self
         ]
