@@ -508,7 +508,7 @@ class CompassionIntervention(models.Model):
         ).id
         message = (
             self.env["gmc.message"]
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
             .create({"action_id": action_id, "object_id": self.id})
         )
         if "failure" in message.state:
@@ -703,7 +703,7 @@ class CompassionIntervention(models.Model):
         ).id
         message = (
             self.env["gmc.message"]
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
             .create({"action_id": action_id, "object_id": self.id})
         )
         if "failure" in message.state:

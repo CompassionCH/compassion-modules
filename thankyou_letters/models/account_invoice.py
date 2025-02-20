@@ -54,15 +54,17 @@ class AccountInvoice(models.Model):
                 and new_payment_states[i] != "paid"
                 and invoice.communication_id.state == "pending"
             ):
-                invoice.with_delay().cancel_thankyou_letter()
+                invoice.with_delay(
+                    channel="root.partner_communication",
+                    priority=100,
+                    identity_key=f"{self._name}.cancel_thankyou_letter.{invoice.id}",
+                ).cancel_thankyou_letter()
 
     def group_by_partner(self):
         """Returns a dict with {partner_id: invoices}"""
         res = dict()
         for partner in self.mapped("partner_id"):
-            res[partner.id] = self.filtered(
-                lambda i, partner=partner: i.partner_id == partner
-            )
+            res[partner.id] = self.filtered(lambda i, p=partner: i.partner_id == p)
         return OrderedDict(
             sorted(
                 res.items(),
@@ -117,7 +119,10 @@ class AccountInvoice(models.Model):
                 lambda line, p_partner=partner: line.partner_id == p_partner
             )
             if invoice_lines:
-                invoice_lines.with_user(SUPERUSER_ID).with_delay().generate_thank_you()
+                invoice_lines.with_user(SUPERUSER_ID).with_delay(
+                    priority=100,
+                    identity_key=f"{self._name}.generate_thank_you.{invoice_lines.ids}",
+                ).generate_thank_you()
 
     def cancel_thankyou_letter(self):
         self.ensure_one()

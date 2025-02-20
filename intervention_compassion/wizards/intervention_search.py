@@ -193,7 +193,7 @@ class InterventionSearch(models.TransientModel):
         action = self.env.ref("intervention_compassion.intervention_search_action")
         message = (
             self.env["gmc.message"]
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
             .create({"action_id": action.id, "object_id": self.id})
         )
         if not self.intervention_ids:

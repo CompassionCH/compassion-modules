@@ -17,6 +17,8 @@
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
+            <field name="auto_process" eval="False" />
         </record>
         <!-- Hold Message Release -->
         <record id="release_hold" model="gmc.action">
@@ -35,6 +37,7 @@
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Get beneficiaries details -->
         <record id="beneficiaries_details" model="gmc.action">
@@ -48,6 +51,7 @@
       >beneficiaries/${object.global_id}/details</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
             <field name="success_method">details_answer</field>
             <field name="no_outgoing_data" eval="True" />
         </record>
@@ -63,6 +67,7 @@
       >churchpartners/${object.fcp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.fcp_compassion</field>
             <field name="no_outgoing_data" eval="True" />
             <field name="success_method">details_answer</field>
         </record>
@@ -80,6 +85,7 @@
             <field name="request_type">POST</field>
             <field name="no_outgoing_data">True</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.fcp_compassion</field>
         </record>
         <record id="field_office_details" model="gmc.action">
             <field name="direction">out</field>
@@ -94,6 +100,7 @@
       >fieldoffices/${object.field_office_id}/kits/fieldofficekit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.field_office_compassion</field>
         </record>
         <!-- Reservation Message Creation -->
         <record id="create_reservation" model="gmc.action">
@@ -116,6 +123,7 @@
             <field name="success_method">reservation_create_answer</field>
             <field name="failure_method">reservation_create_answer_fail</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.fcp_compassion</field>
         </record>
         <!-- Reservation Message Creation for Participant -->
         <record id="beneficiary_reservation" model="gmc.action">
@@ -137,6 +145,7 @@
             <field name="success_method">reservation_create_answer</field>
             <field name="failure_method">reservation_create_answer_fail</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
@@ -159,6 +168,7 @@
             <field name="batch_send">1</field>
             <field name="success_method">reservation_cancel_answer</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.fcp_compassion</field>
         </record>
         <record id="cancel_reservation_child" model="gmc.action">
             <field name="direction">out</field>
@@ -180,6 +190,7 @@
             <field name="batch_send">1</field>
             <field name="success_method">reservation_cancel_answer</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Participant Major Revision -->
         <record id="major_revision" model="gmc.action">
@@ -191,6 +202,7 @@
         name="description"
       >This will update the child with the major changes that happened.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <record id="beneficiary_kit" model="gmc.action">
             <field name="direction">in</field>
@@ -201,6 +213,7 @@
         name="description"
       >This will update the child with the fresh information.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- ICP Kit -->
         <record id="icp_kit" model="gmc.action">
@@ -212,6 +225,7 @@
         name="description"
       >This will update the project with the fresh information.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.fcp_compassion</field>
         </record>
         <!-- Participant CDPR Messages -->
         <record id="beneficiary_cdpr" model="gmc.action">
@@ -223,6 +237,7 @@
       >This handles the reception of a Participant CDPR.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Reservation Messages -->
         <record id="reservation_to_hold" model="gmc.action">
@@ -235,6 +250,7 @@
       >This handles the reception of a reserved Participant.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Household Major Revision -->
         <record id="major_revision_household" model="gmc.action">
@@ -246,6 +262,7 @@
       >This will update the household with the major changes that happened.</field>
             <field name="incoming_method">process_commkit</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Participant Note -->
         <record id="beneficiary_note" model="gmc.action">
@@ -256,6 +273,7 @@
         name="description"
       >This handles the reception of a Participant note.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Lifecycle Message -->
         <record id="new_life_cycle" model="gmc.action">
@@ -266,6 +284,7 @@
         name="description"
       >This will create a new life cycle event.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Project Message -->
         <record id="new_project_cycle" model="gmc.action">
@@ -276,6 +295,7 @@
         name="description"
       >This will create a new project cycle event.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.fcp_compassion</field>
         </record>
         <!-- Reinstatement Message -->
         <record id="new_reinstatement_notification" model="gmc.action">
@@ -287,6 +307,7 @@
         name="description"
       >This will create a new reinstatement notification.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Deprecated ! Field Office Disaster Message -->
         <record id="field_office_disaster" model="gmc.action">
@@ -334,6 +355,7 @@
       >This handles the reception of a Participant Hold Removal.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
+            <field name="job_channel">root.child_compassion</field>
         </record>
         <!-- Weekly Planning Message Creation -->
         <record id="create_demand_planning" model="gmc.action">

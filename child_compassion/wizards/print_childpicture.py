@@ -29,7 +29,7 @@ class PrintChildPicture(models.TransientModel):
         children = (
             self.env["compassion.child"]
             .browse(self.env.context.get("active_ids"))
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
         )
         for child in children:
             child.get_infos()

@@ -44,5 +44,9 @@ class PartnerCommunication(models.Model):
         res = super().send()
         # Refresh the interactions after sending the communication
         for partner in self.mapped("partner_id"):
-            partner.with_delay().fetch_interactions()
+            partner.with_delay(
+                channel="root.partner_communication",
+                priority=100,
+                identity_key=partner._name + ".fetch_interactions." + str(partner.id),
+            ).fetch_interactions()
         return res

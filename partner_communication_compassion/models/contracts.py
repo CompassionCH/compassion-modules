@@ -51,8 +51,7 @@ class RecurringContract(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def send_communication(self, communication, correspondent=True, both=False):
-        """
-        Sends a communication to selected sponsorships.
+        """Sends a communication to selected sponsorships.
         :param communication: the communication config to use
         :param correspondent: put to false for sending to payer instead of
                               correspondent.

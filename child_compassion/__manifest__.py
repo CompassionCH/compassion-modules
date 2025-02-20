@@ -100,7 +100,6 @@
         "data/fcp.spiritual.activity.csv",
         "data/fo.high.risk.csv",
         "data/fo.disaster.loss.csv",
-        "data/queue_job.xml",
         "report/childpack.xml",
         "report/external_layout.xml",
         "report/child_picture.xml",

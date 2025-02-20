@@ -100,7 +100,7 @@
               type="object"
               icon="fa-refresh"
               class="oe_stat_button"
-              context="{'async_mode': False}"
+              context="{'queue_job__no_delay': True}"
             />
                         <button
               name="get_lifecycle_event"
@@ -108,7 +108,7 @@
               type="object"
               icon="fa-refresh"
               class="oe_stat_button"
-              context="{'async_mode': False}"
+              context="{'queue_job__no_delay': True}"
             />
                         <button
               name="edit_translations"
@@ -577,16 +577,6 @@
         <field name="binding_model_id" ref="model_compassion_child" />
         <field name="state">code</field>
         <field name="code">action = records.fetch_translations()</field>
-    </record>
-
-    <record id="update_children_description" model="ir.actions.server">
-        <field name="name">Update all children description</field>
-        <field name="model_id" ref="model_compassion_child" />
-        <field name="binding_model_id" ref="model_compassion_child" />
-        <field name="state">code</field>
-        <field
-      name="code"
-    >action = records.update_all_children_description()</field>
     </record>
 
     <menuitem

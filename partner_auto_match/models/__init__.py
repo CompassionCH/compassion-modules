@@ -9,3 +9,4 @@
 ##############################################################################
 
 from . import abstract_partner_form, res_partner_match
+from . import base

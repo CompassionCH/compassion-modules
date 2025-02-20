@@ -575,7 +575,7 @@ class CompassionProject(models.Model):
             if not project:
                 project = super().create(vals)
             result += project
-        result.with_context(async_mode=True).update_informations()
+        result.update_informations()
         return result
 
     ##########################################################################
@@ -704,7 +704,7 @@ class CompassionProject(models.Model):
                 "object_id": project.id,
             }
             message = message_obj.create(message_vals)
-            if "failure" in message.state and not self.env.context.get("async_mode"):
+            if "failure" in message.state:
                 raise UserError(message.failure_reason)
 
         return True

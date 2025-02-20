@@ -73,7 +73,12 @@ class AccountReconciliationWidget(models.AbstractModel):
     def process_bank_statement_line(self, st_line_ids, data):
         # Execute a job to speedup the interface. The returned data is not used anyway.
         self.with_delay(
-            channel="root.reconcile_compassion"
+            channel="root.accounting",
+            priority=100,
+            identity_key=self._name
+            + ".process_bank_statement_line."
+            + str(st_line_ids),
+            description="Process bank statement line",
         )._process_bank_statement_line(st_line_ids, data)
         return {}
 

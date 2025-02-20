@@ -184,12 +184,13 @@ class CorrespondenceS2bGenerator(models.Model):
         Launch S2B Creation job
         :return: True
         """
-        self.with_delay().generate_letters_job()
+        self.with_delay(
+            identity_key="s2b_generator." + str(self.ids)
+        ).generate_letters_job()
         return True
 
     def generate_letters_job(self):
-        """
-        Create S2B Letters
+        """Create S2B Letters
         :return: True
         """
         try:

@@ -83,8 +83,4 @@ class MoveLine(models.Model):
                                 "config_id": event.ambassador_config_id.id,
                             }
                         )
-                if ambassador_receipts:
-                    # Delay the sending in case an ambassador receives several donations
-                    # Five minutes of delay should be enough.
-                    ambassador_receipts.with_delay(priority=100, eta=60 * 5).send()
         return generated_comm_ids
