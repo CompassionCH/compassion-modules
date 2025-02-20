@@ -57,7 +57,7 @@
             name="action_verify"
             type="object"
             string="To Verify"
-            invisible="state != 'draft'"
+            invisible="state not in ('draft', 'suspended')"
           />
                     <button
             name="action_ok"
