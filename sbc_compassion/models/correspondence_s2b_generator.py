@@ -120,7 +120,9 @@ class CorrespondenceS2bGenerator(models.Model):
         Launch S2B Creation job
         :return: True
         """
-        self.with_delay().generate_letters_job()
+        self.with_delay(
+            identity_key="s2b_generator." + str(self.ids)
+        ).generate_letters_job()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -132,8 +134,7 @@ class CorrespondenceS2bGenerator(models.Model):
         }
 
     def generate_letters_job(self, preview_mode=False):
-        """
-        Create S2B Letters
+        """Create S2B Letters
         :return: True
         """
         letters = self.env["correspondence"]

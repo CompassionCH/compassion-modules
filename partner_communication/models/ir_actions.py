@@ -80,4 +80,5 @@ class IrActionsServer(models.Model):
         return {}
 
     def create_communication_job(self, vals):
+        """Automated communication creation"""
         return self.env["partner.communication.job"].create(vals)

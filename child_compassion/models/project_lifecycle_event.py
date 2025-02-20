@@ -118,18 +118,18 @@ class ProjectLifecycle(models.Model):
             events += lifecycle
             if lifecycle.type == "Suspension":
                 if lifecycle.hold_cdsp_funds and not fund_suspended:
-                    project.with_delay().suspend_funds()
+                    project.suspend_funds()
                 if lifecycle.hold_gifts and not hold_gifts:
                     project.hold_gifts_action()
                 if lifecycle.hold_s2b_letters and not hold_letters:
-                    project.with_delay().hold_letters_action()
+                    project.hold_letters_action()
             if lifecycle.type == "Reactivation":
                 if fund_suspended:
-                    project.with_delay().reactivate_project()
+                    project.reactivate_project()
                 if hold_gifts and not lifecycle.hold_gifts:
-                    project.with_delay().reactivate_gifts()
+                    project.reactivate_gifts()
                 if hold_letters and not lifecycle.hold_s2b_letters:
-                    project.with_delay().reactivate_letters()
+                    project.reactivate_letters()
         return events
 
     @api.model

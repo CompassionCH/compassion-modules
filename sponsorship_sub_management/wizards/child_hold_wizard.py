@@ -25,12 +25,13 @@ class ChildHoldWizard(models.TransientModel):
 
     def send(self):
         """Remove default_type from context to avoid putting type in child.
-        For SUB, put async mode to False in order to wait for the message
-        answers.
+        For SUB, deactivate jobs in order to wait for the message answers.
         """
-        async_mode = self.env.context.get("async_mode", self.return_action != "sub")
+        no_delay = self.env.context.get(
+            "queue_job__no_delay", self.return_action == "sub"
+        )
         context_copy = self.env.context.copy()
-        context_copy["async_mode"] = async_mode
+        context_copy["queue_job__no_delay"] = no_delay
         if "default_type" in context_copy:
             del context_copy["default_type"]
         return super(ChildHoldWizard, self.with_context(context_copy)).send()

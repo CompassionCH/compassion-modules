@@ -50,7 +50,7 @@
             string="Send Now"
             class="oe_highlight"
             invisible="state not in ('draft', 'open')"
-            context="{'async_mode': False}"
+            context="{'queue_job__no_delay': True}"
             icon="fa-paper-plane"
           />
                     <button

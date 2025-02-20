@@ -60,7 +60,7 @@ class PrintChildpack(models.TransientModel):
         children = (
             self.env["compassion.child"]
             .browse(self.env.context.get("active_ids"))
-            .with_context(lang=self.lang, async_mode=False)
+            .with_context(lang=self.lang, queue_job__no_delay=True)
         )
         lang = self.lang
         project_lang_map = self.env[

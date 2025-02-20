@@ -75,7 +75,7 @@ class HoldWizard(models.TransientModel):
             # Grant create access rights to create intervention
             intervention = (
                 self.env["compassion.intervention"]
-                .with_context(async_mode=True)
+                .with_context(queue_job__no_delay=True)
                 .sudo()
                 .create(intervention_vals)
             )
@@ -92,7 +92,7 @@ class HoldWizard(models.TransientModel):
         )
         message = (
             self.env["gmc.message"]
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
             .create(
                 {
                     "action_id": create_hold.id,

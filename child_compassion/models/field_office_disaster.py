@@ -346,7 +346,7 @@ class FieldOfficeDisasterAlert(models.Model):
                 "action_id": action_id,
                 "object_id": fo_disaster.id,
             }
-            message_obj.with_context(async_mode=False).create(message_vals)
+            message_obj.create(message_vals)
             fo_ids.append(fo_disaster.id)
 
         return fo_ids

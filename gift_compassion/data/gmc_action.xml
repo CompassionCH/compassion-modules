@@ -17,6 +17,7 @@
         name="connect_answer_wrapper"
       >GiftCreateResponses.GiftCreateResponseList</field>
             <field name="request_type">POST</field>
+            <field name="job_channel">root.accounting</field>
         </record>
         <!-- Update Gift Message -->
         <record id="update_gift" model="gmc.action">
@@ -27,6 +28,7 @@
         name="description"
       >This will trigger a Gift Update at the Field.</field>
             <field name="auto_process">1</field>
+            <field name="job_channel">root.accounting</field>
         </record>
 
         <record id="update_gift_connect" model="gmc.action.connect">

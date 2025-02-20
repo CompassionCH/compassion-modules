@@ -239,7 +239,7 @@ class CompassionHold(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def update_hold(self):
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+        message_obj = self.env["gmc.message"].with_context(queue_job__no_delay=True)
         action_id = self.env.ref("child_compassion.create_hold").id
         messages = message_obj
         for hold in self:
@@ -365,7 +365,7 @@ class CompassionHold(models.Model):
         return self.release_hold()
 
     def release_hold(self):
-        messages = self.env["gmc.message"].with_context(async_mode=False)
+        messages = self.env["gmc.message"].with_context(queue_job__no_delay=True)
         action_id = self.env.ref("child_compassion.release_hold").id
 
         for hold in self:

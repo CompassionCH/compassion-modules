@@ -113,7 +113,7 @@ class CompassionReservation(models.Model):
                 break
         if sync:
             messages = (
-                self.with_context(async_mode=False)
+                self.with_context(queue_job__no_delay=True)
                 .filtered(lambda r: r.state == "active")
                 .handle_reservation()
             )
@@ -187,10 +187,10 @@ class CompassionReservation(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def send_reservation(self):
-        return self.with_context(async_mode=False).handle_reservation()
+        return self.with_context(queue_job__no_delay=True).handle_reservation()
 
     def cancel_reservation(self):
-        self.with_context(async_mode=False).handle_reservation(cancel=True)
+        self.with_context(queue_job__no_delay=True).handle_reservation(cancel=True)
         return True
 
     def show_reserved_children(self):

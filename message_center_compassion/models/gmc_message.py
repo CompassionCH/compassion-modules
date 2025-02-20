@@ -107,15 +107,15 @@ class GmcMessage(models.Model):
 
     def process_messages(self):
         new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
+        if not new_messages:
+            return True
+
         new_messages.write({"state": "pending", "failure_reason": False})
-        if self.env.context.get("async_mode", True):
-            # We define the priority with the first message because we're supposed
-            # to have only one actions by messages group
-            new_messages.with_delay(
-                priority=self[0].action_id.priority
-            )._process_messages()
-        else:
-            new_messages._process_messages()
+        priority = min(new_messages.mapped("action_id.priority"))
+        channel = new_messages[0].action_id.job_channel
+        new_messages.delayable()._process_messages().set(
+            priority=priority, channel=channel
+        ).split(10, chain=True).delay()
         return True
 
     def get_answer_dict(self, index=0):
@@ -170,7 +170,7 @@ class GmcMessage(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _process_messages(self):
-        """Process given messages in pool."""
+        """Send GMC message to Connect API."""
         today = datetime.now()
         messages = self.filtered(lambda mess: mess.state == "pending")
         if not self.env.context.get("force_send"):

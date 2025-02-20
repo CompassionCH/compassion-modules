@@ -521,7 +521,11 @@ class CommunicationJob(models.Model):
         # Process email jobs (digital or both) asynchronously
         email_jobs = todo.filtered(lambda j: j.send_mode in digital_modes)
         for job in email_jobs:
-            job.with_delay(channel=_JOB_CHANNEL)._send_mail_asynchronous()
+            job.with_delay(
+                channel=_JOB_CHANNEL,
+                priority=50,
+                identity_key=self._name + "._send_mail." + str(job.id),
+            )._send_mail_asynchronous()
 
         return self.download_data()
 
@@ -558,7 +562,11 @@ class CommunicationJob(models.Model):
         :return: list of sms_texts
         """
         for job in self.filtered("partner_id.mobile"):
-            job.with_delay(channel=_JOB_CHANNEL)._send_by_sms_asynchronous()
+            job.with_delay(
+                channel=_JOB_CHANNEL,
+                priority=40,
+                identity_key=self._name + "._send_sms." + str(job.id),
+            )._send_by_sms_asynchronous()
 
     def _convert_html_for_sms(self):
         """
@@ -761,7 +769,7 @@ class CommunicationJob(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _send_mail_asynchronous(self):
-        """Called for sending the communication by e-mail."""
+        """Send the communication by e-mail."""
         self.ensure_one()
         partner = self.partner_id
         email = self.email_id
@@ -808,16 +816,22 @@ class CommunicationJob(models.Model):
         for job in self:
             if job.attachment_ids:
                 print_name = name[:3] + " " + (job.subject or "")
-                job.with_delay(channel=_JOB_CHANNEL)._print_job_asynchronous(print_name)
+                job.with_delay(
+                    channel=_JOB_CHANNEL,
+                    priority=60,
+                    identity_key=self._name + "._print." + str(job.ids),
+                )._print_job_asynchronous(print_name)
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += job
 
         for configs in batch_print.values():
             for config, jobs in configs.items():
                 print_name = name[:3] + " " + config
-                jobs.with_delay(channel=_JOB_CHANNEL)._print_job_asynchronous(
-                    print_name
-                )
+                jobs.with_delay(
+                    channel=_JOB_CHANNEL,
+                    priority=60,
+                    identity_key=self._name + "._print." + str(job.ids),
+                )._print_job_asynchronous(print_name)
         return self.download_data()
 
     def _print_job_asynchronous(self, print_name):

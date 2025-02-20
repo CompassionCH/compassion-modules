@@ -792,7 +792,11 @@ class SponsorshipContract(models.Model):
 
         # Cancel the old invoices if a contract is activated
         delay = datetime.now() + relativedelta(seconds=30)
-        self.with_delay(eta=delay).cancel_old_invoices()
+        self.with_delay(
+            eta=delay,
+            priority=500,
+            identity_key=self._name + ".cancel_old_invoices." + str(self.ids),
+        ).cancel_old_invoices()
 
         con_line_obj = self.env["recurring.contract.line"]
         for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST):
@@ -894,7 +898,9 @@ class SponsorshipContract(models.Model):
         self.ensure_one()
         if not self.correspondent_id.global_id:
             self.correspondent_id.upsert_constituent().process_messages()
-        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
+        message_obj = self.env["gmc.message"].with_context(
+            {"queue_job__no_delay": True}
+        )
         upsert_correspondent_gmc = self.env.ref(
             "sponsorship_compassion.upsert_correspondent_commitment"
         )
@@ -934,7 +940,7 @@ class SponsorshipContract(models.Model):
 
         # Create new sponsorships at GMC
         message = self.upsert_sponsorship()
-        message.with_context({"async_mode": False}).process_messages()
+        message.with_context({"queue_job__no_delay": True}).process_messages()
 
         answer = json.loads(message.answer)
         if not isinstance(answer, dict) or "Message" not in answer:

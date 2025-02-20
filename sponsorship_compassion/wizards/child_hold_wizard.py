@@ -43,6 +43,8 @@ class ChildHoldWizard(models.TransientModel):
 
     def send(self):
         if self.return_action == "sponsor":
-            return super(ChildHoldWizard, self.with_context(async_mode=False)).send()
+            return super(
+                ChildHoldWizard, self.with_context(queue_job__no_delay=True)
+            ).send()
         else:
             return super().send()

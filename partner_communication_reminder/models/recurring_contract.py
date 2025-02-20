@@ -45,9 +45,9 @@ class RecurringContract(models.Model):
         _logger.info("Creating Sponsorship Reminders")
         today = datetime.now()
         first_day_of_month = today.replace(day=1)
-        reminder_conf_list = self.env["partner.communication.config"]
+        reminder_confs = self.env["partner.communication.config"]
         for i in range(1, 4):
-            reminder_conf_list += self.env.ref(
+            reminder_confs += self.env.ref(
                 f"partner_communication_reminder.sponsorship_reminder_{i}"
             )
         twenty_days_ago = today - relativedelta(days=20)
@@ -61,14 +61,14 @@ class RecurringContract(models.Model):
             ("child_id.project_id.suspension", "!=", "fund-suspended"),
             ("child_id.project_id.suspension", "=", False),
         ]
-        contracts_eligible_reminder_dict = {
+        eligible_reminders = {
             "first": self.env[(self._name)],
             "second": self.env[(self._name)],
             "third": self.env[(self._name)],
         }
         for sponsorship in self.search(search_domain):
             reminder_search = [
-                ("config_id", "in", reminder_conf_list.ids),
+                ("config_id", "in", reminder_confs.ids),
                 ("state", "=", "done"),
                 ("object_ids", "like", str(sponsorship.id)),
             ]
@@ -95,12 +95,12 @@ class RecurringContract(models.Model):
                     + [
                         ("sent_date", ">=", older_threshold),
                         ("sent_date", "<", twenty_days_ago),
-                        ("config_id", "=", reminder_conf_list[1].id),
+                        ("config_id", "=", reminder_confs[1].id),
                     ]
                 )
                 if has_second_reminder:
-                    contracts_eligible_reminder_dict["third"] += sponsorship
-                contracts_eligible_reminder_dict["second"] += sponsorship
+                    eligible_reminders["third"] += sponsorship
+                eligible_reminders["second"] += sponsorship
             else:
                 # Create first reminder only if one was not already created less
                 # than twenty days ago
@@ -108,15 +108,17 @@ class RecurringContract(models.Model):
                     reminder_search + [("sent_date", ">=", twenty_days_ago)]
                 )
                 if not has_first_reminder:
-                    contracts_eligible_reminder_dict["first"] += sponsorship
-        contracts_eligible_reminder_dict["first"].with_delay().send_communication(
-            reminder_conf_list[0], correspondent=False
-        )
-        contracts_eligible_reminder_dict["second"].with_delay().send_communication(
-            reminder_conf_list[1], correspondent=False
-        )
-        contracts_eligible_reminder_dict["third"].with_delay().send_communication(
-            reminder_conf_list[2], correspondent=False
-        )
+                    eligible_reminders["first"] += sponsorship
+
+        for key, config in zip(
+            ["first", "second", "third"], reminder_confs, strict=True
+        ):
+            sponsorships = eligible_reminders[key]
+            if sponsorships:
+                sponsorships.with_delay(
+                    channel="root.partner_communication",
+                    priority=500,
+                    identity_key=f"create_reminder_communication.{sponsorships.ids}",
+                ).send_communication(config, correspondent=False)
         _logger.info("Sponsorship Reminders created!")
         return True

@@ -62,7 +62,7 @@ class HoldWizard(models.TransientModel):
                 "object_id": self.id,
             }
         )
-        message.with_context(async_mode=False).process_messages()
+        message.with_context(queue_job__no_delay=True).process_messages()
         if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True

@@ -346,7 +346,7 @@ class ResPartner(models.Model):
             action = self.env.ref("sponsorship_compassion.anonymize_partner")
             message = (
                 self.env["gmc.message"]
-                .with_context(async_mode=False)
+                .with_context(queue_job__no_delay=True)
                 .create(
                     {
                         "action_id": action.id,
@@ -456,7 +456,7 @@ class ResPartner(models.Model):
             [("res_model", "=", self._name), ("res_id", "=", partner.id)]
         ).unlink()
         partner.message_follower_ids.unlink()
-        partner.with_delay().clear_message_history()
+        partner.clear_message_history()
         return True
 
     def clear_message_history(self):
@@ -494,7 +494,7 @@ class ResPartner(models.Model):
     ##########################################################################
     def upsert_constituent(self):
         """UPSERT Constituent in GMC."""
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+        message_obj = self.env["gmc.message"].with_context(queue_job__no_delay=True)
         messages = message_obj
         action_id = self.env.ref("sponsorship_compassion.upsert_partner").id
         for partner in self:
