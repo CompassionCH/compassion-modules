@@ -122,7 +122,6 @@
                         <group>
                             <field name="name" />
                             <field name="direction" />
-                            <field name="priority" />
                             <field name="description" />
                             <field name="connect_service" />
                             <field name="request_type" />
@@ -137,6 +136,10 @@
                             <field name="incoming_method" />
                             <field name="success_method" />
                             <field name="failure_method" />
+                        </group>
+                        <group string="Job queue configuration">
+                            <field name="priority" />
+                            <field name="job_channel" />
                         </group>
                     </group>
                 </sheet>

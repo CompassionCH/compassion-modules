@@ -143,7 +143,9 @@ class GenerateCommunicationWizard(models.TransientModel):
             }
             if async_mode or self.scheduled_date:
                 self.with_delay(
-                    eta=self.scheduled_date, priority=50
+                    eta=self.scheduled_date,
+                    priority=50,
+                    identity_key=self._name + ".create_comm.partner." + str(partner.id),
                 ).create_communication(vals, options)
             else:
                 self.create_communication(vals, options)

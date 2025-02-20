@@ -615,7 +615,7 @@ class Correspondence(models.Model):
 
             # If the letter is already at the highest priority and has a fallback competence, move it to another pool
             elif letter.translation_competence_id.fallback_competence_id:
-                letter.with_delay().move_pool()
+                letter.move_pool()
 
     def move_pool(self):
         """

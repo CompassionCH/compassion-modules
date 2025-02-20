@@ -439,7 +439,7 @@ class CompassionChild(models.Model):
         else:
             child = super().create(vals)
             # directly fetch picture to have it before get_infos
-            child.with_delay().update_child_pictures()
+            child.update_child_pictures()
         return child
 
     def unlink(self):
@@ -538,16 +538,6 @@ class CompassionChild(models.Model):
         self._fetch_translations(self.env.ref("child_compassion.beneficiaries_details"))
         return self.edit_translations()
 
-    @api.model
-    def update_all_children_description(self):
-        children = (
-            self.env["compassion.child"]
-            .sudo()
-            .search([("state", "not in", ["F", "R"])])
-        )
-        for child in children:
-            child.with_delay(priority=50).update_child_descriptions()
-
     def update_child_descriptions(self):
         self.ensure_one()
         return self.env["compassion.child.description"].create(
@@ -572,7 +562,7 @@ class CompassionChild(models.Model):
                 "child_id": child.id,
             }
             message = message_obj.create(message_vals)
-            if "failure" in message.state and not self.env.context.get("async_mode"):
+            if "failure" in message.state:
                 raise UserError(message.failure_reason)
         return True
 

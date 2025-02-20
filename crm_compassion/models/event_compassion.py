@@ -555,7 +555,7 @@ class EventCompassion(models.Model):
                 .with_context(active_id=childpool.id, active_model=childpool._name)
                 .create({})
             )
-            hold_wizard.with_delay().send()
+            hold_wizard.send()
 
     ##########################################################################
     #              SUBSCRIPTION METHODS TO SUBSCRIBE STAFF ONLY              #

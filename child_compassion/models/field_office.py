@@ -107,7 +107,7 @@ class FieldOffice(models.Model):
             "action_id": action_id,
             "object_id": self.id,
         }
-        message_obj.with_context(async_mode=False).create(message_vals)
+        message_obj.with_context(queue_job__no_delay=True).create(message_vals)
         return True
 
 

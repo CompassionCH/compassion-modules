@@ -49,13 +49,13 @@
             string="Send Now"
             class="oe_highlight"
             states="draft,open"
-            context="{'async_mode': False}"
+            context="{'queue_job__no_delay': True}"
           />
                     <button
             name="action_verify"
             type="object"
             string="To Verify"
-            states="draft,error"
+            states="draft,suspended"
           />
                     <button
             name="action_ok"

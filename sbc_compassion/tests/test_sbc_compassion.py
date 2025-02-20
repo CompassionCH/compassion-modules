@@ -73,7 +73,7 @@ class TestSbcCompassion(BaseSponsorshipTest):
 
         import_letter = (
             self.env["import.letters.history"]
-            .with_context(async_mode=False)
+            .with_context(queue_job__no_delay=True)
             .create({"data": list_data})
         )
 

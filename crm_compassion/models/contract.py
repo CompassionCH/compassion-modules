@@ -52,7 +52,13 @@ class Contracts(models.Model):
                 contract.origin_id.event_id.ambassador_sponsorship_config_id
             )
             if notif_template and contract.ambassador_id:
-                self.env["partner.communication.job"].create(
+                self.env["partner.communication.job"].with_delay(
+                    channel="root.partner_communication",
+                    identity_key=f"{self._name}."
+                    f"send_ambassador_notification.{contract.id}",
+                    priority=50,
+                    description="Send ambassador notification",
+                ).create(
                     {
                         "config_id": notif_template.id,
                         "partner_id": contract.ambassador_id.id,

@@ -14,7 +14,7 @@ from odoo import models
 class ProjectCompassion(models.Model):
     _inherit = "compassion.project"
 
-    def _hold_letters(self):
+    def hold_letters_action(self):
         letters = self.env["correspondence"].search(
             [
                 ("child_id.code", "like", self.fcp_id),
@@ -24,7 +24,7 @@ class ProjectCompassion(models.Model):
         )
         letters.hold_letters()
 
-    def _reactivate_letters(self):
+    def reactivate_letters(self):
         letters = self.env["correspondence"].search(
             [
                 ("child_id.code", "like", self.fcp_id),

@@ -380,7 +380,7 @@ class ChildLifecycleEvent(models.Model):
             if "Exit" in lifecycle.type:
                 child.child_departed()
             else:
-                lifecycle.child_id.with_context(async_mode=False).get_infos()
+                lifecycle.child_id.with_context(queue_job__no_delay=True).get_infos()
         return lifecycle
 
     @api.model

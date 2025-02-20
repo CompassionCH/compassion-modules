@@ -42,6 +42,16 @@ class TestTracking(BaseSponsorshipTest):
     is correct.
     """
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context,
+                queue_job__no_delay=True,
+            )
+        )
+
     def setUp(self):
         super().setUp()
 
@@ -99,7 +109,7 @@ class TestTracking(BaseSponsorshipTest):
             [{"amount": 50.0}],
         )
 
-        list_sponsorships = self.env["recurring.contract"].with_context(async_mode=True)
+        list_sponsorships = self.env["recurring.contract"]
 
         list_sponsorships += sponsorship1
         list_sponsorships += sponsorship2
@@ -137,7 +147,7 @@ class TestTracking(BaseSponsorshipTest):
         lifecyle_mock.return_value = True
 
         # Activate the sponsorships contracts and make the depart of child
-        self.list_sponsorships.with_context(async_mode=True).force_activation()
+        self.list_sponsorships.force_activation()
         for sponsorship in self.list_sponsorships:
             self.assertEqual(sponsorship.sds_state, "active")
 
@@ -163,7 +173,7 @@ class TestTracking(BaseSponsorshipTest):
         # Get the subsponsorship from its id and force his activation.
         self.assertEqual(self.list_sponsorships[0].sds_state, "sub")
         subsponsorship1 = self.env["recurring.contract"].browse(sub1_id)
-        subsponsorship1.with_context(async_mode=True).force_activation()
+        subsponsorship1.force_activation()
         self.list_sponsorships[0].sds_state_date = "2017-11-01"
         self.list_sponsorships[0].check_sub_state()
 
@@ -180,7 +190,7 @@ class TestTracking(BaseSponsorshipTest):
         sub2_id = subsponsorship2_wizzard.create_subsponsorship()["res_id"]
         subsponsorship2 = self.env["recurring.contract"].browse(sub2_id)
         self.assertEqual(self.list_sponsorships[1].sds_state, "sub")
-        subsponsorship2.with_context(async_mode=True).force_activation()
+        subsponsorship2.force_activation()
 
         # The subsponsorship is ended, the sponsor choose another child.
         exchange = self.env.ref("sponsorship_compassion.end_reason_child_exchange")
@@ -203,7 +213,7 @@ class TestTracking(BaseSponsorshipTest):
             },
             [{"amount": 50.0}],
         )
-        subsponsorship3_2.with_context(async_mode=True).force_activation()
+        subsponsorship3_2.force_activation()
         self.list_sponsorships[1].sds_state_date = "2017-11-01"
         self.list_sponsorships[1].check_sub_state()
 
@@ -222,7 +232,7 @@ class TestTracking(BaseSponsorshipTest):
         )
         # Force th activation of the sponsorship we just created.
         subsponsorship3 = self.env["recurring.contract"].browse(sub3_id)
-        subsponsorship3.with_context(async_mode=True).force_activation()
+        subsponsorship3.force_activation()
 
         self.assertEqual(self.list_sponsorships[2].sds_state, "sub")
         # Setup a sponsorship end wizard and put and end to the subsponsorship

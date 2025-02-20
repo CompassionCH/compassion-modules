@@ -71,5 +71,12 @@ class CrmRequest(models.Model):
     @api.returns("mail.message", lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)
-        self.partner_id.with_delay().fetch_interactions()
+        if self.partner_id:
+            self.partner_id.with_delay(
+                channel="root.partner_communication",
+                priority=100,
+                identity_key=self.partner_id._name
+                + ".fetch_interactions."
+                + str(self.partner_id.id),
+            ).fetch_interactions()
         return res

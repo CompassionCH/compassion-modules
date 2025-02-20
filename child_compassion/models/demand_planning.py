@@ -98,7 +98,7 @@ class DemandPlanning(models.Model):
             message_vals = {"action_id": action_id, "object_id": planning.id}
             pool += message_obj.create(message_vals)
 
-        pool.with_context(async_mode=False).process_messages()
+        pool.with_context(queue_job__no_delay=True).process_messages()
         for i in range(0, len(pool)):
             self[i].write(
                 {

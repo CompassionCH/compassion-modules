@@ -21,7 +21,7 @@
               string="Get info"
               icon="fa-refresh"
               class="oe_stat_button"
-              context="{'async_mode': False}"
+              context="{'queue_job__no_delay': True}"
             />
                         <button
               name="get_lifecycle_event"
@@ -29,7 +29,7 @@
               type="object"
               icon="fa-refresh"
               class="oe_stat_button"
-              context="{'async_mode': False}"
+              context="{'queue_job__no_delay': True}"
             />
                         <button
               name="edit_translations"

@@ -87,6 +87,11 @@ class GmcAction(models.Model):
         "proceeded.",
         default=100,
     )
+    job_channel = fields.Char(
+        help="Channel associated to perform the job. If empty, the default channel will"
+        " be used (root.gmc_pool).",
+        default="root.gmc_pool",
+    )
 
     def write(self, vals):
         # prevent writing direction which should not be changed and is performance heavy

@@ -74,7 +74,12 @@ class AccountStatement(models.Model):
     def button_post(self):
         self.invoice_ids.filtered(lambda i: i.state == "draft").action_post()
         super().button_post()
-        self.with_delay(channel="root.reconcile_compassion")._auto_reconcile()
+        self.with_delay(
+            channel="root.accounting",
+            priority=100,
+            identity_key=self._name + "._auto_reconcile." + str(self.ids),
+            description="Automatic reconciliation of bank statement",
+        )._auto_reconcile()
 
     def button_validate(self):
         """
@@ -103,22 +108,22 @@ class AccountStatement(models.Model):
 
     def auto_reconcile(self):
         """Auto reconcile matching invoices through jobs to avoid timeouts"""
-        if self.env.context.get("async_mode", True):
-            self.with_company(self.journal_id.company_id.id).with_delay(
-                channel="root.reconcile_compassion"
-            )._auto_reconcile()
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Auto reconcile",
-                    "type": "success",
-                    "message": "Reconciliation job has been queued",
-                    "sticky": False,
-                },
-            }
-        else:
-            self._auto_reconcile()
+        self.with_company(self.journal_id.company_id.id).with_delay(
+            channel="root.accounting",
+            priority=100,
+            identity_key=self._name + "._auto_reconcile." + str(self.ids),
+            description="Automatic reconciliation of bank statement",
+        )._auto_reconcile()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Auto reconcile",
+                "type": "success",
+                "message": "Reconciliation job has been queued",
+                "sticky": False,
+            },
+        }
 
     def _auto_reconcile(self):
         """Inspired by the `if model.auto_reconcile` part of _apply_rules()"""
@@ -140,13 +145,15 @@ class AccountStatement(models.Model):
 
             for line_id, result in matching_amls.items():
                 self.with_delay(
-                    channel="root.reconcile_compassion"
+                    channel="root.accounting",
+                    priority=100,
+                    identity_key=self._name + "._reconcile_single_line." + str(line_id),
+                    description="Auto reconcile single line",
                 )._reconcile_single_line(
                     line_id, result, bank_statement, reconcile_model
                 )
 
     def _reconcile_single_line(self, line_id, result, bank_statement, reconcile_model):
-        """Reconcile method to run it as a job"""
         if result["aml_ids"]:
             line = bank_statement.line_ids.browse(line_id)
             move_lines = self.env["account.move.line"].browse(result["aml_ids"])

@@ -109,11 +109,12 @@ class ProjectCompassion(models.Model):
             # execution and decrease remote server load
             p.with_delay(
                 eta=requests_throttle_seconds * i,
-                priority=100,
-                channel="root.child_compassion",
+                priority=500,
+                channel="root.gmc_pool",
+                description="Sync project from GMC",
             )._sync_from_gmc()
 
     def _sync_from_gmc(self):
         self.ensure_one()
-        self.with_context(async_mode=False).update_informations()
-        self.get_lifecycle_event()
+        self.with_context(queue_job__no_delay=True).update_informations()
+        self.with_context(queue_job__no_delay=True).get_lifecycle_event()

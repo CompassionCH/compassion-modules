@@ -43,33 +43,27 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
     def send(self):
         holds = self.env["compassion.hold"]
-        child_search = (
+        children = (
             self.env["compassion.childpool.search"]
             .browse(self.env.context.get("active_id"))
             .global_child_ids
         )
-        chunk_size = 10
-        for i in range(0, len(child_search), chunk_size):
-            _logger.debug(f"Processing chunk {i} for sending hold requests")
-            messages = self.env["gmc.message"]
-            for child in child_search[i : i + chunk_size]:
-                # Save children form global children to compassion children
-                child_comp = self.env["compassion.child"].create(child.get_child_vals())
+        messages = self.env["gmc.message"]
+        for child in children:
+            # Save children form global children to compassion children
+            child_comp = self.env["compassion.child"].create(child.get_child_vals())
 
-                # Create Holds for children to reserve
-                hold_vals = self.get_hold_values()
-                hold_vals["child_id"] = child_comp.id
-                hold = holds.create(hold_vals)
-                holds += hold
+            # Create Holds for children to reserve
+            hold_vals = self.get_hold_values()
+            hold_vals["child_id"] = child_comp.id
+            hold = holds.create(hold_vals)
+            holds += hold
 
-                # Create messages to send to Connect
-                action_id = self.env.ref("child_compassion.create_hold").id
+            # Create messages to send to Connect
+            action_id = self.env.ref("child_compassion.create_hold").id
 
-                messages += messages.create(
-                    {"action_id": action_id, "object_id": hold.id}
-                )
-            messages.process_messages()
-
+            messages += messages.create({"action_id": action_id, "object_id": hold.id})
+        messages.process_messages()
         return self._get_action(holds)
 
     ##########################################################################

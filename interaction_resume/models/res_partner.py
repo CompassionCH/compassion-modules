@@ -56,8 +56,7 @@ class Partner(models.Model):
         self,
         page=0,
     ):
-        """
-        Get interactions for a partner
+        """Get interactions for a partner
         :param page: page number for fetching the past years
         :return: total number interaction found, for knowing if more
                  interactions exist further in the past.
