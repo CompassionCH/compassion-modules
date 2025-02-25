@@ -96,7 +96,7 @@
       >BeneficiaryCommitmentResponseList</field>
             <field name="auto_process">true</field>
             <field name="request_type">PUT</field>
-            <field name="job_channel">root.sbc_compassion</field>
+            <field name="job_channel">root.accounting</field>
         </record>
         <!-- Sponsorship Message Cancel -->
         <record id="cancel_sponsorship" model="gmc.action">
