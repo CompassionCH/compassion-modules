@@ -20,7 +20,7 @@
             string="Make a reservation"
             type="object"
             class="oe_highlight"
-            invisible="not nb_selected or not all_children_available"
+            invisible="not nb_selected or all_children_available"
           />
                 </header>
                 <sheet>
