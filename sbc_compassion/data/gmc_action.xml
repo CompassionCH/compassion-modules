@@ -9,7 +9,7 @@
         name="description"
       >This will update a Sponsorship Correspondence object.</field>
             <field name="auto_process">1</field>
-            <field name="job_channel">root.sbc_compassion</field>
+            <field name="job_channel">root.accounting</field>
         </record>
 
         <record id="create_letter" model="gmc.action">

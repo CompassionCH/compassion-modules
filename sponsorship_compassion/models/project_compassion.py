@@ -110,7 +110,7 @@ class ProjectCompassion(models.Model):
             p.with_delay(
                 eta=requests_throttle_seconds * i,
                 priority=500,
-                channel="root.gmc_pool",
+                channel="root.gmc_pool.fcp_compassion",
                 description="Sync project from GMC",
             )._sync_from_gmc()
 
