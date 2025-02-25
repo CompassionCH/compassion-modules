@@ -40,23 +40,19 @@ class ChildLifecycle(models.Model):
                 )
                 if communication_type:
                     # Depending on the communication we want different object_ids
-                    object_ids = lifecycle.child_id.id
-                    if communication_type in (
-                        self.env.ref(
-                            "partner_communication_compassion.lifecycle_child_unplanned_exit"
-                        ),
-                        self.env.ref(
-                            "partner_communication_compassion.lifecycle_child_planned_exit"
-                        ),
-                    ):
-                        object_ids = lifecycle.child_id.sponsorship_ids[:1].id
-
-                    # Generate the communication
                     sponsorship = lifecycle.child_id.sponsorship_ids[:1]
-                    if (
+                    object_ids = lifecycle.child_id.id
+                    can_send = (
                         sponsorship.state == "active"
                         or sponsorship.end_date.date() == date.today()
-                    ):
+                    )
+                    if lifecycle.type == "Unplanned Exit":
+                        object_ids = lifecycle.child_id.sponsorship_ids[:1].id
+                    elif lifecycle.type == "Reinstatement":
+                        can_send = sponsorship.state == "terminated"
+
+                    # Generate the communication
+                    if can_send:
                         sponsor = sponsorship.correspondent_id
                         self.env["partner.communication.job"].create(
                             {

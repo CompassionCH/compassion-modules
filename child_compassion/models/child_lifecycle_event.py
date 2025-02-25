@@ -94,12 +94,16 @@ class ChildLifecycleEvent(models.Model):
                 "now interested and agrees to policies",
                 "{he} is now interested and agrees to policies",
             ),
-            # Transfer
-            ("child transfer", "Child Transfer"),
             (
                 "recently exited and attending new icp",
                 "{he} recently exited and attends a new ICP",
             ),
+            (
+                "recently exited and attending new fcp",
+                "{he} recently exited and attends a new ICP",
+            ),
+            # Transfer
+            ("child transfer", "Child Transfer"),
             (
                 "relocation: caregiver's work.",
                 "of a relocation of {his} caregiver's work.",
