@@ -52,14 +52,13 @@ class IrActionsServer(models.Model):
                     ]
                 )
                 # Use same job if possible to group communications for one partner
+                identity_key = f"create_communication.{self.config_id.id}.{partner.id}"
                 existing_job = self.env["queue.job"].search(
                     [
                         ("state", "=", "pending"),
-                        ("method_name", "=", "create_communication_job"),
-                        ("model_name", "=", self._name),
-                        ("func_string", "like", f"'partner_id': {partner.id}"),
-                        ("func_string", "like", f"'config_id': {self.config_id.id}"),
-                    ]
+                        ("identity_key", "=", identity_key),
+                    ],
+                    limit=1,
                 )
                 if existing_job:
                     vals = existing_job.args[0]
@@ -76,7 +75,9 @@ class IrActionsServer(models.Model):
                 if self.auto_send:
                     vals["auto_send"] = self.auto_send
                 delay = datetime.now() + timedelta(minutes=3)
-                self.with_delay(eta=delay).create_communication_job(vals)
+                self.with_delay(
+                    identity_key=identity_key, eta=delay
+                ).create_communication_job(vals)
         return {}
 
     def create_communication_job(self, vals):
