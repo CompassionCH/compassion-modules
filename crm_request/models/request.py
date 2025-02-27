@@ -213,8 +213,8 @@ class CrmClaim(models.Model):
         wait_support = self.env.ref("crm_request.stage_wait_support")
         stage_new = self.env.ref("crm_claim.stage_claim1")
         in_leave = self.filtered("user_id.employee_ids.current_leave_id")
-        (self - in_leave).write({"stage_id": wait_support})
-        in_leave.write({"stage_id": stage_new, "user_id": False})
+        (self - in_leave).write({"stage_id": wait_support.id})
+        in_leave.write({"stage_id": stage_new.id, "user_id": False})
         return result
 
     @api.returns("mail.message", lambda value: value.id)
