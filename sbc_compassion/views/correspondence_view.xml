@@ -163,6 +163,15 @@
                 options="{'create':False}"
                 required="1"
               />
+                            <field
+                name="original_letter_url"
+                groups="base.group_system"
+              />
+                            <field
+                name="final_letter_url"
+                groups="base.group_system"
+              />
+
                         </group>
                         <group>
                             <field

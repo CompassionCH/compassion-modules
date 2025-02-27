@@ -349,13 +349,19 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         reply_template = self.env.ref("sbc_translation.issue_reply").sudo()
-        self.message_post_with_view(
-            reply_template,
-            partner_ids=[(4, self.new_translator_id.partner_id.id)],
-            values={
-                "reply": body_html,
-            },
+        translator_group = self.env.ref("sbc_translation.group_user")
+        partner = self.mapped("message_ids.author_id").filtered(
+            lambda p: any(p.user_ids.mapped("share")) and
+            translator_group in p.user_ids.mapped("groups_id")
         )
+        if partner:
+            self.message_post_with_view(
+                reply_template,
+                partner_ids=[(4, partner[0].id)],
+                values={
+                    "reply": body_html,
+                },
+            )
         return self.write(
             {"translation_issue": False, "translation_issue_comments": False}
         )
@@ -385,6 +391,10 @@ class Correspondence(models.Model):
         :param translator_id: optional translator assigned
         """
         self.ensure_one()
+        if self.translation_status == "to validate":
+            _logger.warning("Invalid save translation call on letter."
+                            "The letter is already submitted.")
+            return True
         page_index = 0
         paragraph_index = 0
         current_page = self.page_ids[page_index]

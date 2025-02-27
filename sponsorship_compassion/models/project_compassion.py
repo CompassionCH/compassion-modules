@@ -103,7 +103,7 @@ class ProjectCompassion(models.Model):
             "Starting projects sync from GMC. projects_to_sync=%s,"
             "Estimated duration: %s seconds.",
             nb_projects_to_sync,
-            requests_throttle_seconds * nb_projects_to_sync
+            requests_throttle_seconds * nb_projects_to_sync,
         )
         for i, p in enumerate(projects_to_sync):
             # Only synchronise projects for which we have sponsorships to speedup
