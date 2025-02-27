@@ -33,7 +33,8 @@ class DemandPlanning(models.Model):
         )
         if last_week_demand:
             revision_obj = self.env["demand.weekly.revision"]
-            for type_tuple in revision_obj.get_revision_types():
+            type_selection_values = revision_obj._fields["type"].selection
+            for type_tuple in type_selection_values:
                 type_tuple = type_tuple[0]
                 if type_tuple == "web":
                     demand = last_week_demand.number_children_website
