@@ -92,7 +92,7 @@ class ProjectCompassion(models.Model):
         projects_to_sync = self.search(
             [
                 ("status", "in", ["Active", "Suspended"]),
-                ("last_update_date", "<", one_month_ago),
+                ("last_update_date", "<", fields.Date.to_string(one_month_ago)),
                 ("sponsorships_count", ">", 0),
             ],
             limit=max_projects_to_sync,
@@ -100,9 +100,10 @@ class ProjectCompassion(models.Model):
         nb_projects_to_sync = len(projects_to_sync)
 
         _logger.info(
-            f"Starting projects sync from GMC. {projects_to_sync=}, "
-            f"Estimated duration: "
-            f"{requests_throttle_seconds * nb_projects_to_sync} seconds."
+            "Starting projects sync from GMC. projects_to_sync=%s,"
+            "Estimated duration: %s seconds.",
+            nb_projects_to_sync,
+            requests_throttle_seconds * nb_projects_to_sync
         )
         for i, p in enumerate(projects_to_sync):
             # Only synchronise projects for which we have sponsorships to speedup
