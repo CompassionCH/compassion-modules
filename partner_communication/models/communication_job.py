@@ -831,6 +831,12 @@ class CommunicationJob(models.Model):
 
     def _print_batch(self):
         name = self.env.user.name
+        # In case the report is downloaded by the client, we don't want to delay the
+        # job, so that the client can download the report immediately.
+        for report in self.mapped("report_id"):
+            if report.behaviour()["action"] == "client":
+                self = self.with_context(queue_job__no_delay=True)
+                break
 
         # Batch print communications of same type (if no attachments)
         batch_print = {
