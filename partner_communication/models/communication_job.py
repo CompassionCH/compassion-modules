@@ -848,7 +848,7 @@ class CommunicationJob(models.Model):
                 print_name = name[:3] + " " + (job.subject or "")
                 job.with_delay(
                     channel=_JOB_CHANNEL,
-                    priority=60,
+                    priority=40,
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:
@@ -859,7 +859,7 @@ class CommunicationJob(models.Model):
                 print_name = name[:3] + " " + config
                 jobs.with_delay(
                     channel=_JOB_CHANNEL,
-                    priority=60,
+                    priority=40,
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
         return self.download_data()
