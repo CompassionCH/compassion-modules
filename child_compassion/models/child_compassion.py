@@ -723,8 +723,9 @@ class CompassionChild(models.Model):
 
     def _get_last_pictures(self):
         self.ensure_one()
-
         pictures_obj = self.env["compassion.child.pictures"]
+        if not self.image_url:
+            return pictures_obj
         existing = self.pictures_ids
         pictures = pictures_obj.create(
             {"child_id": self.id, "image_url": self.image_url}
