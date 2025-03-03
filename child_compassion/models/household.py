@@ -249,7 +249,7 @@ class HouseholdMembers(models.Model):
 
     beneficiary_local_id = fields.Char()
     child_id = fields.Many2one(
-        "compassion.child", "Child", ondelete="cascade", readonly=False
+        "compassion.child", "Child", ondelete="set null", readonly=False
     )
     household_id = fields.Many2one(
         "compassion.household",
