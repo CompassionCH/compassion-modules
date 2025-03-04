@@ -10,7 +10,6 @@
 import logging
 
 from odoo import fields, models
-from odoo.tools.mimetypes import guess_mimetype
 
 logger = logging.getLogger(__name__)
 
@@ -45,9 +44,6 @@ class ResPartner(models.Model):
     def _compute_criminal_record_name(self):
         for partner in self:
             if partner.criminal_record:
-                ftype = guess_mimetype(
-                    partner.with_context(bin_size=False).criminal_record
-                )
                 partner.criminal_record_name = f"Criminal_Record_{partner.name}"
             else:
                 partner.criminal_record_name = False
