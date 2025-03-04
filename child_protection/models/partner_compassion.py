@@ -10,7 +10,6 @@
 import logging
 
 from odoo import fields, models
-from odoo.tools.mimetypes import guess_mimetype
 
 logger = logging.getLogger(__name__)
 
@@ -29,18 +28,32 @@ class ResPartner(models.Model):
     criminal_record_name = fields.Char(compute="_compute_criminal_record_name")
     criminal_record_date = fields.Date(tracking=True)
 
+    code_of_conduct_file = fields.Binary(
+        string="Code of Conduct",
+        attachment=True,
+        help="Upload file",
+    )
+    code_of_conduct_filename = fields.Char(
+        string="File Name",
+        compute="_compute_code_of_conduct_filename",
+    )
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     def _compute_criminal_record_name(self):
         for partner in self:
             if partner.criminal_record:
-                ftype = guess_mimetype(
-                    partner.with_context(bin_size=False).criminal_record
-                )
-                partner.criminal_record_name = f"Criminal record {partner.name}{ftype}"
+                partner.criminal_record_name = f"Criminal_Record_{partner.name}"
             else:
                 partner.criminal_record_name = False
+
+    def _compute_code_of_conduct_filename(self):
+        for record in self:
+            if record.code_of_conduct_file:
+                record.code_of_conduct_filename = f"Code_of_Conduct_{record.name}"
+            else:
+                record.code_of_conduct_filename = False
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -48,4 +61,9 @@ class ResPartner(models.Model):
     def write(self, vals):
         if vals.get("criminal_record"):
             vals["criminal_record_date"] = fields.Date.today()
+
+        if vals.get("code_of_conduct_file"):
+            for partner in self:
+                if not partner.date_agreed_child_protection_charter:
+                    vals["date_agreed_child_protection_charter"] = fields.Datetime.now()
         return super().write(vals)
