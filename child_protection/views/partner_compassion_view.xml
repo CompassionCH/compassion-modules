@@ -14,10 +14,16 @@
           string="Child Protection"
           name="child_protection_charter_fields"
         >
+                    <field name="code_of_conduct_filename" invisible="1" />
+                    <field
+            name="code_of_conduct_file"
+            filename="code_of_conduct_filename"
+          />
                     <field
             string="Date agreed"
             name="date_agreed_child_protection_charter"
           />
+
                     <field name="criminal_record_name" invisible="1" />
                     <field
             name="criminal_record"
