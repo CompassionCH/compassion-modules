@@ -390,7 +390,14 @@ class CommunicationJob(models.Model):
             if job.need_call == "before_sending":
                 job.schedule_call()
             if job.auto_send:
-                job.send()
+                # T2221 Using a job avoids multiple sends in case of rollbacks
+            job.with_delay(
+                eta=10,
+                max_retries=1,
+                description="Autosend communication",
+                channel="root.partner_communication",
+                identity_key=f"{self._name}.send.{job.id}",
+            ).send()
 
         return updated + created
 
