@@ -867,7 +867,7 @@ class CommunicationJob(models.Model):
                 jobs.with_delay(
                     channel=_JOB_CHANNEL,
                     priority=40,
-                    identity_key=self._name + "._print." + str(job.ids),
+                    identity_key=self._name + "._print." + str(jobs.ids),
                 )._print_job_asynchronous(print_name)
         return self.download_data()
 
