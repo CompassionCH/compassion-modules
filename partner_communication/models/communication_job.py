@@ -321,7 +321,7 @@ class CommunicationJob(models.Model):
         add the object_ids to it. Otherwise, create a new communication.
         opt-out partners won't create any communication.
         """
-        updated = self.env[self._name]
+        updated = self.browse()
         for vals in vals_list.copy():
             # Object ids accept lists, integer or string values. It should contain
             # a comma separated list of integers

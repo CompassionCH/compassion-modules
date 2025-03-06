@@ -45,7 +45,7 @@ class MajorRevision(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        res = self
+        res = self.browse()
         for vals in vals_list:
             try:
                 major_field = super().create(vals)

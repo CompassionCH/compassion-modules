@@ -196,7 +196,7 @@ class CompassionHold(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         # Avoid duplicating Holds
-        existing = self
+        existing = self.browse()
         for vals in vals_list.copy():
             hold_id = vals.get("hold_id")
             if hold_id:

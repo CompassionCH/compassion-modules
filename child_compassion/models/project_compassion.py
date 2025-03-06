@@ -571,7 +571,7 @@ class CompassionProject(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Avoid creating an already existing FCP."""
-        result = self
+        result = self.browse()
         for vals in vals_list:
             fcp_id = vals.get("fcp_id")
             project = self.search([("fcp_id", "=", fcp_id)])

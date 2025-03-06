@@ -369,7 +369,7 @@ class ChildLifecycleEvent(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        events = self
+        events = self.browse()
         for vals in vals_list.copy():
             lifecycle = self.search([("global_id", "=", vals["global_id"])])
             if lifecycle:

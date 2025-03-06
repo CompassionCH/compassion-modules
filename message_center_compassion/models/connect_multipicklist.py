@@ -34,7 +34,7 @@ class ConnectMultipicklist(models.AbstractModel):
         """Sometimes we get from Connect a same value in several fields trying to
         create at the same time. We therefore try to find an already existing record
         before creating a new one, to avoid errors."""
-        res = self
+        res = self.browse()
         if not isinstance(vals_list, list):
             vals_list = [vals_list]
         for vals in vals_list:

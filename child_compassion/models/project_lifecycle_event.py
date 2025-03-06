@@ -104,7 +104,7 @@ class ProjectLifecycle(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Call suspension and reactivation process on projects."""
-        events = self
+        events = self.browse()
         for vals in vals_list:
             project = self.env["compassion.project"].browse(vals.get("project_id"))
             fund_suspended = project.suspension == "fund-suspended"

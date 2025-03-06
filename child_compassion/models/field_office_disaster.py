@@ -261,7 +261,7 @@ class FieldOfficeDisasterAlert(models.Model):
         notify_ids = (
             self.env["res.config.settings"].sudo().get_param("disaster_notify_ids")
         )
-        updated = self.env[self._name]
+        updated = self.browse()
         for vals in vals_list.copy():
             disaster_id = vals.get("disaster_id")
             disaster = self.search([("disaster_id", "=", disaster_id)])

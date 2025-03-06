@@ -120,7 +120,7 @@ class ContractOrigin(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Try to find existing origin instead of raising an error."""
-        result = self
+        result = self.browse()
         partner_obj = self.env["res.partner"]
         for vals in vals_list:
             # Put analytic account of the user if it exists

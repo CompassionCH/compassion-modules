@@ -229,7 +229,7 @@ class Household(models.Model):
     ##########################################################################
     @api.model_create_multi
     def create(self, vals_list):
-        updated = self
+        updated = self.browse()
         for vals in vals_list.copy():
             role = vals.get("role")
             if role and role not in [t[0] for t in self._get_roles()]:

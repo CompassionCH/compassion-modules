@@ -240,7 +240,7 @@ class SponsorshipGift(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Try to find existing gifts before creating a new one."""
-        gifts = self
+        gifts = self.browse()
         for vals in vals_list.copy():
             previous_gift = self._search_for_similar_pending_gifts(vals)
             if previous_gift:

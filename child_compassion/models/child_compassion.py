@@ -433,7 +433,7 @@ class CompassionChild(models.Model):
         If child with global_id already exists, update it instead of creating
         a new one.
         """
-        children = self
+        children = self.browse()
         for vals in vals_list.copy():
             global_id = vals.get("global_id")
             child = self.search([("global_id", "=", global_id)])

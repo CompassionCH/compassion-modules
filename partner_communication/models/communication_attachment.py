@@ -60,7 +60,7 @@ class CommunicationAttachment(models.Model):
         :param vals: vals for creation
         :return: record created
         """
-        res = self.env[self._name]
+        res = self.browse()
         for vals in vals_list:
             if not vals.get("report_id"):
                 vals["report_id"] = (
