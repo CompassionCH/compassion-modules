@@ -186,7 +186,13 @@ class CommunicationConfig(models.Model):
 
     @api.model
     def get_send_mode(self):
-        send_modes = self.get_delivery_preferences()
+        # Digital only modes are not relevant from communication rules :
+        # the setting "print if no email" is used instead.
+        send_modes = [
+            mode
+            for mode in self.get_delivery_preferences()
+            if not mode[0].endswith("_only")
+        ]
         send_modes.append(("partner_preference", _("Partner specific")))
         return send_modes
 
@@ -220,15 +226,13 @@ class CommunicationConfig(models.Model):
 
         comm_pref       partner_pref        result
         ---------------------------------------------------
-        physical        digital             physical
+        physical        digital,sms         physical
         physical        digital_only        digital
         digital         physical            physical if "print if no e-mail"
+                                                     else "email" if partner has email
                                                      else none
-        digital         digital_only        digital
-        digital_only    physical            digital if e-mail is set else none
-        digital_only    digital             digital
-        digital_only    both                digital
         both            digital_only        digital
+        sms             any                 sms if partner has mobile else none
 
 
         auto            manual              manual
@@ -297,22 +301,25 @@ class CommunicationConfig(models.Model):
                 "digital": "physical",
                 "digital_only": "digital",
                 "both": "physical",
+                "sms": "physical",
             },
             "digital": {
                 "none": "none",
                 "sms": "sms",
-                "physical": "physical" if print_if_not_email else "none",
+                "physical": "physical"
+                if print_if_not_email
+                else ("digital" if partner.email else "none"),
                 "digital": "digital",
                 "digital_only": "digital",
                 "both": "both" if print_if_not_email else "digital",
             },
-            "digital_only": {
+            "sms": {
                 "none": "none",
-                "sms": "digital" if partner.email else "none",
-                "physical": "digital" if partner.email else "none",
-                "digital": "digital",
-                "digital_only": "digital",
-                "both": "digital",
+                "sms": "sms",
+                "digital": "sms" if partner.mobile else "none",
+                "digital_only": "sms" if partner.mobile else "none",
+                "physical": "sms" if partner.mobile else "none",
+                "both": "sms" if partner.mobile else "none",
             },
             "both": {
                 "none": "none",
