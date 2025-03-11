@@ -330,12 +330,9 @@ class CommunicationConfig(models.Model):
         :param partner_mode: auto_mode from the partner preference
         :param communication_mode: auto_mode from the communication config."""
         return (
-            "auto" in partner_mode
-            and "auto" in communication_mode
-            or "auto" in partner_mode
-            and communication_mode == "both"
-            or "auto" in communication_mode
-            and partner_mode == "both"
-            or partner_mode == "both"
-            and communication_mode == "both"
+            ("auto" in partner_mode and "auto" in communication_mode)
+            or ("auto" in partner_mode and communication_mode == "both")
+            or ("auto" in communication_mode and partner_mode == "both")
+            or (partner_mode == "both" and communication_mode == "both")
+            or (partner_mode == "sms" and "auto" in communication_mode)
         )
