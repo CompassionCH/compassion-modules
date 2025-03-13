@@ -696,25 +696,25 @@ class CommunicationJob(models.Model):
         for job in self.with_context(must_skip_send_to_printer=True):
             if job.config_id.attachments_function:
                 try:
-                    binaries = getattr(
-                        job.with_context(lang=job.partner_id.lang),
-                        job.config_id.attachments_function,
-                        dict,
-                    )()
-                    if binaries and isinstance(binaries, dict):
-                        for name, data in list(binaries.items()):
-                            attachment_id = attachment_obj.create(
-                                {
-                                    "name": name,
-                                    "communication_id": job.id,
-                                    "report_name": data[0],
-                                    "data": data[1],
-                                }
-                            )
-                            job.attachment_ids += attachment_id
+                    with self.env.cr.savepoint():
+                        binaries = getattr(
+                            job.with_context(lang=job.partner_id.lang),
+                            job.config_id.attachments_function,
+                            dict,
+                        )()
+                        if binaries and isinstance(binaries, dict):
+                            for name, data in list(binaries.items()):
+                                attachment_id = attachment_obj.create(
+                                    {
+                                        "name": name,
+                                        "communication_id": job.id,
+                                        "report_name": data[0],
+                                        "data": data[1],
+                                    }
+                                )
+                                job.attachment_ids += attachment_id
                 except Exception:
                     _logger.error("Error during attachment creation", exc_info=True)
-                    job.env.clear()
                     if job.state == "pending":
                         job.write(
                             {
