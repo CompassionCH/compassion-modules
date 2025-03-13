@@ -12,7 +12,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, exceptions, fields, models
+from odoo import Command, _, api, exceptions, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -144,9 +144,11 @@ class RecurringContract(models.Model):
             if sub and sub.state == "draft":
                 super(RecurringContract, sub).unlink()
             elif sub:
-                sub.end_reason_id = sub_reject
                 self.env["end.contract.wizard"].create(
-                    {"contract_ids": sub.id}
+                    {
+                        "contract_ids": [Command.link(sub.id)],
+                        "end_reason_id": sub_reject.id,
+                    }
                 ).end_contract()
         return self.write({"sds_state": "sub_reject"})
 
