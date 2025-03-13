@@ -209,7 +209,7 @@ class SponsorshipContract(models.Model):
             return self._get_sponsorship_standard_lines(False)
         return []
 
-    @api.onchange("company_id", "pricelist_id")
+    @api.onchange("group_id")
     def _get_correct_pricelist(self):
         if "S" in self.env.context.get("default_type", "O"):
             self.contract_line_ids = self._get_sponsorship_standard_lines(False)
