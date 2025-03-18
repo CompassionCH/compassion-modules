@@ -39,54 +39,68 @@
                 <field name="display_name" readonly="True" />
             </field>
 
-            <field name="comment" position="after">
-                <field name="reading_language" />
-            </field>
-
-            <field name="last_paid_invoice_date" position="before">
-                <field name="type" readonly="state != 'draft'" />
-                <field name="group_freq" />
-            </field>
-
-            <!-- Add correspondant field for sponsorships -->
-            <field name="partner_id" position="after">
+            <!--  Sponsorship specific fields          -->
+            <group name="contract_details" position="after">
+                <group
+          name="contract_sponsorship"
+          string="Sponsorship"
+          invisible="type not in ['S', 'SC', 'SWP']"
+        >
+                    <field
+            name="child_id"
+            domain="[('state', '=', 'N')]"
+            options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"
+            readonly="state in ['active', 'terminated', 'cancelled']"
+            required="type in ['S', 'SC', 'SWP']"
+            invisible="type not in ['S', 'SC', 'SWP']"
+          />
+                    <field
+            name="correspondent_id"
+            options="{'create': false, 'm2o_dialog': false}"
+            invisible="type not in ['S','SC','SWP','CSP']"
+            required="type in ['S','SC','SWP','CSP']"
+          />
+                    <field name="send_gifts_to" />
+                    <field name="reading_language" options="{'create':False}" />
+                    <field
+            name="parent_id"
+            domain="[('correspondent_id', '=', correspondent_id), ('id', '!=', id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
+            context="{'default_type':'S'}"
+            invisible="type not in ['S', 'SC', 'SWP']"
+            readonly="1"
+          />
                 <field
-          name="correspondent_id"
-          options="{'create': false, 'm2o_dialog': false}"
-          invisible="type not in ['S','SC','SWP','CSP']"
-          required="type in ['S','SC','SWP','CSP']"
-        />
-                <field name="send_gifts_to" />
-            </field>
+            name="sub_sponsorship_id"
+            invisible="state != 'terminated'"
+            context="{'default_type':'S'}"
+          />
+                    <field
+            name="gmc_commitment_id"
+            invisible="type != 'S'"
+            readonly="1"
+          />
+                </group>
+            </group>
 
-            <field name="medium_id" position="attributes">
-                <attribute
-          name="required"
-        >type in ['S', 'SC', 'SWP'] or not id</attribute>
-            </field>
+            <!--         Marketing information   -->
             <field name="medium_id" position="before">
-                <field
-          name="child_id"
-          domain="[('state', '=', 'N')]"
-          options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"
-          readonly="state in ['active', 'terminated', 'cancelled']"
-        />
                 <field name="origin_id" />
             </field>
             <!-- Make origin and medium mandatory for sponsorships -->
             <field name="origin_id" position="attributes">
                 <attribute name="required">type in ['S','SC','SWP']</attribute>
             </field>
+            <field name="last_paid_invoice_date" position="before">
+                <field name="group_freq" />
+            </field>
 
-            <!-- Field child_id is not available for general contracts -->
-            <xpath expr="//field[@name='child_id']" position="attributes">
-                <attribute
-          name="readonly"
-        >type not in ['S', 'SC', 'SWP'] or state in ['active', 'terminated', 'cancelled']</attribute>
+
+            <field name="medium_id" position="attributes">
                 <attribute
           name="required"
-        >type in ['S', 'SC', 'SWP']</attribute>
-            </xpath>
+        >type in ['S', 'SC', 'SWP'] or not id</attribute>
+            </field>
+
 
             <!-- Add context in contract lines -->
             <xpath
@@ -96,17 +110,23 @@
                 <attribute name="context">{'default_type': type}</attribute>
             </xpath>
 
-            <!-- Automatic birthday & christmas invoice -->
-            <field name="start_date" position="before">
+            <group name="contract_dates" position="after">
+                <group
+          name="sponsorship_details"
+          string="Sponsorship details"
+          invisible="type not in ['S', 'SC', 'SWP']"
+        >
+                    <field
+            name="birthday_invoice"
+            invisible="state in ['terminated', 'cancelled'] or type not in ['S', 'SC', 'SWP']"
+          />
                 <field
-          name="birthday_invoice"
-          invisible="state in ['terminated', 'cancelled'] or type not in ['S', 'SC', 'SWP']"
-        />
-                <field
-          name="christmas_invoice"
-          invisible="state in ['terminated', 'cancelled'] or type not in ['S', 'SC', 'SWP']"
-        />
-            </field>
+            name="christmas_invoice"
+            invisible="state in ['terminated', 'cancelled'] or type not in ['S', 'SC', 'SWP']"
+          />
+                </group>
+            </group>
+
 
             <!-- Add context for group view -->
             <field name="group_id" position="attributes">
@@ -116,28 +136,8 @@
                     partner_id, 'contract_id': id}
                 </attribute>
             </field>
-            <field name="group_id" position="after">
-                <field
-          name="parent_id"
-          domain="[('correspondent_id', '=', correspondent_id), ('id', '!=', id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
-          context="{'default_type':'S'}"
-          invisible="type not in ['S', 'SC', 'SWP']"
-          readonly="1"
-        />
-                <field
-          name="sub_sponsorship_id"
-          invisible="state != 'terminated'"
-          context="{'default_type':'S'}"
-        />
-            </field>
-
-            <!-- Add gmc_commitment_id field -->
-            <field name="type" position="after">
-                <field
-          name="gmc_commitment_id"
-          invisible="type != 'S'"
-          readonly="1"
-        />
+            <field name="partner_id" position="after">
+                <field name="type" readonly="state != 'draft'" />
             </field>
 
             <!-- Add transfer field -->

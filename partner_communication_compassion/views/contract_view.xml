@@ -8,9 +8,9 @@
       ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"
     />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='origin_id']" position="after">
+            <group name="sponsorship_details">
                 <field name="send_introduction_letter" />
-            </xpath>
+            </group>
         </field>
      </record>
 
