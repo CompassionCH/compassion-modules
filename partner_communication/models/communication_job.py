@@ -872,6 +872,14 @@ class CommunicationJob(models.Model):
         return self.download_data()
 
     def _print_job_asynchronous(self, print_name):
+        if len(self) > 1:
+            # Make sure we have the lock and don't restart the job (duplicate printings)
+            self.env.cr.execute(
+                "SELECT id FROM partner_communication_job"
+                " WHERE id = ANY(%s)"
+                " FOR UPDATE",
+                (self.ids,),
+            )
         # Print letters
         print_options = self._print_letter(print_name)
         output_tray = print_options["output_tray"]
