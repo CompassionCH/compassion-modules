@@ -40,7 +40,9 @@
                 <attribute
           name="required"
         >res_model == 'recurring.contract'</attribute>
-                <attribute name="domain">[('model', '=', res_model)]</attribute>
+                <attribute
+          name="domain"
+        >[('model', 'like', res_model)]</attribute>
             </field>
         </field>
     </record>

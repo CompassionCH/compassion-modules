@@ -35,7 +35,7 @@
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
-        "partner_communication",
+        "partner_communication_compassion",
         "partner_salutation",
         "account",
     ],
