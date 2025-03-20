@@ -12,6 +12,7 @@ import logging
 import urllib
 from datetime import datetime, timedelta
 from json.decoder import JSONDecodeError
+from requests.exceptions import ConnectionError
 
 import requests
 
