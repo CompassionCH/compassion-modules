@@ -216,7 +216,7 @@ class Correspondence(models.Model):
         for letter in self:
             if (
                 (letter.beneficiary_language_ids & letter.supporter_languages_ids)
-                or letter.has_valid_language
+                or letter.translation_language_id in letter.supporter_languages_ids
                 or self.env.context.get("force_publish")
             ):
                 super(Correspondence, letter).process_letter()

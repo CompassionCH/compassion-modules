@@ -55,6 +55,8 @@ class CorrespondenceParagraph(models.Model):
         super().write(vals)
         if not self.env.context.get("from_correspondence_text"):
             self.mapped("page_id").sync_text_from_paragraphs()
+            if "translated_text" in vals:
+                self.mapped("page_id.correspondence_id")._check_translation_language()
         return True
 
     def unlink(self):

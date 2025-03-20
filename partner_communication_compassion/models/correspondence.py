@@ -246,6 +246,6 @@ class Correspondence(models.Model):
             and "auto" in self.partner_id.letter_delivery_preference
         )
         if not (partner_langs & self.beneficiary_language_ids):
-            valid &= self.has_valid_language
+            valid &= self.translation_language_id in partner_langs
 
         return valid
