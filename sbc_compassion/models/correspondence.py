@@ -333,17 +333,23 @@ class Correspondence(models.Model):
             else:
                 correspondence.avatar_128 = correspondence.child_id.avatar_128
 
-    @api.depends("page_ids")
+    @api.depends(
+        "page_ids", "page_ids.paragraph_ids", "page_ids.paragraph_ids.original_text"
+    )
     def _compute_original_text(self):
         for letter in self:
             letter.original_text = letter._get_text("original_text")
 
-    @api.depends("page_ids")
+    @api.depends(
+        "page_ids", "page_ids.paragraph_ids", "page_ids.paragraph_ids.translated_text"
+    )
     def _compute_translated_text(self):
         for letter in self:
             letter.translated_text = letter._get_text("translated_text")
 
-    @api.depends("page_ids")
+    @api.depends(
+        "page_ids", "page_ids.paragraph_ids", "page_ids.paragraph_ids.english_text"
+    )
     def _compute_english_text(self):
         for letter in self:
             letter.english_text = letter._get_text("english_text")
@@ -436,6 +442,31 @@ class Correspondence(models.Model):
                 letter.child_id.project_id.field_office_id.spoken_language_ids
                 + letter.child_id.project_id.field_office_id.translated_language_ids
             )
+
+    def _check_translation_language(self):
+        """Detect if text is written in the language corresponding to the
+        language_id, and fix it if possible."""
+        if self.env.context.get("skip_lang_detect"):
+            return
+        for letter in self:
+            if letter.translated_text and letter.translation_language_id:
+                s = (
+                    letter.translated_text.strip(" \t\n\r.")
+                    .replace(BOX_SEPARATOR, "")
+                    .replace(PAGE_SEPARATOR, "")
+                )
+                if s:
+                    # find the language of text argument
+                    detected_lang = self.env["langdetect"].detect_language(
+                        letter.translated_text
+                    )
+                    if (
+                        detected_lang
+                        and detected_lang != letter.translation_language_id
+                    ):
+                        letter.with_context(
+                            skip_lang_detect=True
+                        ).translation_language_id = detected_lang
 
     @api.depends("uuid")
     def _compute_read_url(self):
@@ -538,11 +569,11 @@ class Correspondence(models.Model):
                 vals["partner_id"] = contract.correspondent_id.id
 
         letters = super().create(vals_list)
+        # T1676 : Each page should contain at least one textbox (paragraph)
+        letters.create_text_boxes()
+        # Make sure the translation language is set correctly.
+        letters._check_translation_language()
         for letter in letters:
-            if letter.state == "Received in the system" and not self.env.context.get(
-                "no_comm_kit"
-            ):
-                letter.create_commkit()
             letter.file_name = letter._get_file_name()
             attachment = self.env["ir.attachment"].search(
                 [
@@ -557,9 +588,11 @@ class Correspondence(models.Model):
                 if letter.nbr_pages < image_pdf.numPages:
                     for _i in range(letter.nbr_pages, image_pdf.numPages):
                         letter.page_ids.create({"correspondence_id": letter.id})
+            if letter.state == "Received in the system" and not self.env.context.get(
+                "no_comm_kit"
+            ):
+                letter.create_commkit()
 
-        # T1676 : Each page should contains at least one textbox (paragraph)
-        letters.create_text_boxes()
         return letters
 
     def write(self, vals):
@@ -580,7 +613,10 @@ class Correspondence(models.Model):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
 
-        return super().write(vals)
+        super().write(vals)
+        if "translation_language_id" in vals or "page_ids" in vals:
+            self._check_translation_language()
+        return True
 
     def unlink(self):
         # Remove unsent messages
