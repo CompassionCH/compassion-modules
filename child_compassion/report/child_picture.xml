@@ -53,9 +53,9 @@ img {
             t-attf-src="data:image/jpeg;base64,#{ o.fullshot }"
           />
                             <div id="child-ref">
-                                <span t-field="o.local_id" />
-                                <span> </span>
                                 <span t-field="o.preferred_name" />
+                                <span> </span>
+                                <span t-field="o.local_id" />
                             </div>
                     </t>
                 </t>
