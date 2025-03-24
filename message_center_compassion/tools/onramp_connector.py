@@ -12,9 +12,9 @@ import logging
 import urllib
 from datetime import datetime, timedelta
 from json.decoder import JSONDecodeError
-from requests.exceptions import ConnectionError
 
 import requests
+from requests.exceptions import ConnectionError
 
 from odoo import _
 from odoo.exceptions import UserError
