@@ -98,7 +98,7 @@ class Correspondence(models.Model):
                         "You cannot change the translation language of a letter that is being or already translated."
                     )
                 )
-            letter.write(
+            letter.with_context(skip_lang_detect=True).write(
                 {
                     "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
                     "translation_language_id": letter.translation_competence_id.dest_language_id.id,
@@ -266,7 +266,7 @@ class Correspondence(models.Model):
         # Specify the src and dst language
         src_lang, dst_lang = self._get_translation_langs()
 
-        self.write(
+        self.with_context(skip_lang_detect=True).write(
             {
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
