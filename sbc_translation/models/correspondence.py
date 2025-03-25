@@ -24,7 +24,8 @@ class Correspondence(models.Model):
 
     _inherit = "correspondence"
 
-    new_translator_id = fields.Many2one("translation.user", "Local translator")
+    new_translator_id = fields.Many2one(
+        "translation.user", "Local translator", tracking=True)
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
@@ -390,6 +391,8 @@ class Correspondence(models.Model):
         :param letter_elements: list of dict containing paragraphs or pagebreak data
         :param translator_id: optional translator assigned
         """
+        _logger.info(
+            "Saving translation for letter %s and translator %s", self.id, translator_id)
         self.ensure_one()
         if self.translation_status == "to validate":
             _logger.warning("Invalid save translation call on letter."
@@ -455,6 +458,7 @@ class Correspondence(models.Model):
             self._message_log(body=html)
 
         self.write(letter_vals)
+        _logger.info("Translation saved.")
         return True
 
     def submit_translation(self, letter_elements, translator_id=None):
@@ -463,6 +467,8 @@ class Correspondence(models.Model):
         :param letter_elements: list of dict containing paragraphs or pagebreak data
         :param translator_id: optional translator assigned
         """
+        _logger.info(
+            "Submitting translation for letter %s and translator %s", self.id, translator_id)
         self.ensure_one()
         self.save_translation(letter_elements, translator_id)
         user_skill = self.new_translator_id.translation_skills.filtered(
@@ -472,6 +478,7 @@ class Correspondence(models.Model):
             self._post_process_translation()
         else:
             self.translation_status = "to validate"
+        _logger.info("Translation submitted.")
         return True
 
     def approve_translation(self):
