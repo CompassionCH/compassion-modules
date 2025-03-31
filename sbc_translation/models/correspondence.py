@@ -281,6 +281,7 @@ class Correspondence(models.Model):
                 "unread_comments": False,
             }
         )
+        self.mapped("page_ids.paragraph_ids").write({"translated_text": ""})
 
         # Remove any pending GMC message (will be recreated after translation)
         self.env["gmc.message"].search(
@@ -419,7 +420,8 @@ class Correspondence(models.Model):
             if element.get("type") == "pageBreak":
                 page_index += 1
                 paragraph_index = 0
-                current_page = self.page_ids[page_index]
+                current_page = self.page_ids[page_index].with_context(
+                    skip_lang_detect=True)
             elif element.get("type") == "paragraph":
                 paragraph_vals = {
                     "page_id": current_page.id,
