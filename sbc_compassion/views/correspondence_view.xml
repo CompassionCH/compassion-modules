@@ -256,16 +256,14 @@
                         <field name="final_page_image" widget="image" />
                     </group>
                 </group>
-                <group>
-                    <field name="paragraph_ids">
-                        <tree editable="bottom">
-                            <field name="original_text" />
-                            <field name="english_text" />
-                            <field name="translated_text" />
-                            <field name="sequence" widget="handle" />
-                        </tree>
-                    </field>
-                </group>
+                <field name="paragraph_ids">
+                    <tree editable="bottom">
+                        <field name="original_text" />
+                        <field name="english_text" />
+                        <field name="translated_text" />
+                        <field name="sequence" widget="handle" />
+                    </tree>
+                </field>
             </form>
         </field>
     </record>
