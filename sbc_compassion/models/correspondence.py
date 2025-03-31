@@ -557,6 +557,7 @@ class Correspondence(models.Model):
 
         super().write(vals)
         if "translation_language_id" in vals or "page_ids" in vals:
+            self.create_text_boxes()
             self._check_translation_language()
         return True
 
