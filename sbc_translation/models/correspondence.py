@@ -37,9 +37,10 @@ class Correspondence(models.Model):
         compute="_compute_competence",
         store=True,
         inverse="_inverse_competence",
+        tracking=True,
     )
-    translate_date = fields.Datetime()
-    translate_done = fields.Datetime()
+    translate_date = fields.Datetime(tracking=True)
+    translate_done = fields.Datetime(tracking=True)
     translation_status = fields.Selection(
         [
             ("to do", "To do"),
@@ -49,6 +50,7 @@ class Correspondence(models.Model):
         ],
         index=True,
         group_expand="_read_group_translation_status",
+        tracking=True,
     )
     translation_priority = fields.Selection(
         [
@@ -60,6 +62,7 @@ class Correspondence(models.Model):
         ],
         default="0",
         index=True,
+        tracking=True,
     )
     translation_priority_name = fields.Char(
         compute="_compute_translation_priority_name", store=True
@@ -67,6 +70,7 @@ class Correspondence(models.Model):
     translation_issue = fields.Selection(
         "get_translation_issue_list",
         help="Issue about the letter reported by the translator",
+        tracking=True,
     )
     translation_issue_comments = fields.Html()
     translation_url = fields.Char(compute="_compute_translation_url")

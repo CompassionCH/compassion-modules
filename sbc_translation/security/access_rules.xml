@@ -12,6 +12,18 @@
         <field name="perm_create" eval="False" />
         <field name="perm_unlink" eval="False" />
     </record>
+    <record id="translator_letters_rule_assigned" model="ir.rule">
+        <field name="name">Translator Letters assigned</field>
+        <field name="model_id" ref="model_correspondence" />
+        <field
+      name="domain_force"
+    >[("new_translator_id.user_id", "=", user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
     <record id="translator_user_rule" model="ir.rule">
         <field name="name">Translator user</field>
         <field name="model_id" ref="model_translation_user" />
