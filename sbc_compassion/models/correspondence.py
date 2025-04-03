@@ -449,17 +449,18 @@ class Correspondence(models.Model):
         if self.env.context.get("skip_lang_detect"):
             return
         for letter in self:
-            if letter.translated_text and letter.translation_language_id:
-                s = (
-                    letter.translated_text.strip(" \t\n\r.")
+            letter_text = (
+                letter.translated_text or letter.english_text or letter.original_text
+            )
+            if letter_text and letter.translation_language_id:
+                strip_text = (
+                    letter_text.strip(" \t\n\r.")
                     .replace(BOX_SEPARATOR, "")
                     .replace(PAGE_SEPARATOR, "")
                 )
-                if s:
+                if strip_text:
                     # find the language of text argument
-                    detected_lang = self.env["langdetect"].detect_language(
-                        letter.translated_text
-                    )
+                    detected_lang = self.env["langdetect"].detect_language(letter_text)
                     if (
                         detected_lang
                         and detected_lang != letter.translation_language_id
