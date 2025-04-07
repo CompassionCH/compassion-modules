@@ -882,7 +882,7 @@ class CommunicationJob(models.Model):
     ):
         res = dict.fromkeys(self.ids)
         for job in self:
-            res[job.id] = job.reply_to
+            res.update(job.email_template_id._render_field("reply_to", job.ids))
         return res
 
     def _job_sent(self, send_mode):
