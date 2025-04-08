@@ -388,6 +388,48 @@ class CommunicationJob(models.Model):
         return super().copy(vals)
 
     @api.model
+    def _get_dynamic_user(self, config, object_ids_str):
+        """
+        Check if config is dynamic and has a sender field,
+        parse the first ID from object_ids,
+        load the record from config.model_id.model,
+        retrieve the user via sender_field_id.name
+        (use the first if multiple), and return None if none is found.
+        """
+        if config.send_from != "dynamic" or not config.sender_field_id:
+            return None  # Not dynamic, or no field chosen
+
+        if not object_ids_str:
+            return None
+
+        first_id_str = object_ids_str.split(",")[0].strip()
+        if not first_id_str.isdigit():
+            return None
+
+        object_id = int(first_id_str)
+        model_name = config.model_id.model
+        if not model_name:
+            return None
+
+        related_object = config.env[model_name].browse(object_id)
+        if not related_object:
+            return None
+
+        field_name = config.sender_field_id.name
+        if not hasattr(related_object, field_name):
+            return None
+
+        user_id = related_object[field_name]
+        if not user_id:
+            return None
+
+        # If multiple users returned, pick the first
+        if len(related_object) > 1:
+            user_id = user_id[0]
+
+        return user_id
+
+    @api.model
     def _get_default_vals(self, vals, default_vals=None):
         """
         Used at record creation to find default values given the config of the
@@ -424,14 +466,13 @@ class CommunicationJob(models.Model):
             user_id = self.env.uid
             if default_config.user_id:
                 user_id = default_config.user_id.id
+            elif config.send_from == "dynamic":
+                dynamic_user = self._get_dynamic_user(config, vals.get("object_ids"))
+                if dynamic_user:
+                    user_id = dynamic_user.id
             elif config.user_id:
                 user_id = config.user_id.id
             vals["user_id"] = user_id
-
-        # if not vals.get("printer_output_tray_id"):
-        #     if printer_config.printer_output_tray_id:
-        #         vals["printer_output_tray_id"] = \
-        #             printer_config.printer_output_tray_id.id
 
         # Check all default_vals fields
         for default_val in default_vals:

@@ -135,6 +135,27 @@ class CommunicationConfig(models.Model):
         help="If selected, disable the automatic merging of communications",
     )
     active = fields.Boolean(default=True)
+    send_from = fields.Selection(
+        [
+            ("manual", "Manual"),
+            ("dynamic", "Dynamic"),
+        ],
+        string="Send from",
+        required=True,
+        default="manual",
+        help="If 'Manual', the sender is determined by the communication rule. "
+        "If 'Dynamic', the sender is dynamically retrieved from the related record "
+        "using the field specified below.",
+    )
+    sender_field_id = fields.Many2one(
+        "ir.model.fields",
+        string="Send from selection",
+        domain="[('model_id', '=', model_id),"
+        "('relation', '=', 'res.users'),"
+        "('ttype', '=', 'many2one')]",
+        help="If 'Send From' is 'Dynamic', pick which Many2one-to-res.users field "
+        "should be used as the sender.",
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #

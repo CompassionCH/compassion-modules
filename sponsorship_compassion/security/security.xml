@@ -11,7 +11,7 @@
         </record>
         <record id="forget_me_group" model="res.groups">
             <field name="name">Anonymize Partners</field>
-            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="category_id" ref="base.module_category_usability" />
         </record>
     </data>
 </odoo>
