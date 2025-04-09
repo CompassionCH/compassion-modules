@@ -131,6 +131,20 @@ class CorrespondenceS2bGenerator(models.Model):
     def preview(self):
         """Generate a picture for preview."""
         pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
+
+        # T2288 Force the maximum pages of a letter to be 15
+        pdf_list = self._get_pdf(self.sponsorship_ids[:1])
+        pdfPagesCount = pdf_list[0] if pdf_list and isinstance(pdf_list[0], (bytes, bytearray)) else None
+
+        # Convert the byte string into a file-like object and initialize the PDF reader.
+        reader = PdfFileReader(BytesIO(pdfPagesCount))
+        # Count the number of pages in the PDF.
+        pageCount = len(reader.pages)
+
+        # Raise an error if the letter exceeds 15 pages, showing the actual number.
+        if pageCount > 15:
+            raise UserError(_("This letter has %d pages. Please limit it to 15 pages.") % pageCount)
+
         if self.template_id.layout == "CH-A-3S01-1":
             # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
