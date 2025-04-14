@@ -147,7 +147,10 @@ class RecurringContract(models.Model):
             elif sub:
                 sub.end_reason_id = sub_reject
                 self.env["end.contract.wizard"].create(
-                    {"contract_ids": sub.id}
+                    {
+                        "contract_ids": sub.id,
+                        "end_reason_id": sub_reject.id,
+                    }
                 ).end_contract()
         return self.write({"sds_state": "sub_reject"})
 
