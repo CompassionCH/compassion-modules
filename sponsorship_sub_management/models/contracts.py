@@ -148,7 +148,7 @@ class RecurringContract(models.Model):
                 sub.end_reason_id = sub_reject
                 self.env["end.contract.wizard"].create(
                     {
-                        "contract_ids": sub.id,
+                        "contract_ids": [(6,0, sub.ids)],
                         "end_reason_id": sub_reject.id,
                     }
                 ).end_contract()
