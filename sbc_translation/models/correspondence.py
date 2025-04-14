@@ -285,7 +285,8 @@ class Correspondence(models.Model):
                 "unread_comments": False,
             }
         )
-        self.mapped("page_ids.paragraph_ids").write({"translated_text": ""})
+        self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
+            "translated_text": ""})
 
         # Remove any pending GMC message (will be recreated after translation)
         self.env["gmc.message"].search(
