@@ -165,6 +165,7 @@ class Correspondence(models.Model):
     translation_language_id = fields.Many2one(
         "res.lang.compassion",
         "Translation language",
+        tracking=True,
     )
     original_text = fields.Text(
         compute="_compute_original_text", inverse="_inverse_original"
