@@ -314,6 +314,10 @@ class SponsorshipContract(models.Model):
                 or [False]
             )
 
+    @api.depends("invoice_line_ids")
+    @api.depends_context(
+        "open_invoices_sponsorship_only", "open_invoices_exclude_sponsorship"
+    )
     def _compute_invoices(self):
         super()._compute_invoices()
         # For some cases we only want to consider sponsorship invoices and exclude
@@ -347,6 +351,7 @@ class SponsorshipContract(models.Model):
                 contract, contract.send_gifts_to, contract.correspondent_id
             )
 
+    @api.depends_context("open_invoices_exclude_sponsorship")
     def _compute_contract_products(self):
         if not self.env.context.get("open_invoices_exclude_sponsorship"):
             super()._compute_contract_products()
@@ -436,6 +441,7 @@ class SponsorshipContract(models.Model):
                         )
                     )
 
+    @api.depends_context("allow_during_suspension")
     def _compute_can_make_gift(self):
         days_allowed = (
             self.env["ir.config_parameter"]
@@ -455,6 +461,7 @@ class SponsorshipContract(models.Model):
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_make_gift = is_allowed
 
+    @api.depends_context("allow_during_suspension")
     def _compute_can_write_letter(self):
         days_allowed = (
             self.env["ir.config_parameter"]
