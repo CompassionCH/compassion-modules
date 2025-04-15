@@ -27,7 +27,6 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-
     def _compute_contains_sponsorship(self):
         for group in self:
             group.contains_sponsorship = group.mapped("contract_ids").filtered(
@@ -65,37 +64,25 @@ class ContractGroup(models.Model):
             return contract[contract.send_gifts_to]
         return super()._get_partner_for_contract(contract, gift_wizard)
 
-    def _should_skip_invoice_generation(self, invoicing_date, contracts=None):
-        self.ensure_one()
-
+    def _get_open_invoices_filter(self, invoicing_date, contracts):
         if contracts is None:
-            return super()._should_skip_invoice_generation(invoicing_date)
+            contracts = self.active_contract_ids
+        # T2325 Include originating sponsorships for gift contracts
+        # to avoid duplicate invoices
+        contracts |= contracts.mapped("contract_line_ids.sponsorship_id")
+        return super()._get_open_invoices_filter(invoicing_date, contracts)
 
-        search_filter = [
-            ("invoice_date", "=", invoicing_date),
-            ("partner_id", "=", self.partner_id.id),
-            ("move_type", "=", "out_invoice"),
-            ("line_ids.contract_id", "in", contracts.ids),
-            (
-                "line_ids.product_id",
-                "in",
-                contracts.mapped("product_ids").ids,
-            ),
-        ]
-
-        existing_invoices = self.env["account.move"].search_count(search_filter)
-
-        is_sub_proposal = (
-            contracts.parent_id.child_id and not contracts.invoice_line_ids
+    def _should_skip_invoice_generation(
+        self, invoicing_date, contracts=None, skip_suspended=True
+    ):
+        # If invoices come from sub proposal, ignore group suspension
+        # to also generate already paid invoices
+        self.ensure_one()
+        check_contracts = contracts or self.active_contract_ids
+        is_sub_proposal = check_contracts.mapped(
+            "parent_id.child_id"
+        ) and not check_contracts.mapped("invoice_line_ids")
+        skip_suspended = not is_sub_proposal
+        return super()._should_skip_invoice_generation(
+            invoicing_date, contracts, skip_suspended
         )
-
-        # If invoices come from sub proposal, ignore group suspension to also generate
-        # already paid invoices
-        if is_sub_proposal:
-            return bool(existing_invoices)
-        else:
-            is_suspended = (
-                self.invoice_suspended_until
-                and self.invoice_suspended_until > invoicing_date
-            )
-            return bool(existing_invoices) or is_suspended
