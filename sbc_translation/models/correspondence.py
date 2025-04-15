@@ -406,7 +406,7 @@ class Correspondence(models.Model):
             return True
         page_index = 0
         paragraph_index = 0
-        current_page = self.page_ids[page_index]
+        current_page = self.page_ids[page_index].with_context(skip_lang_detect=True)
         comments_updates = []
         if not translator_id:
             # Don't overwrite current translator if any.
