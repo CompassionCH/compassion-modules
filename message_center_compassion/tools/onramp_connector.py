@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 from json.decoder import JSONDecodeError
 
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError as ConnError
 
 from odoo import _
 from odoo.exceptions import UserError
@@ -124,7 +124,7 @@ class OnrampConnector:
                     )
                 else:
                     return {"code": 404, "Error": "No valid HTTP verb used"}
-            except ConnectionError as e:
+            except ConnError as e:
                 _logger.warning(e)
                 session_params = self._session.params
                 self._session = requests.Session()

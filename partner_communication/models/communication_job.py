@@ -309,7 +309,8 @@ class CommunicationJob(models.Model):
     def _compute_print_pdfname(self):
         for job in self:
             job.printed_pdf_name = (
-                fields.Datetime.to_string(job.sent_date) + "-" + job.subject + ".pdf"
+                f"{fields.Date.to_string(job.sent_date)}_"
+                f"{job.partner_id.ref}_{job.subject}.pdf"
             )
 
     ##########################################################################
