@@ -831,7 +831,6 @@ class CommunicationJob(models.Model):
                 print_name = name[:3] + " " + (job.subject or "")
                 job.with_delay(
                     channel=_JOB_CHANNEL,
-                    priority=40,
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:
@@ -842,12 +841,19 @@ class CommunicationJob(models.Model):
                 print_name = name[:3] + " " + config
                 jobs.with_delay(
                     channel=_JOB_CHANNEL,
-                    priority=40,
                     identity_key=self._name + "._print." + str(jobs.ids),
                 )._print_job_asynchronous(print_name)
         return self.download_data()
 
     def _print_job_asynchronous(self, print_name):
+        if len(self) > 1:
+            # Make sure we have the lock and don't restart the job (duplicate printings)
+            self.env.cr.execute(
+                "SELECT id FROM partner_communication_job"
+                " WHERE id = ANY(%s)"
+                " FOR UPDATE",
+                (self.ids,),
+            )
         # Print letters
         print_options = self._print_letter(print_name)
         output_tray = print_options["output_tray"]
@@ -876,7 +882,7 @@ class CommunicationJob(models.Model):
     ):
         res = dict.fromkeys(self.ids)
         for job in self:
-            res[job.id] = job.reply_to
+            res.update(job.email_template_id._render_field("reply_to", job.ids))
         return res
 
     def _job_sent(self, send_mode):

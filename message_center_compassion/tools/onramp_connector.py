@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from json.decoder import JSONDecodeError
 
 import requests
+from requests.exceptions import ConnectionError
 
 from odoo import _
 from odoo.exceptions import UserError
