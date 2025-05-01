@@ -377,7 +377,7 @@ class CommunicationJob(models.Model):
                 max_retries=1,
                 description="Autosend communication",
                 channel="root.partner_communication",
-                identity_key=f"{self._name}.send.{job.id}",
+                identity_key=f"{self._name}.send.{job.config_id.id}+{job.object_ids}",
             ).send()
         return job
 
