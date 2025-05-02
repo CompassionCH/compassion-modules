@@ -66,6 +66,8 @@ class Partner(models.Model):
     def _compute_opportunity_count(self):
         super()._compute_opportunity_count()
         for partner in self:
+            if not isinstance(partner.id, int):
+                continue
             operator = "child_of" if partner.is_company else "="
             partner.opportunity_count += self.env["crm.lead"].search_count(
                 [
