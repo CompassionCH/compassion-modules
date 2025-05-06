@@ -36,7 +36,6 @@
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "account",
-        "account_reconciliation_widget",  # OCA/account-reconcile
         "recurring_contract",
         "analytic",
         "sponsorship_compassion",
