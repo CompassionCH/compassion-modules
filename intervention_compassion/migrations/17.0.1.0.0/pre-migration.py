@@ -18,7 +18,8 @@ def migrate(cr, version):
         )"""
     )
     res_ids = [r[0] for r in cr.fetchall()]
-    for xml_id, res_id in zip(xml_ids, res_ids, strict=True):
-        openupgrade.add_xmlid(
-            cr, "intervention_compassion", xml_id, "ir.actions.server", res_id
-        )
+    if len(res_ids) == len(xml_ids):
+        for xml_id, res_id in zip(xml_ids, res_ids, strict=True):
+            openupgrade.add_xmlid(
+                cr, "intervention_compassion", xml_id, "ir.actions.server", res_id
+            )
