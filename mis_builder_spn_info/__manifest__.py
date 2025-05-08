@@ -6,11 +6,12 @@
     "author": "Compassion Switzerland",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "category": "Uncategorized",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "AGPL-3",
     # any module necessary for this one to work correctly
     "depends": [
         "mis_builder",  # OCA/mis_builder
+        "mis_builder_budget", # OCA/mis_builder
         "account",  # source
         "sponsorship_compassion",
     ],
