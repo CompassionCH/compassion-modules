@@ -11,7 +11,7 @@
     # any module necessary for this one to work correctly
     "depends": [
         "mis_builder",  # OCA/mis_builder
-        "mis_builder_budget", # OCA/mis_builder
+        "mis_builder_budget",  # OCA/mis_builder
         "account",  # source
         "sponsorship_compassion",
     ],
