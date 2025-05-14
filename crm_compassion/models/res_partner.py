@@ -66,14 +66,14 @@ class Partner(models.Model):
     def _compute_opportunity_count(self):
         super()._compute_opportunity_count()
         for partner in self:
-                operator = "child_of" if partner.is_company else "="
-                partner.opportunity_count += self.env["crm.lead"].search_count(
-                    [
-                        ("partner_id", operator, partner.ids[0]),
-                        ("type", "=", "opportunity"),
-                        ("active", "=", False),
-                    ]
-                )
+            operator = "child_of" if partner.is_company else "="
+            partner.opportunity_count += self.env["crm.lead"].search_count(
+                [
+                    ("partner_id", operator, partner.ids[0]),
+                    ("type", "=", "opportunity"),
+                    ("active", "=", False),
+                ]
+            )
 
     def log_call(self):
         """Prepare crm.phonecall creation."""
