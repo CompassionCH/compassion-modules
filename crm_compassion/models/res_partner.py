@@ -67,6 +67,7 @@ class Partner(models.Model):
         super()._compute_opportunity_count()
         for partner in self:
             operator = "child_of" if partner.is_company else "="
+            # we use partner.ids[0] because when editing a church's name the id becomes temporarily a NewId and so an error is produced as the method uses child_of with a NewId and not the original id
             partner.opportunity_count += self.env["crm.lead"].search_count(
                 [
                     ("partner_id", operator, partner.ids[0]),
