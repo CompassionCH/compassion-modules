@@ -62,7 +62,10 @@ class GenericIntervention(models.AbstractModel):
     requested_additional_funding = fields.Float(readonly=True)
     estimated_impacted_beneficiaries = fields.Integer(readonly=True)
     disburse_without_commitment = fields.Boolean(readonly=True)
-    track_funds_in_reports = fields.Boolean(help="This intervention will be displayed in reports tracking funds received and expensed")
+    track_funds_in_reports = fields.Boolean(
+        help="This intervention will be displayed in reports tracking funds "
+             "received and expensed"
+    )
 
     @api.model
     def get_fields(self):

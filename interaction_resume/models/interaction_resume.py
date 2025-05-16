@@ -96,6 +96,7 @@ class InteractionResume(models.Model):
                     ("partner_id", "=", vals["partner_id"]),
                     ("direction", "=", vals["direction"]),
                     ("date", "=", vals["date"]),
+                    ("subject", "=", vals["subject"]),
                 ]
             )
             if not existing_interaction:
