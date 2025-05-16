@@ -7,6 +7,7 @@ class MailMessage(models.Model):
     def convert_as_other_interaction(self):
         """Convert the message to an interaction resume"""
         interactions = self.env["partner.log.other.interaction"]
+        partner_ids = set()
         for message in self:
             # Create the interaction resume
             partner_id = False
@@ -32,7 +33,10 @@ class MailMessage(models.Model):
                     "direction": "out",
                 }
             )
+            partner_ids.add(partner_id)
             message.unlink()
+        if partner_ids:
+            self.env["res.partner"].browse(partner_ids).reset_interactions()
         action = {
             "type": "ir.actions.act_window",
             "name": "Converted Interactions",
