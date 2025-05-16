@@ -3,7 +3,7 @@
 {
     "name": "Interaction Resume",
     "summary": "Display a timeline of all communications exchanged with a partner",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.1.0",
     # see https://odoo-community.org/page/development-status
     "development_status": "Beta",
     "category": "Tools",
@@ -18,6 +18,7 @@
         "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/interaction_resume.xml",
+        "views/mail_message_view.xml",
         "static/src/xml/assets.xml",
     ],
     "qweb": [

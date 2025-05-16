@@ -9,3 +9,4 @@ from . import crm_phonecall
 from . import mailing_trace
 from . import sms
 from . import other_interaction
+from . import mail_message
