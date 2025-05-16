@@ -8,20 +8,23 @@ class CrmRequest(models.Model):
 
     def _get_interaction_data(self, partner_id):
         res = []
+        partner_email = self.env["res.partner"].browse(partner_id).email
+        partners = (
+            self.env["res.partner"]
+            .with_context(active_test=False)
+            .search([("email", "=", partner_email)])
+        )
         for claim in self:
             messages = claim.message_ids.filtered(
-                lambda m: m.message_type in ("email", "comment")
-                and (m.author_id.id == partner_id or partner_id in m.partner_ids.ids)
-            )
+                lambda m: (m.partner_ids & partners) or m.author_id in partners
+            ).filtered("subject")
             res.extend(
                 [
                     {
                         "partner_id": partner_id,
                         "res_model": self._name,
                         "res_id": claim.id,
-                        "direction": "in"
-                        if message.author_id == claim.partner_id
-                        else "out",
+                        "direction": "in" if message.author_id in partners else "out",
                         "date": message.date,
                         "email": claim.email_from or claim.partner_id.email,
                         "communication_type": "Support",

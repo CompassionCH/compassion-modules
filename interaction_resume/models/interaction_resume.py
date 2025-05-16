@@ -97,6 +97,7 @@ class InteractionResume(models.Model):
                     ("direction", "=", vals["direction"]),
                     ("date", "=", vals["date"]),
                     ("subject", "=", vals["subject"]),
+                    ("subject", "!=", False),
                 ]
             )
             if not existing_interaction:
