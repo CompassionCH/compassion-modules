@@ -66,7 +66,7 @@ class GenericIntervention(models.AbstractModel):
     disburse_without_commitment = fields.Boolean()
     track_funds_in_reports = fields.Boolean(
         help="This intervention will be displayed in reports tracking funds "
-             "received and expensed"
+        "received and expensed"
     )
 
     @api.model
