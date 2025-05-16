@@ -7,11 +7,10 @@
       name="trg_date_id"
       ref="field_res_partner__last_interaction_fetch_date"
     />
-        <field name="trg_date_range_type">month</field>
-        <field name="trg_date_range">1</field>
+        <field name="trg_date_range_type">day</field>
+        <field name="trg_date_range">15</field>
         <field name="state">code</field>
-        <field
-      name="code"
-    >records.mapped('interaction_resume_ids').unlink()</field>
+        <field name="code">records.mapped('interaction_resume_ids').unlink()
+records.write({"last_interaction_fetch_page": 0, "last_interaction_fetch_date": False})</field>
     </record>
 </odoo>
