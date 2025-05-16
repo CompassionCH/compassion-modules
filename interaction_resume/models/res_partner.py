@@ -83,3 +83,11 @@ class Partner(models.Model):
         self.last_interaction_fetch_date = fields.Datetime.now()
         self.last_interaction_fetch_page += page
         return True
+
+    def reset_interactions(self):
+        """Reset the interaction resume for this partner"""
+        self.mapped("interaction_resume_ids").unlink()
+        self.write(
+            {"last_interaction_fetch_date": False, "last_interaction_fetch_page": 0}
+        )
+        return True
