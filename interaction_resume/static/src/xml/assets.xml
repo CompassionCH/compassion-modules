@@ -6,6 +6,10 @@
         type="text/javascript"
         src="/interaction_resume/static/src/js/tree_button.js"
       />
+            <script
+        type="text/javascript"
+        src="/interaction_resume/static/src/js/message.js"
+      />
         </xpath>
     </template>
 </odoo>

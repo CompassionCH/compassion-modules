@@ -55,13 +55,5 @@ class OtherInteractions(models.Model):
     def write(self, vals):
         res = super().write(vals)
         # Refresh interaction resume
-        interaction = self.env["interaction.resume"].search(
-            [
-                ("partner_id", "=", self.partner_id.id),
-                ("res_model", "=", self._name),
-                ("res_id", "in", self.ids),
-            ]
-        )
-        interaction.unlink()
-        self.mapped("partner_id").fetch_interactions()
+        self.mapped("partner_id").reset_interactions()
         return res

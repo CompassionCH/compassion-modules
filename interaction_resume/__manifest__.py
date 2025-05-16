@@ -23,6 +23,7 @@
     ],
     "qweb": [
         "static/src/xml/tree_button.xml",
+        "static/src/xml/message_edit.xml",
     ],
     "external_dependencies": {
         "python": [],
