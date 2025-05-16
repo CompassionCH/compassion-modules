@@ -36,7 +36,7 @@ class MailMessage(models.Model):
             partner_ids.add(partner_id)
             message.unlink()
         if partner_ids:
-            self.env["res.partner"].browse(partner_ids).reset_interactions()
+            self.env["res.partner"].browse(list(partner_ids)).reset_interactions()
         action = {
             "type": "ir.actions.act_window",
             "name": "Converted Interactions",
