@@ -21,6 +21,11 @@
                         <field name="subject" />
                         <field name="body" />
                     </group>
+                    <field
+            name="ir_attachment_ids"
+            context="{'default_res_model': 'partner.log.other.interaction.wizard', 'default_res_id': active_id}"
+            widget="many2many_binary"
+          />
                 </sheet>
                 <footer>
                     <button
