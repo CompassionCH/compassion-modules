@@ -57,6 +57,9 @@ class InteractionSource(models.AbstractModel):
 
     def create(self, vals_list):
         res = super().create(vals_list)
-        # Invalidate partner last interaction date
-        res.mapped("partner_id").write({"last_interaction_fetch_date": False})
+        res.mapped("partner_id").reset_interactions()
         return res
+
+    def unlink(self):
+        self.mapped("partner_id").reset_interactions()
+        return super().unlink()
