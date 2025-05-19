@@ -67,9 +67,11 @@ class Partner(models.Model):
         super()._compute_opportunity_count()
         for partner in self:
             operator = "child_of" if partner.is_company else "="
+            # Using partner.ids[0] is a trick to avoid error with child_of
+            # when partner has a temporary NewId
             partner.opportunity_count += self.env["crm.lead"].search_count(
                 [
-                    ("partner_id", operator, partner.id),
+                    ("partner_id", operator, partner.ids[0]),
                     ("type", "=", "opportunity"),
                     ("active", "=", False),
                 ]
