@@ -19,10 +19,7 @@ odoo.define("interaction_resume/static/src/js/message.js", function (require) {
 
   const {
     registerInstancePatchModel,
-    registerClassPatchModel,
-    registerFieldPatchModel,
   } = require("mail/static/src/model/model_core.js");
-  const { attr } = require("mail/static/src/model/model_field.js");
 
   registerInstancePatchModel(
     "mail.message",

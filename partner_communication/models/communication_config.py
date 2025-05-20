@@ -291,6 +291,21 @@ class CommunicationConfig(models.Model):
 
         return send_mode, auto_mode
 
+    def unlink(self):
+        # Assign any linked communication to the Default Config
+        config_ids = self.ids
+        jobs = self.env["partner.communication.job"].search(
+            [("config_id", "in", config_ids)]
+        )
+        jobs.write(
+            {
+                "config_id": self.env.ref(
+                    "partner_communication.default_communication"
+                ).id
+            }
+        )
+        return super().unlink()
+
     def _get_send_priority(self, partner, print_if_not_email):
         # First key is the comm send_mode, second key is the partner send_mode
         # value is the send_mode that should be selected.

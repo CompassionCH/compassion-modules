@@ -13,7 +13,7 @@ from base64 import b64encode
 from werkzeug.exceptions import NotFound
 from werkzeug.utils import escape
 
-from odoo import _, api, fields, models
+from odoo import _, api, models
 
 
 class CompassionCorrespondence(models.Model):
@@ -76,7 +76,6 @@ class CompassionCorrespondence(models.Model):
             if letter.exists() and (
                 letter.letter_image or not letter.store_letter_image
             ):
-                letter.email_read = fields.Datetime.now()
                 return host + "/b2s_image?id=" + letter.uuid
         raise NotFound("Letter with id {} not found".format(letter_id))
 
