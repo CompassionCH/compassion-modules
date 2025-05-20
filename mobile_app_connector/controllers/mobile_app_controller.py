@@ -222,7 +222,6 @@ class RestController(http.Controller):
         )
         hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
-        hero.print_count += 1
         res = hero.data_to_json("mobile_app_banner")
         return [res]
 

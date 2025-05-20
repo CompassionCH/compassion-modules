@@ -48,9 +48,7 @@ class RestController(http.Controller):
         self, registration_id, partner_id=None, language=None, **kwargs
     ):
         existing = verify_and_retrieve(registration_id, partner_id)
-        if existing:
-            existing.partner_id = partner_id
-        else:
+        if not existing:
             languages_map = {
                 "en": "en_US",
                 "fr": "fr_CH",
