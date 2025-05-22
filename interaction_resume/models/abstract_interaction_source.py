@@ -57,7 +57,13 @@ class InteractionSource(models.AbstractModel):
 
     def create(self, vals_list):
         res = super().create(vals_list)
-        res.mapped("partner_id").reset_interactions()
+        res.mapped("partner_id").with_delay(
+            channel="root.partner_communication",
+            priority=100,
+            identity_key=self.partner_id._name
+            + ".fetch_interactions."
+            + str(self.partner_id.id),
+        ).fetch_interactions()
         return res
 
     def unlink(self):
