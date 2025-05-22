@@ -223,7 +223,7 @@ class CrmClaim(models.Model):
         to the supporter but not if it's an automatic answer.
         """
         result = super().message_post(**kwargs)
-        if "mail_server_id" in kwargs and not self.env.context.get("keep_stage"):
+        if "mail_server_id" in kwargs and kwargs.get("message_type") == "comment":
             resolved_stage = self.env.ref("crm_claim.stage_claim2")
             self.write({"stage_id": resolved_stage.id})
         return result
