@@ -66,6 +66,11 @@ class CompassionProject(models.Model):
         string="GP interested with a church engagement",
         readonly=True,
     )
+    is_reactivated_since_2_month = fields.Boolean(
+        string='Reactivated Since 2 Months',
+        compute='_compute_reactivated_since_2_month',
+        store=True
+    )
 
     _sql_constraints = [
         ("fcp_id_uniq", "unique(fcp_id)", "The FCP Id must be unique."),
@@ -355,12 +360,6 @@ class CompassionProject(models.Model):
     lifecycle_ids = fields.One2many(
         "compassion.project.ile", "project_id", "Lifecycle events", readonly=True
     )
-    covid_status_ids = fields.One2many(
-        "compassion.project.covid_update",
-        "fcp_id",
-        "FCP Re-opening Status",
-        readonly=True,
-    )
 
     suspension = fields.Selection(
         [("suspended", "Suspended"), ("fund-suspended", "Suspended & fund retained")],
@@ -395,12 +394,6 @@ class CompassionProject(models.Model):
     description_en = fields.Html("English description", readonly=True)
     description_left = fields.Html(compute="_compute_description")
     description_right = fields.Html(compute="_compute_description")
-
-    re_opening_status = fields.Char(
-        compute="_compute_re_opening_state",
-        store=True,
-        tracking=True,
-    )
 
     @api.model
     def _status_selection(self):
@@ -497,11 +490,6 @@ class CompassionProject(models.Model):
             else:
                 project.suspension = False
 
-    @api.depends("covid_status_ids")
-    def _compute_re_opening_state(self):
-        for project in self.filtered("covid_status_ids"):
-            project.re_opening_status = project.covid_status_ids[0].re_opening_status
-
     @api.model
     def _get_materials(self):
         return [
@@ -558,6 +546,17 @@ class CompassionProject(models.Model):
             if int(income) < 10:
                 income = project.monthly_income / project.usd.rate
             project.chf_income = income
+
+    @api.depends('lifecycle_ids', 'lifecycle_ids.date', 'lifecycle_ids.type')
+    def _compute_reactivated_since_2_month(self):
+        two_months_ago = (fields.Datetime.now() - timedelta(days=60)).date()
+        for project in self:
+            # check if any reactivation within the last two months
+            has_reactivation = project.lifecycle_ids.filtered(
+                lambda x:x.date!= False and x.type == 'Reactivation' and x.date >= two_months_ago
+            )
+            project.is_reactivated_since_2_month = bool(has_reactivation)
+
 
     ##########################################################################
     #                              ORM METHODS                               #

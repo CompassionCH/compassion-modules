@@ -10,7 +10,6 @@ from . import (
     compassion_mapped_model,
     compassion_reservation,
     demand_planning,
-    fcp_covid_status_update,
     fcp_property,
     field_office,
     field_office_disaster,
