@@ -241,24 +241,8 @@ class CrmClaim(models.Model):
 
     def write(self, values):
         """
-        - If a user is assigned and the request is 'New', set to 'Waiting on support'
-        - If move request in stage 'Waiting on support' assign the request to
-        the current user.
         - Push partner to associated mail messages
         """
-        if values.get("user_id") and self.stage_id == self.env.ref(
-            "crm_claim.stage_claim1"
-        ):
-            values["stage_id"] = self.env.ref("crm_request.stage_wait_support").id
-
-        if not values.get("user_id") and values.get("stage_id") in (
-            self.env.ref("crm_request.stage_wait_support").id,
-            self.env.ref("crm_claim.stage_claim2").id,
-        ):
-            for request in self:
-                if not request.user_id:
-                    values["user_id"] = self.env.uid
-
         super().write(values)
 
         if values.get("partner_id"):
