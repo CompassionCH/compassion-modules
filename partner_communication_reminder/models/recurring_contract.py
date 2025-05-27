@@ -103,7 +103,7 @@ class RecurringContract(models.Model):
                     # create a 3rd reminder.
                     eligible_reminders["third"] += sponsorship
                 else:
-                    # Create 2nd reminder iff not already send
+                    # Create 2nd reminder if not already send
                     has_second_reminder = partnerCommunicationJob.search_count(
                         reminder_search
                         + [
