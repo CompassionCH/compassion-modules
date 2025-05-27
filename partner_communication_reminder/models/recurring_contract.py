@@ -99,8 +99,20 @@ class RecurringContract(models.Model):
                     ]
                 )
                 if has_second_reminder:
+                    # If the 2nd reminder have been sent more than 20 days ago,
+                    # create a 3rd reminder.
                     eligible_reminders["third"] += sponsorship
-                eligible_reminders["second"] += sponsorship
+                else:
+                    # Create 2nd reminder iff not already send
+                    has_second_reminder = partnerCommunicationJob.search_count(
+                        reminder_search
+                        + [
+                            ("sent_date", ">=", twenty_days_ago),
+                            ("config_id", "=", reminder_confs[1].id),
+                        ]
+                    )
+                    if not has_second_reminder:
+                        eligible_reminders["second"] += sponsorship
             else:
                 # Create first reminder only if one was not already created less
                 # than twenty days ago
