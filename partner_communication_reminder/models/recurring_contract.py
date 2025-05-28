@@ -43,10 +43,7 @@ class RecurringContract(models.Model):
     def create_reminder_communication(self):
         """Creation of the reminder for active and waiting contracts"""
         _logger.info("Creating Sponsorship Reminders")
-        # Change today() for debugging purposes
-        # today = datetime.now()
-        # set today to 1st october 2023 for testing
-        today = datetime(2024, 11, 15)
+        today = datetime.now()
         first_day_of_month = today.replace(day=1)
         reminder_confs = self.env["partner.communication.config"]
         for i in range(1, 4):
