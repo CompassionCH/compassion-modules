@@ -86,19 +86,16 @@ class RecurringContract(models.Model):
                 reminder_search + [("sent_date", ">=", older_threshold)]
             )
 
-            # Classify the reminders by id
+            # Group reminders by configuration ID
             reminders_by_config = {conf.id: [] for conf in reminder_confs}
-            for r in reminders:
-                if r.config_id.id in reminders_by_config:
-                    reminders_by_config[r.config_id.id].append(r)
+            for reminder in reminders:
+                reminders_by_config.get(reminder.config_id.id, []).append(reminder)
 
             first_reminders = reminders_by_config[reminder_confs[0].id]
             second_reminders = reminders_by_config[reminder_confs[1].id]
 
+            # Look if first reminder was sent previous month
             old_first = any(r.sent_date < twenty_days_ago for r in first_reminders)
-
-            # Look if first reminder was sent previous month (send second
-            # reminder in that case).
             if old_first:
                 old_second = any(r.sent_date < twenty_days_ago for r in second_reminders)
                 recent_second = any(r.sent_date >= twenty_days_ago for r in second_reminders)
@@ -115,7 +112,6 @@ class RecurringContract(models.Model):
                 if not first_reminders or all(r.sent_date < twenty_days_ago for r in first_reminders):
                     eligible_reminders["first"] += sponsorship
                 # If recent 1st reminder, do nothing
-
 
         for key, config in zip(["first", "second", "third"], reminder_confs):
             sponsorships = eligible_reminders[key]
