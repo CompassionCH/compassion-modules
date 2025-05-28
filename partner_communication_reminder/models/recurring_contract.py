@@ -76,10 +76,10 @@ class RecurringContract(models.Model):
                 ("object_ids", "like", str(sponsorship.id)),
             ]
 
-
-            # To avoid taking into account reminder that the partner already took care of
-            # we subtract month due to the first of the month to get the older threshold
-            # this also prevent reminder_1 to be sent after an already sent reminder_2
+            # To avoid taking into account reminder that the partner already took care
+            # of we subtract month due to the first of the month to get the older
+            # threshold. This also prevent reminder_1 to be sent after an already sent
+            # reminder_2
             older_threshold = first_day_of_month - relativedelta(
                 months=sponsorship.months_due
             )
@@ -101,8 +101,12 @@ class RecurringContract(models.Model):
             # Look if first reminder was sent previous month
             old_first = any(r.sent_date < twenty_days_ago for r in first_reminders)
             if old_first:
-                old_second = any(r.sent_date < twenty_days_ago for r in second_reminders)
-                recent_second = any(r.sent_date >= twenty_days_ago for r in second_reminders)
+                old_second = any(
+                    r.sent_date < twenty_days_ago for r in second_reminders
+                )
+                recent_second = any(
+                    r.sent_date >= twenty_days_ago for r in second_reminders
+                )
 
                 if old_second:
                     # The 2nd reminder has been sent at least 20 days ago, then
@@ -113,9 +117,11 @@ class RecurringContract(models.Model):
                     eligible_reminders["second"] += sponsorship
                 # If recent 2nd reminder, do nothing
 
-            elif not first_reminders or all(r.sent_date < twenty_days_ago for r in first_reminders):
-                    eligible_reminders["first"] += sponsorship
-                # If recent 1st reminder, do nothing
+            elif not first_reminders or all(
+                r.sent_date < twenty_days_ago for r in first_reminders
+            ):
+                eligible_reminders["first"] += sponsorship
+            # If recent 1st reminder, do nothing
 
         for key, config in zip(["first", "second", "third"], reminder_confs):
             sponsorships = eligible_reminders[key]
