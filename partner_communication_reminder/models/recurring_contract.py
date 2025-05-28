@@ -43,7 +43,10 @@ class RecurringContract(models.Model):
     def create_reminder_communication(self):
         """Creation of the reminder for active and waiting contracts"""
         _logger.info("Creating Sponsorship Reminders")
-        today = datetime.now()
+        # Change today() for debugging purposes
+        # today = datetime.now()
+        # set today to 1st october 2023 for testing
+        today = datetime(2024, 11, 15)
         first_day_of_month = today.replace(day=1)
         reminder_confs = self.env["partner.communication.config"]
         for i in range(1, 4):
@@ -93,6 +96,7 @@ class RecurringContract(models.Model):
 
             first_reminders = reminders_by_config[reminder_confs[0].id]
             second_reminders = reminders_by_config[reminder_confs[1].id]
+            third_reminders = reminders_by_config[reminder_confs[2].id]
 
             # Look if first reminder was sent previous month
             old_first = any(r.sent_date < twenty_days_ago for r in first_reminders)
@@ -102,14 +106,14 @@ class RecurringContract(models.Model):
 
                 if old_second:
                     # The 2nd reminder has been sent at least 20 days ago, then
-                    # we can send the 3rd.
-                    eligible_reminders["third"] += sponsorship
+                    # we can send the 3rd if it wasn't already sent.
+                    if not third_reminders:
+                        eligible_reminders["third"] += sponsorship
                 elif not recent_second:
                     eligible_reminders["second"] += sponsorship
                 # If recent 2nd reminder, do nothing
 
-            else:
-                if not first_reminders or all(r.sent_date < twenty_days_ago for r in first_reminders):
+            elif not first_reminders or all(r.sent_date < twenty_days_ago for r in first_reminders):
                     eligible_reminders["first"] += sponsorship
                 # If recent 1st reminder, do nothing
 
