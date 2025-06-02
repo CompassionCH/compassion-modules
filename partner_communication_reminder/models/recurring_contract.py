@@ -72,43 +72,53 @@ class RecurringContract(models.Model):
                 ("state", "=", "done"),
                 ("object_ids", "like", str(sponsorship.id)),
             ]
-            # Look if first reminder was sent previous month (send second
-            # reminder in that case)
-            # avoid taking into account reminder that the partner already took care of
-            # we substract month due to the first of the month to get the older
-            # threshold
-            # this also prevent reminder_1 to be sent after an already sent reminder_2
+
+            # To avoid taking into account reminder that the partner already took care
+            # of we subtract month due to the first of the month to get the older
+            # threshold. This also prevent reminder_1 to be sent after an already sent
+            # reminder_2
             older_threshold = first_day_of_month - relativedelta(
                 months=sponsorship.months_due
             )
 
-            has_first_reminder = partnerCommunicationJob.search_count(
-                reminder_search
-                + [
-                    ("sent_date", ">=", older_threshold),
-                    ("sent_date", "<", twenty_days_ago),
-                ]
+            # Search for every reminder more recent than older_threshold
+            reminders = partnerCommunicationJob.search(
+                reminder_search + [("sent_date", ">=", older_threshold)]
             )
-            if has_first_reminder:
-                has_second_reminder = partnerCommunicationJob.search_count(
-                    reminder_search
-                    + [
-                        ("sent_date", ">=", older_threshold),
-                        ("sent_date", "<", twenty_days_ago),
-                        ("config_id", "=", reminder_confs[1].id),
-                    ]
+
+            # Group reminders by configuration ID
+            reminders_by_config = {conf.id: [] for conf in reminder_confs}
+            for reminder in reminders:
+                reminders_by_config.get(reminder.config_id.id, []).append(reminder)
+
+            first_reminders = reminders_by_config[reminder_confs[0].id]
+            second_reminders = reminders_by_config[reminder_confs[1].id]
+            third_reminders = reminders_by_config[reminder_confs[2].id]
+
+            # Look if first reminder was sent previous month
+            old_first = any(r.sent_date < twenty_days_ago for r in first_reminders)
+            if old_first:
+                old_second = any(
+                    r.sent_date < twenty_days_ago for r in second_reminders
                 )
-                if has_second_reminder:
-                    eligible_reminders["third"] += sponsorship
-                eligible_reminders["second"] += sponsorship
-            else:
-                # Create first reminder only if one was not already created less
-                # than twenty days ago
-                has_first_reminder = partnerCommunicationJob.search_count(
-                    reminder_search + [("sent_date", ">=", twenty_days_ago)]
+                recent_second = any(
+                    r.sent_date >= twenty_days_ago for r in second_reminders
                 )
-                if not has_first_reminder:
-                    eligible_reminders["first"] += sponsorship
+
+                if old_second:
+                    # The 2nd reminder has been sent at least 20 days ago, then
+                    # we can send the 3rd if it wasn't already sent.
+                    if not third_reminders:
+                        eligible_reminders["third"] += sponsorship
+                elif not recent_second:
+                    eligible_reminders["second"] += sponsorship
+                # If recent 2nd reminder, do nothing
+
+            elif not first_reminders or all(
+                r.sent_date < twenty_days_ago for r in first_reminders
+            ):
+                eligible_reminders["first"] += sponsorship
+            # If recent 1st reminder, do nothing
 
         for key, config in zip(["first", "second", "third"], reminder_confs):
             sponsorships = eligible_reminders[key]
