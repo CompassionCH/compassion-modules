@@ -23,19 +23,20 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [advanced_translation](advanced_translation/) | 17.0.1.0.1 |  | Advanced Translation
-[child_compassion](child_compassion/) | 17.0.1.0.0 |  | Compassion Children
-[gift_compassion](gift_compassion/) | 17.0.1.0.0 |  | Compassion Sponsorship Gifts
+[child_compassion](child_compassion/) | 17.0.1.0.4 |  | Compassion Children
+[gift_compassion](gift_compassion/) | 17.0.1.0.2 |  | Compassion Sponsorship Gifts
 [intervention_compassion](intervention_compassion/) | 17.0.1.0.0 |  | Compassion Interventions
-[message_center_compassion](message_center_compassion/) | 17.0.1.0.1 |  | Compassion Connect
-[partner_communication](partner_communication/) | 17.0.1.0.2 |  | Partner Communication
+[message_center_compassion](message_center_compassion/) | 17.0.1.0.2 |  | Compassion Connect
+[mis_builder_spn_info](mis_builder_spn_info/) | 17.0.1.0.0 |  | Info on aquisition and departure to report on spn evolution
+[partner_communication](partner_communication/) | 17.0.1.0.5 |  | Partner Communication
 [partner_communication_compassion](partner_communication_compassion/) | 17.0.1.0.0 |  | Compassion Partner Communications
 [partner_communication_reminder](partner_communication_reminder/) | 17.0.1.0.0 |  | Reminder features
-[partner_communication_revision](partner_communication_revision/) | 17.0.1.0.0 |  | Partner Communication Revisions
+[partner_communication_revision](partner_communication_revision/) | 17.0.1.0.1 |  | Partner Communication Revisions
 [partner_personal_info](partner_personal_info/) | 17.0.1.0.0 |  | Adds a tab on partners for showing personal information
 [partner_salutation](partner_salutation/) | 17.0.1.0.0 | [![ecino](https://github.com/ecino.png?size=30px)](https://github.com/ecino) | Adds a salutation field on partners
 [rest_json_api](rest_json_api/) | 17.0.1.0.0 |  | REST Json API
-[sbc_compassion](sbc_compassion/) | 17.0.1.1.2 |  | SBC - Supporter to Participant Communication
-[sponsorship_compassion](sponsorship_compassion/) | 17.0.1.0.1 |  | Compassion Sponsorships
+[sbc_compassion](sbc_compassion/) | 17.0.1.1.5 |  | SBC - Supporter to Participant Communication
+[sponsorship_compassion](sponsorship_compassion/) | 17.0.1.0.2 |  | Compassion Sponsorships
 [sponsorship_sub_management](sponsorship_sub_management/) | 17.0.1.0.0 | [![ecino](https://github.com/ecino.png?size=30px)](https://github.com/ecino) [![NoeBerdoz](https://github.com/NoeBerdoz.png?size=30px)](https://github.com/NoeBerdoz) | Compassion SUB Sponsorships Management
 [thankyou_letters](thankyou_letters/) | 17.0.1.0.0 |  | Thank You Letters
 

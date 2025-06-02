@@ -1,10 +1,12 @@
 from openupgradelib import openupgrade
 
+from odoo import SUPERUSER_ID, api
+
 from odoo.addons.message_center_compassion.tools.load_mappings import load_mapping_files
 
 
-@openupgrade.migrate()
-def migrate(env, version):
+def migrate(cr, version):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     load_mapping_files(
         env,
         "sbc_compassion/static/mappings/",

@@ -8,4 +8,4 @@
 #
 ##############################################################################
 from . import models
-from .hooks.post_init_hook import post_init_hook
+from .hooks.pre_init_hook import pre_init_hook

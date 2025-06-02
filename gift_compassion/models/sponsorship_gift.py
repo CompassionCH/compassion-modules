@@ -199,7 +199,7 @@ class SponsorshipGift(models.Model):
             gift.gift_date = (
                 max(
                     invoice_lines.mapped("move_id").mapped("invoice_date")
-                    or invoice_lines.mapped("date")
+                    or invoice_lines.mapped("date") or [fields.Date.today()]
                 )
                 or fields.Date.today()
             )
