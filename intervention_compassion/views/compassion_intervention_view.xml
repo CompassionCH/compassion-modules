@@ -119,6 +119,7 @@
                 name="disburse_without_commitment"
                 readonly="1"
               />
+                            <field name="track_funds_in_reports" />
                             <field name='company_id' />
                             <field
                 name="funding_global_partners"

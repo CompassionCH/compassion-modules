@@ -27,6 +27,7 @@ class ResPartner(models.Model):
         default="auto_digital",
         required=True,
         help="Delivery preference for Global Communication",
+        tracking=True,
     )
     communication_count = fields.Integer(
         compute="_compute_comm_count", groups="base.group_user"

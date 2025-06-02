@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Thank You Letters",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.1.0",
     "category": "Other",
     "author": "Compassion CH",
     "development_status": "Production/Stable",
@@ -46,7 +46,6 @@
     },
     "data": [
         "security/ir.model.access.csv",
-        "report/donation_report.xml",
         "data/email_template.xml",
         "data/communication_config.xml",
         "data/queue_job.xml",
