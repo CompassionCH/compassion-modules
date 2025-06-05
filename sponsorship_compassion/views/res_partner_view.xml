@@ -28,7 +28,7 @@
 
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button
-          class="oe_inline oe_stat_button"
+          class="oe_stat_button"
           type="object"
           name="open_contracts"
           icon="fa-book"
@@ -41,7 +41,7 @@
           />
                 </button>
                 <button
-          class="oe_inline oe_stat_button"
+          class="oe_stat_button"
           type="object"
           name="open_sponsored_children"
           icon="fa-child"
@@ -54,7 +54,7 @@
           />
                 </button>
                 <button
-          class="oe_inline oe_stat_button"
+          class="oe_stat_button"
           type="object"
           string="Sponsorship impact"
           groups="child_compassion.group_sponsorship"
@@ -62,9 +62,9 @@
           icon="fa-file-text-o "
         />
                 <button
-          class="oe_inline oe_stat_button"
+          class="oe_stat_button"
           string="Forget me"
-          groups="child_compassion.group_sponsorship"
+          groups="sponsorship_compassion.forget_me_group"
           confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?"
           type="object"
           name="forget_me"
