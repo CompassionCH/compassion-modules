@@ -227,7 +227,8 @@
         <field name="context">{
             'form_view_ref': 'sbc_translation.correspondence_simple_translation_form',
             'tree_view_ref': 'sbc_translation.view_correspondence_translation_tree',
-            'search_default_translation_pending': 1
+            'search_default_translation_pending': 1,
+            'skip_lang_detect': 1,
         }</field>
     </record>
 </odoo>
