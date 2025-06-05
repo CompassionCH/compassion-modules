@@ -558,8 +558,9 @@ class Correspondence(models.Model):
 
         super().write(vals)
         if "translation_language_id" in vals or "page_ids" in vals:
-            self.create_text_boxes()
-            self._check_translation_language()
+            if not self.mapped("page_ids.paragraph_ids"):
+                self.create_text_boxes()
+                self._check_translation_language()
         return True
 
     def unlink(self):
@@ -954,6 +955,26 @@ class Correspondence(models.Model):
             )
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
+
+        if odoo_data.get("direction") == "Supporter To Beneficiary":
+            # Remove empty texts to ensure we don't delete any local content
+            all_page_vals = odoo_data.get("page_ids", [])
+            to_remove = []
+            for page_vals in all_page_vals:
+                if isinstance(page_vals, tuple) and len(page_vals) == 3:
+                    page_data = page_vals[2]
+                    if isinstance(page_data, dict):
+                        for field in [
+                            "original_text",
+                            "english_text",
+                            "translated_text",
+                        ]:
+                            if field in page_data and not page_data[field]:
+                                del page_data[field]
+                        if not page_data:
+                            to_remove.append(page_vals)
+            for page_vals in to_remove:
+                all_page_vals.remove(page_vals)
 
         return odoo_data
 
