@@ -60,11 +60,11 @@
                     Kind regards,
                 </p>
 
-                % if object.send_mode == "digital":
                 <p>
-                    ${object.user_id.signature | safe}
+                    % if object.send_mode == "digital":
+                        ${object.user_id.signature | safe}
+                    % endif
                 </p>
-                % endif
             </field>
         </record>
         <!-- Child Planned Exit -->
