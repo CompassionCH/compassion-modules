@@ -33,7 +33,7 @@
       "from_json_conversion": "json_value.replace('T', ' ').rstrip('Z')"
     },
     "PrimaryOwner": {
-      "field": "primary_owner",
+      "field": "primary_owner.name",
       "from_json_conversion": "self.env['res.users'].search([('name', '=', json_value)]).id"
     },
     "SecondaryOwner": {
