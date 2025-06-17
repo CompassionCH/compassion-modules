@@ -122,7 +122,12 @@ class Correspondence(models.Model):
     def process_letter(self):
         # Prepare the communication when a letter is published
         res = super().process_letter()
-        self.send_communication()
+        self.with_delay(
+            channel="root.partner_communication",
+            priority=100,
+            description="Send B2S letter communication",
+            identity_key=f"sbc.send_communication.{self.ids}",
+        ).send_communication()
         return res
 
     def send_communication(self):

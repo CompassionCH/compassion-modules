@@ -10,7 +10,7 @@
 import logging
 from random import randint
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, SUPERUSER_ID
 from odoo.exceptions import UserError
 from odoo.http import request
 
@@ -542,10 +542,20 @@ class Correspondence(models.Model):
 
         if is_s2b:
             # Send to GMC
-            self.sudo().create_commkit()
+            self.with_user(SUPERUSER_ID).with_delay(
+                channel="root.sbc_compassion",
+                priority=100,
+                description="Create Commkit",
+                identity_key=f"sbc.create_commkit.{self.ids}",
+            ).create_commkit()
         else:
             # Recompose the letter image
-            self.compose_letter_button()
+            self.with_user(SUPERUSER_ID).with_delay(
+                channel="root.sbc_compassion",
+                priority=50,
+                description="Compose B2S letter image",
+                identity_key=f"sbc.compose_letter.{self.ids}",
+            ).compose_letter_button()
 
     def list_letters(self):
         """API call to fetch letters to translate"""
