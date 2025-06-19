@@ -27,6 +27,8 @@ class ProjectLifecycle(models.Model):
             ("Suspension", "Suspension"),
             ("Reactivation", "Reactivation"),
             ("Transition", "Transition"),
+            ("Planned_FCP_Transition", "Planned Transition"),
+            ("Unplanned_FCP_Transition", "Unplanned Transition"),
         ],
         readonly=True,
     )
