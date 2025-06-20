@@ -17,7 +17,7 @@ class ImportLetterLine(models.Model):
 
     _name = "import.letter.line"
     _inherit = "import.letter.config"
-    _order = "create_date desc"
+    _order = "create_date asc"
     _description = "S2B Import Letter Line"
 
     ##########################################################################
