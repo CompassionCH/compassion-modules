@@ -263,10 +263,10 @@ class ImportLettersHistory(models.Model):
             partner_obj = self.env["res.partner"]
             if partner_code:
                 partner = partner_obj.search(
-                    [("ref", "=", partner_code), ("has_sponsorships", "=", True)], limit=2
+                    [("ref", "=", partner_code), ("has_sponsorships", "=", True)],
+                    limit=2,
                 )
                 data["partner_id"] = partner.id
-
 
             child = self.env["compassion.child"]
             if child_code:
