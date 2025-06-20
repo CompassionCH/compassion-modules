@@ -174,6 +174,9 @@ class CrmClaim(models.Model):
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
 
+        # T2426 Assign correct user to the incoming message
+        msg["author_id"] = defaults.get("partner_id", msg.get("author_id"))
+
         # Check here if the date of the mail is during a holiday
         mail_date = msg.get("date")
         defaults["holiday_closure_id"] = (
