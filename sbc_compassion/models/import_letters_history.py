@@ -232,17 +232,17 @@ class ImportLettersHistory(models.Model):
             data["letter_image_preview"] = self.create_preview(image)
 
             partner_obj = self.env["res.partner"]
-            partner = partner_obj.search(
-                [("ref", "=", partner_code), ("has_sponsorships", "=", True)], limit=2
-            )
-            if len(partner) == 2:
-                partner = partner_obj
+            if partner_code:
+                partner = partner_obj.search(
+                    [("ref", "=", partner_code), ("has_sponsorships", "=", True)], limit=2
+                )
+                data["partner_id"] = partner.id
+
 
             child = self.env["compassion.child"]
             if child_code:
                 child = child.search([("local_id", "=", child_code)], limit=1)
 
-            data["partner_id"] = partner.id
             data["child_id"] = child.id
 
             self.env["import.letter.line"].create(data)
