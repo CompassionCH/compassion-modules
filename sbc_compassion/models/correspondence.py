@@ -545,7 +545,8 @@ class Correspondence(models.Model):
                 )
                 if responsible:
                     for c in self.filtered(
-                            lambda c: c.direction == "Supporter To Beneficiary"):
+                        lambda c: c.direction == "Supporter To Beneficiary"
+                    ):
                         c._make_activity(vals["state"], responsible)
 
             elif "state" in vals:

@@ -39,6 +39,10 @@
                         </div>
                         <group>
                             <group>
+                                <field name="disaster_id" />
+                                <field
+                name="disaster_communication_update_name"
+              />
                                 <field name="area_description" />
                                 <field name="close_date" />
                                 <field name="disaster_date" />
@@ -212,6 +216,8 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" />
+                    <field name="disaster_id" />
+                    <field name="disaster_communication_update_name" />
                     <field name="disaster_type" />
                     <field name="disaster_date" />
                     <field name="field_office_id" />
