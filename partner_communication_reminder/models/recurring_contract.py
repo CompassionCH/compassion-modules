@@ -40,7 +40,7 @@ class RecurringContract(models.Model):
         )
 
     @api.model
-    def create_reminder_communication(self):
+    def create_reminder_communication(self, include_suspended=False):
         """Creation of the reminder for active and waiting contracts"""
         _logger.info("Creating Sponsorship Reminders")
         today = datetime.now()
@@ -57,10 +57,13 @@ class RecurringContract(models.Model):
             ("state", "in", ("active", "mandate")),
             ("gmc_commitment_id", "!=", False),
             ("type", "like", "S"),
-            "|",
-            ("child_id.project_id.suspension", "!=", "fund-suspended"),
-            ("child_id.project_id.suspension", "=", False),
         ]
+        if not include_suspended:
+            search_domain += [
+                "|",
+                ("child_id.project_id.suspension", "!=", "fund-suspended"),
+                ("child_id.project_id.suspension", "=", False),
+            ]
         eligible_reminders = {
             "first": self.env[(self._name)],
             "second": self.env[(self._name)],
