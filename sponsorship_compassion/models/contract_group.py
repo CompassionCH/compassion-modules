@@ -37,17 +37,12 @@ class ContractGroup(models.Model):
                 and s.state not in ("terminated", "cancelled")
             )
 
-    def _generate_invoices(self, invoicer, contract_ids=None):
+    def _generate_invoices(self, invoicer):
         # Exclude gifts from regular generation
         super(
             ContractGroup, self.with_context(open_invoices_sponsorship_only=True)
-        )._generate_invoices(invoicer, contract_ids)
-        if contract_ids:
-            contracts = self.env["recurring.contract"].browse(contract_ids).exists()
-        else:
-            contracts = self.mapped("contract_ids")
-        # We don't generate gift if the contract isn't active
-        contracts = contracts.filtered(lambda c: c.state == "active")
+        )._generate_invoices(invoicer)
+        contracts = self.active_contract_ids
         if contracts:
             contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
             contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
@@ -75,25 +70,37 @@ class ContractGroup(models.Model):
             return contract[contract.send_gifts_to]
         return super()._get_partner_for_contract(contract, gift_wizard)
 
-    def _get_open_invoices_filter(self, invoicing_date, contracts):
-        if contracts is None:
-            contracts = self.active_contract_ids
-        # T2325 Include originating sponsorships for gift contracts
-        # to avoid duplicate invoices
-        contracts |= contracts.mapped("contract_line_ids.sponsorship_id")
-        return super()._get_open_invoices_filter(invoicing_date, contracts)
-
     def _should_skip_invoice_generation(
-        self, invoicing_date, contracts=None, skip_suspended=True
+        self, invoicing_date, contracts, skip_suspended=True
     ):
+        self.ensure_one()
+        # T2325 For gift contracts,
+        # we should check that all originating sponsorships were invoiced
+        has_all_gifts = True
+        gift_contracts = contracts.filtered(lambda c: c.type == "G")
+        if gift_contracts:
+            sponsorships = gift_contracts.mapped("contract_line_ids.sponsorship_id")
+            already_invoiced = (
+                self.env["account.move.line"]
+                .search(
+                    [
+                        ("move_id.invoice_date", "=", invoicing_date),
+                        ("contract_id", "in", sponsorships.ids),
+                        ("product_id", "in", gift_contracts.mapped("product_ids").ids),
+                    ]
+                )
+                .mapped("contract_id")
+            )
+            has_all_gifts = len(sponsorships) == len(already_invoiced)
+
         # If invoices come from sub proposal, ignore group suspension
         # to also generate already paid invoices
-        self.ensure_one()
-        check_contracts = contracts or self.active_contract_ids
-        is_sub_proposal = check_contracts.mapped(
+        is_sub_proposal = contracts.mapped(
             "parent_id.child_id"
-        ) and not check_contracts.mapped("invoice_line_ids")
-        skip_suspended = not is_sub_proposal
-        return super()._should_skip_invoice_generation(
-            invoicing_date, contracts, skip_suspended
+        ) and not contracts.mapped("invoice_line_ids")
+        if is_sub_proposal:
+            skip_suspended = False
+        has_all_other_invoices = super()._should_skip_invoice_generation(
+            invoicing_date, contracts - gift_contracts, skip_suspended
         )
+        return has_all_gifts and has_all_other_invoices
