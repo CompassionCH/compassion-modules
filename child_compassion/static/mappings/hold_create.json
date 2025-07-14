@@ -34,7 +34,8 @@
     },
     "PrimaryOwner": {
       "field": "primary_owner.name",
-      "from_json_conversion": "self.env['res.users'].search([('name', '=', json_value)]).id"
+      "search_relational_record": true,
+      "from_json_conversion": "self.env['res.users'].search([('name', '=', json_value)]).name"
     },
     "SecondaryOwner": {
       "field": "secondary_owner",
