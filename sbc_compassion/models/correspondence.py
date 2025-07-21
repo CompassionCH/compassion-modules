@@ -899,37 +899,39 @@ class Correspondence(models.Model):
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
 
-        if "Status" in json_data:
-            del json_data["Status"]
+        # Remove unnecessary fields
+        for key in ["Status", "SBCTypes", "MarkedForRework", "TranslationLanguage"]:
+            json_data.pop(key, None)
 
-        if "SBCTypes" in json_data:
-            del json_data["SBCTypes"]
-
-        if "MarkedForRework" in json_data:
-            del json_data["MarkedForRework"]
-
-        if "TranslationLanguage" in json_data:
-            del json_data["TranslationLanguage"]
-
+        # Convert GlobalPartner to dict if present
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
         pages = json_data.get("Pages", [])
         if not isinstance(pages, list):
             pages = [pages]
-        english_text = ""
-        translated_text = ""
-        for page in pages:
-            english_text += "".join(page["EnglishTranslatedText"])
-            translated_text += "".join(page["TranslatedText"])
-        if english_text == "" and translated_text != "":
-            for page in pages:
-                page["EnglishTranslatedText"] = page["TranslatedText"]
 
+        # Aggregate page texts
+        english_text = "".join(
+            "".join(page.get("EnglishTranslatedText", "")) for page in pages
+        )
+        translated_text = "".join(
+            "".join(page.get("TranslatedText", "")) for page in pages
+        )
+        original_text = "".join("".join(page.get("OriginalText", "")) for page in pages)
+
+        # Assign EnglishTranslatedText if missing
+        if not english_text:
+            if translated_text:
+                for page in pages:
+                    page["EnglishTranslatedText"] = page.get("TranslatedText", "")
+            elif original_text and self.original_language_id.code_iso == "eng":
+                for page in pages:
+                    page["EnglishTranslatedText"] = page.get("OriginalText", "")
+
+        # Update GlobalPartnerSBCId if present
         if "GlobalPartnerSBCId" in json_data:
-            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + str(
-                self.resubmit_id
-            )
+            json_data["GlobalPartnerSBCId"] += str(self.resubmit_id)
 
         return json_data
 

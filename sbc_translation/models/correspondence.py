@@ -391,11 +391,12 @@ class Correspondence(models.Model):
             self.with_context(force_publish=True).process_letter()
         return True
 
-    def save_translation(self, letter_elements, translator_id=None):
+    def save_translation(self, letter_elements, translator_id=None, submit=False):
         """
         TP API for saving a translation
         :param letter_elements: list of dict containing paragraphs or pagebreak data
         :param translator_id: optional translator assigned
+        :param submit: if True, the translation will be submitted after saving
         """
         _logger.info(
             "Saving translation for letter %s and translator %s", self.id, translator_id)
@@ -418,8 +419,9 @@ class Correspondence(models.Model):
                 )
         letter_vals = {
             "new_translator_id": translator_id,
-            "translation_status": "in progress",
         }
+        if not submit:
+            letter_vals["translation_status"] = "in progress"
 
         for element in letter_elements:
             if element.get("type") == "pageBreak":
@@ -435,8 +437,8 @@ class Correspondence(models.Model):
                     "comments": element.get("comments"),
                 }
                 if self.translation_language_id.code_iso == "eng":
-                    # Copy translation text into english text field
-                    paragraph_vals["english_text"] = element.get("content")
+                    # Move translation text into english text field
+                    paragraph_vals["english_text"] = paragraph_vals.pop("translated_text")
 
                 if (
                     current_page.paragraph_ids[paragraph_index].comments
@@ -477,7 +479,7 @@ class Correspondence(models.Model):
         _logger.info(
             "Submitting translation for letter %s and translator %s", self.id, translator_id)
         self.ensure_one()
-        self.save_translation(letter_elements, translator_id)
+        self.save_translation(letter_elements, translator_id, submit=True)
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id
         )
