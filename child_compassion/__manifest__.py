@@ -36,6 +36,7 @@
     "website": "https://github.com/CompassionCH/compassion-modules",
     "development_status": "Production/Stable",
     "depends": [
+        "base_iso3166",  # OCA/community-data-files
         "message_center_compassion",
         "advanced_translation",
     ],
@@ -44,6 +45,7 @@
             "pyquery",
             "pytz",
             "timezonefinder",
+            "wbgapi",
         ]
     },
     "data": [
@@ -82,7 +84,7 @@
         "data/fcp.involvement.csv",
         "data/fcp.church.ministry.csv",
         "data/fcp.program.csv",
-        "data/demand_planning_cron.xml",
+        "data/ir_cron.xml",
         "data/fcp.church.facility.csv",
         "data/fcp.church.utility.csv",
         "data/fcp.cognitive.activity.csv",
