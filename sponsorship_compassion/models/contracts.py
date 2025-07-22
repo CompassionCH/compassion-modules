@@ -1272,6 +1272,7 @@ class SponsorshipContract(models.Model):
             [
                 ("contract_id", "in", self.ids),
                 ("payment_state", "=", "not_paid"),
+                ("parent_state", "=", "posted"),
                 ("due_date", "<", paid_invl.due_date),
             ]
         )
