@@ -112,6 +112,60 @@
                                 </field>
                             </group>
                         </page>
+                        <page string="World Bank Data" name="world_bank_data">
+                            <button
+                name="refresh_worldbank_data"
+                type="object"
+                string="Refresh World Bank Data"
+                class="oe_highlight"
+              />
+                            <button
+                name="refresh_capital_city"
+                type="object"
+                string="Refresh Capital City"
+              />
+                            <group>
+                                <field name="capital_city" />
+                                <field name="population" />
+                                <field name="male_life_expectancy" />
+                                <field name="female_life_expectancy" />
+                                <field
+                  name="urban_water_access"
+                  widget="percentage"
+                />
+                                <field
+                  name="rural_water_access"
+                  widget="percentage"
+                />
+                                <field
+                  name="adult_literacy_rate"
+                  widget="percentage"
+                />
+                                <field
+                  name="infant_mortality_rate"
+                  widget="percentage"
+                />
+                                <field
+                  name="under_five_mortality_rate"
+                  widget="percentage"
+                />
+                                <field
+                  name="less_than_2_dollars_a_day"
+                  widget="percentage"
+                />
+                            </group>
+                        </page>
+                        <page string="Factbook Data" name="factbook_data">
+                            <button
+                name="refresh_factbook_data"
+                type="object"
+                string="Refresh Factbook Data"
+                class="oe_highlight"
+              />
+                            <group>
+                                <field name="religions" />
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
