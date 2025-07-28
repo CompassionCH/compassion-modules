@@ -90,6 +90,7 @@
                         <tree editable="bottom" default_order="page_id asc,sequence asc">
                             <field name="sequence" widget="handle"/>
                             <field name="original_text" />
+                            <field name="english_text" />
                             <field name="translated_text" />
                             <field name="comments" />
                             <field name="page_id" invisible="1"/>
