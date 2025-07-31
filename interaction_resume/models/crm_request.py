@@ -10,10 +10,14 @@ class CrmRequest(models.Model):
         res = []
         partner = self.env["res.partner"].browse(partner_id)
         partners = (
-            self.env["res.partner"]
-            .with_context(active_test=False)
-            .search([("email", "=", partner.email)])
-        ) | partner | partner.other_contact_ids
+            (
+                self.env["res.partner"]
+                .with_context(active_test=False)
+                .search([("email", "=", partner.email)])
+            )
+            | partner
+            | partner.other_contact_ids
+        )
         for claim in self:
             messages = claim.message_ids.filtered(
                 lambda m: (m.partner_ids & partners) or m.author_id in partners

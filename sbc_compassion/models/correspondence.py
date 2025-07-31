@@ -10,6 +10,8 @@
 import base64
 import datetime
 import logging
+import shutil
+import subprocess
 import threading
 import uuid
 from collections import defaultdict
@@ -510,6 +512,7 @@ class Correspondence(models.Model):
         letter_data = False
         if vals.get("letter_image"):
             letter_data = base64.b64decode(vals["letter_image"])
+            vals["letter_image"] = base64.b64encode(self._compress_pdf(letter_data))
             ftype = magic.from_buffer(letter_data, True).lower()
             if "pdf" in ftype:
                 type_ = ".pdf"
@@ -557,6 +560,11 @@ class Correspondence(models.Model):
             vals["status_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:
             vals["letter_image"] = False
+        if vals.get("letter_image"):
+            # Compress the PDF if it is a PDF
+            vals["letter_image"] = base64.b64encode(
+                self._compress_pdf(base64.b64decode(vals["letter_image"]))
+            )
 
         super().write(vals)
         if "translation_language_id" in vals or "page_ids" in vals:
@@ -638,7 +646,7 @@ class Correspondence(models.Model):
         # Extract pages and additional images
         pages = []
         images = []
-        with Image(blob=image_data, resolution=150) as page_image:
+        with Image(blob=image_data, resolution=self.preferred_dpi) as page_image:
             for i in page_image.sequence:
                 pages.append(base64.b64encode(Image(i).make_blob("jpg")))
                 # For additional pages, check if the page contains text.
@@ -1160,3 +1168,60 @@ class Correspondence(models.Model):
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
+
+    @api.model
+    def _compress_pdf(self, letter_data):
+        """Compress PDF data to reduce size using Ghostscript.
+
+        If the PDF size is larger than 1MB, a compression is applied.
+        :param letter_data: binary (b64decoded) PDF data
+        :return: compressed PDF data if needed
+        """
+        if len(letter_data) <= 1024 * 1024:  # 1MB
+            return letter_data
+
+        if not shutil.which("gs"):
+            _logger.warning("Ghostscript ('gs') not found, skipping PDF compression.")
+            return letter_data
+
+        command = [
+            "gs",
+            "-sDEVICE=pdfwrite",
+            "-dCompatibilityLevel=1.4",
+            "-dPDFSETTINGS=/ebook",  # Preset for good quality and size.
+            "-dNOPAUSE",
+            "-dQUIET",
+            "-dBATCH",
+            "-sOutputFile=-",  # Write to stdout
+            "-",  # Read from stdin
+        ]
+
+        try:
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            compressed_blob, stderr = process.communicate(input=letter_data)
+
+            if process.returncode != 0:
+                _logger.error(f"Ghostscript failed with error: {stderr.decode()}")
+                return letter_data  # Return original data on failure
+
+            if len(compressed_blob) < len(letter_data):
+                _logger.info(
+                    f"PDF compressed with Ghostscript from "
+                    f"{len(letter_data)} to {len(compressed_blob)} bytes."
+                )
+                return compressed_blob
+            else:
+                _logger.info(
+                    "Ghostscript compression did not reduce file size. "
+                    "Returning original."
+                )
+                return letter_data
+
+        except (OSError, subprocess.SubprocessError) as e:
+            _logger.error(f"Failed to run Ghostscript for PDF compression: {e}")
+            return letter_data
