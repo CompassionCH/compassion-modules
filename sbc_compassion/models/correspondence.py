@@ -10,6 +10,8 @@
 import base64
 import datetime
 import logging
+import shutil
+import subprocess
 import uuid
 from collections import defaultdict
 
@@ -570,6 +572,10 @@ class Correspondence(models.Model):
             if "partner_id" not in vals:
                 vals["partner_id"] = contract.correspondent_id.id
 
+            if vals.get("sponsor_letter_scan"):
+                letter_data = base64.b64decode(vals["sponsor_letter_scan"])
+                vals["sponsor_letter_scan"] = base64.b64encode(self._compress_pdf(letter_data))
+
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
@@ -616,6 +622,11 @@ class Correspondence(models.Model):
                 ):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
+        if vals.get("sponsor_letter_scan"):
+            # Compress the PDF if it is a PDF
+            vals["sponsor_letter_scan"] = base64.b64encode(
+                self._compress_pdf(base64.b64decode(vals["sponsor_letter_scan"]))
+            )
 
         super().write(vals)
         if "translation_language_id" in vals or "page_ids" in vals:
@@ -1168,3 +1179,60 @@ class Correspondence(models.Model):
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
+
+    @api.model
+    def _compress_pdf(self, letter_data):
+        """Compress PDF data to reduce size using Ghostscript.
+
+        If the PDF size is larger than 1MB, a compression is applied.
+        :param letter_data: binary (b64decoded) PDF data
+        :return: compressed PDF data if needed
+        """
+        if len(letter_data) <= 1024 * 1024:  # 1MB
+            return letter_data
+
+        if not shutil.which("gs"):
+            _logger.warning("Ghostscript ('gs') not found, skipping PDF compression.")
+            return letter_data
+
+        command = [
+            "gs",
+            "-sDEVICE=pdfwrite",
+            "-dCompatibilityLevel=1.4",
+            "-dPDFSETTINGS=/ebook",  # Preset for good quality and size.
+            "-dNOPAUSE",
+            "-dQUIET",
+            "-dBATCH",
+            "-sOutputFile=-",  # Write to stdout
+            "-",  # Read from stdin
+        ]
+
+        try:
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            compressed_blob, stderr = process.communicate(input=letter_data)
+
+            if process.returncode != 0:
+                _logger.error(f"Ghostscript failed with error: {stderr.decode()}")
+                return letter_data  # Return original data on failure
+
+            if len(compressed_blob) < len(letter_data):
+                _logger.info(
+                    f"PDF compressed with Ghostscript from "
+                    f"{len(letter_data)} to {len(compressed_blob)} bytes."
+                )
+                return compressed_blob
+            else:
+                _logger.info(
+                    "Ghostscript compression did not reduce file size. "
+                    "Returning original."
+                )
+                return letter_data
+
+        except (OSError, subprocess.SubprocessError) as e:
+            _logger.error(f"Failed to run Ghostscript for PDF compression: {e}")
+            return letter_data
