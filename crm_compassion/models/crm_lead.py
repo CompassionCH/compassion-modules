@@ -22,9 +22,7 @@ class CrmLead(models.Model):
         compute="_compute_planned_sponsorship",
         store=True,
     )
-    event_ids = fields.One2many(
-        "crm.event.compassion", "lead_id", "Events", readonly=False
-    )
+    event_ids = fields.Many2many("crm.event.compassion", string="Events")
 
     def create_event(self):
         self.ensure_one()

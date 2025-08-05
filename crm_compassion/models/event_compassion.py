@@ -130,6 +130,10 @@ class EventCompassion(models.Model):
     lead_id = fields.Many2one(
         "crm.lead", "Opportunity", tracking=True, readonly=False, check_company=True
     )
+    lead_ids = fields.Many2many(
+        "crm.lead",
+        string="Opportunities",
+    )
     won_sponsorships = fields.Integer(related="origin_id.won_sponsorships", store=True)
     conversion_rate = fields.Float(related="origin_id.conversion_rate", store=True)
     calendar_event_id = fields.Many2one("calendar.event", readonly=False)
@@ -444,11 +448,6 @@ class EventCompassion(models.Model):
     def onchange_partner(self):
         self.street = self.partner_id.street
         self.zip_id = self.partner_id.zip_id
-
-    @api.onchange("lead_id")
-    def onchange_lead_id(self):
-        if self.lead_id.user_id:
-            self.user_id = self.lead_id.user_id
 
     @api.onchange("type")
     def onchange_type(self):

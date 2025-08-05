@@ -30,7 +30,7 @@
 {
     "name": "Compassion - Events",
     "summary": "Compassion Events and Opportunities",
-    "version": "14.0.1.3.0",
+    "version": "14.0.1.4.0",
     "development_status": "Beta",
     "category": "Customer Relationship Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
