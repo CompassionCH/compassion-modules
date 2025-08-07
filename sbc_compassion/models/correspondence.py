@@ -841,7 +841,9 @@ class Correspondence(models.Model):
             f"{child.gender == 'F' and 'Female' or 'Male'} - {child.age}"
         )
 
-        image_data = self.mapped("original_attachment_ids.datas") or []
+        image_data = (
+            self.mapped("original_attachment_ids").sorted("id").mapped("datas") or []
+        )
         text_data = {"Original": [self.original_text]}
         if self.kit_identifier:
             # Only compose translation if the letter was already transmitted
