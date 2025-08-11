@@ -219,6 +219,8 @@ class Correspondence(models.Model):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
+            if not self.env.context.get("force_publish"):
+                letter._check_translation_language()
             if (
                 (letter.beneficiary_language_ids & letter.supporter_languages_ids)
                 or letter.translation_language_id in letter.supporter_languages_ids

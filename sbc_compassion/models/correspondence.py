@@ -443,26 +443,30 @@ class Correspondence(models.Model):
         language_id, and fix it if possible."""
         if self.env.context.get("skip_lang_detect"):
             return
-        for letter in self:
+        english = self.env.ref("advanced_translation.lang_compassion_english")
+        for letter in self.with_context(skip_lang_detect=True):
             letter_text = (
                 letter.translated_text or letter.english_text or letter.original_text
             )
             if letter_text and letter.translation_language_id:
-                strip_text = (
+                letter_text = (
                     letter_text.strip(" \t\n\r.")
                     .replace(BOX_SEPARATOR, "")
                     .replace(PAGE_SEPARATOR, "")
                 )
-                if strip_text:
+                if letter_text:
                     # find the language of text argument
                     detected_lang = self.env["langdetect"].detect_language(letter_text)
                     if (
                         detected_lang
                         and detected_lang != letter.translation_language_id
                     ):
-                        letter.with_context(
-                            skip_lang_detect=True
-                        ).translation_language_id = detected_lang
+                        letter.translation_language_id = detected_lang
+            if not letter_text and letter.direction == "Beneficiary To Supporter":
+                # T2495 It's safer to consider child letters as English to avoid
+                # sending letters with no translation to the sponsor.
+                if letter.translation_language_id != english:
+                    letter.translation_language_id = english
 
     @api.depends("uuid")
     def _compute_read_url(self):
