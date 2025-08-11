@@ -31,11 +31,11 @@
                 domain="[('model_id','=', model_id),
                                              ('relation','=','res.users'),
                                              ('ttype','=','many2one')]"
-                attrs="{'invisible' : [('send_from', '=', 'manual')]}"
+                invisible="send_from == 'manual'"
               />
                             <field
                 name="user_id"
-                attrs="{'invisible': [('send_from', '=', 'dynamic')]}"
+                invisible="send_from == 'dynamic'"
               />
                             <field name="email_template_id" />
                             <field name="report_id" />

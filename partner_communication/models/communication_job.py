@@ -489,6 +489,12 @@ class CommunicationJob(models.Model):
                 user_id = config.user_id.id
             vals["user_id"] = user_id
 
+        if not vals.get("printer_output_tray_id"):
+            if default_config.printer_output_tray_id:
+                vals[
+                    "printer_output_tray_id"
+                ] = default_config.printer_output_tray_id.id
+
         # Check all default_vals fields
         for default_val in default_vals:
             if default_val not in vals:

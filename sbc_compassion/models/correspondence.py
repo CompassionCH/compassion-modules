@@ -578,7 +578,9 @@ class Correspondence(models.Model):
 
             if vals.get("sponsor_letter_scan"):
                 letter_data = base64.b64decode(vals["sponsor_letter_scan"])
-                vals["sponsor_letter_scan"] = base64.b64encode(self._compress_pdf(letter_data))
+                vals["sponsor_letter_scan"] = base64.b64encode(
+                    self._compress_pdf(letter_data)
+                )
 
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
