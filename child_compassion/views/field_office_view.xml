@@ -124,7 +124,7 @@
                 type="object"
                 string="Refresh Capital City"
               />
-                            <group>
+                            <group class="w-md-50 mt-4">
                                 <field name="capital_city" />
                                 <field name="population" />
                                 <field name="male_life_expectancy" />
@@ -162,7 +162,7 @@
                 string="Refresh Factbook Data"
                 class="oe_highlight"
               />
-                            <group>
+                            <group class="mt-4">
                                 <field name="religions" />
                             </group>
                         </page>

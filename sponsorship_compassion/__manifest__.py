@@ -46,6 +46,8 @@
         "base_fontawesome",  # OCA/server-tools
     ],
     "data": [
+        "security/ir.model.access.csv",
+        "security/security.xml",
         "views/invoice_line_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_contract_view.xml",
@@ -71,8 +73,6 @@
         "data/res_partner_sequence.xml",
         "data/queue_job.xml",
         "data/sync_projects_from_gmc_cron.xml",
-        "security/ir.model.access.csv",
-        "security/security.xml",
         "views/product_views.xml",
         "views/res_config_settings_view.xml",
     ],

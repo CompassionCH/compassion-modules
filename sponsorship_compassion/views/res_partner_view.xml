@@ -187,14 +187,13 @@
         <field name="name">Forget me</field>
         <field name="model_id" ref="base.model_res_partner" />
         <field name="binding_view_types">form</field>
-        <field name="binding_model_id" ref="base.model_res_partner" />
         <field name="state">code</field>
         <field name="code">
             action = records.forget_me()
         </field>
         <field
       name="groups_id"
-      eval="[(6,0,ref('sponsorship_compassion.forget_me_group'))]"
+      eval="[(4,ref('sponsorship_compassion.forget_me_group', raise_if_not_found=False))]"
     />
     </record>
 </odoo>
