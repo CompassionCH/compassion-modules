@@ -31,6 +31,19 @@
     "HoldExpirationDate": {
       "field": "expiration_date",
       "from_json_conversion": "json_value.replace('T', ' ').rstrip('Z')"
+    },
+    "PrimaryOwner": {
+      "field": "primary_owner.name",
+      "search_relational_record": true,
+      "from_json_conversion": "self.env['res.users'].search([('name', '=', json_value)]).name"
+    },
+    "SecondaryOwner": {
+      "field": "secondary_owner",
+      "from_json_conversion": "json_value"
+    },
+    "Comments": {
+      "field": "comments",
+      "from_json_conversion": "json_value"
     }
   }
 }

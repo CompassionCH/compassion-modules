@@ -17,31 +17,54 @@
         name="subject"
       >We have good news about ${object.get_objects().mapped('child_id').get_list('preferred_name',translate=False)}!</field>
             <field name="body_html" type="html">
-                <p>
-                    % set partner = object.partner_id
-                    % set sponsorship = object.get_objects()
-                    % set child = sponsorship.mapped('child_id')
-                    % set firstname = child.get_list('preferred_name',translate=False)
-${partner.salutation}
-                </p>
-                <p>
-We have good news for you: after ${(datetime.datetime.now() - sponsorship[:1].start_date).days // 364} years of sponsorship with faithful support from you and the staff at the Compassion center, ${firstname} will be ending the sponsorship program.
-                </p>
-                <p>
-What a joy and gratitude!
-                </p>
-                <p>
-You will receive more detailed information about the end of this sponsorship in the coming days.
-                </p>
-                <p>
-Thank you for your investment in the life of ${firstname}.
-                </p>
-                <p>
-With our best regards and see you soon!
-                </p>
                 <div>
-${object.user_id.signature | safe}
+                % set partner = object.partner_id
+                % set plural = partner.title.plural or partner.title.id == 29
+                % set sponsorships = object.get_objects()
+                % set children = sponsorships.mapped('child_id')
+                % set firstname = children.get_list('preferred_name', 3, children.get_number(), translate=False)
+                % set less_3 = firstname != children.get_number()
+                % set nb_years = (sponsorships[:1].contract_duration // 364)
+                % set is = 'are' if children|length > 1 else 'is'
                 </div>
+
+                <p>
+                    ${partner.salutation},
+                </p>
+
+                <p>
+                    We have good news!
+                </p>
+
+                <p>
+                % if nb_years > 0:
+                    After ${(datetime.datetime.now() - sponsorships[:1].start_date).days // 364} years of support from you and the staff in the field, ${firstname} ${is} coming to the end of the sponsorship journey in the next few weeks.
+                % else:
+                    ${firstname} ${is} coming to the end of the sponsorship journey in the next few weeks.
+                % endif
+                </p>
+
+                <p>
+                    That's a reason to celebrate and be thankful!
+                </p>
+
+                <p>
+                    We will send you more detailed information about the end of the sponsorship by mail in the coming days.
+                </p>
+
+                <p>
+                    Thank you so much for your investment in the life of ${firstname}.
+                </p>
+
+                <p>
+                    Kind regards,
+                </p>
+
+                <p>
+                    % if object.send_mode == "digital":
+                        ${object.user_id.signature | safe}
+                    % endif
+                </p>
             </field>
         </record>
         <!-- Child Planned Exit -->

@@ -343,6 +343,7 @@
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="no_outgoing_data" eval="True" />
+            <field name="success_method">details_answer</field>
         </record>
         <!--Participant Hold Removal-->
         <record id="beneficiary_hold_removal" model="gmc.action">

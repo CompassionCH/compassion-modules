@@ -12,3 +12,5 @@ pytz
 pyzbar
 regex
 timezonefinder
+wand
+wbgapi

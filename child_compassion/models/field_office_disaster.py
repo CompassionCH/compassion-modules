@@ -145,12 +145,12 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    disaster_id = fields.Char()
+    disaster_id = fields.Char("Disaster ID")
     area_description = fields.Char()
     close_date = fields.Date()
 
     # GMC notification related fields
-    disaster_communication_update_name = fields.Char()
+    disaster_communication_update_name = fields.Char("Update ID")
     api_url = fields.Char()
 
     name = fields.Char()
@@ -258,9 +258,6 @@ class FieldOfficeDisasterAlert(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Update if disaster already exists."""
-        notify_ids = (
-            self.env["res.config.settings"].sudo().get_param("disaster_notify_ids")
-        )
         updated = self.browse()
         for vals in vals_list.copy():
             disaster_id = vals.get("disaster_id")
@@ -270,22 +267,28 @@ class FieldOfficeDisasterAlert(models.Model):
                 vals_list.remove(vals)
                 updated += disaster
         created = super().create(vals_list)
-        if notify_ids:
-            for disaster in updated:
-                disaster.message_post(
-                    body=_("The Disaster Alert was just updated."),
-                    subject=_("Disaster Alert Update"),
-                    partner_ids=notify_ids,
-                    subtype_xmlid="mail.mt_comment",
-                )
-            for disaster in created:
-                disaster.message_post(
-                    body=_("The disaster alert has just been received."),
-                    subject=_("New Disaster Alert"),
-                    partner_ids=notify_ids,
-                    subtype_xmlid="mail.mt_comment",
-                )
         return updated + created
+
+    def details_answer(self, vals):
+        self.write(vals)
+        # Notify users
+        notify_ids = (
+            self.env["res.config.settings"].sudo().get_param("disaster_notify_ids")
+        )
+        if notify_ids:
+            for disaster in self.filtered(
+                lambda d: d.child_disaster_impact_ids or d.fcp_disaster_impact_ids
+            ):
+                disaster.message_post(
+                    body=_(
+                        "The disaster alert has just been received and some "
+                        "children or projects were impacted."
+                    ),
+                    subject=_("New Disaster Alert Update"),
+                    partner_ids=notify_ids,
+                    subtype_xmlid="mail.mt_comment",
+                )
+        return True
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -346,7 +349,7 @@ class FieldOfficeDisasterAlert(models.Model):
                 "action_id": action_id,
                 "object_id": fo_disaster.id,
             }
-            message_obj.create(message_vals)
+            message_obj.with_delay(eta=600).create(message_vals)
             fo_ids.append(fo_disaster.id)
 
         return fo_ids

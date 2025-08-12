@@ -10,6 +10,8 @@
 import base64
 import datetime
 import logging
+import shutil
+import subprocess
 import uuid
 from collections import defaultdict
 
@@ -449,26 +451,30 @@ class Correspondence(models.Model):
         language_id, and fix it if possible."""
         if self.env.context.get("skip_lang_detect"):
             return
-        for letter in self:
+        english = self.env.ref("advanced_translation.lang_compassion_english")
+        for letter in self.with_context(skip_lang_detect=True):
             letter_text = (
                 letter.translated_text or letter.english_text or letter.original_text
             )
             if letter_text and letter.translation_language_id:
-                strip_text = (
+                letter_text = (
                     letter_text.strip(" \t\n\r.")
                     .replace(BOX_SEPARATOR, "")
                     .replace(PAGE_SEPARATOR, "")
                 )
-                if strip_text:
+                if letter_text:
                     # find the language of text argument
                     detected_lang = self.env["langdetect"].detect_language(letter_text)
                     if (
                         detected_lang
                         and detected_lang != letter.translation_language_id
                     ):
-                        letter.with_context(
-                            skip_lang_detect=True
-                        ).translation_language_id = detected_lang
+                        letter.translation_language_id = detected_lang
+            if not letter_text and letter.direction == "Beneficiary To Supporter":
+                # T2495 It's safer to consider child letters as English to avoid
+                # sending letters with no translation to the sponsor.
+                if letter.translation_language_id != english:
+                    letter.translation_language_id = english
 
     @api.depends("uuid")
     def _compute_read_url(self):
@@ -570,6 +576,12 @@ class Correspondence(models.Model):
             if "partner_id" not in vals:
                 vals["partner_id"] = contract.correspondent_id.id
 
+            if vals.get("sponsor_letter_scan"):
+                letter_data = base64.b64decode(vals["sponsor_letter_scan"])
+                vals["sponsor_letter_scan"] = base64.b64encode(
+                    self._compress_pdf(letter_data)
+                )
+
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
@@ -605,7 +617,9 @@ class Correspondence(models.Model):
                     "letter_responsible"
                 )
                 if responsible:
-                    for c in self:
+                    for c in self.filtered(
+                        lambda c: c.direction == "Supporter To Beneficiary"
+                    ):
                         c._make_activity(vals["state"], responsible)
 
             elif "state" in vals:
@@ -614,11 +628,17 @@ class Correspondence(models.Model):
                 ):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
+        if vals.get("sponsor_letter_scan"):
+            # Compress the PDF if it is a PDF
+            vals["sponsor_letter_scan"] = base64.b64encode(
+                self._compress_pdf(base64.b64decode(vals["sponsor_letter_scan"]))
+            )
 
         super().write(vals)
         if "translation_language_id" in vals or "page_ids" in vals:
-            self.create_text_boxes()
-            self._check_translation_language()
+            if not self.mapped("page_ids.paragraph_ids"):
+                self.create_text_boxes()
+                self._check_translation_language()
         return True
 
     def unlink(self):
@@ -809,37 +829,39 @@ class Correspondence(models.Model):
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
 
-        if "Status" in json_data:
-            del json_data["Status"]
+        # Remove unnecessary fields
+        for key in ["Status", "SBCTypes", "MarkedForRework", "TranslationLanguage"]:
+            json_data.pop(key, None)
 
-        if "SBCTypes" in json_data:
-            del json_data["SBCTypes"]
-
-        if "MarkedForRework" in json_data:
-            del json_data["MarkedForRework"]
-
-        if "TranslationLanguage" in json_data:
-            del json_data["TranslationLanguage"]
-
+        # Convert GlobalPartner to dict if present
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
         pages = json_data.get("Pages", [])
         if not isinstance(pages, list):
             pages = [pages]
-        english_text = ""
-        translated_text = ""
-        for page in pages:
-            english_text += "".join(page["EnglishTranslatedText"])
-            translated_text += "".join(page["TranslatedText"])
-        if english_text == "" and translated_text != "":
-            for page in pages:
-                page["EnglishTranslatedText"] = page["TranslatedText"]
 
+        # Aggregate page texts
+        english_text = "".join(
+            "".join(page.get("EnglishTranslatedText", "")) for page in pages
+        )
+        translated_text = "".join(
+            "".join(page.get("TranslatedText", "")) for page in pages
+        )
+        original_text = "".join("".join(page.get("OriginalText", "")) for page in pages)
+
+        # Assign EnglishTranslatedText if missing
+        if not english_text:
+            if translated_text:
+                for page in pages:
+                    page["EnglishTranslatedText"] = page.get("TranslatedText", "")
+            elif original_text and self.original_language_id.code_iso == "eng":
+                for page in pages:
+                    page["EnglishTranslatedText"] = page.get("OriginalText", "")
+
+        # Update GlobalPartnerSBCId if present
         if "GlobalPartnerSBCId" in json_data:
-            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + str(
-                self.resubmit_id
-            )
+            json_data["GlobalPartnerSBCId"] += str(self.resubmit_id)
 
         return json_data
 
@@ -867,6 +889,26 @@ class Correspondence(models.Model):
             )
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
+
+        if odoo_data.get("direction") == "Supporter To Beneficiary":
+            # Remove empty texts to ensure we don't delete any local content
+            all_page_vals = odoo_data.get("page_ids", [])
+            to_remove = []
+            for page_vals in all_page_vals:
+                if isinstance(page_vals, tuple) and len(page_vals) == 3:
+                    page_data = page_vals[2]
+                    if isinstance(page_data, dict):
+                        for field in [
+                            "original_text",
+                            "english_text",
+                            "translated_text",
+                        ]:
+                            if field in page_data and not page_data[field]:
+                                del page_data[field]
+                        if not page_data:
+                            to_remove.append(page_vals)
+            for page_vals in to_remove:
+                all_page_vals.remove(page_vals)
 
         return odoo_data
 
@@ -1143,3 +1185,60 @@ class Correspondence(models.Model):
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
+
+    @api.model
+    def _compress_pdf(self, letter_data):
+        """Compress PDF data to reduce size using Ghostscript.
+
+        If the PDF size is larger than 1MB, a compression is applied.
+        :param letter_data: binary (b64decoded) PDF data
+        :return: compressed PDF data if needed
+        """
+        if len(letter_data) <= 1024 * 1024:  # 1MB
+            return letter_data
+
+        if not shutil.which("gs"):
+            _logger.warning("Ghostscript ('gs') not found, skipping PDF compression.")
+            return letter_data
+
+        command = [
+            "gs",
+            "-sDEVICE=pdfwrite",
+            "-dCompatibilityLevel=1.4",
+            "-dPDFSETTINGS=/ebook",  # Preset for good quality and size.
+            "-dNOPAUSE",
+            "-dQUIET",
+            "-dBATCH",
+            "-sOutputFile=-",  # Write to stdout
+            "-",  # Read from stdin
+        ]
+
+        try:
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            compressed_blob, stderr = process.communicate(input=letter_data)
+
+            if process.returncode != 0:
+                _logger.error(f"Ghostscript failed with error: {stderr.decode()}")
+                return letter_data  # Return original data on failure
+
+            if len(compressed_blob) < len(letter_data):
+                _logger.info(
+                    f"PDF compressed with Ghostscript from "
+                    f"{len(letter_data)} to {len(compressed_blob)} bytes."
+                )
+                return compressed_blob
+            else:
+                _logger.info(
+                    "Ghostscript compression did not reduce file size. "
+                    "Returning original."
+                )
+                return letter_data
+
+        except (OSError, subprocess.SubprocessError) as e:
+            _logger.error(f"Failed to run Ghostscript for PDF compression: {e}")
+            return letter_data

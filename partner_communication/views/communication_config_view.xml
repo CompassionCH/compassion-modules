@@ -24,8 +24,19 @@
                           <field name="forbid_merging" />
                         </group>
                         <group>
-                            <field name="user_id" />
                             <field name="model_id" />
+                            <field name="send_from" />
+                            <field
+                name="sender_field_id"
+                domain="[('model_id','=', model_id),
+                                             ('relation','=','res.users'),
+                                             ('ttype','=','many2one')]"
+                invisible="send_from == 'manual'"
+              />
+                            <field
+                name="user_id"
+                invisible="send_from == 'dynamic'"
+              />
                             <field name="email_template_id" />
                             <field name="report_id" />
                             <field name="attachments_function" />
