@@ -13,6 +13,7 @@ import logging
 from io import BytesIO
 
 import requests
+from pdf2image import convert_from_bytes
 from PIL import Image
 
 from odoo import _, api, fields, models
@@ -142,7 +143,11 @@ class CorrespondencePage(models.Model):
         self.ensure_one()
         letter = self.correspondence_id
         if letter.direction == "Supporter To Beneficiary" and not letter.kit_identifier:
-            return self.template_id.background
+            if self.template_id.background:
+                return self.template_id.background
+            else:
+                # Fetch from sponsor pdf
+                return self._fetch_sponsor_pdf_image()
         image_field = (
             "final_page_image"
             if letter.sponsor_needs_final_letter
@@ -151,6 +156,16 @@ class CorrespondencePage(models.Model):
         if not getattr(self, image_field):
             self._compute_page_image(image_field.replace("_page_image", ""))
         return getattr(self, image_field)
+
+    def _fetch_sponsor_pdf_image(self):
+        self.ensure_one()
+        if self.correspondence_id.sponsor_letter_scan:
+            pdf_data = base64.b64decode(self.correspondence_id.sponsor_letter_scan)
+            image = convert_from_bytes(
+                pdf_data, 96, first_page=self.page_index, last_page=self.page_index
+            )[0]
+            return self.env["import.letters.history"].create_preview(image)
+        return False
 
     def _get_cloundinary_image(self, cloudinary_url):
         if not cloudinary_url:

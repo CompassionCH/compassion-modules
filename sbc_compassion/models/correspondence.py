@@ -514,6 +514,7 @@ class Correspondence(models.Model):
             letter.report_needs_original_text = (
                 letter.direction == "Supporter To Beneficiary"
                 and not letter.kit_identifier
+                and not letter.sponsor_letter_scan
             )
 
     def _compute_report_needs_final_text(self):
