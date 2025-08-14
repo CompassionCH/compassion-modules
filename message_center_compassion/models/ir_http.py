@@ -104,7 +104,12 @@ class IrHTTP(models.AbstractModel):
         :param client_id: token client id
         :return: res.user record
         """
-        user = request.env["res.users"].sudo().search([("login", "=", client_id)])
+        user = (
+            request.env["res.users"]
+            .with_context(active_test=False)
+            .sudo()
+            .search([("login", "=", client_id)])
+        )
         if user:
             request.uid = user.id
         else:
