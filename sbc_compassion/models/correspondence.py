@@ -327,7 +327,10 @@ class Correspondence(models.Model):
                     + ")"
                 )
             else:
-                letter.name = _("New correspondence")
+                letter.name = (
+                    f"{letter.scanned_date}"
+                    f"_Supporter_Letter_{letter.sponsorship_id.display_name}"
+                )
 
     def _compute_avatar(self):
         for correspondence in self:

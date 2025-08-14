@@ -15,27 +15,15 @@ def migrate(cr, version):
             "correspondence_mapping.json",
         ],
     )
-    # Remove the letter attachment in batch jobs of 100 letters
-    offset = 0
-    b2s_letters = env["correspondence"].search(
-        [
-            ("direction", "=", "Beneficiary To Supporter"),
-            ("sponsor_letter_scan", "!=", False),
-        ],
-        limit=100,
-        offset=offset,
+    # Remove the letter attachment
+    openupgrade.logged_query(
+        cr,
+        """
+        UPDATE correspondence
+        SET sponsor_letter_scan = NULL
+        WHERE direction = 'Beneficiary To Supporter' AND sponsor_letter_scan IS NOT NULL
+        """,
     )
-    while b2s_letters:
-        b2s_letters.with_delay().write({"sponsor_letter_scan": False})
-        offset += 100
-        b2s_letters = env["correspondence"].search(
-            [
-                ("direction", "=", "Beneficiary To Supporter"),
-                ("sponsor_letter_scan", "!=", False),
-            ],
-            limit=100,
-            offset=offset,
-        )
 
     # Populate Cloudinary URLs for letter images
     update_letter_action = env.ref("sbc_compassion.update_letter")
@@ -56,9 +44,50 @@ def migrate(cr, version):
             letter.with_delay().write(
                 {
                     "cloudinary_final_letter_url": final_url,
+                    "cloudinary_original_letter_url": original_url or False,
+                }
+            )
+    supporter_letters = env["correspondence"].search(
+        [
+            ("direction", "=", "Supporter To Beneficiary"),
+            ("kit_identifier", "!=", False),
+            ("cloudinary_original_letter_url", "=", False),
+        ]
+    )
+    cr.execute(
+        """
+        SELECT DISTINCT ON (m.object_ids) m.object_ids, m.content
+        FROM gmc_message m
+        WHERE m.action_id = %s
+        AND EXISTS (
+            SELECT 1
+            FROM unnest(string_to_array(m.object_ids, ',')) AS obj_id
+            WHERE obj_id::integer IN %s
+        )
+        AND m.state = 'success'
+        ORDER BY m.object_ids, m.id DESC
+        """,
+        (update_letter_action.id, tuple(supporter_letters.ids)),
+    )
+    messages_data = {int(row[0]): row[1] for row in cr.fetchall()}
+    for letter in supporter_letters:
+        message_content_str = messages_data.get(letter.id)
+        if not message_content_str:
+            continue
+        try:
+            content = json.loads(message_content_str)
+        except (ValueError, TypeError, json.JSONDecodeError):
+            continue
+        final_url = content.get("CloudinaryFinalURL")
+        original_url = content.get("CloudinaryOriginalURL")
+        if original_url:
+            letter.with_delay().write(
+                {
+                    "cloudinary_final_letter_url": final_url or False,
                     "cloudinary_original_letter_url": original_url,
                 }
             )
+    supporter_letters.with_delay()._compute_name()
 
     # Reload correspondence templates
     openupgrade.load_data(
