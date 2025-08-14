@@ -65,6 +65,13 @@
                 <sheet>
                     <div class="oe_button_box" name="buttons">
                         <button
+              name="open_opportunities"
+              type="object"
+              class="oe_stat_button"
+              icon="fa-handshake-o"
+              string="Opportunities"
+            />
+                        <button
               name="show_children"
               type="object"
               class="oe_stat_button"

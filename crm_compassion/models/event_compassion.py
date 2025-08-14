@@ -127,12 +127,11 @@ class EventCompassion(models.Model):
     planned_sponsorships = fields.Integer(
         "Expected sponsorships", tracking=True, required=True, default=0
     )
-    lead_id = fields.Many2one(
-        "crm.lead", "Opportunity", tracking=True, readonly=False, check_company=True
-    )
     lead_ids = fields.Many2many(
         "crm.lead",
         string="Opportunities",
+        tracking=True,
+        copy=True,
     )
     won_sponsorships = fields.Integer(related="origin_id.won_sponsorships", store=True)
     conversion_rate = fields.Float(related="origin_id.conversion_rate", store=True)
@@ -455,6 +454,18 @@ class EventCompassion(models.Model):
             self.communication_config_id = self.env.ref(
                 "crm_compassion.config_event_standard"
             )
+
+    def open_opportunities(self):
+        """Open opportunities linked to the event."""
+        self.ensure_one()
+        return {
+            "name": _("Opportunities"),
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form" if len(self.lead_ids) > 1 else "form",
+            "res_model": "crm.lead",
+            "res_id": self.lead_ids and self.lead_ids[0].id or False,
+            "domain": [("id", "in", self.lead_ids.ids)],
+        }
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
