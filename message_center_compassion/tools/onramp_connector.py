@@ -132,6 +132,9 @@ class OnrampConnector:
             count += 1
         if message_type == "GET_RAW":
             # Simply return the result
+            _logger.debug(
+                "GET_RAW status response: %s %s", r.status_code, r.reason or ""
+            )
             return r.content
         status = r.status_code
         result = {

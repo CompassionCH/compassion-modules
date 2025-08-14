@@ -193,15 +193,6 @@
                 options="{'create':False}"
                 required="1"
               />
-                            <field
-                name="original_letter_url"
-                groups="base.group_system"
-              />
-                            <field
-                name="final_letter_url"
-                groups="base.group_system"
-              />
-
                         </group>
                         <group>
                             <field
@@ -251,9 +242,16 @@
                 <group>
                     <group>
                         <field name="correspondence_id" />
-                        <field name="original_page_url" />
-                        <field name="final_page_url" />
+                        <field name="original_page_url" widget="url" />
+                        <field name="final_page_url" widget="url" />
                         <field name="final_page_image" widget="image" />
+                    </group>
+                    <group>
+                        <field
+              name="cloudinary_original_page_url"
+              widget="url"
+            />
+                        <field name="cloudinary_final_page_url" widget="url" />
                     </group>
                 </group>
                 <field name="paragraph_ids">

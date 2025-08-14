@@ -81,7 +81,7 @@ class CorrespondencePage(models.Model):
                 setattr(
                     page,
                     image_field,
-                    page._get_cloundinary_image(getattr(page, url_field)),
+                    page._get_cloundinary_image(getattr(page, cloudinary_url_field)),
                 )
             if not getattr(page, image_field) and getattr(page, url_field):
                 connector = SBCConnector(self.env)

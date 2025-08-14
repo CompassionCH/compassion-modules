@@ -1,6 +1,7 @@
 from openupgradelib import openupgrade
 
 from odoo import SUPERUSER_ID, api
+from odoo.tools import json
 
 from odoo.addons.message_center_compassion.tools.load_mappings import load_mapping_files
 
@@ -35,6 +36,29 @@ def migrate(cr, version):
             limit=100,
             offset=offset,
         )
+
+    # Populate Cloudinary URLs for letter images
+    update_letter_action = env.ref("sbc_compassion.update_letter")
+    publish_messages = env["gmc.message"].search(
+        [
+            ("action_id", "=", update_letter_action.id),
+            ("state", "=", "success"),
+            ("content", "like", "Published to Global Partner"),
+            ("content", "like", "http://media.ci.org/image/"),
+        ]
+    )
+    for message in publish_messages:
+        letter = env["correspondence"].browse(int(message.object_ids))
+        content = json.loads(message.content)
+        final_url = content.get("CloudinaryFinalURL")
+        original_url = content.get("CloudinaryOriginalURL")
+        if final_url and letter.exists():
+            letter.with_delay().write(
+                {
+                    "cloudinary_final_letter_url": final_url,
+                    "cloudinary_original_letter_url": original_url,
+                }
+            )
 
     # Reload correspondence templates
     openupgrade.load_data(
