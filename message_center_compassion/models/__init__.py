@@ -7,6 +7,5 @@ from . import (
     gmc_action,
     gmc_action_connect,
     gmc_message,
-    ir_http,
     res_partner_test,
 )

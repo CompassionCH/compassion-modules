@@ -1,0 +1,8 @@
+<odoo>
+    <record model="fastapi.endpoint" id="onramp_endpoint">
+        <field name="name">Onramp</field>
+        <field name="app">onramp</field>
+        <field name="root_path">/onramp</field>
+        <field name="save_http_session" eval="False" />
+    </record>
+</odoo>

@@ -17,3 +17,5 @@ To configure this module, follow these steps:
 3. **User Setup**:
    - Create a user with the required access rights and set the login credentials to match those sent by GMC in tokens.
    - Assign the "GMC Manager" access rights to users responsible for managing messages.
+   - Go in the FastAPI endpoints and assign the user to the Onramp endpoint.
+   - Hit the "Sync Registry" button to activate the Onramp service.

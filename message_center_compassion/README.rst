@@ -49,6 +49,29 @@ Key Features
 .. contents::
    :local:
 
+Installation
+============
+
+You need to have the OCA repository rest-framework and web-api for
+having the FastAPI available.
+
+First install the requirements from rest-framework repository :
+
+.. code:: bash
+
+   pip install -r ./rest-framework/requirements.txt
+
+On your server instance, you need to install the odoo-addon-fastapi
+Python package. This package's dependencies include Odoo itself, which
+can cause installation errors as Odoo is typically not installed as a
+standard Python package via pip. Using the --no-deps flag prevents this
+dependency check, allowing the addon to install correctly, provided Odoo
+is already present in your environment.
+
+.. code:: bash
+
+   pip install odoo-addon-fastapi==17.0.3.2.0 --no-deps
+
 Configuration
 =============
 
@@ -82,6 +105,9 @@ To configure this module, follow these steps:
       credentials to match those sent by GMC in tokens.
    -  Assign the "GMC Manager" access rights to users responsible for
       managing messages.
+   -  Go in the FastAPI endpoints and assign the user to the Onramp
+      endpoint.
+   -  Hit the "Sync Registry" button to activate the Onramp service.
 
 Usage
 =====
@@ -107,6 +133,14 @@ following:
 
 This module ensures that your Odoo system stays in sync with Compassion
 International, facilitating smooth and efficient communication.
+
+Changelog
+=========
+
+17.0.1.1.0
+----------
+
+-  Changed the mechanism of the Onramp route for using FastAPI.
 
 Bug Tracker
 ===========

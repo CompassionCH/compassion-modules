@@ -28,7 +28,7 @@ class TestOnrampConnector:
         }
         with self.env.registry.cursor() as new_cr:
             new_env = self.env(cr=new_cr)
-            config_obj = new_env["ir.config_parameter"]
+            config_obj = new_env["ir.config_parameter"].sudo()
             headers["x-cim-ToAddress"] = config_obj.get_param(
                 "message_center_compassion.connect_gpid"
             )
