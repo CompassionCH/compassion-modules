@@ -126,6 +126,7 @@ def validate_headers(request: Request, env: odoo_env = Depends(odoo_env)):
             detail="Missing header: x-cim-MessageType",
         )
     if x_cim_from_address not in AUTHORIZED_SENDERS:
+        _logger.error("Unauthorized sender: %s", x_cim_from_address)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Wrong value for: x-cim-FromAddress",
@@ -137,6 +138,7 @@ def validate_headers(request: Request, env: odoo_env = Depends(odoo_env)):
         param_obj.get_param("connect_gpid")
     ]
     if x_cim_toaddress not in country_codes:
+        _logger.error("Unauthorized toaddress: %s", x_cim_toaddress)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Wrong value for: x-cim-ToAddress",
