@@ -29,13 +29,13 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Connect",
-    "version": "17.0.1.0.2",
+    "version": "17.0.1.1.0",
     "category": "Compassion",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "development_status": "Production/Stable",
-    "depends": ["base", "queue_job", "rest_json_api"],
+    "depends": ["base", "queue_job", "fastapi"],
     "external_dependencies": {
         "python": ["jwt"],
     },
@@ -43,6 +43,7 @@
         "security/gmc_groups.xml",
         "security/ir.model.access.csv",
         "data/query_operators.xml",
+        "data/fastapi_endpoints.xml",
         "views/gmc_message_view.xml",
         "views/advanced_query_view.xml",
         "views/compassion_mapping_view.xml",

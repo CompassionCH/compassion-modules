@@ -12,11 +12,11 @@ from odoo import fields, models
 from ..tools.onramp_connector import TestOnrampConnector
 
 
-class GetLetterImageWizard(models.Model):
+class OnrampSimulator(models.Model):
     """Send any message to any ONRAMP."""
 
     _name = "onramp.simulator"
-    _description = "Get Letter & Image Wizard"
+    _description = "Onramp Simulator"
 
     name = fields.Char()
     action_id = fields.Many2one("gmc.action.connect", "Message Type", readonly=False)
