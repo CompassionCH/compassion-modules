@@ -11,6 +11,8 @@
 from odoo import Command, api, fields, models
 from odoo.tools import ormcache
 
+from ..tools.onramp_connector import OnrampConnector
+
 
 class Settings(models.TransientModel):
     """Settings configuration."""
@@ -41,6 +43,44 @@ class Settings(models.TransientModel):
     connect_secret = fields.Char(
         "Secret", config_parameter="message_center_compassion.connect_secret"
     )
+    delivery_service_api_key = fields.Char(
+        config_parameter="message_center_compassion.delivery_service_api_key"
+    )
+    delivery_service_status = fields.Boolean(
+        string="GMC Queue active",
+        compute="_compute_delivery_status",
+        inverse="_inverse_delivery_status",
+        help="Returns the egress status of Onramp (CI). "
+        "True indicates that CI OnRamp is enabled to make REST calls to the GP OnRamp. "
+        "False indicates that CI OnRamp will queue messages,"
+        "and will NOT make REST calls to the GP OnRamp.",
+    )
+
+    @api.depends("connect_gpid", "delivery_service_api_key")
+    def _compute_delivery_status(self):
+        connector = OnrampConnector(self.env)
+        connector.patch_session("api_key", self.delivery_service_api_key)
+        gpid = self.connect_gpid.lower()
+        result = connector.send_message(f"delivery-service-{gpid}/egressControl", "GET")
+        connector.patch_session("api_key", self.connect_api_key)
+        if isinstance(result, dict) and "content" in result:
+            if isinstance(result["content"], dict):
+                self.delivery_service_status = (
+                    result["content"].get("enabled", "true") == "true"
+                )
+                return
+        self.delivery_service_status = True
+
+    def _inverse_delivery_status(self):
+        connector = OnrampConnector(self.env)
+        gpid = self.connect_gpid.lower()
+        connector.patch_session("api_key", self.delivery_service_api_key)
+        connector.send_message(
+            f"delivery-service-{gpid}/egressControl",
+            "PUT",
+            params={"EgressEnabled": self.delivery_service_status},
+        )
+        connector.patch_session("api_key", self.connect_api_key)
 
     def _compute_relation_translate_notify_ids(self):
         self.translate_notify_ids = self._get_translate_notify_ids()

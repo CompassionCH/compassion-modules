@@ -229,3 +229,14 @@ class OnrampConnector:
             [(k, v) for k, v in complete_headers.items()],
             json.dumps(message),
         )
+
+    def patch_session(self, param_key, param_value):
+        """
+        Patches the session with a new parameter.
+        :param param_key: The key of the parameter to patch.
+        :param param_value: The value of the parameter to patch.
+        """
+        if not self._session:
+            raise UserError(_("Session is not initialized."))
+        self._session.params[param_key] = param_value
+        _logger.debug("Session patched with %s: %s", param_key, param_value)
