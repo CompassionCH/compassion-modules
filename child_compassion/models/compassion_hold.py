@@ -349,7 +349,6 @@ class CompassionHold(models.Model):
                 subject=_("%s - Reservation converted to hold") % child.local_id,
                 partner_ids=hold.primary_owner.partner_id.ids,
                 subtype_xmlid="mail.mt_comment",
-                content_subtype="plaintext",
             )
 
             return [hold.id]

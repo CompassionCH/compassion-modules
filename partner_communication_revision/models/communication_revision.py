@@ -539,7 +539,6 @@ class CommunicationRevision(models.Model):
             body=body,
             subject=subject,
             subtype_xmlid="mail.mt_comment",
-            content_subtype="html",
         )
 
     def cancel_approve(self):
