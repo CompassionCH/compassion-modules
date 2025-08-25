@@ -441,7 +441,7 @@ class CompassionChild(models.Model):
                 children += child
                 child.write(vals)
                 vals_list.remove(vals)
-        children += super().create(vals)
+        children += super().create(vals_list)
         # directly fetch picture to have it before get_infos
         children.update_child_pictures()
         return children
