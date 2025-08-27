@@ -44,7 +44,7 @@ class CrmLead(models.Model):
                 "default_country_id": self.country_id.id,
                 "default_user_id": self.user_id.id,
                 "default_planned_sponsorships": self.planned_sponsorships,
-                "default_lead_id": self.id,
+                "default_lead_ids": self.ids,
             },
         }
 
