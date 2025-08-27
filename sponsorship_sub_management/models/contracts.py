@@ -114,16 +114,13 @@ class RecurringContract(models.Model):
         self.parent_id._trigger_sub()
 
     def switch_contract_view(self):
-        view_id = self.env.ref(
-            f"sponsorship_sub_management.{self.env.context["view_id"]}"
-        ).id
         return {
             "view_mode": "form",
-            "views": [(view_id, "form")],
             "res_model": self._name,
             "type": "ir.actions.act_window",
             "target": "current",
             "res_id": self.ids[0],
+            "context": self.env.context,
         }
 
     def action_no_sub(self):

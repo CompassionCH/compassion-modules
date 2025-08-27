@@ -103,7 +103,7 @@
           name="switch_contract_view"
           type="object"
           string="Open SDS view"
-          context="{'view_id':'view_follow_contract_form_compassion'}"
+          context="{'form_view_ref':'sponsorship_sub_management.view_follow_contract_form_compassion'}"
           invisible="type not in ['S', 'SC', 'SWP']"
           class="oe_inline oe_stat_button"
           icon="fa-history"
@@ -152,7 +152,7 @@
               string="Open financial view"
               class="oe_stat_button"
               icon="fa-folder"
-              context="{'view_id':'view_tracking_contract_form'}"
+              context="{'form_view_ref':'sponsorship_compassion.view_sponsorship_contract_form_compassion'}"
             />
                     </div>
                     <div class="oe_title">
