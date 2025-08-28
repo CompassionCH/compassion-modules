@@ -639,7 +639,7 @@ class CommunicationJob(models.Model):
         body = self.body_html.replace("\n", " ").replace(
             "</p>", "</p>" + paragraph_delimiter
         )
-        body = re.sub(r'<a href="([^<>"]*)">([^<]*)</a>', _replace_link, body)
+        body = re.sub(r'<a[^>]*href="([^"]*)"[^>]*>.*?</a>', _replace_link, body)
         body = re.sub(r"[ \t\r\f\v]+", " ", body)
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
