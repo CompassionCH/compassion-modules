@@ -15,15 +15,27 @@ def migrate(cr, version):
             "correspondence_mapping.json",
         ],
     )
-    # Remove the letter attachment
-    openupgrade.logged_query(
-        cr,
-        """
-        UPDATE correspondence
-        SET sponsor_letter_scan = NULL
-        WHERE direction = 'Beneficiary To Supporter' AND sponsor_letter_scan IS NOT NULL
-        """,
+    # Remove the letter attachment in batch jobs of 100 letters
+    offset = 0
+    b2s_letters = env["correspondence"].search(
+        [
+            ("direction", "=", "Beneficiary To Supporter"),
+            ("sponsor_letter_scan", "!=", False),
+        ],
+        limit=100,
+        offset=offset,
     )
+    while b2s_letters:
+        b2s_letters.with_delay().write({"sponsor_letter_scan": False})
+        offset += 100
+        b2s_letters = env["correspondence"].search(
+            [
+                ("direction", "=", "Beneficiary To Supporter"),
+                ("sponsor_letter_scan", "!=", False),
+            ],
+            limit=100,
+            offset=offset,
+        )
 
     # Populate Cloudinary URLs for letter images
     update_letter_action = env.ref("sbc_compassion.update_letter")
