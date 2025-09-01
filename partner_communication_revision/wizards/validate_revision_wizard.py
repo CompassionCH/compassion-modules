@@ -23,16 +23,10 @@ class ValidateRevisionWizard(models.TransientModel):
         "res.users", "Translator", domain=[("share", "=", False)], readonly=False
     )
     lang = fields.Selection(
-        "select_lang",
-        "Lang of translation",
+        string="Lang of translation",
         related="translation_revision_id.lang",
         readonly=True,
     )
-
-    @api.model
-    def select_lang(self):
-        langs = self.env["res.lang"].search([])
-        return [(lang.code, lang.name) for lang in langs]
 
     @api.model
     def _get_translations(self):

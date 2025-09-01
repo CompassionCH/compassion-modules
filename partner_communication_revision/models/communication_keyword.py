@@ -190,19 +190,38 @@ class CommunicationKeyword(models.Model):
                 visible_text and visible_text in keyword.revision_id.simplified_text
             )
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Assign color at creation."""
-        count = self.search_count(
-            [("revision_id", "=", vals["revision_id"]), ("type", "=", vals["type"])]
-        )
-        vals["index"] = count + 1
-        if "color" not in vals:
-            vals["color"] = COLOR_SEQUENCE[count % len(COLOR_SEQUENCE)]
-        keyword = super().create(vals)
+        # Keep track of counts for new records within the batch
+        batch_counts = {}  # key: (revision_id, type), value: count
+
+        for vals in vals_list:
+            revision_id = vals.get("revision_id")
+            keyword_type = vals.get("type")
+            key = (revision_id, keyword_type)
+
+            # Get existing count from DB
+            if key not in batch_counts:
+                db_count = self.search_count(
+                    [("revision_id", "=", revision_id), ("type", "=", keyword_type)]
+                )
+                batch_counts[key] = db_count
+
+            count = batch_counts[key]
+
+            vals["index"] = count + 1
+            if "color" not in vals:
+                vals["color"] = COLOR_SEQUENCE[count % len(COLOR_SEQUENCE)]
+
+            # Increment count for next record of same type in this batch
+            batch_counts[key] += 1
+
+        keywords = super().create(vals_list)
         # Define html_id once
-        keyword.html_id = f"{count + 1}-{keyword.type}-{keyword.short_code}"
-        return keyword
+        for keyword in keywords:
+            keyword.html_id = f"{keyword.index}-{keyword.type}-{keyword.short_code}"
+        return keywords
 
     def unlink(self):
         # Update indexes

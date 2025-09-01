@@ -49,7 +49,7 @@ def migrate(cr, version):
         ]
     )
     for message in publish_messages:
-        letter_ids = [int(i) for i in message.object_ids.split(',')]
+        letter_ids = [int(i) for i in message.object_ids.split(",")]
         letters = env["correspondence"].browse(letter_ids)
         content = json.loads(message.content)
         final_url = content.get("CloudinaryFinalURL")

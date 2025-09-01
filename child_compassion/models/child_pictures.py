@@ -81,35 +81,47 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Fetch new pictures from GMC webservice when creating
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
-        existing_picture = self._child_picture_already_exists(vals)
-        if existing_picture:
-            return existing_picture
+        # Filter out vals that correspond to already existing pictures
+        creatable_vals = []
+        existing_pictures = self.browse()
+        for vals in vals_list:
+            existing_picture = self._child_picture_already_exists(vals)
+            if not existing_picture:
+                creatable_vals.append(vals)
+            else:
+                existing_pictures |= existing_picture
 
-        picture = super().create(vals)
-        # Fetch the image from the webservice
-        image_date = picture._fetch_and_attach_pictures()
+        if not creatable_vals:
+            return existing_pictures
 
-        # Handle the case where the picture cannot be fetched
-        if not image_date:
-            picture._handle_picture_issue(
-                _("Image cannot be fetched: No image URL available.")
-            )
-            return self
+        pictures = super().create(creatable_vals)
+        pictures_to_return = existing_pictures
+        for picture in pictures:
+            # Fetch the image from the webservice
+            image_date = picture._fetch_and_attach_pictures()
 
-        # Find if same pictures already exist
-        duplicate = picture._find_same_picture()
-        if duplicate:
-            picture._handle_picture_issue(_("The picture was the same."))
-            return duplicate
+            # Handle the case where the picture cannot be fetched
+            if not image_date:
+                picture._handle_picture_issue(
+                    _("Image cannot be fetched: No image URL available.")
+                )
+                continue
 
-        picture.write({"date": image_date})
-        return picture
+            # Find if same pictures already exist
+            duplicate = picture._find_same_picture()
+            if duplicate:
+                picture._handle_picture_issue(_("The picture was the same."))
+                continue
+
+            picture.write({"date": image_date})
+            pictures_to_return |= picture
+        return pictures_to_return
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
