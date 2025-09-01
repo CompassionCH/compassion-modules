@@ -45,15 +45,17 @@ def migrate(cr, version):
             ("state", "=", "success"),
             ("content", "like", "Published to Global Partner"),
             ("content", "like", "http://media.ci.org/image/"),
+            ("object_ids", "!=", False),
         ]
     )
     for message in publish_messages:
-        letter = env["correspondence"].browse(int(message.object_ids))
+        letter_ids = [int(i) for i in message.object_ids.split(',')]
+        letters = env["correspondence"].browse(letter_ids)
         content = json.loads(message.content)
         final_url = content.get("CloudinaryFinalURL")
         original_url = content.get("CloudinaryOriginalURL")
-        if final_url and letter.exists():
-            letter.with_delay().write(
+        if final_url and letters.exists():
+            letters.exists().with_delay().write(
                 {
                     "cloudinary_final_letter_url": final_url,
                     "cloudinary_original_letter_url": original_url or False,
