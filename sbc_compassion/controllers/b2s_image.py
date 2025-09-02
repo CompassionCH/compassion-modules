@@ -66,18 +66,21 @@ def _fill_archive(buffer, letters, file_path=""):
 
 class RestController(http.Controller):
     @http.route("/b2s_image", type="http", auth="public", methods=["GET"])
-    def handler_b2s_image(self, uuid=None, disposition=None, **parameters):
+    def handler_b2s_image(self, letter_uuid=None, disposition=None, **parameters):
         """Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
 
         """
-        if uuid is None:
-            raise BadRequest()
+        if letter_uuid is None:
+            # Backward compatibility
+            letter_uuid = parameters.get("id")
+            if letter_uuid is None:
+                raise BadRequest()
         headers = request.httprequest.headers
         self._validate_headers(headers)
         correspondence_obj = request.env["correspondence"].sudo()
-        correspondence = correspondence_obj.search([("uuid", "=", uuid)])
+        correspondence = correspondence_obj.search([("uuid", "=", letter_uuid)])
         if not correspondence:
             raise NotFound()
         correspondence.email_read = datetime.now()

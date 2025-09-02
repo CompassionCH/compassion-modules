@@ -482,7 +482,9 @@ class Correspondence(models.Model):
     @api.depends("uuid")
     def _compute_read_url(self):
         for letter in self:
-            letter.read_url = f"{letter.get_base_url()}/b2s_image?uuid={letter.uuid}"
+            letter.read_url = (
+                f"{letter.get_base_url()}/b2s_image?letter_uuid={letter.uuid}"
+            )
 
     def _compute_sponsor_needs_final_letter(self):
         """
