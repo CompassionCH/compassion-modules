@@ -81,7 +81,6 @@ class ChildLifecycleEvent(models.Model):
                 "partner",
                 "{he} reached the end of relevant programs available at the project",
             ),
-            ("Planned FCP Transition", "the child development center has closed"),
             ("planned fcp transition", "the child development center has closed"),
             # Reinstatement
             ("beneficiary exit was a mistake", "the exit was a mistake"),
@@ -142,7 +141,7 @@ class ChildLifecycleEvent(models.Model):
             ),
             ("other (enter reason below)", "of : {other_transfer_reason}"),
             ("child transfer", "Child Transfer"),
-            ("Unplanned FCP Transition", "the child development center has closed"),
+            ("unplanned fcp transition", "the child development center has closed"),
             # Unplanned Exit
             (
                 "beneficiary / caregiver not comply with policies",
