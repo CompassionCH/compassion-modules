@@ -99,12 +99,13 @@ class RevisionPreview(models.TransientModel):
                 {"lang_preview": self.revision_id.lang}
             ).quick_refresh()
 
-        if config.report_id:
+        report = config.report_id
+        if report:
             # Create a PDF preview
             pdf_data = (
-                config.report_id.with_context(
+                report.with_context(
                     must_skip_send_to_printer=True
-                )._render_qweb_pdf(self.preview_job_id.ids)
+                )._render_qweb_pdf(report.report_name, self.preview_job_id.ids)
             )[0]
             pdf = PdfFileReader(io.BytesIO(pdf_data))
             self.write(
