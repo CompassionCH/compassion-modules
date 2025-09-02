@@ -82,6 +82,7 @@ class ChildLifecycleEvent(models.Model):
                 "{he} reached the end of relevant programs available at the project",
             ),
             ("planned fcp transition", "the child development center has closed"),
+            ("planned fcp transition", "the child development center has closed"),
             # Reinstatement
             ("beneficiary exit was a mistake", "the exit was a mistake"),
             ("beneficiary moved back", "{he} moved back"),
