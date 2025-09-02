@@ -715,7 +715,8 @@ class CompassionChild(models.Model):
                 to_release -= child
         to_release.write({"sponsor_id": False, "state": state, "hold_id": False})
         # Check if it was a depart and retrieve lifecycle event
-        to_release.get_lifecycle_event()
+        if not self.env.context.get("lifecycle_event"):
+            to_release.get_lifecycle_event()
         return True
 
     def child_departed(self):

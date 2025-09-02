@@ -386,7 +386,7 @@ class ChildLifecycleEvent(models.Model):
             # Process lifecycle event
             child = lifecycle.child_id
             if "Exit" in lifecycle.type:
-                child.child_departed()
+                child.with_context(lifecycle_event=True).child_departed()
             else:
                 child.with_context(queue_job__no_delay=True).get_infos()
             return events
