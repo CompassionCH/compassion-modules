@@ -838,7 +838,8 @@ class CommunicationJob(models.Model):
                 "auto_delete": False,
                 "model": self._name,
                 "res_id": self.id,
-                "email_from": self.user_id.email_formatted,
+                "email_from": self.email_from,
+                "reply_to": self.reply_to,
             }
             if "default_email_vals" in self.env.context:
                 email_vals.update(self.env.context["default_email_vals"])
