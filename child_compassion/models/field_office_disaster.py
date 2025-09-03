@@ -285,7 +285,7 @@ class FieldOfficeDisasterAlert(models.Model):
                         "children or projects were impacted."
                     ),
                     subject=_("New Disaster Alert Update"),
-                    partner_ids=notify_ids,
+                    partner_ids=notify_ids[0][2],
                     subtype_xmlid="mail.mt_comment",
                 )
         return True
