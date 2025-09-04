@@ -103,9 +103,9 @@ class RevisionPreview(models.TransientModel):
         if report:
             # Create a PDF preview
             pdf_data = (
-                report.with_context(
-                    must_skip_send_to_printer=True
-                )._render_qweb_pdf(report.report_name, self.preview_job_id.ids)
+                report.with_context(must_skip_send_to_printer=True)._render_qweb_pdf(
+                    report.report_name, self.preview_job_id.ids
+                )
             )[0]
             pdf = PdfFileReader(io.BytesIO(pdf_data))
             self.write(

@@ -667,6 +667,9 @@ class CommunicationJob(models.Model):
         self.mapped("attachment_ids").unlink()
         failed = self.set_attachments()
         (self - failed)._compute_content()
+        (self - failed).filtered(lambda j: j.state == "failure").write(
+            {"state": "pending"}
+        )
         return True
 
     def quick_refresh(self):
