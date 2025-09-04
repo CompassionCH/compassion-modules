@@ -260,9 +260,7 @@ class SponsorshipGift(models.Model):
             [
                 ("sponsorship_id", "=", vals["sponsorship_id"]),
                 ("gift_type_id", "=", vals["gift_type_id"]),
-                ("attribution", "=", vals["attribution"]),
                 ("gift_date", "like", str(gift_date)[:4]),
-                ("sponsorship_gift_type", "=", vals.get("sponsorship_gift_type")),
                 ("state", "in", ["draft", "verify"]),
             ],
             limit=1,
