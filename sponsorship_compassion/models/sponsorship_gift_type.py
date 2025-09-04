@@ -6,9 +6,9 @@ class SponsorshipGiftType(models.Model):
     _description = "Sponsorship Gift Type"
 
     name = fields.Char("Name", required=True)
-    code = fields.Char("Code", required=True, index=True)
+    code = fields.Char("Code", required=True, copy=False)
     product_id = fields.Many2one(
-        "product.template", "Product", domain=[("type", "=", "service")]
+        "product.template", "Product", domain=[("type", "=", "service")], copy=False
     )
     gmc_gift_type = fields.Selection(
         [
@@ -47,6 +47,11 @@ class SponsorshipGiftType(models.Model):
             "sponsorship_gift_type_product_uniq",
             "unique(product_id)",
             "A sponsorship gift type can only be linked to one product.",
+        ),
+        (
+            "contract_field_uniq",
+            "unique(contract_field)",
+            "The contract field must be unique.",
         ),
     ]
 
