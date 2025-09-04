@@ -259,7 +259,7 @@ class SponsorshipGift(models.Model):
         return self.search(
             [
                 ("sponsorship_id", "=", vals["sponsorship_id"]),
-                ("gift_type", "=", vals["gift_type"]),
+                ("gift_type_id", "=", vals["gift_type_id"]),
                 ("attribution", "=", vals["attribution"]),
                 ("gift_date", "like", str(gift_date)[:4]),
                 ("sponsorship_gift_type", "=", vals.get("sponsorship_gift_type")),
@@ -390,11 +390,8 @@ class SponsorshipGift(models.Model):
 
         threshold_rule = self.env["gift.threshold.settings"].search(
             [
-                ("gift_type", "=", self.gift_type),
-                ("gift_attribution", "=", self.attribution),
-                ("sponsorship_gift_type", "=", self.sponsorship_gift_type),
+                ("gift_type_id", "=", self.gift_type_id.id),
             ],
-            limit=1,
         )
         if threshold_rule:
             if self.company_id.currency_id != self.invoice_line_ids.move_id.currency_id:
@@ -436,9 +433,7 @@ class SponsorshipGift(models.Model):
                 other_gifts = self.search(
                     [
                         ("sponsorship_id", "=", sponsorship.id),
-                        ("gift_type", "=", self.gift_type),
-                        ("attribution", "=", self.attribution),
-                        ("sponsorship_gift_type", "=", self.sponsorship_gift_type),
+                        ("gift_type_id", "=", self.gift_type_id.id),
                         ("gift_date", ">=", firstJanuaryOfThisYear),
                         ("gift_date", "<", next_year),
                     ]
@@ -558,17 +553,6 @@ class SponsorshipGift(models.Model):
         self.mapped("invoice_line_ids.move_id").button_draft()
         self.mapped("message_id").unlink()
         return self.unlink()
-
-    @api.onchange("gift_type")
-    def onchange_gift_type(self):
-        if self.gift_type == "Beneficiary Gift":
-            self.attribution = "Sponsorship"
-        elif self.gift_type == "Family Gift":
-            self.attribution = "Sponsored Child Family"
-            self.sponsorship_gift_type = False
-        elif self.gift_type == "Project Gift":
-            self.attribution = "Center Based Programming"
-            self.sponsorship_gift_type = False
 
     def mark_sent(self):
         self.mapped("message_id").unlink()
