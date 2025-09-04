@@ -348,7 +348,7 @@ class SponsorshipGift(models.Model):
             "sponsorship_id": sponsorship.id,
             "invoice_line_ids": [(4, invoice_line.id)],
             "instructions": invoice_line.move_id.narration,
-            "sponsorship_gift_type_id": product.sponsorship_gift_type_id.id,
+            "gift_type_id": product.sponsorship_gift_type_id.id,
         }
 
         if invoice_line.debit == 0 and invoice_line.credit > 0:
