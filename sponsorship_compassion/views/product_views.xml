@@ -9,4 +9,17 @@
             </field>
         </field>
     </record>
+
+    <record id="view_product_product_form_inherit_gift_type" model="ir.ui.view">
+        <field
+      name="name"
+    >product.product.form.inherit.sponsorship_gift_type</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="arch" type="xml">
+            <field name="detailed_type" position="after">
+                <field name="sponsorship_gift_type_id" />
+            </field>
+        </field>
+    </record>
 </odoo>

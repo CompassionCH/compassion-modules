@@ -20,8 +20,7 @@
                 <field name="gift_date" />
                 <field name="partner_id" />
                 <field name="child_id" />
-                <field name="gift_type" />
-                <field name="sponsorship_gift_type" />
+                <field name="gift_type_id" />
                 <field name="amount" sum="Amount" />
                 <field name="amount_us_dollars" />
                 <field name="instructions" />
@@ -106,6 +105,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="gift_type" invisible="1" />
                             <field
                 name="sponsorship_id"
                 options="{'colors':{'draft':'blue', 'waiting':'green', 'cancelled':'grey', 'terminated':'grey', 'mandate':'red'}, 'field_color':'state'}"
@@ -126,12 +126,9 @@
               />
                         </group>
                         <group>
-                            <field name="gift_type" />
-                            <field name="attribution" />
                             <field
-                name="sponsorship_gift_type"
-                invisible="gift_type != 'Beneficiary Gift'"
-                required="gift_type == 'Beneficiary Gift'"
+                name="gift_type_id"
+                readonly="state not in ('draft', 'verify')"
               />
                             <field name="instructions" />
                         </group>
@@ -200,6 +197,7 @@
             <search>
                 <field name="partner_id" />
                 <field name="child_id" />
+                <field name="gift_type_id" />
                 <field name="state" />
                 <field name="gmc_gift_id" />
 
@@ -234,7 +232,7 @@
             string="Gift Type"
             name="gift_type"
             domain="[]"
-            context="{'group_by': 'gift_type'}"
+            context="{'group_by': 'gift_type_id'}"
           />
                     <filter
             name='group_by_date'

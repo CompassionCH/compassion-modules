@@ -13,9 +13,7 @@
             <form>
                 <group>
                     <group>
-                        <field name="gift_type" />
-                        <field name="gift_attribution" />
-                        <field name="sponsorship_gift_type" />
+                        <field name="gift_type_id" />
                         <field name="product_id" />
                     </group>
                     <group>
@@ -43,9 +41,7 @@
         <field name="model">gift.threshold.settings</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="gift_type" />
-                <field name="gift_attribution" />
-                <field name="sponsorship_gift_type" />
+                <field name="gift_type_id" />
                 <field name="product_id" />
                 <field name="min_amount" />
                 <field name="max_amount" />

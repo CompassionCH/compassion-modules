@@ -12,11 +12,7 @@ from datetime import date, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-
-from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_CATEGORY,
-    GIFT_PRODUCTS_REF,
-)
+from odoo.tools import float_is_zero
 
 _logger = logging.getLogger(__name__)
 
@@ -33,7 +29,7 @@ class SponsorshipGift(models.Model):
     # Related records
     #################
     sponsorship_id = fields.Many2one(
-        "recurring.contract", "Sponsorship", readonly=False
+        "recurring.contract", "Sponsorship", readonly=False, index=True
     )
     partner_id = fields.Many2one(
         "res.partner",
@@ -56,6 +52,13 @@ class SponsorshipGift(models.Model):
         related="sponsorship_id.child_id",
         store=True,
         readonly=False,
+    )
+    gift_type_id = fields.Many2one(
+        "sponsorship.gift.type",
+        "Sponsorship Gift Type",
+        required=True,
+        index=True,
+        domain=[("gmc_gift_type", "!=", False)],
     )
     invoice_line_ids = fields.One2many(
         "account.move.line", "gift_id", string="Invoice lines"
@@ -99,13 +102,9 @@ class SponsorshipGift(models.Model):
     exchange_rate = fields.Float(copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float("Amount due", copy=False)
     instructions = fields.Char()
-    gift_type = fields.Selection(
-        "get_gift_type_selection", required=True, string="Gift for"
-    )
-    attribution = fields.Selection("get_gift_attributions", required=True)
-    sponsorship_gift_type = fields.Selection(
-        "get_sponsorship_gifts", string="Gift type"
-    )
+    gift_type = fields.Selection(related="gift_type_id.gmc_gift_type")
+    attribution = fields.Selection(related="gift_type_id.gmc_attribution")
+    sponsorship_gift_type = fields.Selection(related="gift_type_id.gmc_gift_type")
     state = fields.Selection(
         [
             ("draft", _("Draft")),
@@ -154,34 +153,6 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def get_gift_type_selection(self):
-        return [
-            ("Project Gift", _("Project")),
-            ("Family Gift", _("Family")),
-            ("Beneficiary Gift", _("Participant")),
-        ]
-
-    @api.model
-    def get_gift_attributions(self):
-        return [
-            ("Center Based Programming", "CDSP"),
-            ("Home Based Programming (Survival & Early Childhood)", "CSP"),
-            ("Sponsored Child Family", _("Sponsored Child Family")),
-            ("Sponsorship", _("Sponsorship")),
-            ("Survival", _("Survival")),
-            ("Survival Neediest Families", _("Neediest Families")),
-            ("Survival Neediest Families - Split", _("Neediest Families Split")),
-        ]
-
-    @api.model
-    def get_sponsorship_gifts(self):
-        return [
-            ("Birthday", _("Birthday")),
-            ("General", _("General")),
-            ("Graduation/Final", _("Graduation/Final")),
-        ]
-
     @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
@@ -367,10 +338,18 @@ class SponsorshipGift(models.Model):
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """
-        gift_vals = self.get_gift_values_from_product(invoice_line)
         gifts = self.env[self._name]
-        if not gift_vals:
+        product = invoice_line.product_id
+        sponsorship = invoice_line.contract_id
+        if not product.sponsorship_gift_type_id:
             return gifts
+
+        gift_vals = {
+            "sponsorship_id": sponsorship.id,
+            "invoice_line_ids": [(4, invoice_line.id)],
+            "instructions": invoice_line.move_id.narration,
+            "sponsorship_gift_type_id": product.sponsorship_gift_type_id.id,
+        }
 
         if invoice_line.debit == 0 and invoice_line.credit > 0:
             gift = self.create(gift_vals)
@@ -387,7 +366,7 @@ class SponsorshipGift(models.Model):
                 if reversal_gift.state in ["In Progress", "Delivered"]:
                     gifts += blend_gift
                 elif reversal_gift.state in ["draft", "verify"]:
-                    if blend_gift.amount == 0:
+                    if float_is_zero(blend_gift.amount):
                         blend_gift.unlink()
                     else:
                         gifts += blend_gift
@@ -396,30 +375,6 @@ class SponsorshipGift(models.Model):
                     gift_vals
                 )._blend_in_other_gift(gift_vals)
         return gifts
-
-    @api.model
-    def get_gift_values_from_product(self, invoice_line):
-        """
-        Converts a product into sponsorship.gift values
-        :param: invoice_line: account.invoice.line record
-        :return: dictionary of sponsorship.gift values
-        """
-        product = invoice_line.product_id
-        sponsorship = invoice_line.contract_id
-        if not product.categ_name == GIFT_CATEGORY:
-            return False
-
-        gift_vals = self.get_gift_types(product)
-        if gift_vals:
-            gift_vals.update(
-                {
-                    "sponsorship_id": sponsorship.id,
-                    "invoice_line_ids": [(4, invoice_line.id)],
-                    "instructions": invoice_line.move_id.narration,
-                }
-            )
-
-        return gift_vals
 
     def is_eligible(self):
         """Verifies the amount is within the thresholds and that the fcp
@@ -510,55 +465,6 @@ class SponsorshipGift(models.Model):
                     )
 
         return True, ""
-
-    @api.model
-    def get_gift_types(self, product):
-        """Given a product, returns the correct values
-        of a gift for GMC.
-
-        :return: dictionary of sponsorship.gift values
-        """
-        gift_type_vals = dict()
-        if product.default_code == GIFT_PRODUCTS_REF[0]:
-            gift_type_vals.update(
-                {
-                    "gift_type": "Beneficiary Gift",
-                    "attribution": "Sponsorship",
-                    "sponsorship_gift_type": "Birthday",
-                }
-            )
-        elif product.default_code == GIFT_PRODUCTS_REF[1]:
-            gift_type_vals.update(
-                {
-                    "gift_type": "Beneficiary Gift",
-                    "attribution": "Sponsorship",
-                    "sponsorship_gift_type": "General",
-                }
-            )
-        elif product.default_code == GIFT_PRODUCTS_REF[2]:
-            gift_type_vals.update(
-                {
-                    "gift_type": "Family Gift",
-                    "attribution": "Sponsored Child Family",
-                }
-            )
-        elif product.default_code == GIFT_PRODUCTS_REF[3]:
-            gift_type_vals.update(
-                {
-                    "gift_type": "Project Gift",
-                    "attribution": "Center Based Programming",
-                }
-            )
-        elif product.default_code == GIFT_PRODUCTS_REF[4]:
-            gift_type_vals.update(
-                {
-                    "gift_type": "Beneficiary Gift",
-                    "attribution": "Sponsorship",
-                    "sponsorship_gift_type": "Graduation/Final",
-                }
-            )
-
-        return gift_type_vals
 
     def on_send_to_connect(self):
         self.write({"state": "open"})

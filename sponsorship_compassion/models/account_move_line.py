@@ -8,10 +8,7 @@
 #
 ##############################################################################
 
-from odoo import _, fields, models
-from odoo.exceptions import UserError
-
-from .product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
+from odoo import fields, models
 
 
 class MoveLine(models.Model):
@@ -34,17 +31,13 @@ class MoveLine(models.Model):
             res = []
             for invoice_line in self:
                 data_dict = {}
+                gift_type = invoice_line.product_id.sponsorship_gift_type_id
                 # Process specific cases for gift
-                if invoice_line.product_id.default_code == PRODUCT_GIFT_CHRISTMAS:
-                    gift_type = "christmas_invoice"
-                elif invoice_line.product_id.default_code == GIFT_PRODUCTS_REF[0]:
-                    gift_type = "birthday_invoice"
-                else:
-                    raise UserError(
-                        _("Unexpected error while updating contract invoices.")
+                if gift_type.contract_field:
+                    # Assign the price depending on the gift type
+                    data_dict["price_unit"] = getattr(
+                        modified_contract, gift_type.contract_field
                     )
-                # Assign the price depending on the gift type
-                data_dict["price_unit"] = getattr(modified_contract, gift_type)
-                # Add the modification on the line
-                res.append((1, invoice_line.id, data_dict))
+                    # Add the modification on the line
+                    res.append((1, invoice_line.id, data_dict))
             return res

@@ -58,6 +58,7 @@ class AccountMove(models.Model):
                 and not existing_gift_for_invl
             ):
                 self.env["sponsorship.gift"].with_delay(
-                    priority=50, channel="root.gift_compassion",
-                    identity_key=f"gift_from_inv_line_{move_line.id}"
+                    priority=50,
+                    channel="root.gift_compassion",
+                    identity_key=f"gift_from_inv_line_{move_line.id}",
                 ).create_from_invoice_line(move_line)

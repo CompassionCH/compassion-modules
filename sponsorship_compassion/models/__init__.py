@@ -17,8 +17,8 @@ from . import (
     contracts,
     contracts_report,
     product,
-    product_names,
     project_compassion,
     recurring_contract_line,
     res_partner,
+    sponsorship_gift_type,
 )
