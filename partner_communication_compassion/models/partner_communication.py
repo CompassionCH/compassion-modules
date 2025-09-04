@@ -40,7 +40,7 @@ class PartnerCommunication(models.Model):
                 try:
                     attachments[letter.file_name] = [
                         report,
-                        self._convert_pdf(letter.letter_image),
+                        self._convert_pdf(letter.get_pdf()),
                     ]
                 except MissingError:
                     _logger.warning("Missing letter image", exc_info=True)
@@ -112,7 +112,7 @@ class PartnerCommunication(models.Model):
         if self.send_mode != "physical":
             return pdf_data
 
-        pdf = PdfFileReader(BytesIO(base64.b64decode(pdf_data)))
+        pdf = PdfFileReader(BytesIO(pdf_data))
         convert = PdfFileWriter()
         a4_width = 594.48
         a4_height = 844.32  # A4 units in PyPDF

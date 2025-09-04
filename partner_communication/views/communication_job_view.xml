@@ -167,7 +167,7 @@
                                     <tree create="false" editable="bottom">
                                         <field name="name" />
                                         <field name="report_id" />
-                                        <field name="datas" />
+                                        <field name="datas" filename="name" />
                                         <field name="create_uid" />
                                         <field name="create_date" />
                                     </tree>
