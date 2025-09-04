@@ -880,12 +880,14 @@ class CommunicationJob(models.Model):
         for job in self:
             if job.attachment_ids:
                 print_name = name[:3] + " " + (job.subject or "")
-                job.with_delay(
+                job.with_company(job.company_id).with_delay(
                     channel=_JOB_CHANNEL,
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:
-                batch_print[job.partner_id.lang][job.config_id.name] += job
+                batch_print[job.partner_id.lang][
+                    job.config_id.name
+                ] += job.with_company(job.company_id)
 
         for configs in batch_print.values():
             for config, jobs in configs.items():

@@ -39,7 +39,7 @@ class ResPartner(models.Model):
         default="correspondent",
         required=True,
     )
-    global_id = fields.Char(copy=False)
+    global_id = fields.Char("Global ID", copy=False)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
