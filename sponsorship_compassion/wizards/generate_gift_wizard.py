@@ -11,8 +11,6 @@ import logging
 
 from odoo import _, fields, models
 
-from ..models.product_names import GIFT_PRODUCTS_REF
-
 logger = logging.getLogger(__name__)
 
 
@@ -47,7 +45,8 @@ class GenerateGiftWizard(models.TransientModel):
         if contract:
             # Logs an error if the birthdate is missing and skip iteration
             if (
-                self.product_id.default_code == GIFT_PRODUCTS_REF[0]
+                self.product_id.sponsorship_gift_type_id
+                == self.env.ref("sponsorship_compassion.gift_type_birthday")
                 and not contract.child_id.birthdate
             ):
                 logger.error("The birthdate of the child is missing!")

@@ -10,8 +10,6 @@
 
 from odoo import fields, models
 
-from .product_names import BIRTHDAY_GIFT, CHRISTMAS_GIFT
-
 
 class ContractGroup(models.Model):
     _inherit = "recurring.contract.group"
@@ -41,8 +39,12 @@ class ContractGroup(models.Model):
         )._generate_invoices(invoicer)
         contracts = self.active_contract_ids
         if contracts:
-            contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
-            contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
+            contracts._generate_gifts(
+                invoicer, self.env.ref("sponsorship_compassion.gift_type_birthday")
+            )
+            contracts._generate_gifts(
+                invoicer, self.env.ref("sponsorship_compassion.gift_type_christmas")
+            )
         return True
 
     def build_inv_line_data(

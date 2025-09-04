@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Sponsorships",
-    "version": "17.0.1.0.3",
+    "version": "17.0.1.1.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -66,6 +66,7 @@
         "views/utm_medium_view.xml",
         "data/compassion_mapping.xml",
         "data/sponsorship_product.xml",
+        "data/sponsorship_gift_type.xml",
         "data/gmc_action.xml",
         "data/end_reasons.xml",
         "data/partner_category_data.xml",

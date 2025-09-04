@@ -13,7 +13,6 @@ from lxml import etree
 from odoo import api, fields, models
 
 from .contracts import SPONSORSHIP_TYPE_LIST
-from .product_names import FUND_CATEGORY, SPONSORSHIP_CATEGORY
 
 
 class SponsorshipLine(models.Model):
@@ -54,12 +53,18 @@ class SponsorshipLine(models.Model):
     def onchange_type(self):
         """Change domain of product depending on type of contract."""
         res = dict()
+        sponsorship_category = self.env.ref(
+            "sponsorship_compassion.product_category_sponsorship"
+        ).name
+        fund_category = self.env.ref(
+            "sponsorship_compassion.product_category_fund"
+        ).name
         if self.contract_id.type in SPONSORSHIP_TYPE_LIST:
             res["domain"] = {
                 "product_id": [
-                    ("categ_name", "in", [SPONSORSHIP_CATEGORY, FUND_CATEGORY])
+                    ("categ_name", "in", [sponsorship_category, fund_category])
                 ]
             }
         else:
-            res["domain"] = {"product_id": [("categ_name", "!=", SPONSORSHIP_CATEGORY)]}
+            res["domain"] = {"product_id": [("categ_name", "!=", sponsorship_category)]}
         return res

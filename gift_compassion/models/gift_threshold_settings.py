@@ -17,9 +17,7 @@ class GiftThresholdSettings(models.Model):
     _name = "gift.threshold.settings"
     _description = "Gift Thresholds"
 
-    gift_type = fields.Selection("get_gift_types", required=True)
-    gift_attribution = fields.Selection("get_gift_attributions", required=True)
-    sponsorship_gift_type = fields.Selection("get_sponsorship_gifts")
+    gift_type_id = fields.Many2one("sponsorship.gift.type", "Gift type", required=True)
     min_amount = fields.Float()
     max_amount = fields.Float()
     gift_frequency = fields.Integer()
@@ -30,16 +28,7 @@ class GiftThresholdSettings(models.Model):
     _sql_constraints = [
         (
             "unique_gift_threshold",
-            "unique(gift_type,gift_attribution,sponsorship_gift_type)",
+            "unique(gift_type_id)",
             "You already have a threshold rule for this gift",
         )
     ]
-
-    def get_gift_types(self):
-        return self.env["sponsorship.gift"].get_gift_type_selection()
-
-    def get_gift_attributions(self):
-        return self.env["sponsorship.gift"].get_gift_attributions()
-
-    def get_sponsorship_gifts(self):
-        return self.env["sponsorship.gift"].get_sponsorship_gifts()

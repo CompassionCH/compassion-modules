@@ -14,6 +14,5 @@ from . import (
     account_partial_reconcile,
     contracts,
     gift_threshold_settings,
-    recurring_contract_group,
     sponsorship_gift,
 )

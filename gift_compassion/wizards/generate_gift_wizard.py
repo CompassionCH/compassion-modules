@@ -14,8 +14,6 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import models
 
-from odoo.addons.sponsorship_compassion.models.product_names import GIFT_PRODUCTS_REF
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,11 +32,11 @@ class GenerateGiftWizard(models.TransientModel):
         """
         self.ensure_one()
         if self.contract_id.no_birthday_invoice:
-            bd_prod = self.env["product.product"].search(
-                [("default_code", "=", GIFT_PRODUCTS_REF[0])]
-            )
             gift_obj = self.env["sponsorship.gift"]
-            gift_vals = gift_obj.get_gift_types(bd_prod)
+            birthday_gift_type = self.env.ref(
+                "sponsorship_compassion.gift_type_birthday"
+            )
+            gift_vals = {"sponsorship_gift_type_id": birthday_gift_type.id}
             gift_date = self.compute_date_birthday_invoice(
                 self.contract_id.child_id.birthdate
             )
@@ -48,13 +46,7 @@ class GenerateGiftWizard(models.TransientModel):
                     ("sponsorship_id", "=", self.contract_id.id),
                     ("gift_date", ">=", gift_date.replace(day=1, month=1)),
                     ("gift_date", "<=", gift_date.replace(day=31, month=12)),
-                    ("gift_type", "=", gift_vals["gift_type"]),
-                    ("attribution", "=", gift_vals["attribution"]),
-                    (
-                        "sponsorship_gift_type",
-                        "=",
-                        gift_vals.get("sponsorship_gift_type"),
-                    ),
+                    ("gift_type_id", "=", birthday_gift_type.id),
                 ]
             )
             if not existing_gifts:

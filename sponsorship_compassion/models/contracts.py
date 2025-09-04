@@ -21,14 +21,6 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
-from .product_names import (
-    BIRTHDAY_GIFT,
-    CHRISTMAS_GIFT,
-    GIFT_CATEGORY,
-    GIFT_PRODUCTS_REF,
-    PRODUCT_GIFT_CHRISTMAS,
-)
-
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
 testing = tools.config.get("test_enable")
@@ -295,7 +287,7 @@ class SponsorshipContract(models.Model):
                 contract.invoice_line_ids.with_context(lang="en_US")
                 .filtered(
                     lambda line: line.payment_state == "paid"
-                    and line.product_id.categ_name != GIFT_CATEGORY
+                    and not line.product_id.sponsorship_gift_type_id
                 )
                 .mapped("move_id.invoice_date")
                 or [False]
@@ -344,15 +336,21 @@ class SponsorshipContract(models.Model):
             super()._compute_contract_products()
         else:
             # Special case where we consider only gift products
+            birthday_gift_type = self.env.ref(
+                "sponsorship_compassion.gift_type_birthday"
+            )
+            christmas_gift_type = self.env.ref(
+                "sponsorship_compassion.gift_type_christmas"
+            )
             for contract in self:
                 contract.product_ids = self.env["product.product"]
                 if contract.birthday_invoice:
                     contract.product_ids += self.env["product.product"].search(
-                        [("default_code", "=", GIFT_PRODUCTS_REF[0])]
+                        [("sponsorship_gift_type_id", "=", birthday_gift_type.id)]
                     )
                 if contract.christmas_invoice:
                     contract.product_ids += self.env["product.product"].search(
-                        [("default_code", "=", PRODUCT_GIFT_CHRISTMAS)]
+                        [("sponsorship_gift_type_id", "=", christmas_gift_type.id)]
                     )
 
     @api.depends("partner_id", "partner_id.ref", "child_id", "child_id.local_id")
@@ -1030,29 +1028,16 @@ class SponsorshipContract(models.Model):
 
     def _generate_gifts(self, invoicer, gift_type):
         """Creates the annual gifts for sponsorships that
-        have set the option for automatic birthday or Christmas gifts creation."""
-        logger.debug(f"Automatic {gift_type} Gift Generation Started.")
+        have set the option for automatic birthday or Christmas gifts creation.
+        :param invoicer: record of the recurring.invoicer that will create the
+        invoices
+        :param gift_type: sponsorship.gift.type record
+        """
+        logger.debug(f"Automatic {gift_type.name} Generation Started.")
         # Search active Sponsorships with automatic birthday gift
         contracts = self
 
-        product_id = (
-            self.env["product.product"]
-            .search(
-                [
-                    (
-                        "default_code",
-                        "=",
-                        (
-                            GIFT_PRODUCTS_REF[0]
-                            if gift_type == BIRTHDAY_GIFT
-                            else PRODUCT_GIFT_CHRISTMAS
-                        ),
-                    )
-                ],
-                limit=1,
-            )
-            .id
-        )
+        product_id = gift_type.product_id.product_variant_id.id
         # if generate current month is set, we can keep today as current day,
         # but if not we need to forward to the next month
         settings_obj = (
@@ -1087,7 +1072,7 @@ class SponsorshipContract(models.Model):
         # don't have an amount for the gift
         for contract in self:
             if (contract.project_id.hold_gifts and not bypass_fcp_state) or getattr(
-                contract, f"{gift_type}_invoice"
+                contract, gift_type.contract_field
             ) <= 0:
                 contracts -= contract
                 continue
@@ -1113,7 +1098,10 @@ class SponsorshipContract(models.Model):
                 continue
 
             # Checks if we need to generate the birthday gifts or the Christmas gifts
-            if gift_type == BIRTHDAY_GIFT and contract.child_id.birthdate:
+            if (
+                gift_type == self.env.ref("sponsorship_compassion.gift_type_birthday")
+                and contract.child_id.birthdate
+            ):
                 # Compute the gift invoice date for the contract.
                 # It is set to the 1st of two months before the birthday.
                 birthdate = contract.child_id.birthdate
@@ -1133,7 +1121,9 @@ class SponsorshipContract(models.Model):
                     due_dates[contract] = due_date
                 else:
                     contracts -= contract
-            elif gift_type == CHRISTMAS_GIFT:  # case of Christmas gift
+            elif gift_type == self.env.ref(
+                "sponsorship_compassion.gift_type_christmas"
+            ):  # case of Christmas gift
                 if current_date.month == christ_inv_due:
                     # Here we generate the Christmas gifts only if we are in the month
                     # defined in sponsorship_compassion.christmas_inv_gen_month
@@ -1145,8 +1135,8 @@ class SponsorshipContract(models.Model):
 
         if contracts:
             total = str(len(contracts))
-            logger.debug(f"Found {total} {gift_type} Gifts to generate.")
-            base_description = f"Automatic {gift_type} gift"
+            logger.debug(f"Found {total} {gift_type.name} to generate.")
+            base_description = f"Automatic {gift_type.name}"
             gift_wizard = (
                 self.env["generate.gift.wizard"]
                 .with_context(recurring_invoicer_id=invoicer.id)
@@ -1164,13 +1154,15 @@ class SponsorshipContract(models.Model):
             for contract in contracts:
                 logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
                 description = base_description
-                if gift_type == BIRTHDAY_GIFT:
+                if gift_type == self.env.ref(
+                    "sponsorship_compassion.gift_type_birthday"
+                ):
                     description += " " + fields.Date.to_string(
                         contract.child_id.birthdate
                     )
                 gift_wizard.write(
                     {
-                        "amount": getattr(contract, f"{gift_type}_invoice"),
+                        "amount": getattr(contract, gift_type.contract_field),
                         "contract_id": contract.id,
                         "description": description,
                     }
@@ -1180,7 +1172,7 @@ class SponsorshipContract(models.Model):
                 )
                 count += 1
 
-        logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
+        logger.debug(f"Automatic {gift_type} Generation Finished !!")
         return True
 
     def invoice_paid(self, invoice):
@@ -1244,7 +1236,7 @@ class SponsorshipContract(models.Model):
         # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
             lambda invl: invl.contract_id.id in self.ids
-            and invl.product_id.categ_name != GIFT_CATEGORY
+            and not invl.product_id.sponsorship_gift_type_id
         )
         return res
 

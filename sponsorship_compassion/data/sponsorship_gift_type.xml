@@ -1,0 +1,41 @@
+<odoo>
+    <record id="gift_type_birthday" model="sponsorship.gift.type">
+        <field name="name">Birthday Gift</field>
+        <field name="code">gift_birthday</field>
+        <field name="gmc_gift_type">Beneficiary Gift</field>
+        <field name="gmc_attribution">Sponsorship</field>
+        <field name="gmc_sponsorship_gift_type">Birthday</field>
+        <field name="contract_field">birthday_invoice</field>
+    </record>
+    <record id="gift_type_gen" model="sponsorship.gift.type">
+        <field name="name">General Gift</field>
+        <field name="code">gift_gen</field>
+        <field name="gmc_gift_type">Beneficiary Gift</field>
+        <field name="gmc_attribution">Sponsorship</field>
+        <field name="gmc_sponsorship_gift_type">General</field>
+    </record>
+    <record id="gift_type_family" model="sponsorship.gift.type">
+        <field name="name">Family Gift</field>
+        <field name="code">gift_family</field>
+        <field name="gmc_gift_type">Family Gift</field>
+        <field name="gmc_attribution">Sponsored Child Family</field>
+    </record>
+    <record id="gift_type_project" model="sponsorship.gift.type">
+        <field name="name">Project Gift</field>
+        <field name="code">gift_project</field>
+        <field name="gmc_gift_type">Project Gift</field>
+        <field name="gmc_attribution">Center Based Programming</field>
+    </record>
+    <record id="gift_type_graduation" model="sponsorship.gift.type">
+        <field name="name">Graduation Gift</field>
+        <field name="code">gift_graduation</field>
+        <field name="gmc_gift_type">Beneficiary Gift</field>
+        <field name="gmc_attribution">Sponsorship</field>
+        <field name="gmc_sponsorship_gift_type">Graduation/Final</field>
+    </record>
+    <record id="gift_type_christmas" model="sponsorship.gift.type">
+        <field name="name">Christmas Gift</field>
+        <field name="code">gift_christmas</field>
+        <field name="contract_field">christmas_invoice</field>
+    </record>
+</odoo>
