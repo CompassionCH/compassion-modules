@@ -9,13 +9,13 @@
 ##############################################################################
 import base64
 import datetime
+import json
 import logging
 import shutil
 import subprocess
 import uuid
 from collections import defaultdict
 
-import requests
 from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader
 
@@ -1265,19 +1265,13 @@ class Correspondence(models.Model):
         """Download letter image from US service and attach to letter."""
         for letter in self:
             # Download and store letter
-            image_data = None
-            if letter.cloudinary_final_letter_url:
-                response = requests.get(letter.cloudinary_final_letter_url)
-                if response.ok:
-                    image_data = base64.b64encode(response.content)
-            if not image_data:
-                letter_url = letter.final_letter_url or letter.original_letter_url
-                if letter_url:
-                    image_data = SBCConnector(self.env).get_letter_image(
-                        letter_url, "pdf", dpi=letter.preferred_dpi
-                    )
-            if image_data:
-                letter.sponsor_letter_scan = image_data
+            letter_url = letter.final_letter_url or letter.original_letter_url
+            if letter_url:
+                image_data = SBCConnector(self.env).get_letter_image(
+                    letter_url, "pdf", dpi=letter.preferred_dpi
+                )
+                if image_data:
+                    letter.sponsor_letter_scan = image_data
 
     @api.model
     def cron_download_old_correspondence(self):
@@ -1307,4 +1301,51 @@ class Correspondence(models.Model):
             else:
                 _logger.warning(
                     f"Failed to download letter {correspondence.kit_identifier}"
+                )
+
+    def _fix_missing_pages(self):
+        update_letter_action = self.env.ref("sbc_compassion.update_letter")
+        for letter in self:
+            # Find the message that published this letter
+            message = self.env["gmc.message"].search(
+                [
+                    ("action_id", "=", update_letter_action.id),
+                    ("state", "=", "success"),
+                    ("content", "like", "Published to Global Partner"),
+                    ("object_ids", "ilike", str(letter.id)),
+                ],
+                limit=1,
+                order="id desc",
+            )
+            if not message:
+                _logger.warning("No publish message found for letter %s", letter.id)
+                continue
+
+            try:
+                content = json.loads(message.content)
+                number_pages = len(content.get("Pages", []))
+                if number_pages:
+                    _logger.info(
+                        "Restoring %s pages for letter %s from message %s",
+                        number_pages,
+                        letter.id,
+                        message.id,
+                    )
+                    page_vals = letter.json_to_data(content).get("page_ids")
+                    page_vals["cloudinary_final_letter_url"] = content.get(
+                        "CloudinaryFinalURL"
+                    )
+                    letter.with_delay().write(page_vals)
+                else:
+                    _logger.warning(
+                        "Publish message %s for letter %s has no pages in content",
+                        message.id,
+                        letter.id,
+                    )
+            except Exception as e:
+                _logger.error(
+                    "Failed to restore pages for letter %s from message %s: %s",
+                    letter.id,
+                    message.id,
+                    e,
                 )
