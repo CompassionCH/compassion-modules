@@ -1332,10 +1332,14 @@ class Correspondence(models.Model):
                         message.id,
                     )
                     page_vals = letter.json_to_data(content).get("page_ids")
-                    page_vals["cloudinary_final_letter_url"] = content.get(
-                        "CloudinaryFinalURL"
+                    letter.write(
+                        {
+                            "page_ids": page_vals,
+                            "cloudinary_final_letter_url": content.get(
+                                "CloudinaryFinalURL"
+                            ),
+                        }
                     )
-                    letter.with_delay().write(page_vals)
                 else:
                     _logger.warning(
                         "Publish message %s for letter %s has no pages in content",

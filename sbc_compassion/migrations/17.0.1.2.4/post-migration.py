@@ -12,8 +12,6 @@ def migrate(cr, version):
     letters_to_fix = env["correspondence"].search(
         [
             ("page_ids", "=", False),
-            ("cloudinary_final_letter_url", "!=", False),
-            ("sponsor_letter_scan", "=", False),
             ("direction", "=", "Beneficiary To Supporter"),
             ("state", "=", "Published to Global Partner"),
         ]
