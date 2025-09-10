@@ -95,11 +95,9 @@ class CorrespondencePage(models.Model):
             ):
                 setattr(page, image_field, page.template_id.background)
 
-    @api.depends("original_page_url", "cloudinary_original_page_url")
     def _compute_original_page_image(self):
         self._compute_page_image("original")
 
-    @api.depends("final_page_url", "cloudinary_final_page_url")
     def _compute_final_page_image(self):
         self._compute_page_image("final")
 
