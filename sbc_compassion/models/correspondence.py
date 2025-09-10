@@ -15,6 +15,7 @@ import subprocess
 import uuid
 from collections import defaultdict
 
+from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
@@ -1248,3 +1249,33 @@ class Correspondence(models.Model):
         except (OSError, subprocess.SubprocessError) as e:
             _logger.error(f"Failed to run Ghostscript for PDF compression: {e}")
             return letter_data
+
+    @api.model
+    def cron_download_old_correspondence(self):
+        """Make sure letters older than 9 years are downloaded locally
+        if the sponsorship is still active (GMC retention policy is 10 years)"""
+        nine_years_ago = fields.Date.today() - relativedelta(years=9)
+        correspondences = self.search(
+            [
+                ("state", "=", "Published to Global Partner"),
+                ("sponsorship_id.state", "=", "active"),
+                ("scanned_date", "<=", nine_years_ago),
+                ("sponsor_letter_scan", "=", False),
+            ],
+        )
+        _logger.info("Downloading %d old letters", len(correspondences))
+        correspondences.delayable()._download_old_correspondence().set(
+            priority=500,
+            channel="root.sbc_compassion",
+        ).split(10).delay()
+
+    def _download_old_correspondence(self):
+        for correspondence in self:
+            letter_data = correspondence.get_pdf()
+            if letter_data:
+                correspondence.sponsor_letter_scan = base64.b64encode(letter_data)
+                _logger.info(f"Downloaded letter {correspondence.kit_identifier}")
+            else:
+                _logger.warning(
+                    f"Failed to download letter {correspondence.kit_identifier}"
+                )
