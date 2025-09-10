@@ -1312,7 +1312,7 @@ class Correspondence(models.Model):
                     ("action_id", "=", update_letter_action.id),
                     ("state", "=", "success"),
                     ("content", "like", "Published to Global Partner"),
-                    ("object_ids", "ilike", str(letter.id)),
+                    ("object_ids", "=", str(letter.id)),
                 ],
                 limit=1,
                 order="id desc",

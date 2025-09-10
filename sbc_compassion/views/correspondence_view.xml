@@ -182,10 +182,12 @@
                             <field
                 name="original_letter_url"
                 groups="base.group_erp_manager"
+                widget="url"
               />
                             <field
                 name="cloudinary_original_letter_url"
                 groups="base.group_erp_manager"
+                widget="url"
               />
                             <field
                 name="original_language_id"
@@ -198,10 +200,12 @@
                             <field
                 name="final_letter_url"
                 groups="base.group_erp_manager"
+                widget="url"
               />
                             <field
                 name="cloudinary_final_letter_url"
                 groups="base.group_erp_manager"
+                widget="url"
               />
                             <field
                 name="translator"
