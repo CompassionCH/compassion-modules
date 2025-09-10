@@ -15,6 +15,7 @@ import subprocess
 import uuid
 from collections import defaultdict
 
+import requests
 from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader
 
@@ -779,13 +780,23 @@ class Correspondence(models.Model):
         )
 
     def get_pdf(self):
-        """Method for retrieving the PDF of the letter."""
+        """
+        Retrieves the PDF of the letter, trying different sources in order.
+        1. Returns the already stored PDF if available.
+        2. Generates a new PDF from pages if they exist.
+        3. Downloads the PDF from a remote service as a last resort.
+        """
         self.ensure_one()
         if self.sponsor_letter_scan:
             return base64.b64decode(self.sponsor_letter_scan)
-        return self.env["ir.actions.report"]._render_qweb_pdf(
-            "sbc_compassion.report_correspondence", self.ids
-        )[0]
+
+        if self.page_ids:
+            return self.env["ir.actions.report"]._render_qweb_pdf(
+                "sbc_compassion.report_correspondence", self.ids
+            )[0]
+
+        self.attach_b2s_pdf()
+        return base64.b64decode(self.sponsor_letter_scan or b"")
 
     def hold_letters(self, message="Project suspended"):
         """Prevents to send S2B letters to GMC."""
@@ -1249,6 +1260,24 @@ class Correspondence(models.Model):
         except (OSError, subprocess.SubprocessError) as e:
             _logger.error(f"Failed to run Ghostscript for PDF compression: {e}")
             return letter_data
+
+    def attach_b2s_pdf(self):
+        """Download letter image from US service and attach to letter."""
+        for letter in self:
+            # Download and store letter
+            image_data = None
+            if letter.cloudinary_final_letter_url:
+                response = requests.get(letter.cloudinary_final_letter_url)
+                if response.ok:
+                    image_data = base64.b64encode(response.content)
+            if not image_data:
+                letter_url = letter.final_letter_url or letter.original_letter_url
+                if letter_url:
+                    image_data = SBCConnector(self.env).get_letter_image(
+                        letter_url, "pdf", dpi=letter.preferred_dpi
+                    )
+            if image_data:
+                letter.sponsor_letter_scan = image_data
 
     @api.model
     def cron_download_old_correspondence(self):
