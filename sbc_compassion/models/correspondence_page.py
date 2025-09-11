@@ -44,7 +44,9 @@ class CorrespondencePage(models.Model):
         compute="_compute_cloudinary_url", store=True
     )
     final_page_url = fields.Char()
-    cloudinary_final_page_url = fields.Char(compute="_compute_cloudinary_url", store=True)
+    cloudinary_final_page_url = fields.Char(
+        compute="_compute_cloudinary_url", store=True
+    )
     original_page_image = fields.Binary(compute="_compute_original_page_image")
     final_page_image = fields.Binary(compute="_compute_final_page_image")
     paragraph_ids = fields.One2many(

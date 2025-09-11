@@ -12,13 +12,12 @@ def migrate(cr, version):
     letters_to_fix = env["correspondence"].search(
         [
             ("page_ids", "=", False),
+            ("sponsor_letter_scan", "=", False),
             ("direction", "=", "Beneficiary To Supporter"),
             ("state", "=", "Published to Global Partner"),
         ]
     )
-    _logger.info(
-        "Found %s letters without pages and with a cloudinary url.", len(letters_to_fix)
-    )
+    _logger.info("Found %s letters without PDF data", len(letters_to_fix))
     if not letters_to_fix:
         return
 

@@ -1317,11 +1317,9 @@ class Correspondence(models.Model):
                 limit=1,
                 order="id desc",
             )
-            if not message:
-                _logger.warning("No publish message found for letter %s", letter.id)
-                continue
-
+            content = {}
             try:
+                message.ensure_one()
                 content = json.loads(message.content)
                 number_pages = len(content.get("Pages", []))
                 if number_pages:
@@ -1341,15 +1339,27 @@ class Correspondence(models.Model):
                         }
                     )
                 else:
-                    _logger.warning(
-                        "Publish message %s for letter %s has no pages in content",
-                        message.id,
-                        letter.id,
+                    raise ValueError("No pages found in GMC content")
+            except Exception:
+                letter.attach_b2s_pdf()
+                cloudinary_final = content.get("CloudinaryFinalURL")
+                if cloudinary_final:
+                    letter._create_missing_pages()
+                    letter.cloudinary_final_letter_url = content.get(
+                        "CloudinaryFinalURL"
                     )
-            except Exception as e:
-                _logger.error(
-                    "Failed to restore pages for letter %s from message %s: %s",
-                    letter.id,
-                    message.id,
-                    e,
-                )
+                    letter.sponsor_letter_scan = False
+
+    def _create_missing_pages(self):
+        self.ensure_one()
+        if not self.page_ids and self.sponsor_letter_scan:
+            attachment = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", "correspondence"),
+                    ("res_field", "=", "sponsor_letter_scan"),
+                    ("res_id", "=", self.id),
+                ]
+            )
+            image_pdf = PdfFileReader(to_pdf_stream(attachment))
+            for _i in range(image_pdf.numPages):
+                self.page_ids.create({"correspondence_id": self.id})
