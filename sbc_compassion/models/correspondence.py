@@ -1304,50 +1304,60 @@ class Correspondence(models.Model):
                 )
 
     def _fix_missing_pages(self):
+        if not self:
+            return
+
         update_letter_action = self.env.ref("sbc_compassion.update_letter")
+        letter_ids_str = [str(lid) for lid in self.ids]
+
+        # Perform a single, more efficient search for all letters in self
+        messages = self.env["gmc.message"].search(
+            [
+                ("action_id", "=", update_letter_action.id),
+                ("state", "=", "success"),
+                ("object_ids", "in", letter_ids_str),
+                ("content", "like", "Published to Global Partner"),
+            ]
+        )
+
+        # Group messages by letter ID for quick lookup
+        messages_by_letter_id = {}
+        for msg in messages:
+            try:
+                letter_id = int(msg.object_ids)
+                if letter_id not in messages_by_letter_id:
+                    messages_by_letter_id[letter_id] = msg
+            except (ValueError, TypeError):
+                continue
+
         for letter in self:
-            # Find the message that published this letter
-            message = self.env["gmc.message"].search(
-                [
-                    ("action_id", "=", update_letter_action.id),
-                    ("state", "=", "success"),
-                    ("content", "like", "Published to Global Partner"),
-                    ("object_ids", "=", str(letter.id)),
-                ],
-                limit=1,
-                order="id desc",
-            )
             content = {}
             try:
-                message.ensure_one()
+                message = messages_by_letter_id[letter.id]
                 content = json.loads(message.content)
                 number_pages = len(content.get("Pages", []))
-                if number_pages:
-                    _logger.info(
-                        "Restoring %s pages for letter %s from message %s",
-                        number_pages,
-                        letter.id,
-                        message.id,
-                    )
-                    page_vals = letter.json_to_data(content).get("page_ids")
-                    letter.write(
-                        {
-                            "page_ids": page_vals,
-                            "cloudinary_final_letter_url": content.get(
-                                "CloudinaryFinalURL"
-                            ),
-                        }
-                    )
-                else:
+                if not number_pages:
                     raise ValueError("No pages found in GMC content")
-            except Exception:
+
+                _logger.info(
+                    "Restoring %s pages for letter %s from message %s",
+                    number_pages,
+                    letter.id,
+                    message.id,
+                )
+                page_vals = letter.json_to_data(content).get("page_ids")
+                write_vals = {
+                    "page_ids": page_vals,
+                    "cloudinary_final_letter_url": content.get("CloudinaryFinalURL"),
+                }
+                letter.write(write_vals)
+
+            except (json.JSONDecodeError, ValueError, KeyError):
                 letter.attach_b2s_pdf()
                 cloudinary_final = content.get("CloudinaryFinalURL")
                 if cloudinary_final:
                     letter._create_missing_pages()
-                    letter.cloudinary_final_letter_url = content.get(
-                        "CloudinaryFinalURL"
-                    )
+                    letter.cloudinary_final_letter_url = cloudinary_final
                     letter.sponsor_letter_scan = False
 
     def _create_missing_pages(self):
