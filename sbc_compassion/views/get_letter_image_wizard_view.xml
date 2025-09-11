@@ -19,7 +19,7 @@
                         <field
               name="image_download"
               invisible="not image_download or format in ('jpeg', 'png')"
-                filename="image_filename"
+              filename="image_filename"
             />
                     </group>
                 </sheet>

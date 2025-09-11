@@ -21,6 +21,7 @@ from . import (
     import_config,
     import_letter_line,
     import_letters_history,
+    ir_actions_report,
     last_writing_report,
     partner_compassion,
     project_compassion,
