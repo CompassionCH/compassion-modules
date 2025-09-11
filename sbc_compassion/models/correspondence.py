@@ -1268,7 +1268,7 @@ class Correspondence(models.Model):
             letter_url = letter.final_letter_url or letter.original_letter_url
             if letter_url:
                 image_data = SBCConnector(self.env).get_letter_image(
-                    letter_url, "pdf", dpi=letter.preferred_dpi
+                    letter_url, dpi=96
                 )
                 if image_data:
                     letter.sponsor_letter_scan = image_data
