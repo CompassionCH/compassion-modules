@@ -15,6 +15,7 @@
               widget="image"
               invisible="not image_preview or format not in ('jpeg', 'png')"
             />
+                        <field name="image_filename" invisible="1" />
                         <field
               name="image_download"
               invisible="not image_download or format in ('jpeg', 'png')"
