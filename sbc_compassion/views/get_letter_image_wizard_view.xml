@@ -17,7 +17,8 @@
             />
                         <field
               name="image_download"
-              invisible="not image_download or format not in ('jpeg', 'png')"
+              invisible="not image_download or format in ('jpeg', 'png')"
+                filename="image_filename"
             />
                     </group>
                 </sheet>

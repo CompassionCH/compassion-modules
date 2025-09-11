@@ -32,12 +32,25 @@ class GetLetterImageWizard(models.TransientModel):
     page_number = fields.Integer(default=0)
     image_preview = fields.Image(readonly=True)
     image_download = fields.Binary(readonly=True)
+    image_filename = fields.Char(
+        compute="_compute_image_filename"
+    )
 
     @api.constrains("dpi")
     def check_dpi(self):
         for wizard in self:
             if not 96 <= wizard.dpi <= 1200:
                 raise ValidationError(_("Dpi value must be between 96 and 1200"))
+
+    def _compute_image_filename(self):
+        for wizard in self:
+            letter = self.env["correspondence"].browse(
+                self.env.context.get("active_id")
+            )
+            if letter.file_name:
+                wizard.image_filename = letter.file_name
+            else:
+                wizard.image_filename = f"{letter.kit_identifier}.pdf"
 
     def get_image_letter(self, letter_id):
         """Allows to call get_image and specify a letter id."""
