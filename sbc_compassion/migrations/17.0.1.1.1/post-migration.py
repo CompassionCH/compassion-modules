@@ -15,27 +15,6 @@ def migrate(cr, version):
             "correspondence_mapping.json",
         ],
     )
-    # Remove the letter attachment in batch jobs of 100 letters
-    offset = 0
-    b2s_letters = env["correspondence"].search(
-        [
-            ("direction", "=", "Beneficiary To Supporter"),
-            ("sponsor_letter_scan", "!=", False),
-        ],
-        limit=100,
-        offset=offset,
-    )
-    while b2s_letters:
-        b2s_letters.with_delay().write({"sponsor_letter_scan": False})
-        offset += 100
-        b2s_letters = env["correspondence"].search(
-            [
-                ("direction", "=", "Beneficiary To Supporter"),
-                ("sponsor_letter_scan", "!=", False),
-            ],
-            limit=100,
-            offset=offset,
-        )
 
     # Populate Cloudinary URLs for letter images
     update_letter_action = env.ref("sbc_compassion.update_letter")
@@ -49,18 +28,26 @@ def migrate(cr, version):
         ]
     )
     for message in publish_messages:
-        letter_ids = [int(i) for i in message.object_ids.split(",")]
-        letters = env["correspondence"].browse(letter_ids)
-        content = json.loads(message.content)
-        final_url = content.get("CloudinaryFinalURL")
-        original_url = content.get("CloudinaryOriginalURL")
-        if final_url and letters.exists():
-            letters.exists().with_delay().write(
-                {
-                    "cloudinary_final_letter_url": final_url,
-                    "cloudinary_original_letter_url": original_url or False,
-                }
-            )
+        try:
+            letter_ids = [int(i) for i in message.object_ids.split(",")]
+            letters = env["correspondence"].browse(letter_ids).exists()
+            content = json.loads(message.content)
+            final_url = content.get("CloudinaryFinalURL")
+            original_url = content.get("CloudinaryOriginalURL")
+            if letters and (final_url or original_url):
+                for letter in letters:
+                    letter._create_missing_pages(len(content.get("Pages", [])))
+                letters.exists().with_delay().write(
+                    {
+                        "cloudinary_final_letter_url": final_url,
+                        "cloudinary_original_letter_url": original_url or False,
+                        "sponsor_letter_scan": False,
+                    }
+                )
+        except (ValueError, TypeError, json.JSONDecodeError):
+            continue
+
+    # For letters not covered by the above messages, get the latest message per letter
     supporter_letters = env["correspondence"].search(
         [
             ("direction", "=", "Supporter To Beneficiary"),

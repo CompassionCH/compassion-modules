@@ -1332,6 +1332,7 @@ class Correspondence(models.Model):
 
         for letter in self:
             content = {}
+            number_pages = 0
             try:
                 message = messages_by_letter_id[letter.id]
                 content = json.loads(message.content)
@@ -1349,20 +1350,26 @@ class Correspondence(models.Model):
                 write_vals = {
                     "page_ids": page_vals,
                     "cloudinary_final_letter_url": content.get("CloudinaryFinalURL"),
+                    "cloudinary_original_letter_url": content.get(
+                        "CloudinaryOriginalURL"
+                    ),
                 }
                 letter.write(write_vals)
 
-            except (json.JSONDecodeError, ValueError, KeyError):
-                letter.attach_b2s_pdf()
+            except (json.JSONDecodeError, ValueError, KeyError, UserError):
                 cloudinary_final = content.get("CloudinaryFinalURL")
+                if not cloudinary_final or not number_pages:
+                    letter.attach_b2s_pdf()
                 if cloudinary_final:
-                    letter._create_missing_pages()
+                    letter._create_missing_pages(number_pages)
                     letter.cloudinary_final_letter_url = cloudinary_final
                     letter.sponsor_letter_scan = False
 
-    def _create_missing_pages(self):
+    def _create_missing_pages(self, number_pages=0):
         self.ensure_one()
-        if not self.page_ids and self.sponsor_letter_scan:
+        if self.page_ids:
+            return
+        if self.sponsor_letter_scan and not number_pages:
             attachment = self.env["ir.attachment"].search(
                 [
                     ("res_model", "=", "correspondence"),
@@ -1371,5 +1378,6 @@ class Correspondence(models.Model):
                 ]
             )
             image_pdf = PdfFileReader(to_pdf_stream(attachment))
-            for _i in range(image_pdf.numPages):
-                self.page_ids.create({"correspondence_id": self.id})
+            number_pages = image_pdf.numPages
+        for _i in range(number_pages):
+            self.page_ids.create({"correspondence_id": self.id})
