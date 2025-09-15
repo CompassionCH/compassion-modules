@@ -23,10 +23,18 @@ class ChildCompassion(models.Model):
         compute="_compute_related_contracts",
         string="Sponsorships",
     )
+    company_id = fields.Many2one("res.company", compute="_compute_company")
     has_been_sponsored = fields.Boolean(compute="_compute_has_been_sponsored")
     payer_id = fields.Many2one(
         "res.partner", string="Payer", compute="_compute_payer", search="_search_payer"
     )
+
+    def _compute_company(self):
+        for child in self:
+            if child.sponsorship_ids:
+                child.company_id = child.sponsorship_ids[0].company_id
+            else:
+                child.company_id = False
 
     def _compute_has_been_sponsored(self):
         for child in self:

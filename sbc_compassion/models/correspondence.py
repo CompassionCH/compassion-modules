@@ -70,6 +70,9 @@ class Correspondence(models.Model):
         tracking=True,
         readonly=False,
     )
+    company_id = fields.Many2one(
+        related="sponsorship_id.company_id",
+    )
     name = fields.Char(compute="_compute_name", store=True)
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=True, ondelete="restrict"
