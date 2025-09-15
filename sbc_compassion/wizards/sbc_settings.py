@@ -36,9 +36,6 @@ class SBCSettings(models.TransientModel):
     def get_values(self):
         res = super().get_values()
         config = self.env["ir.config_parameter"].sudo()
-        user = self.env["res.users"]
         user_id = int(config.get_param("sbc_compassion.letter_responsible", 0))
-        if user_id:
-            user = user.browse(user_id)
-        res["letter_responsible"] = user
+        res["letter_responsible"] = user_id
         return res
