@@ -1127,7 +1127,7 @@ class SponsorshipContract(models.Model):
                 if current_date.month == christ_inv_due:
                     # Here we generate the Christmas gifts only if we are in the month
                     # defined in sponsorship_compassion.christmas_inv_gen_month
-                    due_dates[contract] = date(current_year, christ_inv_due + 1, 1)
+                    due_dates[contract] = date(current_year, christ_inv_due, 1)
                 else:
                     contracts -= contract
             else:
