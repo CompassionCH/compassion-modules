@@ -43,10 +43,13 @@ class PartnerCommunication(models.Model):
     def send(self):
         res = super().send()
         # Refresh the interactions after sending the communication
-        for partner in self.mapped("partner_id"):
-            partner.with_delay(
-                channel="root.partner_communication",
-                priority=100,
-                identity_key=partner._name + ".fetch_interactions." + str(partner.id),
-            ).fetch_interactions()
+        if not self.env.context.get("skip_interaction_fetch"):
+            for partner in self.mapped("partner_id"):
+                partner.with_delay(
+                    channel="root.partner_communication",
+                    priority=100,
+                    identity_key=partner._name
+                    + ".fetch_interactions."
+                    + str(partner.id),
+                ).fetch_interactions()
         return res
