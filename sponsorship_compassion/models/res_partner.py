@@ -481,7 +481,9 @@ class ResPartner(models.Model):
                 ("product_id.categ_name", "!=", "Sponsorship"),
                 ("move_type", "=", "out_invoice"),
                 "|",
-                ("move_id.invoice_line_ids.account_id.is_off_balance", "=", False),
+                ("account_id.is_off_balance", "=", False),
+                "&",
+                ("contract_id", "!=", False),
                 ("payment_state", "=", "paid"),
             ],
             "context": {
@@ -489,6 +491,7 @@ class ResPartner(models.Model):
                 "search_view_ref": "sponsorship_compassion.view_donation_filter",
                 "search_default_partner_id": self.id,
                 "search_default_group_contract": 1,
+                "search_default_group_product": 1,
             },
         }
 
