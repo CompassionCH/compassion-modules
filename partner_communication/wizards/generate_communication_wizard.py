@@ -170,20 +170,12 @@ class GenerateCommunicationWizard(models.TransientModel):
             communication.subject = new_subject[communication.id]
 
         if self.exists():
-            try:
-                self.env.cr.execute(
-                    "SELECT id FROM partner_communication_generate_wizard "
-                    "WHERE id=%s FOR UPDATE",
-                    (self.id,),
-                )
-                self.communication_ids += communication
-            except Exception as e:
-                _logger.error(
-                    "Could not update wizard %s with communication %s: %s",
-                    self.id,
-                    communication.id,
-                    e,
-                )
-                self.env.clear()
-                communication.env.clear()
+            self.env.cr.execute(
+                """
+        INSERT INTO partner_communication_generation_rel
+        (partner_communication_generate_wizard_id, partner_communication_job_id)
+        VALUES (%s, %s)
+            """,
+                (self.id, communication.id),
+            )
         return communication
