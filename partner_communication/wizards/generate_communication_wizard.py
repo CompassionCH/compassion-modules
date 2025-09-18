@@ -184,4 +184,6 @@ class GenerateCommunicationWizard(models.TransientModel):
                     communication.id,
                     e,
                 )
+                self.env.clear()
+                communication.env.clear()
         return communication
