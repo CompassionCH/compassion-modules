@@ -154,7 +154,11 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.model
     def create_communication(self, vals, options):
         """Generate partner communication"""
-        communication = self.env["partner.communication.job"].create(vals)
+        communication = (
+            self.env["partner.communication.job"]
+            .with_context(skip_interaction_fetch=True)
+            .create(vals)
+        )
         force_language = options.get("force_language")
         if force_language:
             template = communication.email_template_id.with_context(
