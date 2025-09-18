@@ -61,24 +61,20 @@ class AdvancedTranslatable(models.AbstractModel):
         if len(field_path) > 1:
             field_traversal = ".".join(field_path[:-1])
             obj = obj.mapped(field_traversal)
-        definition = obj.fields_get([field_path[-1]]).get(field_path[-1])
-        if definition:
-            for record in self:
-                for raw_value in record.mapped(field):
-                    if not raw_value:
-                        continue
-                    val = False
-                    if (
-                        definition["type"] in ("char", "text")
-                        or isinstance(raw_value, str)
-                        and definition["type"] != "selection"
-                    ):
-                        val = _(raw_value)
-                    elif definition["type"] == "selection":
-                        val = _(dict(definition["selection"])[raw_value])
-                    if val:
-                        val = pattern_keyword.sub(_replace_keyword, val)
-                        res.append(val)
+        field_name = field_path[-1]
+        for record in self:
+            for raw_value in record.mapped(field):
+                if not raw_value:
+                    continue
+                val = raw_value
+                if obj._fields[field_name].type == "selection":
+                    selection = obj.fields_get([field_name]).get(field_name)[
+                        "selection"
+                    ]
+                    val = dict(selection)[raw_value]
+                if isinstance(val, str):
+                    val = pattern_keyword.sub(_replace_keyword, val)
+                    res.append(val)
         if len(res) == 1:
             res = res[0]
         return res or ""

@@ -45,7 +45,8 @@ class Household(models.Model):
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
     primary_caregiver = fields.Char(
-        string="Primary caregiver", compute="_compute_primary_caregiver"
+        string="Primary caregiver",
+        compute="_compute_primary_caregiver",
     )
     primary_caregiver_id = fields.Many2one(
         "compassion.household.member",
@@ -98,6 +99,7 @@ class Household(models.Model):
                 else len(sisters)
             )
 
+    @api.depends_context("lang")
     def _compute_primary_caregiver(self):
         for household in self:
             primary_caregiver = household.member_ids.filtered("is_primary_caregiver")
@@ -137,6 +139,7 @@ class Household(models.Model):
         return caregivers
 
     @api.model
+    @api.depends_context("lang")
     def _get_yes_no(self):
         return [
             ("Yes", _("Yes")),

@@ -145,11 +145,12 @@ class ChildDescription(models.TransientModel):
         # 1. Program type only if Home Based + Birthday estimate
         ########################################################
         child = self.child_id
+        preferred_name = child.with_context(lang="en_US").preferred_name
         if child.cdsp_type == "Home Based":
             desc(".program_type").html(
                 self.home_based_lang.get(self.env.lang, self.home_based_lang["en_US"])[
                     child.gender
-                ].format(preferred_name=child.preferred_name)
+                ].format(preferred_name=preferred_name)
             )
         else:
             desc("#program_type").remove()
@@ -219,7 +220,7 @@ class ChildDescription(models.TransientModel):
             desc(".school_attending_title").html(
                 self.school_no_lang.get(self.env.lang, self.school_no_lang["en_US"])[
                     child.gender
-                ].format(preferred_name=child.preferred_name)
+                ].format(preferred_name=preferred_name)
             )
             desc(".school").remove()
 
@@ -262,7 +263,7 @@ class ChildDescription(models.TransientModel):
             desc("#hobbies_intro").html(
                 self.hobbies_intro_lang.get(
                     self.env.lang, self.hobbies_intro_lang["en_US"]
-                )[child.gender].format(preferred_name=child.preferred_name)
+                )[child.gender].format(preferred_name=preferred_name)
             )
             desc("#hobbies_list").html(
                 "".join(
@@ -278,7 +279,7 @@ class ChildDescription(models.TransientModel):
             desc("#handicap_intro").html(
                 self.handicap_intro_lang.get(
                     self.env.lang, self.handicap_intro_lang["en_US"]
-                )[child.gender].format(preferred_name=child.preferred_name)
+                )[child.gender].format(preferred_name=preferred_name)
             )
             handicap_list = []
             if child.physical_disability_ids:
@@ -373,15 +374,14 @@ class ChildDescription(models.TransientModel):
         """Generates the job part of the guardians."""
         at = self.env["ir.advanced.translation"]
         household = self.child_id.household_id
-        en = household.with_context(lang="en_US")
         if guardian == "father":
             job_type = household.male_guardian_job_type
-            job = at.get(en.translate("male_guardian_job"))
+            job = at.get(household.translate("male_guardian_job"))
             job_label = _("Father job")
             alive = household.father_alive == "Yes"
         elif guardian == "mother":
             job_type = household.female_guardian_job_type
-            job = at.get(en.translate("female_guardian_job"), female=True)
+            job = at.get(household.translate("female_guardian_job"), female=True)
             job_label = _("Mother job")
             alive = household.mother_alive == "Yes"
 
