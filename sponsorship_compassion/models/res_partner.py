@@ -480,6 +480,9 @@ class ResPartner(models.Model):
                 "|",
                 ("product_id.categ_name", "!=", "Sponsorship"),
                 ("move_type", "=", "out_invoice"),
+                "|",
+                ("move_id.invoice_line_ids.account_id.is_off_balance", "=", False),
+                ("payment_state", "=", "paid"),
             ],
             "context": {
                 "tree_view_ref": "sponsorship_compassion.view_move_line_donations",
