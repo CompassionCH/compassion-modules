@@ -128,9 +128,9 @@ class CorrespondenceS2bGenerator(models.Model):
                 domain.append(month_select)
             self.selection_domain = str(domain)
 
-    def preview(self):
+    def preview(self, **callbacks):
         """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
+        pdf = self._get_pdf(self.sponsorship_ids[:1],**callbacks)[0]
         if self.template_id.layout == "CH-A-3S01-1":
             # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
@@ -265,7 +265,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
         return text
 
-    def _get_pdf(self, sponsorship):
+    def _get_pdf(self, sponsorship, **callbacks):
         """Generates a PDF given a sponsorship."""
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
@@ -285,6 +285,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 (header, ""),  # Headers (front/back)
                 {"Original": [text]},  # Text
                 self.mapped("image_ids.datas"),  # Images
+                **callbacks
             ),
             text,
         )
