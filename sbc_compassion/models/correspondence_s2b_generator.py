@@ -9,6 +9,7 @@
 ##############################################################################
 import base64
 import logging
+from email.policy import default
 from io import BytesIO
 
 from wand.exceptions import PolicyError
@@ -80,6 +81,9 @@ class CorrespondenceS2bGenerator(models.Model):
     preview_pdf = fields.Binary(readonly=True)
     filename = fields.Char(compute="_compute_filename")
     month = fields.Selection("_get_months")
+    generation_status = fields.Selection([("creating_task","creating_task"),("apply_template","apply_template"),
+                                          ("apply_text","apply_text"),("apply_images","apply_images"),("generate_pdf","generate_pdf")],
+                                         default="creating_task", string="Generation Status")
 
     def _compute_nb_letters(self):
         for generator in self:
