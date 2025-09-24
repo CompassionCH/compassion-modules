@@ -82,7 +82,7 @@ class CorrespondenceS2bGenerator(models.Model):
     filename = fields.Char(compute="_compute_filename")
     month = fields.Selection("_get_months")
     generation_status = fields.Selection([("creating_task","creating_task"),("apply_template","apply_template"),
-                                          ("apply_text","apply_text"),("apply_images","apply_images"),("generate_pdf","generate_pdf")],
+                                          ("apply_text","apply_text"),("apply_images","apply_images"),("generate_pdf","generate_pdf"),("done","done")],
                                          default="creating_task", string="Generation Status")
 
     def _compute_nb_letters(self):
