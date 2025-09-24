@@ -1059,7 +1059,10 @@ class SponsorshipContract(models.Model):
         christ_inv_due = int(
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("sponsorship_compassion.christmas_inv_gen_month", 9)
+            .get_param("sponsorship_compassion.christmas_inv_gen_month", 10)
+        )
+        inv_block_day = int(
+            self.env["res.config.settings"].get_param("inv_block_day", 31)
         )
         bypass_fcp_state = bool(
             self.env["ir.config_parameter"]
@@ -1124,10 +1127,13 @@ class SponsorshipContract(models.Model):
             elif gift_type == self.env.ref(
                 "sponsorship_compassion.gift_type_christmas"
             ):  # case of Christmas gift
-                if current_date.month == christ_inv_due:
+                if (current_date.month == christ_inv_due - 1) or (
+                    current_date.month == christ_inv_due
+                    and current_date.day < inv_block_day
+                ):
                     # Here we generate the Christmas gifts only if we are in the month
                     # defined in sponsorship_compassion.christmas_inv_gen_month
-                    due_dates[contract] = date(current_year, christ_inv_due + 1, 1)
+                    due_dates[contract] = date(current_year, christ_inv_due, 1)
                 else:
                     contracts -= contract
             else:

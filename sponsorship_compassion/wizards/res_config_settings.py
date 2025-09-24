@@ -142,11 +142,11 @@ class StaffNotificationSettings(models.TransientModel):
     )
 
     christmas_inv_gen_month = fields.Integer(
-        help="Chose the month at which the Christmas invoices will be generated. The "
-        "due date will be one month after.",
+        string="Christmas Invoice Due Month",
+        help="Select the due month for Christmas invoices. Invoices are created "
+        "in the preceding month and dated in the selected month.",
         config_parameter="sponsorship_compassion.christmas_inv_gen_month",
-        # Default invoices for Christmas gift are due for two months before Christmas
-        default=9,
+        default=10,
     )
     bypass_fcp_state = fields.Boolean(
         help="Set True for generating invoices even if the fcp is in  "
