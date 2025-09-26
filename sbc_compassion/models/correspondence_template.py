@@ -112,8 +112,9 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def generate_pdf(self, pdf_name, header, text, image_data, background_list=None,
-                   **callbacks):
+    def generate_pdf(
+        self, pdf_name, header, text, image_data, background_list=None, **callbacks
+    ):
         """
         Generate a pdf file
         This function is nearly as generic as it should be to be implemented
@@ -146,8 +147,8 @@ class CorrespondenceTemplate(models.Model):
         )
         image_list = []
 
-        if 'apply_template_callback' in callbacks:
-            callbacks['apply_template_callback']()
+        if "apply_template_callback" in callbacks:
+            callbacks["apply_template_callback"]()
 
         if background_list:
             # An original document is provided. We want
@@ -185,11 +186,8 @@ class CorrespondenceTemplate(models.Model):
                 text_list.append(text_box.get_json_repr())
             overflow_template = [add_background.name, header_data, text_list, []]
 
-
-
-
-        if 'apply_text_callback' in callbacks:
-            callbacks['apply_text_callback']()
+        if "apply_text_callback" in callbacks:
+            callbacks["apply_text_callback"]()
         text_list = []
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
@@ -201,8 +199,8 @@ class CorrespondenceTemplate(models.Model):
                 temp_img.append(txt_file)
                 text_list.append([txt_file.name, t_type])
 
-        if 'apply_img_callback' in callbacks:
-            callbacks['apply_img_callback']()
+        if "apply_img_callback" in callbacks:
+            callbacks["apply_img_callback"]()
 
         for image in image_data:
             ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
@@ -210,7 +208,6 @@ class CorrespondenceTemplate(models.Model):
             ifile.flush()
             image_list.append(ifile.name)
             temp_img.append(ifile)
-
 
         generated_json = {
             "images": image_list,
@@ -228,8 +225,8 @@ class CorrespondenceTemplate(models.Model):
         std_err_file_path = self.path_to("stderr.txt")
         std_err_file = open(std_err_file_path, "w", encoding="utf-8")
 
-        if 'generating_pdf_callback' in callbacks:
-            callbacks['generating_pdf_callback']()
+        if "generating_pdf_callback" in callbacks:
+            callbacks["generating_pdf_callback"]()
 
         php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
         if config.get("php_debug"):

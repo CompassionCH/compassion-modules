@@ -9,7 +9,6 @@
 ##############################################################################
 import base64
 import logging
-from email.policy import default
 from io import BytesIO
 
 from wand.exceptions import PolicyError
@@ -81,9 +80,20 @@ class CorrespondenceS2bGenerator(models.Model):
     preview_pdf = fields.Binary(readonly=True)
     filename = fields.Char(compute="_compute_filename")
     month = fields.Selection("_get_months")
-    generation_status = fields.Selection([("creating_task","creating_task"),("apply_template","apply_template"),
-                                          ("apply_text","apply_text"),("apply_images","apply_images"),("generate_pdf","generate_pdf"),("done","done"),("failed","failed"),("finalizing","finalizing")],
-                                         default="creating_task", string="Generation Status")
+    generation_status = fields.Selection(
+        [
+            ("creating_task", "creating_task"),
+            ("apply_template", "apply_template"),
+            ("apply_text", "apply_text"),
+            ("apply_images", "apply_images"),
+            ("generate_pdf", "generate_pdf"),
+            ("done", "done"),
+            ("failed", "failed"),
+            ("finalizing", "finalizing"),
+        ],
+        default="creating_task",
+        string="Generation Status",
+    )
 
     def _compute_nb_letters(self):
         for generator in self:
@@ -134,7 +144,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
     def preview(self, **callbacks):
         """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1],**callbacks)[0]
+        pdf = self._get_pdf(self.sponsorship_ids[:1], **callbacks)[0]
         if self.template_id.layout == "CH-A-3S01-1":
             # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
@@ -289,7 +299,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 (header, ""),  # Headers (front/back)
                 {"Original": [text]},  # Text
                 self.mapped("image_ids.datas"),  # Images
-                **callbacks
+                **callbacks,
             ),
             text,
         )
