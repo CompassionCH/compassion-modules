@@ -439,34 +439,38 @@ class Correspondence(models.Model):
             )
 
     def _check_translation_language(self):
-        """Detect if text is written in the language corresponding to the
-        language_id, and fix it if possible."""
+        """Detects and corrects the translation language of a letter."""
         if self.env.context.get("skip_lang_detect"):
             return
+
         english = self.env.ref("advanced_translation.lang_compassion_english")
+        lang_detector = self.env["langdetect"]
+
         for letter in self.with_context(skip_lang_detect=True):
             letter_text = (
                 letter.translated_text or letter.english_text or letter.original_text
             )
-            if letter_text and letter.translation_language_id:
-                letter_text = (
-                    letter_text.strip(" \t\n\r.")
-                    .replace(BOX_SEPARATOR, "")
-                    .replace(PAGE_SEPARATOR, "")
-                )
-                if letter_text:
-                    # find the language of text argument
-                    detected_lang = self.env["langdetect"].detect_language(letter_text)
-                    if (
-                        detected_lang
-                        and detected_lang != letter.translation_language_id
-                    ):
-                        letter.translation_language_id = detected_lang
-            if not letter_text and letter.direction == "Beneficiary To Supporter":
-                # T2495 It's safer to consider child letters as English to avoid
-                # sending letters with no translation to the sponsor.
-                if letter.translation_language_id != english:
+            # Clean text for accurate detection
+            clean_text = (
+                letter_text.strip(" \t\n\r.")
+                .replace(BOX_SEPARATOR, "")
+                .replace(PAGE_SEPARATOR, "")
+                .strip()
+            )
+
+            if not clean_text:
+                # T2495 Default to English for empty B2S letters
+                # to ensure they are translated if needed.
+                if (
+                    letter.direction == "Beneficiary To Supporter"
+                    and letter.translation_language_id != english
+                ):
                     letter.translation_language_id = english
+                continue
+
+            detected_lang = lang_detector.detect_language(clean_text)
+            if detected_lang and detected_lang != letter.translation_language_id:
+                letter.translation_language_id = detected_lang
 
     @api.depends("uuid")
     def _compute_read_url(self):
