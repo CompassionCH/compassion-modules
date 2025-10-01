@@ -157,7 +157,6 @@ class CorrespondenceS2bGenerator(models.Model):
             out_data.seek(0)
             pdf = out_data.read()
 
-
         # Check the number of pages
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
         if n_pages > self.MAX_PAGE_COUNT:
