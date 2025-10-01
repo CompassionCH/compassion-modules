@@ -557,18 +557,17 @@ class CompassionChild(models.Model):
         """Get the most recent case study, basic information, updates
         portrait picture and creates the project if it doesn't exist.
         """
-        message_obj = self.env["gmc.message"]
-        message = message_obj
         action_id = self.env.ref("child_compassion.beneficiaries_details").id
+        vals_list = []
         for child in self:
-            message_vals = {
+            vals_list.append({
                 "action_id": action_id,
                 "object_id": child.id,
                 "child_id": child.id,
-            }
-            message += message_obj.create(message_vals)
-        if "failure" in message.mapped("state"):
-            raise UserError(" ".join(message.mapped("failure_reason")))
+            })
+        messages = self.env["gmc.message"].create(vals_list)
+        if "failure" in messages.mapped("state"):
+            raise UserError(" ".join(messages.mapped("failure_reason")))
         return True
 
     def update_child_pictures(self):
