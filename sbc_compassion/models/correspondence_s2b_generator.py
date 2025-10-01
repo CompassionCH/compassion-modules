@@ -94,6 +94,7 @@ class CorrespondenceS2bGenerator(models.Model):
         default="creating_task",
         string="Generation Status",
     )
+    generation_error_message = fields.Text(string="Generation Message")
 
     def _compute_nb_letters(self):
         for generator in self:
