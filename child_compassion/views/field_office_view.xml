@@ -45,7 +45,7 @@
               />
                             <field
                 name="available_on_childpool"
-                groups="base.group_system"
+                groups="child_compassion.group_manager"
               />
                         </group>
                     </group>
