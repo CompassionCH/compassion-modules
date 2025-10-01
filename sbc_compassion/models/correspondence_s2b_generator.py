@@ -95,6 +95,7 @@ class CorrespondenceS2bGenerator(models.Model):
         string="Generation Status",
     )
     generation_error_message = fields.Text(string="Generation Message")
+    MAX_PAGE_COUNT = 15
 
     def _compute_nb_letters(self):
         for generator in self:
@@ -155,6 +156,16 @@ class CorrespondenceS2bGenerator(models.Model):
             output_pdf.write(out_data)
             out_data.seek(0)
             pdf = out_data.read()
+
+
+        # Check the number of pages
+        n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
+        if n_pages > self.MAX_PAGE_COUNT:
+            msg = _("Oops your letter has %d pages. The limit is %d") % (
+                n_pages,
+                self.MAX_PAGE_COUNT,
+            )
+            callbacks.get("failure_callback", lambda: None)(err_msg=msg)
 
         try:
             with Image(blob=pdf, resolution=96) as pdf_image:
