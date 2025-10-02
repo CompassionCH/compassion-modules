@@ -17,6 +17,7 @@ from io import BytesIO
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
 
+
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
