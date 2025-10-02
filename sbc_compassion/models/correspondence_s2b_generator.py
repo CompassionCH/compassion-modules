@@ -164,7 +164,6 @@ class CorrespondenceS2bGenerator(models.Model):
                 n_pages,
                 self.MAX_PAGE_COUNT,
             )
-            callbacks.get("failure_callback", lambda **_: None)(err_msg=msg)
             raise UserError(msg)
 
         try:
