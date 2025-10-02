@@ -217,7 +217,7 @@ class CorrespondenceS2bGenerator(models.Model):
                                 "res_model": letters._name,
                             },
                         )
-                        for atchmt in self.image_ids
+                        for atchmt in self.image_ids.sorted(reverse=True)
                     ]
                 letters += letters.create(vals)
 
@@ -284,7 +284,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 sponsorship.display_name,
                 (header, ""),  # Headers (front/back)
                 {"Original": [text]},  # Text
-                self.mapped("image_ids.datas"),  # Images
+                self.mapped("image_ids").sorted(reverse=True).mapped("datas"),  # Images
             ),
             text,
         )
