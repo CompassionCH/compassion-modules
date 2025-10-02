@@ -98,12 +98,12 @@
                             <field
                 name="config_id"
                 domain="[('model', '=', model)]"
-                readonly="state == 'done'"
+                readonly="state in ('processing', 'done')"
               />
                             <field name="user_id" readonly="state == 'done'" />
                             <field
                 name="partner_id"
-                readonly="state == 'done'"
+                readonly="state in ('processing', 'done')"
               />
                             <field name="company_id" invisible="1" />
                         </group>
@@ -112,7 +112,7 @@
                             <field
                 name="send_mode"
                 required="1"
-                readonly="state == 'done'"
+                readonly="state in ('processing', 'done')"
               />
                             <field
                 name="email_id"
@@ -131,25 +131,25 @@
                                 <group>
                                     <field
                     name="subject"
-                    readonly="state == 'done' or not id"
+                    readonly="state in ('processing', 'done') or not id"
                   />
                                     <field
                     name="email_from"
-                    readonly="state == 'done' or not id"
+                    readonly="state in ('processing', 'done') or not id"
                     invisible="send_mode not in ('both', 'digital')"
                   />
                                 </group>
                                 <group>
                                     <field
                     name="reply_to"
-                    readonly="state == 'done' or not id"
+                    readonly="state in ('processing', 'done') or not id"
                     invisible="send_mode not in ('both', 'digital')"
                   />
                                 </group>
                                 <field
                   name="body_html"
                   widget="html"
-                  readonly="state == 'done' or not id"
+                  readonly="state in ('processing', 'done') or not id"
                 />
                             </group>
                                 <field
@@ -157,12 +157,12 @@
                 widget="many2many_binary"
                 class="oe_edit_only"
                 nolabel="1"
-                readonly="state == 'done'"
+                readonly="state in ('processing', 'done')"
               />
                                 <field
                 name="ir_attachment_ids"
                 context="{'default_res_model': 'partner.communication.job', 'default_res_id': id}"
-                readonly="state == 'done'"
+                readonly="state in ('processing', 'done')"
               >
                                     <tree create="false" editable="bottom">
                                         <field name="name" />
@@ -178,15 +178,15 @@
                                 <group>
                                     <field
                     name="need_call"
-                    readonly="state == 'done'"
+                    readonly="state in ('processing', 'done')"
                   />
                                     <field
                     name="report_id"
-                    readonly="state == 'done'"
+                    readonly="state in ('processing', 'done')"
                   />
                                     <field
                     name="auto_send"
-                    readonly="state == 'done'"
+                    readonly="state in ('processing', 'done')"
                   />
                                 </group>
                             </group>
