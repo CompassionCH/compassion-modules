@@ -88,14 +88,25 @@
                             <field
                 name="config_id"
                 domain="[('model', '=', model)]"
+                attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
               />
-                            <field name="user_id" />
-                            <field name="partner_id" />
+                            <field
+                name="user_id"
+                attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
+              />
+                            <field
+                name="partner_id"
+                attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
+              />
                             <field name="company_id" invisible="1" />
                         </group>
                         <group>
                             <field name="sent_date" readonly="1" />
-                            <field name="send_mode" required="1" />
+                            <field
+                name="send_mode"
+                required="1"
+                attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
+              />
                             <field
                 name="pdf_page_count"
                 attrs="{'invisible': [('send_mode', '!=', 'physical')]}"
@@ -110,10 +121,15 @@
             role="button"
             aria-expanded="false"
             aria-controls="advancedConfig"
+            attrs="{'invisible': [('state', 'in', ['processing', 'done'])]}"
           >
                         <span>Advanced options</span>
                     </a>
-                    <notebook class="collapse config" id="advancedConfig">
+                    <notebook
+            class="collapse config"
+            id="advancedConfig"
+            attrs="{'invisible': [('state', 'in', ['processing', 'done'])]}"
+          >
                         <page string="Various">
                             <group>
                                 <group>
@@ -125,8 +141,15 @@
                         </page>
                     </notebook>
                     <group>
-                        <field name="subject" />
-                        <field name="body_html" widget="html" />
+                        <field
+              name="subject"
+              attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
+            />
+                        <field
+              name="body_html"
+              widget="html"
+              attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
+            />
                     </group>
                     <group>
                         <field
@@ -138,12 +161,14 @@
               name="ir_attachment_ids"
               context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}"
               mode="kanban"
+              attrs="{'readonly': [('state', 'in', ['processing', 'done'])]}"
             />
                         <field
               name="ir_attachment_tmp"
               widget="many2many_binary"
               string=' '
               class="oe_edit_only"
+              attrs="{'invisible': [('state', 'in', ['processing', 'done'])]}"
             />
                     </group>
                 </sheet>
