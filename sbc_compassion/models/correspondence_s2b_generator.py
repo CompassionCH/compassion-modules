@@ -160,11 +160,12 @@ class CorrespondenceS2bGenerator(models.Model):
         # Check the number of pages
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
         if n_pages > self.MAX_PAGE_COUNT:
-            msg = _("Oops your letter has %d pages. The limit is %d") % (
+            msg = _("Oops your letter has %d pages. The limit is %d.") % (
                 n_pages,
                 self.MAX_PAGE_COUNT,
             )
-            callbacks.get("failure_callback", lambda: None)(err_msg=msg)
+            callbacks.get("failure_callback", lambda **_: None)(err_msg=msg)
+            raise UserError(msg)
 
         try:
             with Image(blob=pdf, resolution=96) as pdf_image:
