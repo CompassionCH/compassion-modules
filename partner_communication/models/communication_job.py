@@ -304,10 +304,9 @@ class CommunicationJob(models.Model):
     @api.depends("config_id", "config_id.email_template_id")
     def _compute_email_template_id(self):
         for job in self:
-            if job.state not in ("processing", "done"):
-                job.email_template_id = job.config_id.email_template_id
-            else:
-                job.email_template_id = job.email_template_id
+            if job.state in ("processing", "done"):
+                continue
+            job.email_template_id = job.config_id.email_template_id
 
     @api.model
     def send_mode_select(self):
