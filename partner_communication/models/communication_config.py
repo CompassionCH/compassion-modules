@@ -9,8 +9,6 @@
 ##############################################################################
 import logging
 
-from memory_profiler import profile
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -202,7 +200,6 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @profile()
     def write(self, vals):
         return super().write(vals)
 
