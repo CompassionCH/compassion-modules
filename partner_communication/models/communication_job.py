@@ -136,7 +136,10 @@ class CommunicationJob(models.Model):
     )
     send_mode = fields.Selection("send_mode_select", index=True)
     email_template_id = fields.Many2one(
-        related="config_id.email_template_id", store=True, readonly=False
+        "mail.template",
+        compute="_compute_email_template_id",
+        store=True,
+        readonly=False,
     )
     email_id = fields.Many2one(
         "mail.mail", "Generated e-mail", readonly=True, index=True, copy=False
@@ -296,6 +299,14 @@ class CommunicationJob(models.Model):
     def _fallback_company(self):
         # Used when company couldn't be found with the partner
         return self.env.company
+
+    @api.depends("config_id", "config_id.email_template_id")
+    def _compute_email_template_id(self):
+        for job in self:
+            if job.state not in ("processing", "done"):
+                job.email_template_id = job.config_id.email_template_id
+            else:
+                job.email_template_id = job.email_template_id
 
     @api.model
     def send_mode_select(self):
