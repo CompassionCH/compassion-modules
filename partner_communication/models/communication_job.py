@@ -16,7 +16,6 @@ from html.parser import HTMLParser
 from io import BytesIO
 
 from jinja2 import TemplateSyntaxError
-from memory_profiler import profile
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import MissingError, QWebException, UserError
@@ -498,7 +497,6 @@ class CommunicationJob(models.Model):
 
         return config
 
-    @profile()
     def write(self, vals):
         object_ids = vals.get("object_ids")
         if isinstance(object_ids, list):
