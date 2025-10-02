@@ -288,7 +288,7 @@ class CommunicationJob(models.Model):
         # Used when company couldn't be found with the partner
         return self.env.company
 
-    @api.depends("config_id", "config_id.email_template_id")
+    @api.depends("config_id")
     def _compute_email_template_id(self):
         for job in self:
             if job.state in ("processing", "done"):

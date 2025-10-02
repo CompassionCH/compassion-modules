@@ -199,7 +199,25 @@ class CommunicationConfig(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def write(self, vals):
-        return super().write(vals)
+        """
+        Override write to handle email_template_id changes efficiently and
+        avoid MemoryError when a config is linked to many jobs.
+        """
+        res = super().write(vals)
+
+        if "email_template_id" in vals:
+            jobs_to_update = self.env["partner.communication.job"].search(
+                [
+                    ("config_id", "in", self.ids),
+                    ("state", "not in", ("processing", "done")),
+                ]
+            )
+            jobs_to_update.write({"email_template_id": vals["email_template_id"]})
+            jobs_to_update.with_delay(
+                priority=500, channel="root.partner_communication"
+            ).refresh_text()
+
+        return res
 
     def get_default_config(self, lang):
         default_config = self.default_config_ids.filtered(lambda c: not c.lang_id)[:1]
