@@ -486,24 +486,30 @@ class CompassionHold(models.Model):
                 }
                 hold.write(hold_vals)
 
-                body = (
-                    "The no money hold for child {local_id} was expiring on "
-                    "{old_expiration} and was extended to {new_expiration} "
-                    "({extension_description} extension).{additional_text}"
-                )
-                hold.message_post(
-                    body=_(body.format(**values)),
-                    subject=_("No money hold extension"),
-                    subtype_xmlid="mail.mt_comment",
-                )
+            # ----------------------------------------------------
+            # NOTIFICATION (Only for SUB_CHILD_HOLD)
+            # ----------------------------------------------------
+            if hold.type == HoldType.SUB_CHILD_HOLD:
+                if hold.child_id.sponsor_id:
+                    body = (
+                        "The no money hold for child {local_id} was expiring on "
+                        "{old_expiration} and was extended to {new_expiration} "
+                        "({extension_description} extension).{additional_text}"
+                    )
+                    hold.message_post(
+                        body=_(body.format(**values)),
+                        subject=_("No money hold extension"),
+                        subtype_xmlid="mail.mt_comment",
+                    )
+                else :
+                    body = _(
+                        "The no money hold for child {local_id} is expiring on "
+                        "{old_expiration} and will not be extended since "
+                        "no sponsorship exists for this child."
+                    )
+                    hold.message_post(body=body.format(**values))
 
-            else:
-                body = _(
-                    "The no money hold for child {local_id} is expiring on "
-                    "{old_expiration} and will not be extended since "
-                    "no sponsorship exists for this child."
-                )
-                hold.message_post(body=body.format(**values))
+
 
     ##########################################################################
     #                              Mapping METHOD                            #
