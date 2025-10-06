@@ -487,9 +487,9 @@ class CompassionHold(models.Model):
                 hold.write(hold_vals)
 
             # ----------------------------------------------------
-            # NOTIFICATION (Only for SUB_CHILD_HOLD)
+            # NOTIFICATION (Only for NO_MONEY_HOLD)
             # ----------------------------------------------------
-            if hold.type == HoldType.SUB_CHILD_HOLD:
+            if hold.type == HoldType.NO_MONEY_HOLD:
                 if hold.child_id.sponsor_id:
                     body = (
                         "The no money hold for child {local_id} was expiring on "
