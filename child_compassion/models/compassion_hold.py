@@ -501,15 +501,13 @@ class CompassionHold(models.Model):
                         subject=_("No money hold extension"),
                         subtype_xmlid="mail.mt_comment",
                     )
-                else :
+                else:
                     body = _(
                         "The no money hold for child {local_id} is expiring on "
                         "{old_expiration} and will not be extended since "
                         "no sponsorship exists for this child."
                     )
                     hold.message_post(body=body.format(**values))
-
-
 
     ##########################################################################
     #                              Mapping METHOD                            #
