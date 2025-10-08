@@ -2,6 +2,7 @@ import re
 
 from odoo import api, models
 from odoo.exceptions import UserError
+from odoo.tools import SQL, Query
 
 regex_order = re.compile(r"^similarity\((.*),.*\)(\s+(desc|asc))?$", re.I)
 
@@ -27,7 +28,7 @@ class ResPartner(models.Model):
                 res = self.search([("email", "ilike", name)] + args, limit=limit)
         else:
             res = self.search(args, limit=limit)
-        return res.display_name
+        return [(record.id, record.display_name) for record in res]
 
     @api.model
     def search(self, domain, offset=0, limit=None, order=None):
@@ -41,26 +42,8 @@ class ResPartner(models.Model):
         if fuzzy_search:
             order = self.env.cr.mogrify(
                 "similarity(res_partner.name, %s) DESC", [fuzzy_search]
-            )
-        if order and isinstance(order, bytes):
-            order = order.decode("utf-8")
-        return super().search(
-            domain, offset=offset, limit=limit, order=order
-        )
-
-    @api.model
-    def _generate_order_by_inner(
-        self, alias, order_spec, query, reverse_direction=False, seen=None
-    ):
-        # Small trick to allow similarity ordering while bypassing odoo checks
-        is_similarity_ordering = regex_order.match(order_spec) if order_spec else False
-        if is_similarity_ordering:
-            order_by_elements = [order_spec]
-        else:
-            order_by_elements = super()._generate_order_by_inner(
-                alias, order_spec, query, reverse_direction, seen
-            )
-        return order_by_elements
+            ).decode("utf-8")
+        return super().search(domain, offset=offset, limit=limit, order=order)
 
     def _check_qorder(self, word):
         """Allow similarity order"""
@@ -70,3 +53,14 @@ class ResPartner(models.Model):
             if not regex_order.match(word):
                 raise
         return True
+
+    def _order_to_sql(
+        self,
+        order: str,
+        query: Query,
+        alias: (str | None) = None,
+        reverse: bool = False,
+    ) -> SQL:
+        if order and regex_order.match(order):
+            return SQL(order)
+        return super()._order_to_sql(order, query, alias, reverse)
