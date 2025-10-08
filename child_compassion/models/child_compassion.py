@@ -560,11 +560,13 @@ class CompassionChild(models.Model):
         action_id = self.env.ref("child_compassion.beneficiaries_details").id
         vals_list = []
         for child in self:
-            vals_list.append({
-                "action_id": action_id,
-                "object_id": child.id,
-                "child_id": child.id,
-            })
+            vals_list.append(
+                {
+                    "action_id": action_id,
+                    "object_id": child.id,
+                    "child_id": child.id,
+                }
+            )
         messages = self.env["gmc.message"].create(vals_list)
         if "failure" in messages.mapped("state"):
             raise UserError(" ".join(messages.mapped("failure_reason")))

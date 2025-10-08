@@ -19,25 +19,25 @@ class ResPartner(models.Model):
             res = self.search([("ref", "like", name)], limit=limit)
             if not res:
                 res = self.search(
-                    ["|", ("name", "%", name), ("name", "ilike", name)],
-                    order="similarity(name, '%s') DESC" % name,
+                    ["|", ("name", "%", name), ("name", "ilike", name)] + args,
                     limit=limit,
                 )
             # Search by e-mail
             if not res:
-                res = self.search([("email", "ilike", name)], limit=limit)
+                res = self.search([("email", "ilike", name)] + args, limit=limit)
         else:
             res = self.search(args, limit=limit)
-        return res.name_get()
+        return res.display_name
 
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
+    def search(self, domain, offset=0, limit=None, order=None):
         """Order search results based on similarity if name search is used."""
         fuzzy_search = False
-        for arg in args:
-            if arg[0] == "name" and arg[1] == "%":
-                fuzzy_search = arg[2]
-                break
+        for arg in domain:
+            if isinstance(arg, list | tuple) and len(arg) == 3:
+                if arg[0] == "name" and arg[1] == "%":
+                    fuzzy_search = arg[2]
+                    break
         if fuzzy_search:
             order = self.env.cr.mogrify(
                 "similarity(res_partner.name, %s) DESC", [fuzzy_search]
@@ -45,7 +45,7 @@ class ResPartner(models.Model):
         if order and isinstance(order, bytes):
             order = order.decode("utf-8")
         return super().search(
-            args, offset=offset, limit=limit, order=order, count=count
+            domain, offset=offset, limit=limit, order=order
         )
 
     @api.model
