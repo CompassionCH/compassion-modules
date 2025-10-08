@@ -28,7 +28,7 @@
 {
     "name": "Partner fuzzy search",
     "summary": "Add fuzzy search on partners",
-    "version": "14.0.1.0.0",
+    "version": "17.0.1.0.0",
     "development_status": "Beta",
     "category": "Partner Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
