@@ -1,0 +1,587 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Compassion Odoo 14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-09 08:25+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.7\n"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_adere
+msgid "Adere"
+msgstr "Adere"
+
+#. module: advanced_translation
+#: model:ir.actions.act_window,name:advanced_translation.action_advanced_translation_view
+#: model:ir.ui.menu,name:advanced_translation.menu_open_advanced_translation
+msgid "Advanced translation"
+msgstr "Avanceret oversættelse"
+
+#. module: advanced_translation
+#: model:ir.model,name:advanced_translation.model_ir_advanced_translation
+msgid "Advanced translation terms"
+msgstr "Avancerede oversættelsestermer"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_amharic
+msgid "Amharic"
+msgstr "Amharisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_aymara
+msgid "Aymara"
+msgstr "Aymara"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_bahasa_indonesia
+msgid "Bahasa Indonesia"
+msgstr "Bahasa Indonesien"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla_2
+msgid "Bangla"
+msgstr "Bangla"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla_ashik
+msgid "Bangla & Achik"
+msgstr "Bangla & Achik"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla
+msgid "Bangla (Bengali)"
+msgstr "Bangla (Bengalsk)"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangali
+msgid "Bengali"
+msgstr "Bengalsk"
+
+#. module: advanced_translation
+#: model:ir.model.fields,help:advanced_translation.field_res_lang_compassion__translatable
+msgid "Can be translated by GP"
+msgstr "Kan oversættes af GP"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_castellano
+msgid "Castellano"
+msgstr "Castellano"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_cebuano
+msgid "Cebuano"
+msgstr "Cebuano"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_visayan
+msgid "Cebuano (Visayan)"
+msgstr "Cebuano (Visayan)"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__code_iso
+msgid "Code Iso"
+msgstr "Iso-kode"
+
+#. module: advanced_translation
+#: model:ir.model,name:advanced_translation.model_res_lang_compassion
+msgid "Compassion language"
+msgstr "Medfølelsens sprog"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__create_uid
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__create_uid
+msgid "Created by"
+msgstr "Oprettet af"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__create_date
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__create_date
+msgid "Created on"
+msgstr "Oprettet den"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_haitien_creole
+msgid "Creole"
+msgstr "Kreolsk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_creole_french
+msgid "Creole And French"
+msgstr "Kreolsk og fransk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_danish
+msgid "Danish"
+msgstr "Dansk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_dioula
+msgid "Dioula"
+msgstr "Dioula"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__display_name
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__display_name
+msgid "Display Name"
+msgstr "Vis navn"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_english
+msgid "English"
+msgstr "Engelsk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_espanol
+msgid "Español"
+msgstr "Español"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_ewe
+msgid "Ewe"
+msgstr "Ewe"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_fanti
+msgid "Fanti"
+msgstr "Fanti"
+
+#. module: advanced_translation
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_field_office__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_household__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_major_revision__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_project__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__correspondence__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__recurring_contract__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__res_partner_title__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__sponsorship_gift__gender__f
+#: model:ir.model.fields.selection,name:advanced_translation.selection__translatable_model__gender__f
+msgid "Female"
+msgstr "Kvinde"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__female_plural
+msgid "Female Plural"
+msgstr "Kvinde i flertal"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__female_singular
+msgid "Female Singular"
+msgstr "Kvinde i ental"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_filipino
+msgid "Filipino"
+msgstr "Filippinsk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_finnish
+msgid "Finnish "
+msgstr "Finsk "
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_french
+msgid "French"
+msgstr "Fransk"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_translatable_model__gender
+msgid "Gender"
+msgstr "Køn"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_german
+msgid "German"
+msgstr "Tysk"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__group
+#: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
+msgid "Group"
+msgstr "Gruppe"
+
+#. module: advanced_translation
+#: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
+msgid "Group By..."
+msgstr "Gruppér efter..."
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_hindi
+msgid "Hindi"
+msgstr "Hindi"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__id
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__id
+msgid "ID"
+msgstr "ID"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_indonesia
+msgid "Indonesia"
+msgstr "Indonesien"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_indonesian
+msgid "Indonesian"
+msgstr "Indonesisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_italian
+msgid "Italian"
+msgstr "Italiensk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_javanese
+msgid "Javanese"
+msgstr "Javanesisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kannada
+msgid "Kannada"
+msgstr "Kannada"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_karen
+msgid "Karen"
+msgstr "Karen"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_karonese
+msgid "Karonese"
+msgstr "Karonesisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kembatigna
+msgid "Kembatigna"
+msgstr "Kembatigna"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kichua
+msgid "Kichua"
+msgstr "Kichua"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kinyarwanda
+msgid "Kinyarwanda"
+msgstr "Kinyarwanda"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kiswahili
+msgid "Kiswahili"
+msgstr "Kiswahili"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_krobo
+msgid "Krobo"
+msgstr "Krobo"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_kunyarwanda
+msgid "Kunyarwanda"
+msgstr "Kunyarwanda"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_lahu
+msgid "Lahu"
+msgstr "Lahu"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__lang
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__lang_id
+msgid "Lang"
+msgstr "Lang"
+
+#. module: advanced_translation
+#: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
+msgid "Language"
+msgstr "Sprog"
+
+#. module: advanced_translation
+#: model:ir.model,name:advanced_translation.model_langdetect
+msgid "Language detection with langdetect"
+msgstr "Sprogregistrering med langdetect"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__write_uid
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__write_uid
+msgid "Last Updated by"
+msgstr "Sidst opdateret af"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__write_date
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__write_date
+msgid "Last Updated on"
+msgstr "Sidst opdateret den"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_maa
+msgid "Maa"
+msgstr "Maa"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_maasai
+msgid "Maasai"
+msgstr "Maasaier"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_malayalam
+msgid "Malayalam"
+msgstr "Malayalam"
+
+#. module: advanced_translation
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_field_office__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_household__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_major_revision__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_project__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__correspondence__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__recurring_contract__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__res_partner_title__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__sponsorship_gift__gender__m
+#: model:ir.model.fields.selection,name:advanced_translation.selection__translatable_model__gender__m
+msgid "Male"
+msgstr "Mand"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__male_plural
+msgid "Male Plural"
+msgstr "Mand i flertal"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__male_singular
+msgid "Male Singular"
+msgstr "Mand i ental"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_mandi
+msgid "Mandi"
+msgstr "Mandi"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_mazahua
+msgid "Mazahua"
+msgstr "Mazahua"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_moore
+msgid "Moore"
+msgstr "Moore"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_more
+msgid "More"
+msgstr "Mere om det"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_nahuatl
+msgid "Nahuatl"
+msgstr "Nahuatl"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__name
+msgid "Name"
+msgstr "Navn"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_norwegian
+msgid "Norwegian"
+msgstr "Norsk"
+
+#. module: advanced_translation
+#: model:ir.model,name:advanced_translation.model_ocr
+msgid "Optical character recognition with Tesseract"
+msgstr "Optisk tegngenkendelse med Tesseract"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_oriya
+msgid "Oriya"
+msgstr "Oriya"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_oromiffa
+msgid "Oromiffa"
+msgstr "Oromiffa"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_oromo
+msgid "Oromo"
+msgstr "Oromo"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_portuguese
+msgid "Portuguese"
+msgstr "Portugisisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_portuguese_2
+msgid "Português"
+msgstr "Portugisisk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_quechi
+msgid "Q'uechi"
+msgstr "Q'uechi"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_quechua
+msgid "Quechua"
+msgstr "Quechua"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_qichua
+msgid "Quichua"
+msgstr "Quichua"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_samarenyo
+msgid "Samarenyo"
+msgstr "Samarenyo"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_santal
+msgid "Santal"
+msgstr "Santal"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_santali
+msgid "Santali"
+msgstr "Santali"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_sidamigna
+msgid "Sidamigna"
+msgstr "Sidamigna"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_sinhala
+msgid "Sinhala"
+msgstr "Sinhala"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__src
+msgid "Source"
+msgstr "Kilde"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_spanish
+msgid "Spanish"
+msgstr "Spansk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_swahil
+msgid "Swahil"
+msgstr "Swahil"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_swahili
+msgid "Swahili"
+msgstr "Swahili"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_swedish
+msgid "Swedish"
+msgstr "Svensk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tagalog
+msgid "Tagalog"
+msgstr "Tagalog"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tamil
+msgid "Tamil"
+msgstr "Tamilsk"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_telegu
+msgid "Telegu"
+msgstr "Telegu"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_thai
+msgid "Thai"
+msgstr "Thai"
+
+#. module: advanced_translation
+#: model:ir.model.constraint,message:advanced_translation.constraint_ir_advanced_translation_unique_term
+msgid "The term already exists"
+msgstr "Udtrykket findes allerede"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tigrigna
+msgid "Tigrigna"
+msgstr "Tigrigna"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_toraja
+msgid "Toraja"
+msgstr "Toraja"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_totonaco
+msgid "Totonaco"
+msgstr "Totonaco"
+
+#. module: advanced_translation
+#: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__translatable
+msgid "Translatable"
+msgstr "Oversættelig"
+
+#. module: advanced_translation
+#: model:ir.model,name:advanced_translation.model_translatable_model
+msgid "Translatable Model"
+msgstr "Oversættelig model"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tugen
+msgid "Tugen"
+msgstr "Tugen"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_twi
+msgid "Twi"
+msgstr "Twi"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tzeltal
+msgid "Tzeltal"
+msgstr "Tzeltal"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_tzotzil
+msgid "Tzotzil"
+msgstr "Tzotzil"
+
+#. module: advanced_translation
+#. odoo-python
+#: code:addons/advanced_translation/models/translatable_model.py:0
+#, python-format
+msgid "Unknown"
+msgstr "Ukendt"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_wassa_twi
+msgid "Wassa Twi"
+msgstr "Wassa Twi"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_wolaitigna
+msgid "Wolaitigna"
+msgstr "Wolaitigna"
+
+#. module: advanced_translation
+#: model:res.lang.compassion,name:advanced_translation.lang_compassion_zapoteco
+msgid "Zapoteco"
+msgstr "Zapoteco"
+
+#. module: advanced_translation
+#. odoo-python
+#: code:addons/advanced_translation/models/translatable_model.py:0
+#, python-format
+msgid "and"
+msgstr "og"

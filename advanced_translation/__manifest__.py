@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Advanced Translation",
-    "version": "17.0.1.0.1",
+    "version": "17.0.1.0.2",
     "category": "Other",
     "sequence": 150,
     "author": "Compassion CH",
