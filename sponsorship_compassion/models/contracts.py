@@ -623,10 +623,6 @@ class SponsorshipContract(models.Model):
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
 
-        if old_partners:
-            self.mapped("partner_id").update_number_sponsorships()
-            old_partners.update_number_sponsorships()
-
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
             for sponsorship in self.filtered("parent_id"):
@@ -675,7 +671,6 @@ class SponsorshipContract(models.Model):
             sponsorship.hold_id.state = "expired"
             sponsorship.child_id.hold_id = False
         # Force refresh some fields in case they are not in sync
-        self.mapped("partner_id").update_number_sponsorships()
         self._compute_active()
         return True
 
@@ -684,7 +679,6 @@ class SponsorshipContract(models.Model):
         self.write(
             {"gmc_correspondent_commitment_id": vals["gmc_correspondent_commitment_id"]}
         )
-        self.correspondent_id.update_number_sponsorships()
         return True
 
     def cancel_sent(self, vals):
@@ -827,7 +821,6 @@ class SponsorshipContract(models.Model):
                 gift_contracts.contract_active()
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
-        partners.update_number_sponsorships()
         # Creating the messages to send to GMC when a sponsorship is activated
         for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST):
             # Define the payer that will be sync to gmc
@@ -1001,7 +994,6 @@ class SponsorshipContract(models.Model):
                 + error_message,
             )
 
-        self.correspondent_id.update_number_sponsorships()
         return True, ""
 
     def _on_sponsorship_finished(self):
@@ -1044,8 +1036,6 @@ class SponsorshipContract(models.Model):
                     ]
                 ).unlink()
                 sponsorship.state = "cancelled"
-        partners = self.mapped("partner_id") | self.mapped("correspondent_id")
-        partners.update_number_sponsorships()
 
     def _link_unlink_child_to_sponsor(self, vals):
         """Link/unlink child to sponsor"""

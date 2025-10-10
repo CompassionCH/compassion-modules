@@ -67,7 +67,12 @@ class ResPartner(models.Model):
     unrec_items = fields.Integer(compute="_compute_count_items")
     receivable_items = fields.Integer(compute="_compute_count_items")
     has_sponsorships = fields.Boolean()
-    number_sponsorships = fields.Integer(string="Number of sponsorships", copy=False)
+    number_sponsorships = fields.Integer(
+        string="Number of sponsorships",
+        compute="_compute_number_sponsorships",
+        search="_search_number_sponsorships",
+        copy=False,
+    )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
         "compassion.child",
@@ -160,13 +165,58 @@ class ResPartner(models.Model):
                 [("partner_id", "=", partner.id), ("account_id.code", "=", "1050")]
             )
 
-    def update_number_sponsorships(self):
+    def _compute_number_sponsorships(self):
         for partner in self:
+            active_sponsorship_domain = [
+                "|",
+                ("partner_id", "=", partner.id),
+                ("correspondent_id", "=", partner.id),
+                ("activation_date", "!=", False),
+                ("state", "not in", ["cancelled", "terminated"]),
+                ("child_id", "!=", False),
+            ]
             partner.number_sponsorships = self.env["recurring.contract"].search_count(
-                partner._get_active_sponsorships_domain()
+                active_sponsorship_domain
             )
             partner.has_sponsorships = partner.number_sponsorships
         return True
+
+    def _search_number_sponsorships(self, operator, value):
+        """
+        This method translates a search on the non-stored 'number_sponsorships'
+        field into a valid database query using a LEFT JOIN.
+
+        NOTE: This method counts unique contracts, not total involvements.
+        """
+        # 1. Securely validate the operator to prevent SQL injection.
+        if operator not in ("=", "!=", "<", ">", "<=", ">="):
+            raise ValueError("Invalid operator: %s" % operator)
+
+        # 2. Build the query using LEFT JOIN.
+        #    - Conditions on 'c' are in the ON clause.
+        #    - COUNT(c.id) correctly handles partners with 0 contracts.
+        #    - %%s is used to escape the '%' for the value placeholder.
+        query = """
+            SELECT
+                p.id
+            FROM
+                res_partner p
+            LEFT JOIN recurring_contract c
+                ON p.id IN (c.partner_id, c.correspondent_id)
+                AND c.state NOT IN ('cancelled', 'terminated')
+                AND c.activation_date IS NOT NULL
+                AND c.child_id IS NOT NULL
+            GROUP BY
+                p.id
+            HAVING
+                COUNT(c.id) {} %s
+        """.format(operator)
+        # 3. Execute the query with the value as a safe parameter.
+        self._cr.execute(query, (value,))
+        partner_ids = [res[0] for res in self._cr.fetchall()]
+
+        # 4. Return a valid Odoo domain.
+        return [("id", "in", partner_ids)]
 
     @api.depends("category_id", "member_ids")
     def _compute_is_church(self):
@@ -229,9 +279,6 @@ class ResPartner(models.Model):
         if "firstname" in vals and "preferred_name" not in vals:
             vals["preferred_name"] = vals["firstname"]
         res = super().write(vals)
-
-        if "church_id" in vals:
-            self.mapped("church_id").update_number_sponsorships()
 
         notify_vals = [
             "firstname",
