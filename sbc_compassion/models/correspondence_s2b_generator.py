@@ -144,9 +144,9 @@ class CorrespondenceS2bGenerator(models.Model):
                 domain.append(month_select)
             self.selection_domain = str(domain)
 
-    def preview(self, **callbacks):
+    def preview(self, s2b_generator = None):
         """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1], **callbacks)[0]
+        pdf = self._get_pdf(self.sponsorship_ids[:1], s2b_generator = s2b_generator)[0]
         if self.template_id.layout == "CH-A-3S01-1":
             # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
@@ -159,11 +159,15 @@ class CorrespondenceS2bGenerator(models.Model):
         # Check the number of pages
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
         if n_pages > self.MAX_PAGE_COUNT:
-            msg = _("Oops your letter has %d pages. The limit is %d") % (
+            error_message = _("Oops your letter has %d pages. The limit is %d") % (
                 n_pages,
                 self.MAX_PAGE_COUNT,
             )
-            callbacks.get("failure_callback", lambda: None)(err_msg=msg)
+            if s2b_generator:
+                s2b_generator.generation_status = "failed"
+                s2b_generator.generation_status = error_message
+                s2b_generator.env.cr.commit()
+
 
         # Check the number of pages
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
@@ -298,7 +302,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
         return text
 
-    def _get_pdf(self, sponsorship, **callbacks):
+    def _get_pdf(self, sponsorship, s2b_generator = None):
         """Generates a PDF given a sponsorship."""
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
@@ -318,7 +322,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 (header, ""),  # Headers (front/back)
                 {"Original": [text]},  # Text
                 self.mapped("image_ids").sorted(reverse=True).mapped("datas"),  # Images
-                **callbacks,
+                s2b_generator = s2b_generator
             ),
             text,
         )

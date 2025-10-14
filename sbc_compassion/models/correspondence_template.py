@@ -113,7 +113,7 @@ class CorrespondenceTemplate(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def generate_pdf(
-        self, pdf_name, header, text, image_data, background_list=None, **callbacks
+        self, pdf_name, header, text, image_data, background_list=None,s2b_generator = None
     ):
         """
         Generate a pdf file
@@ -147,7 +147,13 @@ class CorrespondenceTemplate(models.Model):
         )
         image_list = []
 
-        callbacks.get("apply_template_callback", lambda: None)()
+
+        if s2b_generator:
+            s2b_generator.generation_status = "apply_template"
+            s2b_generator.env.cr.commit()
+
+
+
 
         if background_list:
             # An original document is provided. We want
@@ -185,7 +191,11 @@ class CorrespondenceTemplate(models.Model):
                 text_list.append(text_box.get_json_repr())
             overflow_template = [add_background.name, header_data, text_list, []]
 
-        callbacks.get("apply_text_callback", lambda: None)()
+        if s2b_generator:
+            s2b_generator.generation_status = "apply_text"
+            s2b_generator.env.cr.commit()
+
+
         text_list = []
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
@@ -197,7 +207,10 @@ class CorrespondenceTemplate(models.Model):
                 temp_img.append(txt_file)
                 text_list.append([txt_file.name, t_type])
 
-        callbacks.get("apply_img_callback", lambda: None)()
+        if s2b_generator:
+            s2b_generator.generation_status = "apply_images"
+            s2b_generator.env.cr.commit()
+
 
         for image in image_data:
             ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
@@ -222,7 +235,10 @@ class CorrespondenceTemplate(models.Model):
         std_err_file_path = self.path_to("stderr.txt")
         std_err_file = open(std_err_file_path, "w", encoding="utf-8")
 
-        callbacks.get("generating_pdf_callback", lambda: None)()
+        if s2b_generator:
+            s2b_generator.generation_status = "generate_pdf"
+            s2b_generator.env.cr.commit()
+
 
         php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
         if config.get("php_debug"):
