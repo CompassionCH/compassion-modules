@@ -14,7 +14,7 @@ from io import BytesIO
 from wand.exceptions import PolicyError
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -144,71 +144,59 @@ class CorrespondenceS2bGenerator(models.Model):
                 domain.append(month_select)
             self.selection_domain = str(domain)
 
-    def preview(self, s2b_generator = None):
+    def preview(self):
         """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1], s2b_generator = s2b_generator)[0]
+        pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
+
         if self.template_id.layout == "CH-A-3S01-1":
-            # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
             output_pdf = PdfFileWriter()
-            out_data = BytesIO()
             output_pdf.addPage(in_pdf.getPage(1))
+            out_data = BytesIO()
             output_pdf.write(out_data)
-            out_data.seek(0)
-            pdf = out_data.read()
-        # Check the number of pages
+            pdf = out_data.getvalue()
+
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
         if n_pages > self.MAX_PAGE_COUNT:
-            error_message = _("Oops your letter has %d pages. The limit is %d") % (
-                n_pages,
-                self.MAX_PAGE_COUNT,
+            return self.write(
+                {
+                    "generation_status": "failed",
+                    "generation_error_message": _(
+                        "Oops your letter has %d pages. The limit is %d"
+                    )
+                    % (n_pages, self.MAX_PAGE_COUNT),
+                }
             )
-            if s2b_generator:
-                s2b_generator.generation_status = "failed"
-                s2b_generator.generation_status = error_message
-                s2b_generator.env.cr.commit()
-
-
-        # Check the number of pages
-        n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
-        if n_pages > self.MAX_PAGE_COUNT:
-            msg = _("Oops your letter has %d pages. The limit is %d.") % (
-                n_pages,
-                self.MAX_PAGE_COUNT,
-            )
-            raise UserError(msg)
 
         try:
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-        except PolicyError as error:
-            _logger.error(
-                "ImageMagick policy error. Please add following line to "
-                "/etc/Image-Magick-<version>/policy.xml: "
-                '<policy domain="coder" rights="read|write" '
-                'pattern="PDF" />',
-            )
-            raise UserError(
+        except (PolicyError, TypeError) as error:
+            error_message = (
                 _(
-                    "Please allow ImageMagick to write PDF files."
-                    " Ask an IT admin for help."
+                    "Please allow ImageMagick to write PDF files. "
+                    "Ask an IT admin for help."
                 )
-            ) from error
-        except TypeError as error:
-            raise UserError(
-                _(
+                if isinstance(error, PolicyError)
+                else _(
                     "There was an error while generating the PDF of the letter. "
                     "Please check FPDF logs for more information."
                 )
-            ) from error
-
-        pdf_image = base64.b64encode(pdf)
+            )
+            return self.write(
+                {
+                    "generation_status": "failed",
+                    "generation_error_message": error_message,
+                }
+            )
 
         return self.write(
             {
                 "state": "preview",
+                "generation_status": "done",
+                "generation_error_message": False,
                 "preview_image": preview,
-                "preview_pdf": pdf_image,
+                "preview_pdf": base64.b64encode(pdf),
             }
         )
 
@@ -221,6 +209,7 @@ class CorrespondenceS2bGenerator(models.Model):
         Launch S2B Creation job
         :return: True
         """
+        self.generation_status = "finalizing"
         self.with_delay(
             identity_key="s2b_generator." + str(self.ids)
         ).generate_letters_job()
@@ -264,11 +253,24 @@ class CorrespondenceS2bGenerator(models.Model):
             # If the operation succeeds, notify the user
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
-            return self.write({"state": "done", "date": fields.Datetime.now()})
+            return self.write(
+                {
+                    "state": "done",
+                    "date": fields.Datetime.now(),
+                    "generation_status": "done",
+                    "generation_error_message": False,
+                }
+            )
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
             error_message = str(error)
+            self.write(
+                {
+                    "generation_status": "failed",
+                    "generation_error_message": error_message,
+                }
+            )
             self.env.user.notify_danger(message=error_message)
 
         return True
@@ -302,7 +304,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
         return text
 
-    def _get_pdf(self, sponsorship, s2b_generator = None):
+    def _get_pdf(self, sponsorship):
         """Generates a PDF given a sponsorship."""
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
@@ -322,7 +324,17 @@ class CorrespondenceS2bGenerator(models.Model):
                 (header, ""),  # Headers (front/back)
                 {"Original": [text]},  # Text
                 self.mapped("image_ids").sorted(reverse=True).mapped("datas"),  # Images
-                s2b_generator = s2b_generator
+                s2b_generator=self,
             ),
             text,
         )
+
+    def update_generation_status(self, status):
+        """Use a separate transaction to update the status of the generation."""
+        if len(self) != 1:
+            return False
+        with self.env.registry.cursor() as new_cr:
+            new_env = self.env(cr=new_cr)
+            new_s2b_generator = new_env[self._name].browse(self.id)
+            new_s2b_generator.generation_status = status
+        return True
