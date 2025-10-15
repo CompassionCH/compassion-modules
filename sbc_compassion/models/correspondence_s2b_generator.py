@@ -337,4 +337,5 @@ class CorrespondenceS2bGenerator(models.Model):
             new_env = self.env(cr=new_cr)
             new_s2b_generator = new_env[self._name].browse(self.id)
             new_s2b_generator.generation_status = status
+            new_cr.commit()
         return True
