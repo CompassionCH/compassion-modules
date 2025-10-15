@@ -14,7 +14,7 @@ from io import BytesIO
 from wand.exceptions import PolicyError
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError,UserError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -158,15 +158,11 @@ class CorrespondenceS2bGenerator(models.Model):
 
         n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
         if n_pages > self.MAX_PAGE_COUNT:
-            return self.write(
-                {
-                    "generation_status": "failed",
-                    "generation_error_message": _(
-                        "Oops your letter has %d pages. The limit is %d"
-                    )
-                    % (n_pages, self.MAX_PAGE_COUNT),
-                }
-            )
+            msg = _("Oops your letter has %d pages. The limit is %d.") % (
+                n_pages,
+                self.MAX_PAGE_COUNT)
+
+            raise UserError(msg)
 
         try:
             with Image(blob=pdf, resolution=96) as pdf_image:
@@ -329,7 +325,7 @@ class CorrespondenceS2bGenerator(models.Model):
             text,
         )
 
-    def update_generation_status(self, status):
+    def update_generation_status(self, status, generation_error_message=None):
         """Use a separate transaction to update the status of the generation."""
         if len(self) != 1:
             return False
@@ -337,5 +333,7 @@ class CorrespondenceS2bGenerator(models.Model):
             new_env = self.env(cr=new_cr)
             new_s2b_generator = new_env[self._name].browse(self.id)
             new_s2b_generator.generation_status = status
+            if generation_error_message:
+                new_s2b_generator.generation_error_message = generation_error_message
             new_cr.commit()
         return True
