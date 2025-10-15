@@ -14,7 +14,7 @@ from io import BytesIO
 from wand.exceptions import PolicyError
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError,UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -160,7 +160,8 @@ class CorrespondenceS2bGenerator(models.Model):
         if n_pages > self.MAX_PAGE_COUNT:
             msg = _("Oops your letter has %d pages. The limit is %d.") % (
                 n_pages,
-                self.MAX_PAGE_COUNT)
+                self.MAX_PAGE_COUNT,
+            )
 
             raise UserError(msg)
 
