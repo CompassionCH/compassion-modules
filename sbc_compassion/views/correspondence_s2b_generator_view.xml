@@ -25,6 +25,7 @@
               icon="fa-search-plus"
               class="oe_stat_button"
               states="draft"
+              context="{'raise_error': True}"
             />
                             <button
               name="edit"

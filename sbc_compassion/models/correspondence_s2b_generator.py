@@ -146,56 +146,58 @@ class CorrespondenceS2bGenerator(models.Model):
 
     def preview(self):
         """Generate a picture for preview."""
-        pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
-
-        if self.template_id.layout == "CH-A-3S01-1":
-            in_pdf = PdfFileReader(BytesIO(pdf))
-            output_pdf = PdfFileWriter()
-            output_pdf.addPage(in_pdf.getPage(1))
-            out_data = BytesIO()
-            output_pdf.write(out_data)
-            pdf = out_data.getvalue()
-
-        n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
-        if n_pages > self.MAX_PAGE_COUNT:
-            msg = _("Oops your letter has %d pages. The limit is %d.") % (
-                n_pages,
-                self.MAX_PAGE_COUNT,
-            )
-
-            raise UserError(msg)
-
         try:
+            pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
+
+            if self.template_id.layout == "CH-A-3S01-1":
+                in_pdf = PdfFileReader(BytesIO(pdf))
+                output_pdf = PdfFileWriter()
+                output_pdf.addPage(in_pdf.getPage(1))
+                out_data = BytesIO()
+                output_pdf.write(out_data)
+                pdf = out_data.getvalue()
+
+            n_pages = PdfFileReader(BytesIO(pdf)).getNumPages()
+            if n_pages > self.MAX_PAGE_COUNT:
+                msg = _("Oops your letter has %d pages. The limit is %d.") % (
+                    n_pages,
+                    self.MAX_PAGE_COUNT,
+                )
+
+                raise UserError(msg)
+
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-        except (PolicyError, TypeError) as error:
+                return self.write(
+                    {
+                        "state": "preview",
+                        "generation_status": "done",
+                        "generation_error_message": False,
+                        "preview_image": preview,
+                        "preview_pdf": base64.b64encode(pdf),
+                    }
+                )
+
+        except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
                 _(
-                    "Please allow ImageMagick to write PDF files. "
-                    "Ask an IT admin for help."
+                    "Unfortunately the server cannot generate PDF documents "
+                    "at the moment. Our IT team is informed and will fix this issue "
+                    "as soon as possible."
                 )
                 if isinstance(error, PolicyError)
+                else error.message
+                if isinstance(error, UserError)
                 else _(
                     "There was an error while generating the PDF of the letter. "
                     "Please check FPDF logs for more information."
                 )
             )
-            return self.write(
-                {
-                    "generation_status": "failed",
-                    "generation_error_message": error_message,
-                }
-            )
-
-        return self.write(
-            {
-                "state": "preview",
-                "generation_status": "done",
-                "generation_error_message": False,
-                "preview_image": preview,
-                "preview_pdf": base64.b64encode(pdf),
-            }
-        )
+            _logger.error("Unable to generate PDF", exc_info=True)
+            if self.env.context.get("raise_error"):
+                raise UserError(error_message) from error
+            self.env.cr.rollback()
+            self.update_generation_status("failed", error_message)
 
     def edit(self):
         """Generate a picture for preview."""
@@ -261,15 +263,9 @@ class CorrespondenceS2bGenerator(models.Model):
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
+            self.env.cr.rollback()
             error_message = str(error)
-            self.write(
-                {
-                    "generation_status": "failed",
-                    "generation_error_message": error_message,
-                }
-            )
-            self.env.user.notify_danger(message=error_message)
-
+            self.update_generation_status("failed", error_message)
         return True
 
     def open_letters(self):
