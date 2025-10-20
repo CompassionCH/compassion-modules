@@ -186,7 +186,7 @@ class CorrespondenceS2bGenerator(models.Model):
                     "as soon as possible."
                 )
                 if isinstance(error, PolicyError)
-                else error.message
+                else str(error)
                 if isinstance(error, UserError)
                 else _(
                     "There was an error while generating the PDF of the letter. "
