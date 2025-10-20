@@ -165,18 +165,17 @@ class CorrespondenceS2bGenerator(models.Model):
                 )
 
                 raise UserError(msg)
-
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-                return self.write(
-                    {
-                        "state": "preview",
-                        "generation_status": "done",
-                        "generation_error_message": False,
-                        "preview_image": preview,
-                        "preview_pdf": base64.b64encode(pdf),
-                    }
-                )
+
+                with self.env.registry.cursor() as new_cr:
+                    new_env = self.env(cr=new_cr)
+                    new_s2b_generator = new_env[self._name].browse(self.id)
+                    new_s2b_generator.state = "preview"
+                    new_s2b_generator.preview_image = preview
+                    new_s2b_generator.preview_pdf = base64.b64encode(pdf)
+                    # Ensure atomicity
+                    new_cr.commit()
 
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
@@ -186,7 +185,7 @@ class CorrespondenceS2bGenerator(models.Model):
                     "as soon as possible."
                 )
                 if isinstance(error, PolicyError)
-                else error.message
+                else str(error)
                 if isinstance(error, UserError)
                 else _(
                     "There was an error while generating the PDF of the letter. "
@@ -252,14 +251,17 @@ class CorrespondenceS2bGenerator(models.Model):
             # If the operation succeeds, notify the user
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
-            return self.write(
-                {
-                    "state": "done",
-                    "date": fields.Datetime.now(),
-                    "generation_status": "done",
-                    "generation_error_message": False,
-                }
-            )
+
+            # Update state to done
+            with self.env.registry.cursor() as new_cr:
+                new_env = self.env(cr=new_cr)
+                new_s2b_generator = new_env[self._name].browse(self.id)
+                new_s2b_generator.state = "done"
+                new_s2b_generator.date = fields.Datetime.now()
+                # Ensure atomicity
+                new_cr.commit()
+
+                return True
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
