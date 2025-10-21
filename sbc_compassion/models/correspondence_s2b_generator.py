@@ -165,18 +165,20 @@ class CorrespondenceS2bGenerator(models.Model):
                 )
 
                 raise UserError(msg)
-
+            self.update_generation_status("done", False)
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-                return self.write(
-                    {
-                        "state": "preview",
-                        "generation_status": "done",
-                        "generation_error_message": False,
-                        "preview_image": preview,
-                        "preview_pdf": base64.b64encode(pdf),
-                    }
-                )
+
+                with self.env.registry.cursor() as new_cr:
+                    new_env = self.env(cr=new_cr)
+                    new_s2b_generator = new_env[self._name].browse(self.id)
+                    new_s2b_generator.state = "preview"
+                    new_s2b_generator.preview_image = preview
+                    new_s2b_generator.preview_pdf = base64.b64encode(pdf)
+
+                    new_cr.commit()
+
+                self.update_generation_status("done", False)
 
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
@@ -252,14 +254,16 @@ class CorrespondenceS2bGenerator(models.Model):
             # If the operation succeeds, notify the user
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
-            return self.write(
-                {
-                    "state": "done",
-                    "date": fields.Datetime.now(),
-                    "generation_status": "done",
-                    "generation_error_message": False,
-                }
-            )
+
+            with self.env.registry.cursor() as new_cr:
+                new_env = self.env(cr=new_cr)
+                new_s2b_generator = new_env[self._name].browse(self.id)
+                new_s2b_generator.state = "done"
+                new_s2b_generator.date = fields.Datetime.now()
+                new_s2b_generator.generation_status = "done"
+                new_cr.commit()
+
+                return
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
