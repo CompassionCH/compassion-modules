@@ -261,7 +261,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 # Ensure atomicity
                 new_cr.commit()
 
-                return
+                return True
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
