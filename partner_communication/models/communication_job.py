@@ -679,7 +679,7 @@ class CommunicationJob(models.Model):
         template = jobs.mapped("email_template_id")
         if len(template) > 1:
             raise UserError(_("This is only possible for one template at time"))
-        values = template.with_context(template_preview_lang=lang).generate_email(
+        values = template.with_context(template_preview_lang=lang)._generate_template(
             jobs.ids, ["body_html", "subject"]
         )
         for job, vals in zip(jobs, values.values(), strict=True):
