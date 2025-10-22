@@ -174,7 +174,6 @@ class CorrespondenceS2bGenerator(models.Model):
                     new_s2b_generator.state = "preview"
                     new_s2b_generator.preview_image = preview
                     new_s2b_generator.preview_pdf = base64.b64encode(pdf)
-                    new_s2b_generator.preview_pdf = base64.b64encode(pdf)
                     # Ensure atomicity
                     new_cr.commit()
 
