@@ -165,7 +165,6 @@ class CorrespondenceS2bGenerator(models.Model):
                 )
 
                 raise UserError(msg)
-            self.update_generation_status("done", False)
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
@@ -175,10 +174,10 @@ class CorrespondenceS2bGenerator(models.Model):
                     new_s2b_generator.state = "preview"
                     new_s2b_generator.preview_image = preview
                     new_s2b_generator.preview_pdf = base64.b64encode(pdf)
+                    new_s2b_generator.generation_status = "done"
 
                     new_cr.commit()
 
-                self.update_generation_status("done", False)
 
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
