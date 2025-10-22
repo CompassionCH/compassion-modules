@@ -174,10 +174,9 @@ class CorrespondenceS2bGenerator(models.Model):
                     new_s2b_generator.state = "preview"
                     new_s2b_generator.preview_image = preview
                     new_s2b_generator.preview_pdf = base64.b64encode(pdf)
-                    new_s2b_generator.generation_status = "done"
-
+                    new_s2b_generator.preview_pdf = base64.b64encode(pdf)
+                    # Ensure atomicity
                     new_cr.commit()
-
 
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
@@ -254,12 +253,13 @@ class CorrespondenceS2bGenerator(models.Model):
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
 
+            # Update state to done
             with self.env.registry.cursor() as new_cr:
                 new_env = self.env(cr=new_cr)
                 new_s2b_generator = new_env[self._name].browse(self.id)
                 new_s2b_generator.state = "done"
                 new_s2b_generator.date = fields.Datetime.now()
-                new_s2b_generator.generation_status = "done"
+                # Ensure atomicity
                 new_cr.commit()
 
                 return
