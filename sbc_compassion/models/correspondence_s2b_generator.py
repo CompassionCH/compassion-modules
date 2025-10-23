@@ -168,15 +168,17 @@ class CorrespondenceS2bGenerator(models.Model):
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
-                with self.env.registry.cursor() as new_cr:
-                    new_env = self.env(cr=new_cr)
-                    new_s2b_generator = new_env[self._name].browse(self.id)
-                    new_s2b_generator.state = "preview"
-                    new_s2b_generator.preview_image = preview
-                    new_s2b_generator.preview_pdf = base64.b64encode(pdf)
-                    # Ensure atomicity
-                    new_cr.commit()
 
+
+                return self.write(
+                    {
+                        "state": "preview",
+                        "generation_status": "done",
+                        "generation_error_message": False,
+                        "preview_image": preview,
+                        "preview_pdf": base64.b64encode(pdf),
+                    }
+                )
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
                 _(
@@ -253,15 +255,13 @@ class CorrespondenceS2bGenerator(models.Model):
             self.env.user.notify_success(message=message)
 
             # Update state to done
-            with self.env.registry.cursor() as new_cr:
-                new_env = self.env(cr=new_cr)
-                new_s2b_generator = new_env[self._name].browse(self.id)
-                new_s2b_generator.state = "done"
-                new_s2b_generator.date = fields.Datetime.now()
-                # Ensure atomicity
-                new_cr.commit()
 
-                return True
+            self.state = "done"
+            self.date = fields.Datetime.now()
+                # Ensure atomicity
+            self.env.cr.commit()
+
+            return True
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
@@ -328,11 +328,10 @@ class CorrespondenceS2bGenerator(models.Model):
         """Use a separate transaction to update the status of the generation."""
         if len(self) != 1:
             return False
-        with self.env.registry.cursor() as new_cr:
-            new_env = self.env(cr=new_cr)
-            new_s2b_generator = new_env[self._name].browse(self.id)
-            new_s2b_generator.generation_status = status
-            if generation_error_message:
-                new_s2b_generator.generation_error_message = generation_error_message
-            new_cr.commit()
+
+
+        self.generation_status = status
+        if generation_error_message:
+            new_s2b_generator.generation_error_message = generation_error_message
+        self.env.cr.commit()
         return True
