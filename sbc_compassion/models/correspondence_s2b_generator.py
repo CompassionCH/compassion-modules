@@ -171,6 +171,8 @@ class CorrespondenceS2bGenerator(models.Model):
                 return self.isolated_write(
                     {
                         "state": "preview",
+                        "generation_status": "done",
+                        "generation_error_message": False,
                         "preview_image": preview,
                         "preview_pdf": base64.b64encode(pdf),
                     }
@@ -260,6 +262,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 {
                     "state": "done",
                     "date": fields.Datetime.now(),
+                    "generation_status": "done",
                     "generation_error_message": False,
                 }
             )
