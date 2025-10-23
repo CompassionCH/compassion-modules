@@ -169,10 +169,11 @@ class ResPartner(models.Model):
 
     def _compute_number_sponsorships(self):
         for partner in self:
+            church_members = partner.member_ids
             active_sponsorship_domain = [
                 "|",
-                ("partner_id", "=", partner.id),
-                ("correspondent_id", "=", partner.id),
+                ("partner_id", "in", (partner + church_members).ids),
+                ("correspondent_id", "in", (partner + church_members).ids),
                 ("activation_date", "!=", False),
                 ("state", "not in", ["cancelled", "terminated"]),
                 ("child_id", "!=", False),
