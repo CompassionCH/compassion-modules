@@ -168,15 +168,15 @@ class CorrespondenceS2bGenerator(models.Model):
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
-                return self.write(
+                self.isolated_write({"generation_status": "done"})
+                return self.isolated_write(
                     {
                         "state": "preview",
-                        "generation_status": "done",
-                        "generation_error_message": False,
                         "preview_image": preview,
                         "preview_pdf": base64.b64encode(pdf),
                     }
                 )
+                return
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
                 _(
@@ -196,7 +196,12 @@ class CorrespondenceS2bGenerator(models.Model):
             if self.env.context.get("raise_error"):
                 raise UserError(error_message) from error
             self.env.cr.rollback()
-            self.update_generation_status("failed", error_message)
+            self.isolated_write(
+                {
+                    "generation_status": "failed",
+                    "generation_error_message": error_message,
+                }
+            )
 
     def edit(self):
         """Generate a picture for preview."""
@@ -252,7 +257,7 @@ class CorrespondenceS2bGenerator(models.Model):
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
 
-            return self.write(
+            return self.isolated_write(
                 {
                     "state": "done",
                     "date": fields.Datetime.now(),
@@ -265,7 +270,12 @@ class CorrespondenceS2bGenerator(models.Model):
             # If the operation fails, notify the user with the error message
             self.env.cr.rollback()
             error_message = str(error)
-            self.update_generation_status("failed", error_message)
+            self.isolated_write(
+                {
+                    "generation_status": "failed",
+                    "generation_error_message": error_message,
+                }
+            )
         return True
 
     def open_letters(self):
@@ -322,13 +332,13 @@ class CorrespondenceS2bGenerator(models.Model):
             text,
         )
 
-    def update_generation_status(self, status, generation_error_message=None):
-        """Use a separate transaction to update the status of the generation."""
+    def isolated_write(self, vals):
+        """Use a separate transaction to update the letter_generator."""
         if len(self) != 1:
             return False
 
-        self.generation_status = status
-        if generation_error_message:
-            self.generation_error_message = generation_error_message
-        self.env.cr.commit()
-        return True
+        with self.env.registry.cursor() as new_cr:
+            new_env = self.env(cr=new_cr)
+            new_s2b_generator = new_env[self._name].browse(self.id)
+            new_s2b_generator.write(vals)
+            new_cr.commit()
