@@ -27,7 +27,6 @@
                         <group>
                             <field
                 name="proposition_text"
-                groups="base.group_erp_manager"
               />
                         </group>
                         <group>
