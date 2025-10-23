@@ -252,14 +252,14 @@ class CorrespondenceS2bGenerator(models.Model):
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
 
-            # Update state to done
-
-            self.state = "done"
-            self.date = fields.Datetime.now()
-            # Ensure atomicity
-            self.env.cr.commit()
-
-            return True
+            return self.write(
+                {
+                    "state": "done",
+                    "date": fields.Datetime.now(),
+                    "generation_status": "done",
+                    "generation_error_message": False,
+                }
+            )
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
