@@ -168,8 +168,6 @@ class CorrespondenceS2bGenerator(models.Model):
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
-
-
                 return self.write(
                     {
                         "state": "preview",
@@ -258,7 +256,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
             self.state = "done"
             self.date = fields.Datetime.now()
-                # Ensure atomicity
+            # Ensure atomicity
             self.env.cr.commit()
 
             return True
@@ -329,9 +327,8 @@ class CorrespondenceS2bGenerator(models.Model):
         if len(self) != 1:
             return False
 
-
         self.generation_status = status
         if generation_error_message:
-            new_s2b_generator.generation_error_message = generation_error_message
+            self.generation_error_message = generation_error_message
         self.env.cr.commit()
         return True
