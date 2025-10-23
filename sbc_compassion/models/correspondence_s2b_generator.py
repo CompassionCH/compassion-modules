@@ -168,7 +168,6 @@ class CorrespondenceS2bGenerator(models.Model):
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
-                self.isolated_write({"generation_status": "done"})
                 return self.isolated_write(
                     {
                         "state": "preview",
@@ -176,7 +175,7 @@ class CorrespondenceS2bGenerator(models.Model):
                         "preview_pdf": base64.b64encode(pdf),
                     }
                 )
-                return
+
         except (PolicyError, TypeError, UserError, Exception) as error:
             error_message = (
                 _(
@@ -261,7 +260,6 @@ class CorrespondenceS2bGenerator(models.Model):
                 {
                     "state": "done",
                     "date": fields.Datetime.now(),
-                    "generation_status": "done",
                     "generation_error_message": False,
                 }
             )
