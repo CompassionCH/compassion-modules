@@ -288,8 +288,8 @@ class CorrespondenceS2bGenerator(models.Model):
         keywords = {
             "%child%": child.preferred_name,
             "%age%": str(child.age),
-            "%firstname%": sponsor.firstname or sponsor.name,
-            "%lastname%": sponsor.firstname and sponsor.lastname or "",
+            "%firstname%": sponsor.preferred_name or sponsor.firstname or sponsor.name,
+            "%lastname%": sponsor.lastname or "",
         }
         text = self.body
         for keyword, replacement in list(keywords.items()):
