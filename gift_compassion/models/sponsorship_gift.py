@@ -104,7 +104,9 @@ class SponsorshipGift(models.Model):
     instructions = fields.Char()
     gift_type = fields.Selection(related="gift_type_id.gmc_gift_type")
     attribution = fields.Selection(related="gift_type_id.gmc_attribution")
-    sponsorship_gift_type = fields.Selection(related="gift_type_id.gmc_gift_type")
+    sponsorship_gift_type = fields.Selection(
+        related="gift_type_id.gmc_sponsorship_gift_type"
+    )
     state = fields.Selection(
         [
             ("draft", _("Draft")),
