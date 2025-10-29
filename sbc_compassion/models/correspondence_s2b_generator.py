@@ -232,6 +232,7 @@ class CorrespondenceS2bGenerator(models.Model):
         except Exception as error:
             # If the operation fails, notify the user with the error message
             error_message = str(error)
+            _logger.error(error_message, exc_info=True)
             self.env.user.notify_danger(message=error_message)
 
         return True
