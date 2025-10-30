@@ -78,7 +78,7 @@ class Correspondence(models.Model):
     )
     name = fields.Char(compute="_compute_name", store=True)
     partner_id = fields.Many2one(
-        "res.partner", "Partner", readonly=True, ondelete="restrict"
+        "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
     child_id = fields.Many2one(
         related="sponsorship_id.child_id", store=True, readonly=False
