@@ -281,6 +281,13 @@ class Correspondence(models.Model):
                 letter.b2s_state = letter.state
                 letter.s2b_state = False
 
+    @api.onchange("sponsorship_id")
+    def onchange_sponsorship(self):
+        for letter in self:
+            if letter.sponsorship_id:
+                letter.child_id = letter.sponsorship_id.child_id
+                letter.partner_id = letter.sponsorship_id.correspondent_id
+
     @api.depends("sponsorship_id")
     def _compute_is_first(self):
         """ Sets the value at true if is the first letter\
