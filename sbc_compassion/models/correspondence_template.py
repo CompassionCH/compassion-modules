@@ -160,7 +160,7 @@ class CorrespondenceTemplate(models.Model):
             )
             image_list = []
 
-            s2b_generator.update_generation_status("apply_template")
+            s2b_generator.isolated_write({"generation_status": "apply_template"})
 
             if background_list:
                 # An original document is provided. We want
@@ -202,7 +202,7 @@ class CorrespondenceTemplate(models.Model):
                     text_list.append(text_box.get_json_repr())
                 overflow_template = [add_background.name, header_data, text_list, []]
 
-            s2b_generator.update_generation_status("apply_text")
+            s2b_generator.isolated_write({"generation_status": "apply_text"})
 
             text_list = []
             for t_type, t_boxes in list(text.items()):
@@ -215,7 +215,7 @@ class CorrespondenceTemplate(models.Model):
                     temp_files.append(txt_file)
                     text_list.append([txt_file.name, t_type])
 
-            s2b_generator.update_generation_status("apply_images")
+            s2b_generator.isolated_write({"generation_status": "apply_images"})
 
             for image in image_data:
                 ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
@@ -240,7 +240,7 @@ class CorrespondenceTemplate(models.Model):
             std_err_file_path = self.path_to("stderr.txt")
             std_err_file = open(std_err_file_path, "w", encoding="utf-8")
 
-            s2b_generator.update_generation_status("generate_pdf")
+            s2b_generator.isolated_write({"generation_status": "generate_pdf"})
 
             php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
             if config.get("php_debug"):
