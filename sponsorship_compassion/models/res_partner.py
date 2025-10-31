@@ -195,6 +195,11 @@ class ResPartner(models.Model):
         if operator not in ("=", "!=", "<", ">", "<=", ">="):
             raise ValueError("Invalid operator: %s" % operator)
 
+        # TODO: Remove this block after all Scheduled Actions using obsolete
+        # domains (e.g., 'number_sponsorships = 'false') are migrated or deleted.
+        if value == 'false' or not value:
+            value = 0
+
         # 2. Build the query using LEFT JOIN.
         #    - Conditions on 'c' are in the ON clause.
         #    - COUNT(c.id) correctly handles partners with 0 contracts.
