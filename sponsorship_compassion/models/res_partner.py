@@ -195,7 +195,7 @@ class ResPartner(models.Model):
 
         # TODO: Remove this block after all Scheduled Actions using obsolete
         # domains (e.g., 'number_sponsorships = 'false') are migrated or deleted.
-        if value == 'false' or not value:
+        if value == "false" or not value:
             value = 0
 
         # 2. Build the query using LEFT JOIN.
