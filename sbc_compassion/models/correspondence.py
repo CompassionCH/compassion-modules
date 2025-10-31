@@ -78,7 +78,7 @@ class Correspondence(models.Model):
     )
     name = fields.Char(compute="_compute_name", store=True)
     partner_id = fields.Many2one(
-        "res.partner", "Partner", readonly=True, ondelete="restrict"
+        "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
     child_id = fields.Many2one(
         related="sponsorship_id.child_id", store=True, readonly=False
@@ -280,6 +280,13 @@ class Correspondence(models.Model):
             else:
                 letter.b2s_state = letter.state
                 letter.s2b_state = False
+
+    @api.onchange("sponsorship_id")
+    def onchange_sponsorship(self):
+        for letter in self:
+            if letter.sponsorship_id:
+                letter.child_id = letter.sponsorship_id.child_id
+                letter.partner_id = letter.sponsorship_id.correspondent_id
 
     @api.depends("sponsorship_id")
     def _compute_is_first(self):

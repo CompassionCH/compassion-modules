@@ -277,6 +277,9 @@ class CorrespondenceS2bGenerator(models.Model):
                     "generation_error_message": error_message,
                 }
             )
+            _logger.error(error_message, exc_info=True)
+            self.env.user.notify_danger(message=error_message)
+
         return True
 
     def open_letters(self):

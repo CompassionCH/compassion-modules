@@ -167,10 +167,11 @@ class ResPartner(models.Model):
 
     def _compute_number_sponsorships(self):
         for partner in self:
+            church_members = partner.member_ids
             active_sponsorship_domain = [
                 "|",
-                ("partner_id", "=", partner.id),
-                ("correspondent_id", "=", partner.id),
+                ("partner_id", "in", (partner + church_members).ids),
+                ("correspondent_id", "in", (partner + church_members).ids),
                 ("activation_date", "!=", False),
                 ("state", "not in", ["cancelled", "terminated"]),
                 ("child_id", "!=", False),
@@ -191,6 +192,11 @@ class ResPartner(models.Model):
         # 1. Securely validate the operator to prevent SQL injection.
         if operator not in ("=", "!=", "<", ">", "<=", ">="):
             raise ValueError("Invalid operator: %s" % operator)
+
+        # TODO: Remove this block after all Scheduled Actions using obsolete
+        # domains (e.g., 'number_sponsorships = 'false') are migrated or deleted.
+        if value == "false" or not value:
+            value = 0
 
         # 2. Build the query using LEFT JOIN.
         #    - Conditions on 'c' are in the ON clause.

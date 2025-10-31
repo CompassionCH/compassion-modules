@@ -82,7 +82,7 @@ class StaffNotificationSettings(models.TransientModel):
             if end_christmas_period < begin_christmas_period:
                 end_christmas_period = datetime.date(
                     year_of_date_to_check + 1,
-                    int(self.get_christmas_period_start_month()),
+                    int(self.get_christmas_period_end_month()),
                     int(self.get_christmas_period_end_day()),
                 )
             if (date_to_check >= begin_christmas_period) and (
