@@ -160,9 +160,10 @@ class Contracts(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": "correspondence",
-            "context": self.with_context(
-                group_by=False, search_default_sponsorship_id=self.id
-            ).env.context,
+            "context": {
+                "search_default_partner_id": self.correspondent_id.id,
+                "search_default_sponsorship_id": self.id,
+            },
             "target": "current",
         }
 
