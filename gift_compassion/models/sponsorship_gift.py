@@ -185,6 +185,7 @@ class SponsorshipGift(models.Model):
             gift.currency_id = (
                 self.mapped("invoice_line_ids.move_id.currency_id")
                 or self.sponsorship_id.company_id.currency_id
+                or self.env.company.currency_id
             )[:1]
 
     def _compute_name(self):
