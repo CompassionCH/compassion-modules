@@ -25,7 +25,6 @@ class EndContractWizard(models.TransientModel):
     )
 
     def end_contract(self):
-        self.ensure_one()
         super().end_contract()
 
         for contract in self.contract_ids.filtered("child_id"):
