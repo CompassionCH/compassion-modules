@@ -41,7 +41,7 @@
               id="connect_egress_setting"
               help="Returns the egress status of Onramp (CI). True indicates that CI OnRamp is enabled to make REST calls to the GP OnRamp. False indicates that CI OnRamp will queue messages, and will NOT make REST calls to the GP OnRamp."
             >
-                            <field name="delivery_service_status" />
+                            <field name="delivery_service_status" readonly="not delivery_service_api_key"/>
                         </setting>
                     </block>
                     <block

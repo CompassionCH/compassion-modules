@@ -193,7 +193,7 @@ class ResPartner(models.Model):
         """
         # 1. Securely validate the operator to prevent SQL injection.
         if operator not in ("=", "!=", "<", ">", "<=", ">="):
-            raise ValueError("Invalid operator: %s" % operator)
+            raise ValueError(f"Invalid operator: {operator}")
 
         # TODO: Remove this block after all Scheduled Actions using obsolete
         # domains (e.g., 'number_sponsorships = 'false') are migrated or deleted.
@@ -312,7 +312,7 @@ class ResPartner(models.Model):
         action = {
             "name": _("Related invoice lines"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "views": [
                 (
                     self.env.ref(
@@ -338,10 +338,10 @@ class ResPartner(models.Model):
         action = {
             "name": _("Unreconciled Items"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "account.move.line",
             "view_id": tree_view_id,
-            "views": [(tree_view_id, "tree"), (form_view_id, "form")],
+            "views": [(tree_view_id, "list"), (form_view_id, "form")],
             "target": "current",
             "context": self.with_context(
                 search_default_partner_id=self.ids, search_default_posted=1
@@ -351,20 +351,17 @@ class ResPartner(models.Model):
 
     def create_contract(self):
         self.ensure_one()
-        context = self.with_context(
-            {
-                "default_partner_id": self.id,
-                "default_type": "S",
-                "type": "S",
-            }
-        ).env.context
         return {
             "type": "ir.actions.act_window",
             "name": _("New Sponsorship"),
             "view_mode": "form",
             "res_model": "recurring.contract",
             "target": "current",
-            "context": context,
+            "context": {
+                "default_partner_id": self.id,
+                "default_type": "S",
+                "type": "S",
+            },
         }
 
     def unreconciled_transaction_items(self):
@@ -382,7 +379,7 @@ class ResPartner(models.Model):
             "type": "ir.actions.act_window",
             "name": "Contracts",
             "res_model": "recurring.contract",
-            "views": [[False, "tree"], [False, "form"]],
+            "views": [[False, "list"], [False, "form"]],
             "domain": self._get_active_sponsorships_domain(),
         }
 
@@ -525,7 +522,7 @@ class ResPartner(models.Model):
             "name": _("Donations"),
             "type": "ir.actions.act_window",
             "res_model": "account.move.line",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [
                 ("product_id", "!=", False),
                 ("account_id.account_type", "=", "income"),
@@ -540,7 +537,7 @@ class ResPartner(models.Model):
                 ("payment_state", "=", "paid"),
             ],
             "context": {
-                "tree_view_ref": "sponsorship_compassion.view_move_line_donations",
+                "list_view_ref": "sponsorship_compassion.view_move_line_donations",
                 "search_view_ref": "sponsorship_compassion.view_donation_filter",
                 "search_default_partner_id": self.id,
                 "search_default_group_contract": 1,

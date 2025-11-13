@@ -16,7 +16,7 @@ import requests
 from pdf2image import convert_from_bytes
 from PIL import Image
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 from ..tools.onramp_connector import SBCConnector
 
@@ -64,12 +64,12 @@ class CorrespondencePage(models.Model):
         (
             "original_page_url",
             "unique(original_page_url)",
-            _("The pages already exists in database."),
+            "The pages already exists in database.",
         ),
         (
             "final_page_url",
             "unique(final_page_url)",
-            _("The pages already exists in database."),
+            "The pages already exists in database.",
         ),
     ]
 
@@ -168,7 +168,7 @@ class CorrespondencePage(models.Model):
     def _get_cloundinary_image(self, cloudinary_url):
         if not cloudinary_url:
             return False
-        response = requests.get(cloudinary_url)
+        response = requests.get(cloudinary_url, timeout=3)
         return base64.b64encode(response.content) if response.ok else False
 
     @api.depends(
@@ -192,7 +192,7 @@ class CorrespondencePage(models.Model):
             return False
         if cloudinary_url.endswith("p1.jpg"):
             return cloudinary_url.replace("p1.jpg", f"p{str(self.page_index)}.jpg")
-        response = requests.get(cloudinary_url)
+        response = requests.get(cloudinary_url, timeout=3)
         if not response.ok:
             return False
         width, total_height = Image.open(BytesIO(response.content)).size

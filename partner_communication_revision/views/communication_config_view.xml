@@ -24,7 +24,7 @@
                         <field name="revision_number" readonly="1" />
                         <field name="revision_date" readonly="1" />
                         <field name="revision_ids">
-                            <tree
+                            <list
                 decoration-primary="state in ('pending','submit','corrected')"
                 decoration-success="state=='approved'"
                 decoration-muted="is_old_version"
@@ -93,7 +93,7 @@
                   invisibile="not is_old_version"
                 />
                                 <field name="state" readonly="1" />
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </group>
@@ -102,7 +102,7 @@
     </record>
 
     <record model="ir.ui.view" id="communication_config_tree">
-        <field name="name">communication.config.revision.tree</field>
+        <field name="name">communication.config.revision.list</field>
         <field name="model">partner.communication.config</field>
         <field
       name="inherit_id"
@@ -112,7 +112,7 @@
             <field name="report_id" position="after">
                 <field name="state" />
             </field>
-            <xpath expr="//tree" position="attributes">
+            <xpath expr="//list" position="attributes">
                 <attribute name="decoration-info">state=='pending'</attribute>
             </xpath>
         </field>

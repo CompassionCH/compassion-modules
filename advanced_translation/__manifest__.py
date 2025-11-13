@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Advanced Translation",
-    "version": "17.0.1.0.2",
+    "version": "18.0.1.0.0",
     "category": "Other",
     "sequence": 150,
     "author": "Compassion CH",
@@ -52,6 +52,6 @@
         "data/ir.advanced.translation.csv",
     ],
     "demo": ["demo/ir.advanced.translation.csv"],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
 }

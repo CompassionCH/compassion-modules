@@ -114,7 +114,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             "name": _("Communications"),
             "res_model": "partner.communication.job",
             "domain": [("id", "in", self.communication_ids.ids)],
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": self._context,
         }
 

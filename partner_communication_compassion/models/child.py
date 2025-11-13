@@ -70,9 +70,10 @@ class CompassionChild(models.Model):
         """Private method when a major revision is received for a child.
         Send a communication to the sponsor.
         """
-        super()._major_revision(vals)
+        res = super()._major_revision(vals)
         if self.revised_value_ids and self.sponsor_id:
             major_revision(self, self.revised_value_ids)
+        return res
 
     def _compute_completion_month(self):
         """Completion month in full text."""

@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- Project lifecycle -->
         <record id="email_project_suspension" model="mail.template">
             <field name="name">Project Suspension</field>
@@ -267,5 +266,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>

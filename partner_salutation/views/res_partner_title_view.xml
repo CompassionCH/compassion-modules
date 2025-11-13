@@ -1,6 +1,6 @@
 <odoo>
     <record model="ir.ui.view" id="title_tree_view">
-        <field name="name">title.gender.salutation.tree.view</field>
+        <field name="name">title.gender.salutation.list.view</field>
         <field name="model">res.partner.title</field>
         <field name="inherit_id" ref="base.view_partner_title_tree" />
         <field name="arch" type="xml">

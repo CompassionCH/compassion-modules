@@ -21,7 +21,7 @@ class PrintChildPicture(models.TransientModel):
     _description = "Select the print method (pdf)"
 
     state = fields.Selection([("new", "new"), ("pdf", "pdf")], default="new")
-    pdf = fields.Boolean("Pdf")
+    pdf = fields.Boolean()
     pdf_name = fields.Char(default="childpicture.pdf")
     pdf_download = fields.Binary(readonly=True)
 

@@ -117,7 +117,7 @@ class ImportReview(models.TransientModel):
         return {
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "form,tree",
+            "view_mode": "form,list",
             "res_model": import_history._name,
             "res_id": import_history.id,
             "context": self.env.context,

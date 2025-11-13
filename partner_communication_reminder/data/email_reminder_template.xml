@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- E-mail for Sponsorship Reminders -->
         <record id="email_sponsorship_reminder_1" model="mail.template">
             <field name="name">Sponsorship Reminder 1</field>
@@ -313,5 +312,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>

@@ -33,9 +33,10 @@ class AccountInvoice(models.Model):
         """Generate a Thank you Communication when invoice is a donation
         (no sponsorship product inside)
         """
-        super()._invoice_paid_hook()
+        res = super()._invoice_paid_hook()
         invoices = self._filter_move_to_thank(move_type="out_invoice")
         invoices.generate_thank_you()
+        return res
 
     def _post(self, soft=True):
         posted = super()._post(soft=soft)
@@ -51,13 +52,14 @@ class AccountInvoice(models.Model):
         return res
 
     def button_draft(self):
-        super().button_draft()
+        res = super().button_draft()
         self.filtered("communication_id").cancel_thankyou_letter()
+        return res
 
     def _compute_amount(self):
         """When invoice is open again, remove it from donation receipt."""
         # Computes values before treatments
-        super()._compute_amount()
+        res = super()._compute_amount()
         super()._compute_payment_state()
         payment_states = self.mapped("payment_state")
         new_payment_states = self.mapped("payment_state")
@@ -71,6 +73,7 @@ class AccountInvoice(models.Model):
                 invoice.with_delay(
                     channel="root.thankyou_letters", priority=50
                 ).cancel_thankyou_letter()
+        return res
 
     def group_by_partner(self):
         """Returns a dict with {partner_id: invoices}"""

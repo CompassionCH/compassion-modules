@@ -14,7 +14,6 @@ from odoo import fields, models
 
 
 class ResLang(models.Model):
-
     """This class adds spoken languages to match Compassion needs."""
 
     _name = "res.lang.compassion"

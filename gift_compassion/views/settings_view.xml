@@ -37,10 +37,10 @@
     </record>
 
     <record id="view_gift_threshold_settings_tree" model="ir.ui.view">
-        <field name="name">gift.threshold.settings.tree</field>
+        <field name="name">gift.threshold.settings.list</field>
         <field name="model">gift.threshold.settings</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="gift_type_id" />
                 <field name="product_id" />
                 <field name="min_amount" />
@@ -48,7 +48,7 @@
                 <field name="currency_id" />
                 <field name="gift_frequency" />
                 <field name="yearly_threshold" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -77,7 +77,7 @@
   >
         <field name="name">Gift Threshold Configuration</field>
         <field name="res_model">gift.threshold.settings</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

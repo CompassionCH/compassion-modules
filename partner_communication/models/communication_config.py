@@ -103,7 +103,7 @@ class CommunicationConfig(models.Model):
         help="The kind of document with this communication can be used",
         ondelete="cascade",
     )
-    model = fields.Char(related="model_id.model", store=True, readonly=True)
+    model = fields.Char(related="model_id.model", readonly=True)
     send_mode = fields.Selection("get_send_mode", required=True)
     send_mode_pref_field = fields.Char(
         "Partner preference field",

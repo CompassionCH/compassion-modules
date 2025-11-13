@@ -204,7 +204,7 @@ class CompassionReservation(models.Model):
             "view_type": "form",
             "res_model": "compassion.child",
             "domain": [("id", "in", children_ids)],
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "target": "current",
         }
 

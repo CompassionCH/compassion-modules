@@ -86,7 +86,7 @@
               invisible="state not in ('open','pending','ready')"
               domain="[('id','=','-1')]"
             >
-                            <tree
+                            <list
                 decoration-danger="status != 'ok'"
                 decoration-success="status == 'ok'"
                 create="false"
@@ -107,26 +107,22 @@
                   string="Letter image preview"
                   readonly="1"
                 />
-                            </tree>
+                            </list>
                         </field>
                         <field name="letters_ids" invisible="state != 'done'" />
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
 
     <!-- Tree Definition -->
     <record id="import_letters_history_tree" model="ir.ui.view">
-        <field name="name">import.letters.history.tree</field>
+        <field name="name">import.letters.history.list</field>
         <field name="model">import.letters.history</field>
         <field name="arch" type="xml">
-            <tree
-        string="Imports"
+            <list
         decoration-primary="state == 'draft'"
         decoration-info="state in ('open','pending')"
         decoration-success="state == 'ready'"
@@ -139,7 +135,7 @@
                 <field name="config_id" />
                 <field name="state" />
                 <field name="failed_file_name" invisible="1" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -169,7 +165,7 @@
         <field name="name">Imports</field>
         <field name="res_model">import.letters.history</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_open':1}</field>
     </record>
 

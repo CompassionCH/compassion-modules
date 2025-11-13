@@ -110,14 +110,14 @@ class ResPartner(models.Model):
         return super().create(vals_list)
 
     def open_letters(self):
-        """Open the tree view correspondence of partner"""
+        """Open the list view correspondence of partner"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
             "name": "Letters",
             "res_model": "correspondence",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": self.with_context(
                 group_by=False, search_default_partner_id=self.id
             ).env.context,

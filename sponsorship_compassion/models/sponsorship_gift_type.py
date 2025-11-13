@@ -5,8 +5,8 @@ class SponsorshipGiftType(models.Model):
     _name = "sponsorship.gift.type"
     _description = "Sponsorship Gift Type"
 
-    name = fields.Char("Name", required=True)
-    code = fields.Char("Code", required=True, copy=False)
+    name = fields.Char(required=True)
+    code = fields.Char(required=True, copy=False)
     product_id = fields.Many2one(
         "product.template", "Product", domain=[("type", "=", "service")], copy=False
     )

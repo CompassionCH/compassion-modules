@@ -43,9 +43,9 @@ class HoldWizard(models.TransientModel):
     secondary_owner = fields.Char()
     service_level = fields.Selection(
         [
-            ("Level 1", _("Level 1")),
-            ("Level 2", _("Level 2")),
-            ("Level 3", _("Level 3")),
+            ("Level 1", "Level 1"),
+            ("Level 2", "Level 2"),
+            ("Level 3", "Level 3"),
         ],
         required=True,
         default="Level 2",

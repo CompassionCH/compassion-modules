@@ -448,7 +448,7 @@ class CommunicationRevision(models.Model):
                 context["working_subject"] = self.subject_correction
         preview = (
             self.env[preview_model]
-            .with_context(context)
+            .with_context(**context)
             .create(
                 {
                     "revision_id": self.id,
@@ -463,7 +463,7 @@ class CommunicationRevision(models.Model):
             "view_mode": "form",
             "res_model": preview_model,
             "res_id": preview.id,
-            "context": self.with_context(context).env.context,
+            "context": self.with_context(**context).env.context,
             "target": "new",
         }
 

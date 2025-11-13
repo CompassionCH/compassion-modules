@@ -363,7 +363,6 @@ class CompassionProject(models.Model):
 
     suspension = fields.Selection(
         [("suspended", "Suspended"), ("fund-suspended", "Suspended & fund retained")],
-        "Suspension",
         compute="_compute_suspension",
         store=True,
         tracking=True,
@@ -628,7 +627,8 @@ class CompassionProject(models.Model):
                     + "&lon="
                     + str(project.gps_longitude)
                     + "&appid="
-                    + tools.config.get("openweathermap_api_key", "")
+                    + tools.config.get("openweathermap_api_key", ""),
+                    timeout=3,
                 ).json()
                 if json["cod"] != 200:
                     logging.error("Could not retrieve weather info.")

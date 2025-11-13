@@ -25,14 +25,14 @@ class RecurringContract(models.Model):
     ##########################################################################
     sds_state = fields.Selection(
         [
-            ("draft", _("Draft")),
-            ("active", _("Active")),
-            ("sub_waiting", _("Sub waiting")),
-            ("sub", _("Sub")),
-            ("sub_accept", _("Sub Accept")),
-            ("sub_reject", _("Sub Reject")),
-            ("no_sub", _("No sub")),
-            ("cancelled", _("Cancelled")),
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("sub_waiting", "Sub waiting"),
+            ("sub", "Sub"),
+            ("sub_accept", "Sub Accept"),
+            ("sub_reject", "Sub Reject"),
+            ("no_sub", "No sub"),
+            ("cancelled", "Cancelled"),
         ],
         "SDS Status",
         tracking=True,
@@ -55,6 +55,10 @@ class RecurringContract(models.Model):
     )
     sub_notes = fields.Text("Notes for SUB Sponsorship")
     lifecycle_ids = fields.One2many(related="child_id.lifecycle_ids", readonly=False)
+    child_image = fields.Image(related="child_id.portrait")
+    user_image = fields.Image(
+        related="sds_uid.image_128", max_width=128, max_height=128
+    )
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -93,7 +97,7 @@ class RecurringContract(models.Model):
     @api.onchange("partner_id")
     def on_change_partner_id(self):
         """Find parent sponsorship if any is sub_waiting."""
-        super().on_change_partner_id()
+        res = super().on_change_partner_id()
 
         if "S" in self.type:
             origin_id = (
@@ -107,6 +111,7 @@ class RecurringContract(models.Model):
             if parent_id and self.state == "draft":
                 self.parent_id = parent_id
                 self.origin_id = origin_id
+        return res
 
     @api.onchange("child_id")
     def onchange_child_check_sub(self):

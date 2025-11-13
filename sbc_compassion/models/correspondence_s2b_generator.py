@@ -66,7 +66,7 @@ class CorrespondenceS2bGenerator(models.Model):
         "correspondence", "generator_id", "Letters", copy=False
     )
     nb_letters = fields.Integer(compute="_compute_nb_letters")
-    preview = fields.Html(compute="_compute_preview")
+    preview = fields.Html(compute="_compute_preview", sanitize=False)
     month = fields.Selection("_get_months")
 
     def _compute_nb_letters(self):
@@ -187,7 +187,7 @@ class CorrespondenceS2bGenerator(models.Model):
         return {
             "name": letters._description,
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": letters._name,
             "context": self.env.context,
             "domain": [("id", "in", letters.ids)],

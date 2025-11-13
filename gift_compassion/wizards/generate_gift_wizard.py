@@ -57,7 +57,7 @@ class GenerateGiftWizard(models.TransientModel):
                 gift_vals["amount"] = self.contract_id.birthday_invoice
                 gift_obj.create(gift_vals)
         else:
-            super().generate_invoice(due_date)
+            return super().generate_invoice(due_date)
 
     def compute_date_birthday_invoice(self, child_birthdate, payment_date=None):
         """Set date of invoice two months before child's birthdate"""

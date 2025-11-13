@@ -67,8 +67,9 @@ class GenerateCommunicationWizard(models.TransientModel):
                     [inv["partner_id"][0] for inv in invoice_ids if inv["partner_id"]],
                 )
             ]
+            return True
         else:
-            super()._compute_partners()
+            return super()._compute_partners()
 
     def generate_communications(self, async_mode=True):
         if self.res_model == "account.move":

@@ -90,7 +90,7 @@ class CommunicationJob(models.Model):
         index=True,
         ondelete="cascade",
     )
-    model = fields.Char(related="config_id.model_id.model", store=True, index=True)
+    model = fields.Char(related="config_id.model_id.model")
     partner_id = fields.Many2one(
         "res.partner",
         "Send to",
@@ -113,11 +113,11 @@ class CommunicationJob(models.Model):
     sent_date = fields.Datetime(copy=False, index=True)
     state = fields.Selection(
         [
-            ("pending", _("Pending")),
-            ("done", _("Done")),
-            ("cancel", _("Cancelled")),
-            ("failure", _("Failure")),
-            ("processing", _("Processing")),
+            ("pending", "Pending"),
+            ("done", "Done"),
+            ("cancel", "Cancelled"),
+            ("failure", "Failure"),
+            ("processing", "Processing"),
         ],
         default="pending",
         tracking=True,
@@ -501,9 +501,9 @@ class CommunicationJob(models.Model):
 
         if not vals.get("printer_output_tray_id"):
             if default_config.printer_output_tray_id:
-                vals[
-                    "printer_output_tray_id"
-                ] = default_config.printer_output_tray_id.id
+                vals["printer_output_tray_id"] = (
+                    default_config.printer_output_tray_id.id
+                )
 
         # Check all default_vals fields
         for default_val in default_vals:
@@ -724,14 +724,14 @@ class CommunicationJob(models.Model):
         action = {
             "name": _("Related objects"),
             "type": "ir.actions.act_window",
-            "view_mode": "form,tree",
+            "view_mode": "form,list",
             "res_model": self.mapped("config_id").model,
             "context": self.with_context(group_by=False).env.context,
             "target": "current",
         }
         if len(object_ids) > 1:
             action.update(
-                {"view_mode": "tree,form", "domain": [("id", "in", object_ids)]}
+                {"view_mode": "list,form", "domain": [("id", "in", object_ids)]}
             )
         else:
             action["res_id"] = object_ids[0]
@@ -803,7 +803,7 @@ class CommunicationJob(models.Model):
     def download_data(self):
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": self._name,
             "domain": [("id", "in", self.ids)],
             "name": _("Send result"),
@@ -896,9 +896,9 @@ class CommunicationJob(models.Model):
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:
-                batch_print[job.partner_id.lang][
-                    job.config_id.name
-                ] += job.with_company(job.company_id)
+                batch_print[job.partner_id.lang][job.config_id.name] += (
+                    job.with_company(job.company_id)
+                )
 
         for configs in batch_print.values():
             for config, jobs in configs.items():

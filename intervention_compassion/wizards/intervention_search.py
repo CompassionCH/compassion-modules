@@ -202,7 +202,7 @@ class InterventionSearch(models.TransientModel):
             "name": _("Interventions"),
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "compassion.global.intervention",
             "context": self.env.context,
             "domain": [("id", "in", self.intervention_ids.ids)],

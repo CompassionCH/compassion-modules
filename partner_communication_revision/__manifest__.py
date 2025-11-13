@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication Revisions",
-    "version": "17.0.1.0.1",
+    "version": "18.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "development_status": "Production/Stable",
@@ -55,6 +55,6 @@
     ],
     "qweb": [],
     "demo": ["data/demo.xml"],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
 }

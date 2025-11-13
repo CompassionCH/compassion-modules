@@ -11,7 +11,7 @@
 import logging
 
 from odoo import api, fields, models
-from odoo.tools import relativedelta
+from odoo.tools.date_utils import relativedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class ProjectCompassion(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Sponsorships",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "recurring.contract",
             "domain": [("id", "in", contract_list.ids)],
             "target": "current",

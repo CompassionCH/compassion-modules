@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_compassion_global_intervention_tree" model="ir.ui.view">
-        <field name="name">compassion.global.intervention.tree</field>
+        <field name="name">compassion.global.intervention.list</field>
         <field name="model">compassion.global.intervention</field>
         <field name="arch" type="xml">
-            <tree delete="False">
+            <list delete="False">
                 <field name="name" />
                 <field name="category_id" />
                 <field name="intervention_id" />
@@ -15,7 +15,7 @@
                 <field name="remaining_amount_to_raise" />
                 <field name="estimated_impacted_beneficiaries" />
                 <field name="funding_status" />
-            </tree>
+            </list>
         </field>
     </record>
 

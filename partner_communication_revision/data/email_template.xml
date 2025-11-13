@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <record id="revision_reminder_template" model="mail.template">
             <field name="name">Communication revision reminder</field>
             <field
@@ -42,5 +41,4 @@
                 <p>Have a nice day</p>
             </field>
         </record>
-    </data>
 </odoo>

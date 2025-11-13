@@ -128,15 +128,15 @@
 
         <!-- Tree Definition -->
         <record id="s2b_generator_tree" model="ir.ui.view">
-            <field name="name">correspondence.s2b.generator.tree</field>
+            <field name="name">correspondence.s2b.generator.list</field>
             <field name="model">correspondence.s2b.generator</field>
             <field name="arch" type="xml">
-                <tree decoration-primary="state == 'draft'">
+                <list decoration-primary="state == 'draft'">
                     <field name="date" />
                     <field name="name" />
                     <field name="template_id" />
                     <field name="state" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -145,7 +145,7 @@
             <field name="name">S2B Generator</field>
             <field name="res_model">correspondence.s2b.generator</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{'default_source': 'compassion'}</field>
         </record>
 

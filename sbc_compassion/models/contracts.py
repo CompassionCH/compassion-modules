@@ -158,7 +158,7 @@ class Contracts(models.Model):
         return {
             "name": _("Letters"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "correspondence",
             "context": {
                 "search_default_partner_id": self.correspondent_id.id,
@@ -172,10 +172,11 @@ class Contracts(models.Model):
     ##########################################################################
     def contract_active(self):
         """Send letters that were on hold."""
-        super().contract_active()
+        res = super().contract_active()
         for contract in self.filtered(
             lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
         ):
             contract.sponsor_letter_ids.filtered(
                 lambda c: not c.kit_identifier
             ).reactivate_letters("Sponsorship activated")
+        return res

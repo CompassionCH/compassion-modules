@@ -77,16 +77,14 @@ class Correspondence(models.Model):
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
-    child_id = fields.Many2one(
-        related="sponsorship_id.child_id", precompute=True, store=True, readonly=True
-    )
+    child_id = fields.Many2one(related="sponsorship_id.child_id", readonly=True)
     avatar_128 = fields.Image(compute="_compute_avatar")
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, tracking=True)
     direction = fields.Selection(
         selection=[
-            ("Supporter To Beneficiary", _("Supporter to participant")),
-            ("Beneficiary To Supporter", _("Participant to supporter")),
+            ("Supporter To Beneficiary", "Supporter to participant"),
+            ("Beneficiary To Supporter", "Participant to supporter"),
         ],
         required=True,
         default="Supporter To Beneficiary",
@@ -100,41 +98,41 @@ class Correspondence(models.Model):
     )
     s2b_state = fields.Selection(
         [
-            ("Draft", _("Draft")),
-            ("Received in the system", _("Scanned in")),
-            ("Global Partner translation queue", _("To Translate")),
-            ("Global Partner translation process", _("Translating")),
-            ("Quality check queue", _("Quality Check Queue")),
-            ("Quality check process", _("Quality Check Process")),
-            ("Translation and quality check complete", _("Quality Check Done")),
-            ("Field Office translation queue", _("National Office Translation Queue")),
-            ("Composition process", _("Composition Process")),
-            ("Printed and sent to ICP", _("Sent to FCP")),
-            ("Exception", _("Exception")),
-            ("Quality check unsuccessful", _("Quality check failed")),
-            ("Translation check unsuccessful", _("Translation check unsuccessful")),
+            ("Draft", "Draft"),
+            ("Received in the system", "Scanned in"),
+            ("Global Partner translation queue", "To Translate"),
+            ("Global Partner translation process", "Translating"),
+            ("Quality check queue", "Quality Check Queue"),
+            ("Quality check process", "Quality Check Process"),
+            ("Translation and quality check complete", "Quality Check Done"),
+            ("Field Office translation queue", "National Office Translation Queue"),
+            ("Composition process", "Composition Process"),
+            ("Printed and sent to ICP", "Sent to FCP"),
+            ("Exception", "Exception"),
+            ("Quality check unsuccessful", "Quality check failed"),
+            ("Translation check unsuccessful", "Translation check unsuccessful"),
         ],
         compute="_compute_states",
     )
     b2s_state = fields.Selection(
         [
-            ("Ready to be printed", _("Ready to be printed")),  # *
+            ("Ready to be printed", "Ready to be printed"),
             (
                 "Field Office transcribing translation and content check process",
-                _("National Office content check"),
-            ),  # *
-            ("Field Office translation queue", _("National Office Translation Queue")),
-            ("In Translation", _("SDL FO Translation")),  # *
-            ("Quality check queue", _("Quality Check Queue")),
-            ("Quality check process", _("Quality Check Process")),
-            ("Translation and quality check complete", _("Quality Check Done")),  # *
-            ("Global Partner translation queue", _("To Translate")),
-            ("Global Partner translation process", _("Translating")),
-            ("Composition process", _("Composition Process")),
-            ("Published to Global Partner", _("Published")),
-            ("Quality check unsuccessful", _("Quality check unsuccessful")),
-            ("Translation check unsuccessful", _("Translation check unsuccessful")),
-            ("Exception", _("Exception")),
+                "National Office content check",
+            ),
+            ("Field Office translation queue", "National Office Translation Queue"),
+            ("In Translation", "SDL FO Translation"),
+            ("Quality check queue", "Quality Check Queue"),
+            ("Quality check process", "Quality Check Process"),
+            ("Translation and quality check complete", "Quality Check Done"),
+            ("Global Partner translation queue", "To Translate"),
+            ("Global Partner translation process", "Translating"),
+            ("Composition process", "Composition Process"),
+            ("Published to Global Partner", "Published"),
+            ("Quality check unsuccessful", "Quality check unsuccessful"),
+            ("Translation check unsuccessful", "Translation check unsuccessful"),
+            ("Exception", "Exception"),
         ],
         compute="_compute_states",
     )
@@ -151,8 +149,7 @@ class Correspondence(models.Model):
         store=True,
     )
     preview = fields.Html(
-        "Preview of the letter",
-        compute="_compute_preview",
+        "Preview of the letter", compute="_compute_preview", sanitize=False
     )
 
     # 3. Letter language, text information, attached images
@@ -204,9 +201,9 @@ class Correspondence(models.Model):
     scanned_date = fields.Date(default=fields.Date.today)
     relationship = fields.Selection(
         [
-            ("Sponsor", _("Sponsor")),
-            ("Encourager", _("Encourager")),
-            ("Correspondent", _("Correspondent")),
+            ("Sponsor", "Sponsor"),
+            ("Encourager", "Encourager"),
+            ("Correspondent", "Correspondent"),
         ],
         default="Sponsor",
     )
@@ -259,12 +256,12 @@ class Correspondence(models.Model):
         (
             "kit_identifier",
             "unique(kit_identifier)",
-            _("The kit id already exists in database."),
+            "The kit id already exists in database.",
         ),
         (
             "uuid",
             "unique(uuid)",
-            _("The uuid already exists in database."),
+            "The uuid already exists in database.",
         ),
     ]
 

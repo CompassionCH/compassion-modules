@@ -83,7 +83,7 @@ class DownloadChildPictures(models.TransientModel):
             for child in self.child_ids.filtered("image_url"):
                 child_code = child.local_id
                 url = self.get_picture_url(child)
-                data = base64.encodebytes(requests.get(url).content)
+                data = base64.encodebytes(requests.get(url, timeout=3).content)
 
                 _format = url.split(".")[-1]
                 fname = f"{child.sponsor_ref or ''}_{child_code}.{_format}"
@@ -138,7 +138,7 @@ class DownloadChildPictures(models.TransientModel):
         children_with_invalid_url = []
         for child in self.child_ids.filtered("image_url"):
             url = self.get_picture_url(child)
-            if not requests.get(url).content:
+            if not requests.get(url, timeout=3).content:
                 # Not good, the url doesn't lead to an image
                 children_with_invalid_url += [child.local_id]
         if children_with_invalid_url:

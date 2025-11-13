@@ -32,13 +32,11 @@ class ChildHoldWizard(models.TransientModel):
                     "view_mode": "form",
                 }
             )
-            action["context"] = self.with_context(
-                {
-                    "default_child_id": child.id,
-                    "child_id": child.id,
-                    "default_type": "S",
-                }
-            ).env.context
+            action["context"] = {
+                "default_child_id": child.id,
+                "child_id": child.id,
+                "default_type": "S",
+            }
         return action
 
     def send(self):

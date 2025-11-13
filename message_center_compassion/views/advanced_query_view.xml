@@ -37,14 +37,14 @@
     </record>
 
     <record id="view_query_filter_tree" model="ir.ui.view">
-        <field name="name">compassion.query.filter.tree</field>
+        <field name="name">compassion.query.filter.list</field>
         <field name="model">compassion.query.filter</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="field_id" />
                 <field name="operator_id" />
                 <field name="value" />
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>

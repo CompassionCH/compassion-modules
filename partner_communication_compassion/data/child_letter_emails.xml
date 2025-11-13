@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- New letter -->
         <record id="new_letter" model="mail.template">
             <field name="name">B2S New letter</field>
@@ -52,5 +51,4 @@
             <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="use_default_to" eval="True" />
         </record>
-    </data>
 </odoo>

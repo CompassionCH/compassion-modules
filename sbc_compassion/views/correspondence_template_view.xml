@@ -1,14 +1,14 @@
 <odoo>
     <record id="view_correspondence_template_origin_tree" model="ir.ui.view">
-        <field name="name">correspondence.template.tree</field>
+        <field name="name">correspondence.template.list</field>
         <field name="model">correspondence.template</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="type" />
                 <field name="layout" />
                 <field name="usage_count" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -85,7 +85,7 @@
   >
         <field name="name">Correspondence Templates</field>
         <field name="res_model">correspondence.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

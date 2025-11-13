@@ -1,5 +1,4 @@
 <odoo>
-    <data>
         <!-- Correspondence types -->
         <record id="correspondence_type_bene" model="correspondence.type">
             <field name="name">Beneficiary Initiated Letter</field>
@@ -35,5 +34,4 @@
         <record id="correspondence_type_supporter" model="correspondence.type">
             <field name="name">Supporter Letter</field>
         </record>
-    </data>
 </odoo>

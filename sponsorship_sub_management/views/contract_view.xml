@@ -10,80 +10,50 @@
         <field name="model">recurring.contract</field>
         <field name="arch" type="xml">
             <kanban
-        create="False"
-        edit="False"
-        delete="False"
-        records_draggable="False"
-        default_group_by="sds_state"
-        default_order="sds_state_date asc"
-      >
-                <field name="display_name" />
-                <field name="color" />
-                <field name="sds_state" />
-                <field name="state" />
-                <field name="sds_uid" />
-                <field name="child_id" />
-                <templates>
-                    <t t-name="kanban-menu">
-                        <div class="container">
-                            <a
-                name="action_sub"
-                type="object"
-                role="menuitem"
-                class="dropdown-item"
-                t-if="record.sds_state.raw_value == 'sub_waiting'"
-              ><span class="fa fa-plus" /> Create SUB Sponsorship</a>
-
-                            <a
-                name="action_no_sub"
-                type="object"
-                t-if="record.sds_state.raw_value == 'sub_waiting'"
-                role="menuitem"
-                class="dropdown-item"
-              ><span class="fa fa-times" /> No sub</a>
-
-                            <a
-                t-if="record.sds_state.raw_value == 'sub_waiting'"
-                name="action_sub_reject"
-                type="object"
-                role="menuitem"
-                class="dropdown-item"
-              ><span class="fa fa-minus-circle" /> SUB Reject</a>
-                        </div>
-                    </t>
-                    <t t-name="kanban-box">
-                        <div
-              t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click"
+                    create="false"
+                    delete="false"
+                    records_draggable="false"
+                    default_group_by="sds_state"
+                    default_order="sds_state_date asc"
+                    highlight_color="color"
             >
-                            <div class="oe_kanban_content">
-                                <div><strong><field
-                      name="display_name"
-                    /></strong></div>
-                                <div>SDS State : <field
-                    name="sds_state"
-                  /></div>
-                                <div>State : <field name="state" /></div>
-                                <div class="o_kanban_footer">
-                                    <field name="sds_state_date" />
-                                    <img
-                    t-att-src="kanban_image('res.users', 'image_small', record.sds_uid.raw_value)"
-                    t-att-title="record.sds_uid.value"
-                    width="24"
-                    height="24"
-                    class="oe_kanban_avatar"
-                    alt="user"
-                  />
-                                    <img
-                    t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)"
-                    t-att-title="record.child_id.value"
-                    height="40"
-                    class="oe_kanban_avatar"
-                    t-if="record.child_id.value"
-                    alt="child"
-                  />
-                                </div>
-                            </div>
-                        </div>
+                <templates>
+                    <field name="sds_state" />
+                    <t t-name="menu">
+                        <field name="color" widget="kanban_color_picker"/>
+                        <a
+                                name="action_sub"
+                                role="menuitem"
+                                type="object"
+                                t-if="record.sds_state.raw_value == 'sub_waiting'">
+                            Create SUB Sponsorship
+                        </a>
+
+                        <a
+                                name="action_no_sub"
+                                role="menuitem"
+                                type="object"
+                                t-if="record.sds_state.raw_value == 'sub_waiting'"
+                        >No sub</a>
+
+                        <a
+                                t-if="record.sds_state.raw_value == 'sub_waiting'"
+                                role="menuitem"
+                                name="action_sub_reject"
+                                type="object">SUB Reject</a>
+                    </t>
+                    <t t-name="card" class="flex-row">
+                        <aside>
+                            <field name="child_image" widget="image"  />
+                        </aside>
+                        <main class="ms-2">
+                            <field name="display_name" class="fw-bold fs-5" />
+                            <field name="sds_state" />
+                            <field name="state" />
+                            <footer t-if="record.user_image.value">
+                                <field name="user_image" widget="image" style="width: 32px; height: 32px;" class="ms-auto"/>
+                            </footer>
+                        </main>
                     </t>
                 </templates>
             </kanban>
@@ -94,20 +64,20 @@
         <field name="name">tracking.contract.compassion.form</field>
         <field name="model">recurring.contract</field>
         <field
-      name="inherit_id"
-      ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"
-    />
+                name="inherit_id"
+                ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"
+        />
         <field name="arch" type="xml">
             <button name="open_invoices" position="after">
                 <button
-          name="switch_contract_view"
-          type="object"
-          string="Open SDS view"
-          context="{'form_view_ref':'sponsorship_sub_management.view_follow_contract_form_compassion'}"
-          invisible="type not in ['S', 'SC', 'SWP']"
-          class="oe_inline oe_stat_button"
-          icon="fa-history"
-        />
+                        name="switch_contract_view"
+                        type="object"
+                        string="Open SDS view"
+                        context="{'form_view_ref':'sponsorship_sub_management.view_follow_contract_form_compassion'}"
+                        invisible="type not in ['S', 'SC', 'SWP']"
+                        class="oe_inline oe_stat_button"
+                        icon="fa-history"
+                />
             </button>
         </field>
     </record>
@@ -120,40 +90,40 @@
             <form create="false">
                 <header>
                     <field
-            name="sds_state"
-            widget="statusbar"
-            statusbar_visible="draft,start,active,sub,sub_accept"
-          />
+                            name="sds_state"
+                            widget="statusbar"
+                            statusbar_visible="draft,active,sub,sub_accept"
+                    />
                     <button
-            name="action_sub"
-            type="object"
-            class="oe_highlight"
-            string="Create SUB Sponsorship"
-            invisible="sds_state != 'sub_waiting'"
-          />
+                            name="action_sub"
+                            type="object"
+                            class="oe_highlight"
+                            string="Create SUB Sponsorship"
+                            invisible="sds_state != 'sub_waiting'"
+                    />
                     <button
-            name="action_no_sub"
-            type="object"
-            string="No sub"
-            invisible="sds_state not in ['active', 'sub_waiting']"
-          />
+                            name="action_no_sub"
+                            type="object"
+                            string="No sub"
+                            invisible="sds_state not in ['active', 'sub_waiting']"
+                    />
                     <button
-            name="action_sub_reject"
-            type="object"
-            string="SUB Reject"
-            invisible="sds_state not in ['sub', 'sub_waiting']"
-          />
+                            name="action_sub_reject"
+                            type="object"
+                            string="SUB Reject"
+                            invisible="sds_state not in ['sub', 'sub_waiting']"
+                    />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button
-              name="switch_contract_view"
-              type="object"
-              string="Open financial view"
-              class="oe_stat_button"
-              icon="fa-folder"
-              context="{'form_view_ref':'sponsorship_compassion.view_sponsorship_contract_form_compassion'}"
-            />
+                                name="switch_contract_view"
+                                type="object"
+                                string="Open financial view"
+                                class="oe_stat_button"
+                                icon="fa-folder"
+                                context="{'form_view_ref':'sponsorship_compassion.view_sponsorship_contract_form_compassion'}"
+                        />
                     </div>
                     <div class="oe_title">
                         <h1><field name="display_name" /></h1>
@@ -163,20 +133,20 @@
                             <field name="partner_id" readonly="1" />
                             <field name="correspondent_id" readonly="1" />
                             <field
-                name="parent_id"
-                context="{
+                                    name="parent_id"
+                                    context="{
                                     'form_view_ref' : 'sponsorship_sub_management.view_follow_contract_form_compassion',
-                                    'tree_view_ref' : 'sponsorship_sub_management.view_follow_contract_tree_compassion'
+                                    'list_view_ref' : 'sponsorship_sub_management.view_follow_contract_tree_compassion'
                                     }"
-                readonly="1"
-                invisible="not parent_id"
-              />
+                                    readonly="1"
+                                    invisible="not parent_id"
+                            />
                             <field name="sub_sponsorship_id" />
                             <field
-                name="sub_notes"
-                invisible="sds_state not in ['active', 'sub_waiting']"
-                style="color: red;"
-              />
+                                    name="sub_notes"
+                                    invisible="sds_state not in ['active', 'sub_waiting']"
+                                    style="color: red;"
+                            />
                         </group>
                         <group>
                             <field name="origin_id" readonly="1" />
@@ -193,52 +163,48 @@
                         <group>
                             <field name="child_id" readonly="1" />
                             <field
-                name="end_reason_id"
-                invisible="state not in ['terminated', 'cancelled']"
-                readonly="1"
-              />
+                                    name="end_reason_id"
+                                    invisible="state not in ['terminated', 'cancelled']"
+                                    readonly="1"
+                            />
                             <field
-                name="no_sub_reason"
-                invisible="sds_state != 'no_sub'"
-              />
+                                    name="no_sub_reason"
+                                    invisible="sds_state != 'no_sub'"
+                            />
                             <field name="state" readonly="1" />
                         </group>
                     </group>
                     <group>
                         <field
-              name="lifecycle_ids"
-              context="{'default_child_id': id}"
-            >
-                            <tree>
+                                name="lifecycle_ids"
+                                context="{'default_child_id': id}"
+                        >
+                            <list>
                                 <field name="date" />
                                 <field name="type" />
                                 <field name="comments" />
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
 
     <record id="view_follow_contract_tree_compassion" model="ir.ui.view">
-        <field name="name">follow.contract.compassion.tree</field>
+        <field name="name">follow.contract.compassion.list</field>
         <field name="model">recurring.contract</field>
         <field eval="20" name="priority" />
         <field name="arch" type="xml">
-            <tree
-        decoration-info="sds_state == 'draft'"
-        decoration-danger="sds_state == 'start'"
-        decoration-primary="sds_state == 'active'"
-        decoration-muted="sds_state in ('cancelled')"
-        string="Follow contracts"
-        create="false"
-        edit="false"
-      >
+            <list
+                    decoration-info="sds_state == 'draft'"
+                    decoration-danger="sds_state == 'sub'"
+                    decoration-primary="sds_state == 'active'"
+                    decoration-muted="sds_state in ('cancelled')"
+                    create="false"
+                    edit="false"
+            >
                 <field name="partner_codega" />
                 <field name="partner_id" />
 
@@ -252,7 +218,7 @@
                 <field name="origin_id" />
                 <field name="state" />
                 <field name="sds_state" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -264,13 +230,13 @@
         <field name="arch" type="xml">
             <search string="Search contracts">
                 <field
-          name="reference"
-          filter_domain="['|', '|', '|',
+                        name="reference"
+                        filter_domain="['|', '|', '|',
                              ('reference','ilike',self),
                              ('partner_id','child_of',self),
                              ('child_code', 'ilike', self),
                              ('child_name', 'ilike', self),]"
-        />
+                />
                 <field name="child_id" />
                 <field name="partner_id" />
                 <field name="sds_state" />
@@ -278,51 +244,51 @@
                 <field name="sds_uid" />
 
                 <filter
-          name="active"
-          string="Active"
-          domain="[('state', '=', 'active')]"
-        />
+                        name="active"
+                        string="Active"
+                        domain="[('state', '=', 'active')]"
+                />
                 <filter
-          name="waiting"
-          string="Waiting"
-          domain="[('state','in', ('draft','waiting','mandate'))]"
-        />
+                        name="waiting"
+                        string="Waiting"
+                        domain="[('state','in', ('draft','waiting','mandate'))]"
+                />
                 <filter
-          name="finished"
-          string="Finished"
-          domain="[('state','in', ('cancelled','terminated'))]"
-        />
+                        name="finished"
+                        string="Finished"
+                        domain="[('state','in', ('cancelled','terminated'))]"
+                />
                 <filter
-          name="user"
-          string="My Sponsorships"
-          domain="[('sds_uid', '=', uid)]"
-        />
+                        name="user"
+                        string="My Sponsorships"
+                        domain="[('sds_uid', '=', uid)]"
+                />
 
                 <group expand="0" string="Group By...">
                     <filter
-            string="Start date"
-            name="start_date"
-            domain="[]"
-            context="{'group_by':'start_date'}"
-          />
+                            string="Start date"
+                            name="start_date"
+                            domain="[]"
+                            context="{'group_by':'start_date'}"
+                    />
                     <filter
-            string="SDS state date"
-            name="sds_state_date"
-            domain="[]"
-            context="{'group_by':'sds_state_date'}"
-          />
+                            string="SDS state date"
+                            name="sds_state_date"
+                            domain="[]"
+                            context="{'group_by':'sds_state_date'}"
+                    />
                     <filter
-            string="Status"
-            name="status"
-            domain="[]"
-            context="{'group_by':'state'}"
-          />
+                            string="Status"
+                            name="status"
+                            domain="[]"
+                            context="{'group_by':'state'}"
+                    />
                     <filter
-            string="SDS Status"
-            name="sds_status"
-            domain="[]"
-            context="{'group_by':'sds_state'}"
-          />
+                            string="SDS Status"
+                            name="sds_status"
+                            domain="[]"
+                            context="{'group_by':'sds_state'}"
+                    />
                 </group>
             </search>
         </field>
@@ -334,13 +300,13 @@
         <field name="res_model">recurring.contract</field>
         <field name="domain">[('type', 'like', 'S')]</field>
         <field
-      name="context"
-    >{'default_type': 'S', 'search_default_user':1}</field>
+                name="context"
+        >{'default_type': 'S', 'search_default_user':1}</field>
         <field
-      name="view_ids"
-      eval="[(5, 0, 0),
+                name="view_ids"
+                eval="[(5, 0, 0),
                           (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_follow_contract_kanban_compassion')}),
-                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_follow_contract_tree_compassion')}),
+                          (0, 0, {'view_mode': 'list', 'view_id': ref('view_follow_contract_tree_compassion')}),
                           (0, 0, {'view_mode': 'form', 'view_id': ref('view_follow_contract_form_compassion')}),
                           ]"
     />
@@ -349,17 +315,17 @@
 
     <!-- Menu Items -->
     <menuitem
-    id="menu_tracking"
-    parent="child_compassion.menu_sponsorship_root"
-    name="Track sponsorships"
-    sequence="5"
-  />
+            id="menu_tracking"
+            parent="child_compassion.menu_sponsorship_root"
+            name="Track sponsorships"
+            sequence="5"
+    />
     <menuitem
-    action="action_follow_sds"
-    id="menu_follow_sds"
-    parent="menu_tracking"
-    name="SUB Sponsorships"
-    sequence="2"
-    groups="child_compassion.group_sponsorship"
-  />
+            action="action_follow_sds"
+            id="menu_follow_sds"
+            parent="menu_tracking"
+            name="SUB Sponsorships"
+            sequence="2"
+            groups="child_compassion.group_sponsorship"
+    />
 </odoo>

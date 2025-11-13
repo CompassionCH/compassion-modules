@@ -190,7 +190,7 @@ class GenericChild(models.AbstractModel):
             for child in self.filtered("image_url"):
                 url = child.image_url if not thumb else child.thumbnail_url
                 try:
-                    child.portrait = base64.encodebytes(urlopen(url).read())
+                    child.portrait = base64.encodebytes(urlopen(url, timeout=3).read())
                 except Exception:
                     logger.error("Image cannot be fetched : " + str(url))
 

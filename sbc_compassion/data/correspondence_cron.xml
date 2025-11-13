@@ -5,8 +5,6 @@
         <field name="user_id" ref="base.user_root" />
         <field name="interval_number">365</field>
         <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="doall">1</field>
         <field name="model_id" ref="model_correspondence" />
         <field name="code">model.check_postponed_christmas_letters()</field>
     </record>
@@ -17,8 +15,6 @@
         <field name="user_id" ref="base.user_root" />
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="False" />
         <field name="model_id" ref="model_correspondence" />
         <field name="code">model.cron_download_old_correspondence()</field>
     </record>

@@ -50,11 +50,10 @@
     </record>
 
     <record model="ir.ui.view" id="success_story_tree">
-        <field name="name">success.story.tree</field>
+        <field name="name">success.story.list</field>
         <field name="model">success.story</field>
         <field name="arch" type="xml">
-            <tree
-        string="Success stories"
+            <list
         decoration-info="state=='used'"
         decoration-primary="state=='new'"
       >
@@ -64,7 +63,7 @@
                 <field name="print_count" />
                 <field name="type" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -108,7 +107,7 @@
     <record id="action_success_story" model="ir.actions.act_window">
         <field name="name">Success Stories</field>
         <field name="res_model">success.story</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Add menu in Sales-->

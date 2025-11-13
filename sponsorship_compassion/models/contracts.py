@@ -91,9 +91,7 @@ class SponsorshipContract(models.Model):
         "compassion.project", "Project", related="child_id.project_id", readonly=False
     )
     child_name = fields.Char("Child name", related="child_id.name", readonly=True)
-    child_code = fields.Char(
-        "Child code", related="child_id.local_id", readonly=True, store=True
-    )
+    child_code = fields.Char("Child code", related="child_id.local_id", readonly=True)
     child_age = fields.Integer("Age", related="child_id.age", readonly=True)
     child_gender = fields.Selection(related="child_id.gender", readonly=True)
     is_active = fields.Boolean(
@@ -123,7 +121,7 @@ class SponsorshipContract(models.Model):
         "recurring.contract", "sub sponsorship", copy=False, index=True
     )
     partner_lang = fields.Selection(
-        string="Partner language", related="partner_id.lang", store=True
+        string="Partner language", related="partner_id.lang"
     )
     partner_id = fields.Many2one(
         "res.partner",
@@ -298,7 +296,7 @@ class SponsorshipContract(models.Model):
         "open_invoices_sponsorship_only", "open_invoices_exclude_sponsorship"
     )
     def _compute_invoices(self):
-        super()._compute_invoices()
+        res = super()._compute_invoices()
         # For some cases we only want to consider sponsorship invoices and exclude
         # all gifts and fund donations
         if self.env.context.get("open_invoices_sponsorship_only"):
@@ -323,6 +321,7 @@ class SponsorshipContract(models.Model):
                 and i.state not in ("cancel", "draft")
             )
             contract.nb_invoices += len(gift_invoices)
+        return res
 
     def _compute_gift_partner(self):
         for contract in self:
@@ -333,7 +332,7 @@ class SponsorshipContract(models.Model):
     @api.depends_context("open_invoices_exclude_sponsorship")
     def _compute_contract_products(self):
         if not self.env.context.get("open_invoices_exclude_sponsorship"):
-            super()._compute_contract_products()
+            return super()._compute_contract_products()
         else:
             # Special case where we consider only gift products
             birthday_gift_type = self.env.ref(
@@ -352,11 +351,12 @@ class SponsorshipContract(models.Model):
                     contract.product_ids += self.env["product.product"].search(
                         [("sponsorship_gift_type_id", "=", christmas_gift_type.id)]
                     )
+            return True
 
     @api.depends("partner_id", "partner_id.ref", "child_id", "child_id.local_id")
     def _compute_display_name(self):
         """Gives a friendly name for a sponsorship"""
-        super()._compute_display_name()
+        res = super()._compute_display_name()
         for contract in self:
             if contract.partner_id.ref or contract.reference:
                 name = contract.partner_id.ref or contract.reference
@@ -367,6 +367,7 @@ class SponsorshipContract(models.Model):
                 contract.display_name = name
             else:
                 contract.display_name = "Contract"
+        return res
 
     @api.depends("activation_date", "state")
     def _compute_active(self):
@@ -543,7 +544,7 @@ class SponsorshipContract(models.Model):
             child = self.env["compassion.child"].browse(vals.get("child_id"))
             sponsor_id = vals.get("correspondent_id", vals.get("partner_id"))
             if "S" in vals.get("type", "") and child and sponsor_id:
-                child.with_context({}).child_sponsored(sponsor_id)
+                child.child_sponsored(sponsor_id)
 
             # Generates commitment number for contracts BVRs
             if "commitment_number" not in vals:
@@ -634,7 +635,7 @@ class SponsorshipContract(models.Model):
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    contract.child_id.with_context({}).child_unsponsored()
+                    contract.child_id.child_unsponsored()
         return super().unlink()
 
     ##########################################################################
@@ -896,9 +897,7 @@ class SponsorshipContract(models.Model):
         self.ensure_one()
         if not self.correspondent_id.global_id:
             self.correspondent_id.upsert_constituent().process_messages()
-        message_obj = self.env["gmc.message"].with_context(
-            {"queue_job__no_delay": True}
-        )
+        message_obj = self.env["gmc.message"].with_context(queue_job__no_delay=True)
         upsert_correspondent_gmc = self.env.ref(
             "sponsorship_compassion.upsert_correspondent_commitment"
         )
@@ -938,7 +937,7 @@ class SponsorshipContract(models.Model):
 
         # Create new sponsorships at GMC
         message = self.upsert_sponsorship()
-        message.with_context({"queue_job__no_delay": True}).process_messages()
+        message.with_context(queue_job__no_delay=True).process_messages()
 
         answer = json.loads(message.answer)
         if not isinstance(answer, dict) or "Message" not in answer:
@@ -1211,7 +1210,7 @@ class SponsorshipContract(models.Model):
         to_activate = self
         if invoice.invoice_category != "sponsorship":
             to_activate -= self.filtered(lambda s: "S" in s.type)
-        super(SponsorshipContract, to_activate).invoice_paid(invoice)
+        return super(SponsorshipContract, to_activate).invoice_paid(invoice)
 
     @api.constrains("group_id")
     def _is_a_valid_group(self):
@@ -1284,7 +1283,7 @@ class SponsorshipContract(models.Model):
     def _updt_invoices_rc(self, vals):
         # Update only sponsorship invoices first, with invoice_lines and group changes
         # (handled in super)
-        super(
+        res = super(
             SponsorshipContract, self.with_context(open_invoices_sponsorship_only=True)
         )._updt_invoices_rc(vals)
 
@@ -1295,6 +1294,7 @@ class SponsorshipContract(models.Model):
             data_invs = gifts._build_invoices_data(contracts=contracts)
             if data_invs:
                 gifts.update_open_invoices(data_invs)
+        return res
 
     def migrate_gmc_correspondence_commitment(self):
         """Migrate the GMC commitment to the new field."""

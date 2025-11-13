@@ -134,7 +134,10 @@ class CompassionMapping(models.Model):
                         else self.model_id.model
                     )
                     raise UserError(
-                        _("[%s] Invalid mapping: field %s in %s doesn't exist")
+                        _(
+                            "[%(mapping_name)s] Invalid mapping: field %(field_name)s "
+                            "in %(odoo_model)s doesn't exist"
+                        )
                         % (self.name, field, model)
                     ) from error
                 field_spec_vals["odoo_field"] = field_name

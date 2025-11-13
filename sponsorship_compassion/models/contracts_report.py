@@ -211,7 +211,7 @@ class PartnerSponsorshipReport(models.Model):
             ],
             "context": self.with_context(
                 search_default_group_product=1,
-                tree_view_ref="sponsorship_compassion"
+                list_view_ref="sponsorship_compassion"
                 ".view_invoice_line_partner_tree ",
             ).env.context,
             "domain": [

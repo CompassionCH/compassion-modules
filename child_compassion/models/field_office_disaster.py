@@ -301,7 +301,7 @@ class FieldOfficeDisasterAlert(models.Model):
             ],
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "child.disaster.impact",
             "target": "current",
         }
@@ -314,7 +314,7 @@ class FieldOfficeDisasterAlert(models.Model):
             ],
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "compassion.project",
             "target": "current",
         }

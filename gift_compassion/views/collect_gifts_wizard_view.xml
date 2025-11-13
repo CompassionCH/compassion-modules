@@ -15,7 +15,7 @@
                     <field name="domain" invisible="1" />
                     <field
             name="invoice_line_ids"
-            context="{'tree_view_ref': 'sponsorship_compassion.view_invoice_line_partner_tree', 'lang': 'en_US'}"
+            context="{'list_view_ref': 'sponsorship_compassion.view_invoice_line_partner_tree', 'lang': 'en_US'}"
           />
                 </group>
                 <footer>

@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
 
     _inherit = "account.move"
 
-    children = fields.Char("Children", compute="_compute_children")
+    children = fields.Char(compute="_compute_children")
     invoice_category = fields.Selection(
         [
             ("sponsorship", "Sponsorship"),

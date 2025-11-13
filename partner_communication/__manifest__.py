@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication",
-    "version": "17.0.1.0.6",
+    "version": "18.0.1.0.0",
     "category": "Other",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
@@ -64,6 +64,6 @@
     ],
     "qweb": [],
     "demo": ["demo/demo_data.xml"],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
 }

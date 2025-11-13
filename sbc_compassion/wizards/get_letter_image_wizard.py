@@ -22,7 +22,7 @@ class GetLetterImageWizard(models.TransientModel):
     _description = "Wizard for image letter"
 
     image = fields.Selection(
-        [("original", _("Original")), ("final", _("Final"))], required=True
+        [("original", "Original"), ("final", "Final")], required=True
     )
     format = fields.Selection(
         [("jpeg", "jpeg"), ("png", "png"), ("pdf", "pdf"), ("tif", "tif")],

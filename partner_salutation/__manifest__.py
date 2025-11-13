@@ -30,14 +30,14 @@
 {
     "name": "Compassion Partner Communications",
     "summary": "Adds a salutation field on partners",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Production/Stable",
     "category": "Partner Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "author": "Compassion CH",
     "maintainers": ["ecino"],
     "license": "AGPL-3",
-    'installable': False,
+    "installable": True,
     "depends": [
         "advanced_translation",
         "partner_firstname",  # OCA/partner-contact

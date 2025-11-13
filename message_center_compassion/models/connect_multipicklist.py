@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class ConnectMultipicklist(models.AbstractModel):
@@ -25,7 +25,7 @@ class ConnectMultipicklist(models.AbstractModel):
         (
             "name_uniq",
             "UNIQUE(name)",
-            _("You cannot have two picklist values with same name."),
+            "You cannot have two picklist values with same name.",
         )
     ]
 
@@ -49,14 +49,14 @@ class ConnectMultipicklist(models.AbstractModel):
     def get_res_view(self):
         """
         Method to find all children given a property
-        :return: Tree view of records having that property
+        :return: List view of records having that property
         """
         res_ids = self.get_res_ids()
         return {
             "type": "ir.actions.act_window",
             "name": "Related records",
             "res_model": self.res_model,
-            "views": [[False, "tree"], [False, "form"]],
+            "views": [[False, "list"], [False, "form"]],
             "domain": [["id", "in", res_ids]],
         }
 

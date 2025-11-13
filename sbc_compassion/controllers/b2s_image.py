@@ -18,9 +18,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response
 
 from odoo import fields, http
-from odoo.http import request
-
-from odoo.addons.web.controllers.main import content_disposition
+from odoo.http import content_disposition, request
 
 _logger = logging.getLogger(__name__)
 

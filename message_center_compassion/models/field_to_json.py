@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval, wrap_module
 
@@ -101,7 +101,7 @@ class FieldToJson(models.Model):
     )
 
     _sql_constraints = [
-        ("unique", "unique(mapping_id,json_name)", _("This field is already mapped"))
+        ("unique", "unique(mapping_id,json_name)", "This field is already mapped")
     ]
 
     @api.depends("odoo_field")

@@ -34,7 +34,7 @@
     </record>
 
     <record id="view_correspondence_tree_communication" model="ir.ui.view">
-        <field name="name">correspondence.tree.communication</field>
+        <field name="name">correspondence.list.communication</field>
         <field name="model">correspondence</field>
         <field
       name="inherit_id"

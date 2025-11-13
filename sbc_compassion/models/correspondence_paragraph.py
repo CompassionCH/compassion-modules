@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class CorrespondenceParagraph(models.Model):
         (
             "unique_paragraph",
             "unique(page_id,sequence)",
-            _("The paragraph already exists."),
+            "The paragraph already exists.",
         )
     ]
 

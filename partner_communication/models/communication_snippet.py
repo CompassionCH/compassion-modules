@@ -6,7 +6,7 @@ class CommunicationSnippet(models.Model):
     _description = "Communication Snippet"
 
     name = fields.Char(required=True, index=True)
-    snippet_text = fields.Html(required=True, translate=True)
+    snippet_text = fields.Html(required=True, translate=True, sanitize=False)
 
     def action_edit_snippet(self):
         self.ensure_one()

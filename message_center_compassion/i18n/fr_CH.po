@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-09 19:10+0000\n"
-"PO-Revision-Date: 2024-05-09 21:11+0200\n"
+"POT-Creation-Date: 2025-11-19 14:01+0000\n"
+"PO-Revision-Date: 2025-11-19 15:02+0100\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -15,12 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.8\n"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_needaction
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_needaction
-#| msgid "Action Type"
 msgid "Action Needed"
 msgstr ""
 
@@ -51,7 +50,6 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_type_icon
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_type_icon
-#| msgid "Action Type"
 msgid "Activity Type Icon"
 msgstr ""
 
@@ -61,8 +59,8 @@ msgid "Allow Relational Creation"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "Ambiguous mapping name %s"
 msgstr ""
 
@@ -74,6 +72,11 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_api_key
 msgid "Api Key"
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_fastapi_endpoint__app
+msgid "App"
 msgstr ""
 
 #. module: message_center_compassion
@@ -103,22 +106,19 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_recurring_contract_cancel_gifts_on_termination
-msgid "Cancel pending gifts if sponsorship is terminated"
-msgstr "Annuler cadeaux à la fin du parrainage"
-
-#. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
-#, python-format
 msgid ""
 "Cannot process several actions at the same time. Please process each message "
 "type individually."
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_child_id
-msgid "Child"
-msgstr "Enfant"
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__job_channel
+msgid ""
+"Channel associated to perform the job. If empty, the default channel will be "
+"used (root.gmc_pool)."
+msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_client
@@ -127,13 +127,11 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
-#| msgid "compassion.child"
 msgid "Compassion"
 msgstr ""
 
 #. module: message_center_compassion
-#: model_terms:ir.ui.view,arch_db:message_center_compassion.gmc_settings
-#| msgid "compassion.project"
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
 msgid "Compassion Connect"
 msgstr ""
 
@@ -144,7 +142,6 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.module.category,name:message_center_compassion.module_category_message_center
-#| msgid "Message Center"
 msgid "Compassion Message Center"
 msgstr ""
 
@@ -175,7 +172,6 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_gmc_message
-#| msgid "GMC Message"
 msgid "Connect Message"
 msgstr ""
 
@@ -214,7 +210,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__create_uid
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__create_uid
 #: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__create_uid
-#| msgid "CreateGift"
 msgid "Created by"
 msgstr ""
 
@@ -228,7 +223,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__create_date
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__create_date
 #: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__create_date
-#| msgid "CreateGift"
 msgid "Created on"
 msgstr ""
 
@@ -240,19 +234,20 @@ msgid ""
 msgstr ""
 
 #. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__delivery_service_api_key
+msgid "Delivery Service Api Key"
+msgstr ""
+
+#. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__display_name
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapped_model__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__display_name
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__display_name
 #: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__display_name
-#: model:ir.model.fields,field_description:message_center_compassion.field_ir_http__display_name
-#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -263,7 +258,6 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__end_date
-#| msgid "Date"
 msgid "End Date"
 msgstr ""
 
@@ -278,22 +272,14 @@ msgid "Failed"
 msgstr "Echec"
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__failed_message_ids
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failed_message_ids
-#| msgid "Process Messages"
-msgid "Failed Messages"
-msgstr ""
-
-#. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__failure
-#, python-format
 msgid "Failure"
 msgstr "Echec"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__failure_method
-#| msgid "Failure details"
 msgid "Failure Method"
 msgstr ""
 
@@ -301,6 +287,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failure_reason
 msgid "Failure details"
 msgstr "Message d'erreur"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_fastapi_endpoint
+msgid "FastAPI Endpoint"
+msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__field_id
@@ -345,12 +336,6 @@ msgid "Followers"
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_channel_ids
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_channel_ids
-msgid "Followers (Channels)"
-msgstr ""
-
-#. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_partner_ids
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_partner_ids
 msgid "Followers (Partners)"
@@ -382,26 +367,22 @@ msgstr ""
 #: model:ir.model,name:message_center_compassion.model_gmc_action
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__action_id
 #: model:ir.ui.menu,name:message_center_compassion.menu_message_action
-#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_action_form
 msgid "GMC Action"
 msgstr "Action GMC"
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_gmc_action_connect
-#| msgid "GMC Action"
 msgid "GMC Action Connect"
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.actions.act_window,name:message_center_compassion.action_gmc_action_connect
 #: model:ir.ui.menu,name:message_center_compassion.menu_message_action_connect
-#| msgid "Action to execute"
 msgid "GMC Action to Connect"
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__action_id
-#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
 msgid "GMC Message"
 msgstr "Message GMC"
 
@@ -411,9 +392,13 @@ msgid "GMC Pool Process Wizard"
 msgstr ""
 
 #. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__delivery_service_status
+msgid "GMC Queue active"
+msgstr ""
+
+#. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__name
-#| msgid "GMC Manager"
 msgid "GMC name"
 msgstr ""
 
@@ -439,9 +424,12 @@ msgid "Group By..."
 msgstr "Grouper par..."
 
 #. module: message_center_compassion
-#: model:ir.model,name:message_center_compassion.model_ir_http
-msgid "HTTP Routing"
-msgstr ""
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__has_message
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__has_message
+#, fuzzy
+#| msgid "GMC Message"
+msgid "Has Message"
+msgstr "Message GMC"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__headers
@@ -450,18 +438,14 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__id
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapped_model__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__id
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__id
 #: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__id
-#: model:ir.model.fields,field_description:message_center_compassion.field_ir_http__id
-#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__id
 msgid "ID"
 msgstr ""
 
@@ -479,15 +463,15 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_needaction
-#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_unread
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_needaction
-#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_unread
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_has_error
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_has_sms_error
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_has_error
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -525,9 +509,9 @@ msgid "Incoming"
 msgstr "Entrant"
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_action.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__direction__in
-#, python-format
 msgid "Incoming Message"
 msgstr "Message entrant"
 
@@ -540,20 +524,18 @@ msgstr "Messages Entrants"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__incoming_method
-#| msgid "Incoming Event"
 msgid "Incoming Method"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_action.py:0
-#, python-format
-#| msgid "Invalid action (%s, %s, %s)."
-msgid "Invalid action (%s, %s)."
+msgid "Invalid action (%(direction)s, %(model)s)."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "Invalid data for JSON field %s. Expected a dictionary or a string."
 msgstr ""
 
@@ -569,37 +551,30 @@ msgid "JSON Specifications"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "JSON data must be a dictionary."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "JSON data must contain the following keys: name, model and mapping"
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__job_channel
+msgid "Job Channel"
+msgstr ""
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_action_form
+msgid "Job queue configuration"
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__json_name
 msgid "Json Field Name"
-msgstr ""
-
-#. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapped_model____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_ir_http____last_update
-#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings____last_update
-msgid "Last Modified on"
 msgstr ""
 
 #. module: message_center_compassion
@@ -629,14 +604,7 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_main_attachment_id
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_main_attachment_id
-msgid "Main Attachment"
-msgstr ""
-
-#. module: message_center_compassion
 #: model:res.groups,name:message_center_compassion.group_gmc_manager
-#| msgid "GMC Manager"
 msgid "Manager"
 msgstr ""
 
@@ -655,8 +623,8 @@ msgid "Mapping for GMC Connect"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "Mapping must be a dictionary"
 msgstr ""
 
@@ -673,7 +641,6 @@ msgstr "Date du message"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_has_error
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_has_error
-#| msgid "Message Direction"
 msgid "Message Delivery error"
 msgstr ""
 
@@ -691,7 +658,6 @@ msgstr "File des messages"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_ids
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_ids
-#| msgid "GMC Message"
 msgid "Messages"
 msgstr ""
 
@@ -700,13 +666,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__model_id
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__model
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__model
-#| msgid "OSV Model"
 msgid "Model"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "Model does not exist : %s"
 msgstr ""
 
@@ -724,11 +689,17 @@ msgid "Name"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__new
-#, python-format
 msgid "New"
 msgstr "Nouveau"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_calendar_event_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_date_deadline
@@ -745,19 +716,17 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_type_id
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_type_id
-#| msgid "Action Type"
 msgid "Next Activity Type"
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__no_outgoing_data
-#| msgid "Outgoing Message"
 msgid "No Outgoing Data"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid "No mapping found with name %s"
 msgstr ""
 
@@ -765,12 +734,11 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_form
 #: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_incoming_form
 #: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_outgoing_form
-#| msgid "Error message"
 msgid "No messages."
 msgstr ""
 
 #. module: message_center_compassion
-#: model_terms:ir.ui.view,arch_db:message_center_compassion.notification_settings
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
 msgid "Notification configuration"
 msgstr ""
 
@@ -789,7 +757,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_needaction_counter
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: message_center_compassion
@@ -799,16 +767,9 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_unread_counter
-#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_unread_counter
-msgid "Number of unread messages"
-msgstr ""
-
-#. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__odoo_failure
-#, python-format
-#| msgid "Failure"
 msgid "Odoo Failure"
 msgstr ""
 
@@ -831,20 +792,29 @@ msgid ""
 msgstr ""
 
 #. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__fastapi_endpoint__app__onramp
+msgid "Onramp Endpoint"
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_onramp_service
+msgid "Onramp Service"
+msgstr ""
+
+#. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__operator_id
 msgid "Operator"
 msgstr ""
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
-#| msgid "Outgoing Message"
 msgid "Outgoing"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_action.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__direction__out
-#, python-format
 msgid "Outgoing Message"
 msgstr "Message sortant"
 
@@ -877,33 +847,25 @@ msgid "Partner"
 msgstr "Partenaire"
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__pending
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
-#, python-format
 msgid "Pending"
 msgstr "En attente"
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/tools/onramp_connector.py:0
-#, python-format
 msgid ""
 "Please give connect_client, connect_secret, connect_token_server in your "
 "Odoo configuration file."
 msgstr ""
 
 #. module: message_center_compassion
-#: code:addons/message_center_compassion/tools/onramp_connector.py:0
-#, python-format
-msgid ""
-"Please give connect_url and connect_api_key values in your Odoo "
-"configuration file."
-msgstr ""
-
-#. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__postponed
-#, python-format
 msgid "Postponed"
 msgstr ""
 
@@ -976,7 +938,6 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__request_id
-#| msgid "Unique request ID"
 msgid "Request ID"
 msgstr ""
 
@@ -992,7 +953,6 @@ msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__object_id
-#| msgid "Resolved"
 msgid "Resource"
 msgstr ""
 
@@ -1003,14 +963,34 @@ msgid "Responsible User"
 msgstr ""
 
 #. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid ""
+"Returns the egress status of Onramp (CI). True indicates that CI OnRamp is "
+"enabled to make REST calls to the GP OnRamp. False indicates that CI OnRamp "
+"will queue messages, and will NOT make REST calls to the GP OnRamp."
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_res_config_settings__delivery_service_status
+msgid ""
+"Returns the egress status of Onramp (CI). True indicates that CI OnRamp is "
+"enabled to make REST calls to the GP OnRamp. False indicates that CI OnRamp "
+"will queue messages,and will NOT make REST calls to the GP OnRamp."
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_has_sms_error
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__search_key
-#| msgid "Search Partner"
 msgid "Search Key"
 msgstr ""
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__search_relational_record
-#| msgid "Search Partner"
 msgid "Search Relational Record"
 msgstr ""
 
@@ -1027,6 +1007,12 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_compassion_query_filter__value
 msgid "Separate values with ;"
+msgstr ""
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/tools/onramp_connector.py:0
+msgid "Session is not initialized."
 msgstr ""
 
 #. module: message_center_compassion
@@ -1047,6 +1033,12 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_action__auto_process
 msgid "Set to True for processing the message as soon as it is created."
+msgstr ""
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_message_center_settings
+#: model:ir.ui.menu,name:message_center_compassion.compassion_settings_menu
+msgid "Settings"
 msgstr ""
 
 #. module: message_center_compassion
@@ -1080,25 +1072,24 @@ msgid "Sub mapping"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapped_model.py:0
-#, python-format
 msgid ""
 "Sub mapping field should be a relational field onto a model which supports "
 "GMC mappings."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_message.py:0
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__success
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
-#, python-format
 msgid "Success"
 msgstr "Succès"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__success_method
-#| msgid "Success"
 msgid "Success Method"
 msgstr ""
 
@@ -1125,9 +1116,9 @@ msgid ""
 msgstr "L'utilisateur aura accès au centre de messages GMC"
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/field_to_json.py:0
 #: model:ir.model.constraint,message:message_center_compassion.constraint_compassion_field_to_json_unique
-#, python-format
 msgid "This field is already mapped"
 msgstr ""
 
@@ -1149,8 +1140,8 @@ msgid "To Json Conversion"
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/tools/onramp_connector.py:0
-#, python-format
 msgid "Token validation failed."
 msgstr ""
 
@@ -1186,20 +1177,6 @@ msgid "URL endpoint for sending messages to GMC"
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_unread
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_unread
-#| msgid "Process Messages"
-msgid "Unread Messages"
-msgstr ""
-
-#. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_unread_counter
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_unread_counter
-#| msgid "Message Center"
-msgid "Unread Messages Counter"
-msgstr ""
-
-#. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__object_ids
 msgid ""
 "Used for incoming messages containing several records. (ids separated by "
@@ -1209,6 +1186,11 @@ msgstr ""
 #. module: message_center_compassion
 #: model:res.groups,name:message_center_compassion.group_gmc_user
 msgid "User"
+msgstr ""
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid "Users to notify when GMC terms are untranslated"
 msgstr ""
 
 #. module: message_center_compassion
@@ -1224,13 +1206,14 @@ msgid ""
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_website_message_ids
-#| msgid "Process Messages"
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__website_message_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__website_message_ids
 msgid "Website Messages"
 msgstr ""
 
 #. module: message_center_compassion
-#: model:ir.model.fields,help:message_center_compassion.field_gmc_message_website_message_ids
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__website_message_ids
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__website_message_ids
 msgid "Website communication history"
 msgstr ""
 
@@ -1243,22 +1226,22 @@ msgid ""
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
 msgid ""
 "You can only add mapping to models that inherit compassion.mapped.model\n"
 "%s doesn't support mappings."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/gmc_action_connect.py:0
 #: model:ir.model.constraint,message:message_center_compassion.constraint_gmc_action_connect_connect_schema_uniq
-#, python-format
-#| msgid "You cannot have two requests with same id."
 msgid "You cannot have two actions with same connect schema."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/connect_multipicklist.py:0
 #: model:ir.model.constraint,message:message_center_compassion.constraint_child_christian_activity_name_uniq
 #: model:ir.model.constraint,message:message_center_compassion.constraint_child_chronic_illness_name_uniq
@@ -1291,15 +1274,15 @@ msgstr ""
 #: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_suspension_extension_reason_name_uniq
 #: model:ir.model.constraint,message:message_center_compassion.constraint_fo_disaster_loss_name_uniq
 #: model:ir.model.constraint,message:message_center_compassion.constraint_fo_high_risk_name_uniq
-#, python-format
-#| msgid "You cannot have two requests with same id."
 msgid "You cannot have two picklist values with same name."
 msgstr ""
 
 #. module: message_center_compassion
+#. odoo-python
 #: code:addons/message_center_compassion/models/compassion_mapping.py:0
-#, python-format
-msgid "[%s] Invalid mapping: field %s in %s doesn't exist"
+msgid ""
+"[%(mapping_name)s] Invalid mapping: field %(field_name)s in %(odoo_model)s "
+"doesn't exist"
 msgstr ""
 
 #. module: message_center_compassion
@@ -1325,6 +1308,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
 msgid "or"
 msgstr "ou"
+
+#~ msgid "Cancel pending gifts if sponsorship is terminated"
+#~ msgstr "Annuler cadeaux à la fin du parrainage"
+
+#~ msgid "Child"
+#~ msgstr "Enfant"
 
 #, python-format
 #~ msgid "Contract is not a sponsorship."

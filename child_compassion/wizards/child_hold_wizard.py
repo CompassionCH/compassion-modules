@@ -73,7 +73,7 @@ class ChildHoldWizard(models.TransientModel):
         """Returns the action after closing the wizard."""
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": self.env.context,
             "target": "current",
         }

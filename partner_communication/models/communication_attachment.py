@@ -72,17 +72,13 @@ class CommunicationAttachment(models.Model):
             new_record = "data" in vals and "attachment_id" not in vals
             if new_record:
                 name = vals["name"]
-                attachment = (
-                    self.env["ir.attachment"]
-                    .with_context({})
-                    .create(
-                        {
-                            "res_model": "partner.communication.job",
-                            "datas": vals["data"],
-                            "name": name,
-                            "report_id": vals["report_id"],
-                        }
-                    )
+                attachment = self.env["ir.attachment"].create(
+                    {
+                        "res_model": "partner.communication.job",
+                        "datas": vals["data"],
+                        "name": name,
+                        "report_id": vals["report_id"],
+                    }
                 )
                 vals["attachment_id"] = attachment.id
 

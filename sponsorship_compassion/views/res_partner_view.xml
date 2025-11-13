@@ -81,7 +81,7 @@
                         <h3>Sponsorships as payer only</h3>
                         <field
               name="contracts_paid"
-              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+              context="{'default_type': 'S', 'list_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
             />
                     </div>
                     <div
@@ -91,7 +91,7 @@
                         <h3>Sponsorships as correspondent only</h3>
                         <field
               name="contracts_correspondant"
-              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+              context="{'default_type': 'S', 'list_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
             />
                     </div>
                     <div
@@ -101,7 +101,7 @@
                         <h3>Sponsorships fully managed</h3>
                         <field
               name="contracts_fully_managed"
-              context="{'default_type': 'S', 'tree_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
+              context="{'default_type': 'S', 'list_view_ref': 'sponsorship_compassion.recurring_contract_simple_tree'}"
             />
                     </div>
                     <div
@@ -113,7 +113,7 @@
               name="other_contract_ids"
               context="{'default_type': 'O'}"
             >
-                            <tree
+                            <list
                 decoration-info="state == 'draft'"
                 decoration-bf="state == 'active'"
                 decoration-success="state == 'waiting'"
@@ -136,7 +136,7 @@
                                 <field name="total_amount" />
                                 <field name="state" />
                                 <field name="type" optional="hide" />
-                            </tree>
+                            </list>
                         </field>
                     </div>
                 </page>
@@ -182,7 +182,7 @@
         <field name="name">Supporters</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="domain">[]</field>
         <field
       name="context"

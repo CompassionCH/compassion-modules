@@ -51,11 +51,7 @@ class MailMail(models.Model):
 
     def send(self, auto_commit=False, raise_exception=False):
         """Create communication for partner, if not already existing."""
-        comm_obj = (
-            self.env["partner.communication.job"]
-            .with_context({})
-            .with_context(no_print=True)
-        )
+        comm_obj = self.env["partner.communication.job"].with_context(no_print=True)
         config = self.env.ref("partner_communication.default_communication")
         for email in self.exists().filtered(
             lambda e: e.mail_message_id.model != "partner.communication.job"

@@ -14,10 +14,10 @@
         </field>
     </record>
     <record model="ir.ui.view" id="communication_snippet_tree">
-        <field name="name">communication.snippet.tree</field>
+        <field name="name">communication.snippet.list</field>
         <field name="model">communication.snippet</field>
         <field name="arch" type="xml">
-            <tree editable="top">
+            <list editable="top">
                 <field name="name" />
                 <field name="snippet_text" />
                 <button
@@ -26,13 +26,13 @@
           string="Edit"
           icon="fa-external-link"
         />
-            </tree>
+            </list>
         </field>
     </record>
     <record model="ir.actions.act_window" id="action_communication_snippet">
         <field name="name">Text Snippets</field>
         <field name="res_model">communication.snippet</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <menuitem
     id="communication_snippet_menu"

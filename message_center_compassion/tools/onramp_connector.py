@@ -42,6 +42,9 @@ class OnrampConnector:
     # For accessing odoo system parameters
     _res_config = None
 
+    # Base URL to connect to Compassion Connect
+    _connect_url = None
+
     def __new__(cls, env):
         """Inherit method to ensure a single instance exists."""
         if OnrampConnector.__instance is None:
@@ -57,19 +60,14 @@ class OnrampConnector:
                     {"api_key": api_key, "gpid": res_config.get_param("connect_gpid")}
                 )
                 cls._session = session
-            else:
-                raise UserError(
-                    _(
-                        "Please give connect_url and connect_api_key values "
-                        "in your Odoo configuration file."
-                    )
-                )
         return OnrampConnector.__instance
 
     def __init__(self, env):
         """Get a fresh token if needed."""
         now = datetime.now()
-        if not self._token_time or self._token_time + timedelta(hours=1) <= now:
+        if self._connect_url and (
+            not self._token_time or self._token_time + timedelta(hours=1) <= now
+        ):
             self._retrieve_token(env)
 
     def send_message(
@@ -161,7 +159,11 @@ class OnrampConnector:
     def _retrieve_token(self, env):
         """Retrieves the token from Connect."""
         self._token_time = datetime.now()
-        self._session.headers.update(self.get_gmc_token(env))
+        try:
+            self._session.headers.update(self.get_gmc_token(env))
+        except AttributeError:
+            # Refresh the instance
+            OnrampConnector.__instance = self.__new__(OnrampConnector, env)
 
     @classmethod
     def get_gmc_token(cls, env):
@@ -184,7 +186,11 @@ class OnrampConnector:
             "Content-type": "application/x-www-form-urlencoded",
         }
         response = requests.post(
-            provider, data=params_post, auth=(client, secret), headers=header_post
+            provider,
+            data=params_post,
+            auth=(client, secret),
+            headers=header_post,
+            timeout=3,
         )
         try:
             token = response.json()

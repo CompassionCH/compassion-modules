@@ -21,7 +21,7 @@
                 </group>
                 <group string="Individual Documents">
                     <field name="communication_job_ids" readonly="1">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="partner_id" />
                             <field
                 name="printed_pdf_data"
@@ -32,10 +32,10 @@
                 name="printed_pdf_name"
                 column_invisible="1"
               />
-                        </tree>
+                        </list>
                     </field>
                     <field name="attachment_ids" widget="one2many" readonly="1">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="name" />
                             <field
                 name="printed_pdf_data"
@@ -46,7 +46,7 @@
                 name="printed_pdf_name"
                 column_invisible="1"
               />
-                        </tree>
+                        </list>
                     </field>
                 </group>
                 <footer>

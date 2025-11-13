@@ -68,6 +68,7 @@ class GenerateCommunicationWizard(models.TransientModel):
 
         for wizard in remaining_wizards:
             super(GenerateCommunicationWizard, wizard)._compute_progress()
+        return
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -93,6 +94,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                 self.partner_ids = partners
         else:
             super()._compute_partners()
+        return
 
     @api.depends("selection_domain", "res_model")
     def _compute_sponsorships(self):

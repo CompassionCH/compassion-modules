@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
          <!--
         New Sponsorship Dossier
         -->
@@ -240,5 +239,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>

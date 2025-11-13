@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion SUB Sponsorships Management",
-    "version": "17.0.1.0.1",
+    "version": "18.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "maintainers": ["ecino", "NoeBerdoz"],
@@ -46,6 +46,6 @@
         "security/ir.model.access.csv",
     ],
     "demo": [],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
 }

@@ -23,10 +23,10 @@
     </record>
 
     <record model="ir.ui.view" id="revision_keyword_tree_if">
-        <field name="name">communication.revision.keyword.if.tree</field>
+        <field name="name">communication.revision.keyword.if.list</field>
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <list create="false">
                 <field name="color" column_invisible="1" />
                 <field name="edit_value" column_invisible="1" />
                 <button
@@ -43,20 +43,20 @@
         />
                 <field name="short_code" />
                 <field name="name" string="Description" />
-            </tree>
+            </list>
         </field>
     </record>
 
     <record model="ir.ui.view" id="revision_keyword_tree">
-        <field name="name">communication.revision.keyword.tree</field>
+        <field name="name">communication.revision.keyword.list</field>
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <list create="false">
                 <field name="color" column_invisible="1" />
                 <field name="type" />
                 <field name="short_code" />
                 <field name="name" string="Description" />
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>

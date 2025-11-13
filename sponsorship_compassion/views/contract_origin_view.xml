@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_contract_origin_tree" model="ir.ui.view">
-        <field name="name">contract.origin.tree</field>
+        <field name="name">contract.origin.list</field>
         <field name="model">recurring.contract.origin</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="type" />
                 <field name="partner_id" />
@@ -12,7 +12,7 @@
                 <field name="country_id" />
                 <field name="won_sponsorships" />
                 <field name="conversion_rate" widget="progressbar" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -87,7 +87,7 @@
     <record id="open_view_origin_tree" model="ir.actions.act_window">
         <field name="name">Origins</field>
         <field name="res_model">recurring.contract.origin</field>
-        <field name="view_mode">form,tree</field>
+        <field name="view_mode">form,list</field>
         <field name="view_id" ref="view_contract_origin_tree" />
     </record>
 

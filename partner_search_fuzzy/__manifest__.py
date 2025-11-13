@@ -25,17 +25,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# pylint: disable=C8101
 {
     "name": "Partner fuzzy search",
     "summary": "Add fuzzy search on partners",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Beta",
     "category": "Partner Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "author": "Compassion Switzerland",
+    "author": "Compassion CH",
     "maintainers": ["ecino"],
     "license": "AGPL-3",
-    'installable': False,
+    "installable": True,
     "depends": [
         "base_search_fuzzy",  # OCA/server-tools
     ],

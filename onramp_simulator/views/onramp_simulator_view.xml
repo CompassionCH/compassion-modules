@@ -27,22 +27,22 @@
     </record>
 
     <record id="onramp_simulator_tree" model="ir.ui.view">
-        <field name="name">onramp.simulator.tree</field>
+        <field name="name">onramp.simulator.list</field>
         <field name="model">onramp.simulator</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="server_url" />
                 <field name="message_type_url" />
                 <field name="result_code" />
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="open_simulator" model="ir.actions.act_window">
         <field name="name">Simulator</field>
         <field name="res_model">onramp.simulator</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

@@ -11,6 +11,7 @@
 This module reads a zip file containing scans of mail and finds the relation
 between the database and the mail.
 """
+
 import base64
 import io
 import logging
@@ -34,11 +35,11 @@ class ImportLettersHistory(models.Model):
 
     state = fields.Selection(
         [
-            ("draft", _("Draft")),
-            ("pending", _("Analyzing Files")),
-            ("open", _("In Review")),
-            ("ready", _("Ready to import")),
-            ("done", _("Done")),
+            ("draft", "Draft"),
+            ("pending", "Analyzing Files"),
+            ("open", "In Review"),
+            ("ready", "Ready to import"),
+            ("done", "Done"),
         ],
         tracking=True,
         default="draft",
@@ -268,6 +269,6 @@ class ImportLettersHistory(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Imported letters"),
             "res_model": "correspondence",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("import_id", "=", self.id)],
         }

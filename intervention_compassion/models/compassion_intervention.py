@@ -38,12 +38,12 @@ class CompassionIntervention(models.Model):
     #####################
     state = fields.Selection(
         [
-            ("on_hold", _("On Hold")),
-            ("sla", _("SLA Negotiation")),
-            ("committed", _("Committed")),
-            ("active", _("Active")),
-            ("close", _("Closed")),
-            ("cancel", _("Cancelled")),
+            ("on_hold", "On Hold"),
+            ("sla", "SLA Negotiation"),
+            ("committed", "Committed"),
+            ("active", "Active"),
+            ("close", "Closed"),
+            ("cancel", "Cancelled"),
         ],
         default="on_hold",
         tracking=True,
@@ -52,12 +52,12 @@ class CompassionIntervention(models.Model):
     parent_intervention_name = fields.Char(string="Parent Intervention")
     intervention_status = fields.Selection(
         [
-            ("Approved", _("Approved")),
-            ("Cancelled", _("Cancelled")),
-            ("Closed", _("Closed")),
-            ("Draft", _("Draft")),
-            ("Rejected", _("Rejected")),
-            ("Submitted", _("Submitted")),
+            ("Approved", "Approved"),
+            ("Cancelled", "Cancelled"),
+            ("Closed", "Closed"),
+            ("Draft", "Draft"),
+            ("Rejected", "Rejected"),
+            ("Submitted", "Submitted"),
         ],
     )
     funding_global_partners = fields.Char()
@@ -130,12 +130,12 @@ class CompassionIntervention(models.Model):
     ###########################
     sla_negotiation_status = fields.Selection(
         [
-            ("--None--", _("None")),
-            ("FO Costs Proposed", _("FO Costs Proposed")),
-            ("GP Accepted Costs", _("GP Accepted Costs")),
-            ("GP Preferences Submitted", _("GP Preferences Submitted")),
-            ("GP Rejected Costs", _("GP Rejected Costs")),
-            ("FO Rejected GP Preferences", _("FO Rejected GP Preferences")),
+            ("--None--", "None"),
+            ("FO Costs Proposed", "FO Costs Proposed"),
+            ("GP Accepted Costs", "GP Accepted Costs"),
+            ("GP Preferences Submitted", "GP Preferences Submitted"),
+            ("GP Rejected Costs", "GP Rejected Costs"),
+            ("FO Rejected GP Preferences", "FO Rejected GP Preferences"),
         ],
         tracking=True,
     )
@@ -176,9 +176,9 @@ class CompassionIntervention(models.Model):
     hold_id = fields.Char()
     service_level = fields.Selection(
         [
-            ("Level 1", _("Level 1")),
-            ("Level 2", _("Level 2")),
-            ("Level 3", _("Level 3")),
+            ("Level 1", "Level 1"),
+            ("Level 2", "Level 2"),
+            ("Level 3", "Level 3"),
         ],
         required=True,
     )
@@ -389,9 +389,9 @@ class CompassionIntervention(models.Model):
                 search_value = split_name[0] + "FY" + str(int(split_name[1]) - 1)
                 last_intervention = self.search([("name", "=", search_value)])
                 if last_intervention:
-                    vals[
-                        "product_template_id"
-                    ] = last_intervention.product_template_id.id
+                    vals["product_template_id"] = (
+                        last_intervention.product_template_id.id
+                    )
 
             # By default we want to opt-in for next years
             vals["next_year_opt_in"] = True
@@ -404,11 +404,10 @@ class CompassionIntervention(models.Model):
                         "mail.mail_activity_data_todo",
                         summary=_("Set an expiration date and service level"),
                         note=_(
-                            "You have been assigned to the Intervention {}. "
+                            f"You have been assigned to the Intervention "
+                            f"{intervention.intervention_id}. "
                             "Please update the intervention by setting an "
-                            "expiration date and service level.".format(
-                                intervention.intervention_id
-                            )
+                            "expiration date and service level."
                         ),
                         user_id=user.id,
                     )
@@ -481,7 +480,10 @@ class CompassionIntervention(models.Model):
             }
         )
         self.message_post(
-            body=_("The hold of %s (%s) was just cancelled.")
+            body=_(
+                "The hold of %(intervention_name)s (%(intervention_id)s) "
+                "was just cancelled."
+            )
             % (self.name, self.intervention_id),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
@@ -552,7 +554,7 @@ class CompassionIntervention(models.Model):
         return {
             "name": _("Expenses"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move.line",
             "context": self.env.context,
             "domain": [
@@ -570,7 +572,7 @@ class CompassionIntervention(models.Model):
         return {
             "name": _("Income"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move.line",
             "context": self.env.context,
             "domain": [
@@ -588,7 +590,7 @@ class CompassionIntervention(models.Model):
         return {
             "name": _("Contract"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "recurring.contract.line",
             "context": self.env.context,
             "domain": [
@@ -618,7 +620,7 @@ class CompassionIntervention(models.Model):
         return {
             "name": _("Partner"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "res.partner",
             "context": self.env.context,
             "domain": [
@@ -670,12 +672,10 @@ class CompassionIntervention(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": "compassion.intervention.commitment.wizard",
-            "context": self.with_context(
-                {
-                    "default_intervention_id": self.id,
-                    "default_commitment_amount": self.hold_amount,
-                }
-            ).env.context,
+            "context": {
+                "default_intervention_id": self.id,
+                "default_commitment_amount": self.hold_amount,
+            },
             "target": "new",
         }
 

@@ -180,7 +180,7 @@ class ChildPictures(models.Model):
             image_split[ind + 1] = cloudinary
             url = "/".join(image_split)
 
-            data = urlopen(Request(url, None, HEADERS)).read()
+            data = urlopen(Request(url, None, HEADERS), timeout=3).read()
             data = base64.encodebytes(data)
             _image_date = self.child_id.last_photo_date or fields.Date.today()
             if pic_type.lower() == "headshot":

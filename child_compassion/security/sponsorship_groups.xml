@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <record id="module_category_sponsorship" model="ir.module.category">
             <field name="name">Sponsorship</field>
             <field
@@ -42,5 +41,4 @@
         <record id="base.user_admin" model="res.users">
             <field name="groups_id" eval="[(4, ref('group_manager'))]" />
         </record>
-    </data>
 </odoo>

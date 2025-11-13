@@ -25,10 +25,10 @@ class PdfPreviewWizard(models.TransientModel):
     communication_id = fields.Many2one(
         "partner.communication.job", required=True, ondelete="cascade", readonly=False
     )
-    preview = fields.Html(compute="_compute_preview")
+    preview = fields.Html(compute="_compute_preview", sanitize=False)
     state = fields.Selection(related="communication_id.send_mode")
     send_state = fields.Selection(related="communication_id.state")
-    body_html = fields.Html(compute="_compute_html")
+    body_html = fields.Html(compute="_compute_html", sanitize=False)
 
     def _compute_preview(self):
         for wizard in self:

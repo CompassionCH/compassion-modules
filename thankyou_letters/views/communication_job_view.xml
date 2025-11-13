@@ -28,7 +28,7 @@
         </field>
     </record>
     <record model="ir.ui.view" id="communication_job_tree_thankyou">
-        <field name="name">communication.job.tree.thankyou</field>
+        <field name="name">communication.job.list.thankyou</field>
         <field name="model">partner.communication.job</field>
         <field
       name="inherit_id"
@@ -48,10 +48,10 @@
   >
         <field
       name="name"
-    >communication.job.tree.thankyou.donation.amount</field>
+    >communication.job.list.thankyou.donation.amount</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree
+            <list
         decoration-primary="state=='pending'"
         decoration-muted="state in ('done','cancel')"
         decoration-danger="need_call!=False and len(activity_ids)"
@@ -94,7 +94,7 @@
           title="Cancel"
           invisible="state != 'pending'"
         />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -125,11 +125,11 @@
     <record id="action_thank_you" model="ir.actions.act_window">
         <field name="name">Donation Receipts</field>
         <field name="res_model">partner.communication.job</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field
       name="view_ids"
       eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"
+            (0, 0, {'view_mode': 'list', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"
     />
         <field name="domain">[('model', '=', 'account.move.line')]</field>
         <field

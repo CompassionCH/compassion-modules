@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class GmcActionConnect(models.Model):
@@ -29,6 +29,6 @@ class GmcActionConnect(models.Model):
         (
             "connect_schema_uniq",
             "UNIQUE(connect_schema)",
-            _("You cannot have two actions with same connect schema."),
+            "You cannot have two actions with same connect schema.",
         )
     ]

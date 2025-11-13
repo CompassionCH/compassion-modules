@@ -80,11 +80,11 @@
                                 </group>
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">
-                                        <tree>
+                                        <list>
                                             <field name="create_date" />
                                             <field name="date" />
                                             <field name="type" />
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                                 <group string="Field Status">
@@ -312,25 +312,21 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
 
     <record id="view_compassion_project_tree" model="ir.ui.view">
-        <field name="name">compassion.project.tree</field>
+        <field name="name">compassion.project.list</field>
         <field name="model">compassion.project</field>
         <field name="arch" type="xml">
-            <tree string="project">
+            <list>
                 <field name="name" />
                 <field name="fcp_id" />
                 <field name="last_update_date" />
                 <field name="suspension" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -432,7 +428,7 @@
     <record id="open_view_project_tree" model="ir.actions.act_window">
         <field name="name">projects</field>
         <field name="res_model">compassion.project</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_compassion_project_tree" />
     </record>
 
@@ -460,12 +456,12 @@
     sequence="3"
   />
 
-    <!-- Lifecycle Events Tree View -->
+    <!-- Lifecycle Events List View -->
     <record id="view_project_lifecycle_event_tree" model="ir.ui.view">
-        <field name="name">compassion.project.lifecycle.event.tree</field>
+        <field name="name">compassion.project.lifecycle.event.list</field>
         <field name="model">compassion.project.ile</field>
         <field name="arch" type="xml">
-            <tree string="Project Lifecycle Events">
+            <list>
                 <field name="create_date" />
                 <field name="date" />
                 <field name="type" />
@@ -480,7 +476,7 @@
                 <field name="hold_b2s_letters" />
                 <field name="hold_child_updates" />
                 <!-- Add other necessary fields here -->
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -512,7 +508,7 @@
     <record id="action_project_lifecycle_events" model="ir.actions.act_window">
         <field name="name">Lifecycle Events</field>
         <field name="res_model">compassion.project.ile</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_project_lifecycle_event_tree" />
         <field name="search_view_id" ref="view_compassion_project_ile_search" />
         <field

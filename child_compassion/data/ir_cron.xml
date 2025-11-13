@@ -1,11 +1,9 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- Weekly Planning CRON -->
         <record id="create_demand_planning_cron" model="ir.cron">
             <field name="name">Demand Planning CRON</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
-            <field name="numbercall">-1</field>
             <field name="active" eval="True" />
             <field name="state">code</field>
             <field name="code">model.process_weekly_demand()</field>
@@ -23,7 +21,6 @@
             <field name="name">Refresh World Bank Data</field>
             <field name="interval_number">6</field>
             <field name="interval_type">months</field>
-            <field name="numbercall">-1</field>
             <field name="active" eval="True" />
             <field name="state">code</field>
             <field name="code">
@@ -37,5 +34,4 @@
         ref="child_compassion.model_compassion_field_office"
       />
         </record>
-    </data>
 </odoo>

@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Sponsor to Participant communication",
-    "version": "17.0.1.2.6",
+    "version": "18.0.1.0.0",
     "category": "Compassion",
     "summary": "SBC - Supporter to Participant Communication",
     "sequence": 150,
@@ -71,7 +71,7 @@
     "demo": [
         "demo/correspondence_template.xml",
     ],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
     "post_init_hook": "load_mappings",
 }

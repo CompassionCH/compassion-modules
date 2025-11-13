@@ -64,3 +64,4 @@ sms_sponsorship/webapp/.idea
 /sbc_compassion/FPDF/.idea/
 /sbc_compassion/FPDF/stderr.txt
 sbc_translation/static/tp/*
+/oca.cfg

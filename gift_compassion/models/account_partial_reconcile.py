@@ -34,4 +34,4 @@ class AccountPartialReconcile(models.Model):
                     _("You cannot delete the %s. It is already sent to GMC.")
                     % gift.name
                 )
-        super().unlink()
+        return super().unlink()

@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class SBCSettings(models.TransientModel):
@@ -22,20 +22,5 @@ class SBCSettings(models.TransientModel):
         string="Letter translation check unsuccessful",
         domain=[("share", "=", False)],
         readonly=False,
+        config_parameter="sbc_compassion.letter_responsible",
     )
-
-    def set_values(self):
-        super().set_values()
-        # This is stored in page template for additional B2S pages
-        config = self.env["ir.config_parameter"].sudo()
-        config.set_param(
-            "sbc_compassion.letter_responsible", str(self.letter_responsible.id or 0)
-        )
-
-    @api.model
-    def get_values(self):
-        res = super().get_values()
-        config = self.env["ir.config_parameter"].sudo()
-        user_id = int(config.get_param("sbc_compassion.letter_responsible", 0))
-        res["letter_responsible"] = user_id
-        return res

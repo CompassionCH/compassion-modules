@@ -36,7 +36,7 @@ class GmcAction(models.Model):
 
     name = fields.Char("GMC name", required=True)
     direction = fields.Selection(
-        [("in", _("Incoming Message")), ("out", _("Outgoing Message"))],
+        [("in", "Incoming Message"), ("out", "Outgoing Message")],
         "Message Direction",
         required=True,
         index=True,
@@ -115,5 +115,6 @@ class GmcAction(models.Model):
 
             if not valid:
                 raise ValidationError(
-                    _("Invalid action (%s, %s).") % (action.direction, action.model)
+                    _("Invalid action (%(direction)s, %(model)s).")
+                    % (action.direction, action.model)
                 )

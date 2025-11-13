@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Connect",
-    "version": "17.0.1.1.0",
+    "version": "18.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
@@ -52,7 +52,7 @@
         "data/queue_job.xml",
     ],
     "demo": ["demo/res_users.xml"],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
     "post_init_hook": "load_mappings",
 }

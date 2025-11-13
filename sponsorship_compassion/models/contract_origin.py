@@ -56,10 +56,8 @@ class ContractOrigin(models.Model):
         (
             "name_uniq",
             "UNIQUE(name)",
-            _(
-                "You cannot have two origins with same name."
-                "The origin does probably already exist."
-            ),
+            "You cannot have two origins with same name."
+            "The origin does probably already exist.",
         )
     ]
 

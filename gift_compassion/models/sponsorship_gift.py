@@ -35,14 +35,12 @@ class SponsorshipGift(models.Model):
         "res.partner",
         "Partner",
         related="sponsorship_id.correspondent_id",
-        store=True,
         readonly=False,
     )
     project_id = fields.Many2one(
         "compassion.project",
         "Project",
         related="sponsorship_id.project_id",
-        store=True,
         readonly=False,
     )
     project_suspended = fields.Boolean(related="project_id.hold_gifts", tracking=True)
@@ -50,7 +48,6 @@ class SponsorshipGift(models.Model):
         "compassion.child",
         "Child",
         related="sponsorship_id.child_id",
-        store=True,
         readonly=False,
     )
     gift_type_id = fields.Many2one(
@@ -109,13 +106,13 @@ class SponsorshipGift(models.Model):
     )
     state = fields.Selection(
         [
-            ("draft", _("Draft")),
-            ("verify", _("Verify")),
-            ("open", _("Pending")),
-            ("suspended", _("Suspended")),
-            ("In Progress", _("In Progress")),
-            ("Delivered", _("Delivered")),
-            ("Undeliverable", _("Undeliverable")),
+            ("draft", "Draft"),
+            ("verify", "Verify"),
+            ("open", "Pending"),
+            ("suspended", "Suspended"),
+            ("In Progress", "In Progress"),
+            ("Delivered", "Delivered"),
+            ("Undeliverable", "Undeliverable"),
         ],
         default="draft",
         tracking=True,
@@ -522,7 +519,7 @@ class SponsorshipGift(models.Model):
             "name": _("Invoices"),
             "domain": [("id", "in", self.invoice_line_ids.mapped("move_id").ids)],
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move",
             "target": "current",
         }

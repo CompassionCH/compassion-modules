@@ -1,12 +1,13 @@
+# pylint: disable=C8101
 {
     "name": "mis_builder_spn_info",
     "summary": """
         Info on aquisition and departure to report on spn evolution
         """,
-    "author": "Compassion Switzerland",
+    "author": "Compassion CH",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "category": "Uncategorized",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "license": "AGPL-3",
     # any module necessary for this one to work correctly
     "depends": [
@@ -22,5 +23,5 @@
         "views/res_config_settings_view.xml",
     ],
     # only loaded in demonstration mode,
-    'installable': False,
+    "installable": True,
 }

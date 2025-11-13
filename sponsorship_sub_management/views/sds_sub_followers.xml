@@ -5,16 +5,15 @@
     The licence is in the file __manifest__.py
 -->
 <odoo>
-    <data>
         <record id="sds_sub_followers_tree" model="ir.ui.view">
-            <field name="name">sds.sub.followers.tree</field>
+            <field name="name">sds.sub.followers.list</field>
             <field name="model">sds.sub.followers</field>
             <field name="arch" type="xml">
-                <tree editable="bottom">
+                <list editable="bottom">
                     <field name="sequence" widget="handle" />
                     <field name="user_id" />
                     <field name="res_lang_id" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -29,5 +28,4 @@
       parent="menu_tracking"
       sequence="3"
     />
-    </data>
 </odoo>

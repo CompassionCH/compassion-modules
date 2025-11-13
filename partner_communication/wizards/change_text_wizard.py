@@ -18,7 +18,7 @@ class ChangeTextWizard(models.TransientModel):
 
     template_text = fields.Text(default=lambda s: s._default_text())
     state = fields.Char(default="edit")
-    preview = fields.Html(readonly=True)
+    preview = fields.Html(readonly=True, sanitize=False)
 
     @api.model
     def _default_text(self):

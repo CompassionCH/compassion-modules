@@ -52,7 +52,7 @@ class ChildReservationWizard(models.TransientModel):
 
         return {
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": self.env.context,
             "name": _("Reservations"),
             "res_model": "compassion.reservation",

@@ -1,16 +1,16 @@
+# generated from manifests external_dependencies
+PyPDF2
 babel
 bs4
 iso639-lang
 jwt
 langdetect
-pandas >= 2.0.0
+pandas>=2.0.0
 pdf2image
-pytesseract
 pyquery
-pyquerystring
+pytesseract
 pytz
 pyzbar
 regex
 timezonefinder
-wand
 wbgapi

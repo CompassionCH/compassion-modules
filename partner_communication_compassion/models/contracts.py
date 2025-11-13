@@ -144,7 +144,7 @@ class RecurringContract(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _on_sponsorship_finished(self):
-        super()._on_sponsorship_finished()
+        res = super()._on_sponsorship_finished()
         cancellation = self.env.ref(
             "partner_communication_compassion.sponsorship_cancellation"
         )
@@ -157,7 +157,7 @@ class RecurringContract(models.Model):
         # Send cancellation for regular sponsorships
         s_to_notify.filtered(
             lambda s: s.end_reason_id != depart and not s.parent_id
-        ).with_context({}).send_communication(cancellation, both=True)
+        ).send_communication(cancellation, both=True)
         # Send NO SUB letter if activation is less than two weeks ago
         # otherwise send Cancellation letter for SUB sponsorships
         activation_limit = date.today() - relativedelta(days=15)
@@ -168,7 +168,8 @@ class RecurringContract(models.Model):
                 s.activation_date
                 and fields.Date.from_string(s.activation_date) < activation_limit
             )
-        ).with_context({}).send_communication(cancellation, both=True)
+        ).send_communication(cancellation, both=True)
+        return res
 
     def _is_unexpected_end(self):
         """Check if sponsorship hold had an unexpected end or not."""

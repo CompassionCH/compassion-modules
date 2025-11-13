@@ -2,7 +2,7 @@ import logging
 import re
 
 from odoo import _, models
-from odoo.tools import flatten
+from odoo.tools.misc import flatten
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 

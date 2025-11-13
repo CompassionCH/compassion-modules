@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- Hold Removal Notification -->
         <record id="email_hold_removal" model="mail.template">
             <field name="name">Participant Hold Removal</field>
@@ -230,5 +229,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>

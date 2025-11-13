@@ -37,9 +37,7 @@ class GmcMessage(models.Model):
     description = fields.Text(
         "Action to execute", related="action_id.description", readonly=True
     )
-    direction = fields.Selection(
-        related="action_id.direction", store=True, readonly=True
-    )
+    direction = fields.Selection(related="action_id.direction", readonly=True)
     object_id = fields.Integer("Resource")
     object_ids = fields.Char(
         "Related records",
@@ -59,14 +57,13 @@ class GmcMessage(models.Model):
     process_date = fields.Datetime(tracking=True)
     state = fields.Selection(
         [
-            ("new", _("New")),
-            ("pending", _("Pending")),
-            ("postponed", _("Postponed")),
-            ("success", _("Success")),
-            ("failure", _("Failure")),
-            ("odoo_failure", _("Odoo Failure")),
+            ("new", "New"),
+            ("pending", "Pending"),
+            ("postponed", "Postponed"),
+            ("success", "Success"),
+            ("failure", "Failure"),
+            ("odoo_failure", "Odoo Failure"),
         ],
-        "State",
         default="new",
         tracking=True,
         index=True,
@@ -163,7 +160,7 @@ class GmcMessage(models.Model):
                 "type": "ir.actions.act_window",
                 "res_model": self.action_id.model,
                 "domain": [("id", "in", res_ids)],
-                "view_mode": "tree,form",
+                "view_mode": "list,form",
             }
 
     ##########################################################################

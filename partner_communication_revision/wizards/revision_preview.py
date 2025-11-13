@@ -97,7 +97,7 @@ class RevisionPreview(models.TransientModel):
         elif self.state == "active_revision":
             self.preview_job_id.write(job_vals)
             self.preview_job_id.with_context(
-                {"lang_preview": self.revision_id.lang}
+                lang_preview=self.revision_id.lang
             ).quick_refresh()
 
         report = config.report_id

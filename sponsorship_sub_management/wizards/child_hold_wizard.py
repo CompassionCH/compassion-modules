@@ -11,7 +11,7 @@ from datetime import date
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import relativedelta
+from odoo.tools.date_utils import relativedelta
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -30,11 +30,10 @@ class ChildHoldWizard(models.TransientModel):
         no_delay = self.env.context.get(
             "queue_job__no_delay", self.return_action == "sub"
         )
-        context_copy = self.env.context.copy()
-        context_copy["queue_job__no_delay"] = no_delay
-        if "default_type" in context_copy:
-            del context_copy["default_type"]
-        return super(ChildHoldWizard, self.with_context(context_copy)).send()
+        return super(
+            ChildHoldWizard,
+            self.with_context(queue_job__no_delay=no_delay, default_type=None),
+        ).send()
 
     def _get_action(self, holds):
         action = super()._get_action(holds)
@@ -58,11 +57,9 @@ class ChildHoldWizard(models.TransientModel):
                     "res_model": "recurring.contract",
                     "res_id": sub_contract.id,
                     "view_mode": "form",
+                    "context": {
+                        "default_type": "S",
+                    },
                 }
             )
-            action["context"] = self.with_context(
-                {
-                    "default_type": "S",
-                }
-            ).env.context
         return action

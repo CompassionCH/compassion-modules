@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class CorrespondenceMetadata(models.AbstractModel):
@@ -23,7 +23,7 @@ class CorrespondenceMetadata(models.AbstractModel):
     #                                 FIELDS                                 #
     ##########################################################################
     physical_attachments = fields.Selection(
-        selection=[("sent_by_mail", _("Sent by mail")), ("not_sent", _("Not sent"))]
+        selection=[("sent_by_mail", "Sent by mail"), ("not_sent", "Not sent")]
     )
     attachments_description = fields.Char()
     template_id = fields.Many2one("correspondence.template", "Template", readonly=False)

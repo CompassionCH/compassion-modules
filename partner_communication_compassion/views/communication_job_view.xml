@@ -3,19 +3,19 @@
     <record id="action_communication_template" model="ir.actions.act_window">
         <field name="name">Communication templates</field>
         <field name="res_model">mail.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field
       name="domain"
     >[('model_id.model', '=', 'partner.communication.job')]</field>
     </record>
 
-    <!-- Change tree view of e-mails -->
+    <!-- Change list view of e-mails -->
     <record model="ir.ui.view" id="view_mail_tree">
-        <field name="name">mail.mail.tree.compassion</field>
+        <field name="name">mail.mail.list.compassion</field>
         <field name="model">mail.mail</field>
         <field name="inherit_id" ref="mail.view_mail_tree" />
         <field name="arch" type="xml">
-            <tree position="attributes">
+            <list position="attributes">
                 <attribute
           name="decoration-muted"
         >state in ('received', 'cancel')</attribute>
@@ -24,7 +24,7 @@
           name="decoration-danger"
         >state=='exception'</attribute>
                 <attribute name="decoration-success">state=='sent'</attribute>
-            </tree>
+            </list>
         </field>
     </record>
 

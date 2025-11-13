@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <data>
         <record id="template" model="mail.template">
             <field name="name">Donation - Thank You Letter</field>
             <field
@@ -40,5 +39,4 @@
             <field name="need_call">before_sending</field>
             <field name="email_template_id" ref="template" />
         </record>
-    </data>
 </odoo>

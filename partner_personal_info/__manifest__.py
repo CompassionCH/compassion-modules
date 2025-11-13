@@ -30,7 +30,7 @@
 {
     "name": "Compassion partner personal information page",
     "summary": "Adds a tab on partners for showing personal information",
-    "version": "17.0.1.0.1",
+    "version": "18.0.1.0.0",
     "development_status": "Production/Stable",
     "category": "Partner Management",
     "author": "Compassion CH",
@@ -45,7 +45,7 @@
         "views/partner_compassion_view.xml",
     ],
     "qweb": [],
-    'installable': False,
+    "installable": True,
     "auto_install": False,
     "pre_init_hook": "pre_init_hook",
 }

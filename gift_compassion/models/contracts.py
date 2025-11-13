@@ -56,7 +56,7 @@ class SponsorshipContract(models.Model):
         return {
             "name": _("Sponsorship gifts"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sponsorship.gift",
             "domain": [("sponsorship_id", "in", sponsorship_ids)],
             "target": "current",

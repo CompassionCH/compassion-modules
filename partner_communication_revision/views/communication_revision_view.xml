@@ -60,7 +60,7 @@
                     <group>
                         <field
               name="if_keyword_ids"
-              context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"
+              context="{'list_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"
             />
                     </group>
                 </sheet>
@@ -232,10 +232,7 @@
                         </group>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>

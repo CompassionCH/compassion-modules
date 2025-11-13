@@ -43,7 +43,9 @@ class SBCConnector:
         status = r.get("code")
         letter_url = r.get("content")
         if status != 201:
-            raise UserError(_("[%s] %s") % (str(status), letter_url))
+            raise UserError(
+                _("[%(error_status)s] %(letter_url)s") % (str(status), letter_url)
+            )
         return letter_url
 
     def get_letter_image(self, letter_url, params=None):

@@ -1,5 +1,4 @@
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- Child letters -->
         <record id="child_letter_config" model="partner.communication.config">
             <field name="name">B2S Letter</field>
@@ -402,5 +401,4 @@
             <field name="send_mode">digital</field>
             <field name="model_id" ref="model_compassion_hold" />
         </record>
-    </data>
 </odoo>

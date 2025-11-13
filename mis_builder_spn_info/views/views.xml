@@ -1,10 +1,9 @@
 <odoo>
-  <data>
     <record model="ir.ui.view" id="mis_spn_info_tree_view">
-        <field name="name">mis.spn.info.tree </field>
+        <field name="name">mis.spn.info.list </field>
         <field name="model">mis.spn.info</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="date" />
                 <field name="partner_id" />
                 <field name="correspondent_id" />
@@ -13,8 +12,7 @@
                 <field name="credit" sum="credit" />
                 <field name="amount_currency" sum="amount_currency" />
                 <field name="analytic_id" />
-            </tree>
+            </list>
         </field>
     </record>
-  </data>
 </odoo>

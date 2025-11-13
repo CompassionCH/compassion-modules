@@ -426,20 +426,16 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
 
     <record id="view_compassion_intervention_tree" model="ir.ui.view">
-        <field name="name">compassion.intervention.tree</field>
+        <field name="name">compassion.intervention.list</field>
         <field name="model">compassion.intervention</field>
         <field name="arch" type="xml">
-            <tree
+            <list
         decoration-info="state=='on_hold'"
         decoration-muted="state in ('close','cancel')"
         decoration-success="state=='committed'"
@@ -456,7 +452,7 @@
                 <field name="total_cost" sum="Total" />
                 <field name="commited_percentage" widget="progressbar" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -552,19 +548,19 @@
     <record id="open_view_intervention_tree" model="ir.actions.act_window">
         <field name="name">Interventions</field>
         <field name="res_model">compassion.intervention</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
     </record>
 
     <record id="open_categories_action" model="ir.actions.act_window">
         <field name="name">Intervention Categories</field>
         <field name="res_model">compassion.intervention.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="open_subcategories_action" model="ir.actions.act_window">
         <field name="name">Intervention Subcategories</field>
         <field name="res_model">compassion.intervention.subcategory</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

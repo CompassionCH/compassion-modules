@@ -59,6 +59,8 @@ class Settings(models.TransientModel):
     @api.depends("connect_gpid", "delivery_service_api_key")
     def _compute_delivery_status(self):
         connector = OnrampConnector(self.env)
+        if not connector._connect_url or not self.delivery_service_api_key:
+            return
         connector.patch_session("api_key", self.delivery_service_api_key)
         gpid = self.connect_gpid.lower()
         result = connector.send_message(f"delivery-service-{gpid}/egressControl", "GET")
@@ -74,6 +76,8 @@ class Settings(models.TransientModel):
     def _inverse_delivery_status(self):
         connector = OnrampConnector(self.env)
         gpid = self.connect_gpid.lower()
+        if not connector._connect_url or not self.delivery_service_status:
+            return
         connector.patch_session("api_key", self.delivery_service_api_key)
         connector.send_message(
             f"delivery-service-{gpid}/egressControl",

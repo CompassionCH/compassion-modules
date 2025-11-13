@@ -62,12 +62,10 @@ class GlobalIntervention(models.TransientModel):
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": "compassion.intervention.hold.wizard",
-            "context": self.with_context(
-                {
-                    "default_intervention_id": self.id,
-                    "default_hold_amount": self.remaining_amount_to_raise,
-                }
-            ).env.context,
+            "context": {
+                "default_intervention_id": self.id,
+                "default_hold_amount": self.remaining_amount_to_raise,
+            },
             "target": "new",
         }
 

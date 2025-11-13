@@ -20,15 +20,15 @@
     </record>
 
     <record id="view_field_office_learning_tree" model="ir.ui.view">
-        <field name="name">field.office.learning.tree</field>
+        <field name="name">field.office.learning.list</field>
         <field name="model">field.office.learning</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="field_office_id" />
                 <field name="time" />
                 <field name="title" />
                 <field name="description" />
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>

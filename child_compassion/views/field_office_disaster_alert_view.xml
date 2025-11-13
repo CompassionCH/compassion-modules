@@ -92,16 +92,16 @@
                                 <group>
                                     <group>
                                         <field name="field_office_id">
-                                            <tree>
+                                            <list>
                                                 <field name="name" />
-                                            </tree>
+                                            </list>
                                         </field>
                                         <field name="fo_disaster_update_ids">
-                                            <tree>
+                                            <list>
                                                 <field name="create_date" />
                                                 <field name="name" />
                                                 <field name="summary" />
-                                            </tree>
+                                            </list>
                                         </field>
                                     </group>
                                     <group>
@@ -116,7 +116,7 @@
                                 <group>
                                     <group colspan="2">
                                         <field name="fcp_disaster_impact_ids">
-                                            <tree>
+                                            <list>
                                                 <field name="project_fcp_id" />
                                                 <field
                         name="impact_on_fcp_program"
@@ -126,10 +126,10 @@
                                                 <field
                         name="field_office_impact_status"
                       />
-                                            </tree>
+                                            </list>
                                         </field>
                                         <field name="child_disaster_impact_ids">
-                                            <tree>
+                                            <list>
                                                 <field name="child_global_id" />
                                                 <field name="name" />
                                                 <field
@@ -141,7 +141,7 @@
                                                 <field name="house_condition" />
                                                 <field name="state" />
                                                 <field name="disaster_status" />
-                                            </tree>
+                                            </list>
                                         </field>
                                     </group>
                                     <group>
@@ -202,19 +202,16 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="message_ids" />
-                    </div>
+                    <chatter />
                 </form>
             </field>
         </record>
 
         <record id="view_field_office_disaster_tree" model="ir.ui.view">
-            <field name="name">fo.disaster.alert.tree</field>
+            <field name="name">fo.disaster.alert.list</field>
             <field name="model">fo.disaster.alert</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="disaster_id" />
                     <field name="disaster_communication_update_name" />
@@ -223,7 +220,7 @@
                     <field name="field_office_id" />
                     <field name="number_impacted_children" />
                     <field name="state" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -275,10 +272,10 @@
         </record>
 
         <record id="view_child_disaster_impact_tree" model="ir.ui.view">
-            <field name="name">child.disaster.impact.tree</field>
+            <field name="name">child.disaster.impact.list</field>
             <field name="model">child.disaster.impact</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="create_date" />
                     <field name="child_global_id" />
                     <field name="beneficiary_location" />
@@ -286,7 +283,7 @@
                     <field name="house_condition" />
                     <field name="state" />
                     <field name="disaster_status" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -296,7 +293,7 @@
   >
             <field name="name">Disaster Alerts</field>
             <field name="res_model">fo.disaster.alert</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <menuitem

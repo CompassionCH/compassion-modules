@@ -52,8 +52,8 @@ class Product(models.Model):
     _inherit = "product.product"
 
     categ_name = fields.Char(
-        "Product category", related="product_tmpl_id.categ_id.name", store=True
+        "Product category", related="product_tmpl_id.categ_id.name"
     )
     sponsorship_gift_type_id = fields.Many2one(
-        related="product_tmpl_id.sponsorship_gift_type_id", store=True
+        related="product_tmpl_id.sponsorship_gift_type_id"
     )

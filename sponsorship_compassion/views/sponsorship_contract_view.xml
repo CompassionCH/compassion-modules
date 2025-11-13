@@ -151,7 +151,7 @@
     </record>
 
     <record id="view_compassion_sponsorship_line_tree" model="ir.ui.view">
-        <field name="name">compassion.sponsorship.line.tree</field>
+        <field name="name">compassion.sponsorship.line.list</field>
         <field name="model">recurring.contract.line</field>
         <field
       name="inherit_id"
@@ -264,7 +264,7 @@
     </record>
 
     <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
-        <field name="name">sponsorship.compassion.tree</field>
+        <field name="name">sponsorship.compassion.list</field>
         <field name="model">recurring.contract</field>
         <field
       name="inherit_id"
@@ -284,7 +284,7 @@
         <field name="model">recurring.contract</field>
         <field name="priority">100</field>
         <field name="arch" type="xml">
-            <tree
+            <list
         decoration-info="state == 'draft'"
         decoration-bf="state == 'active'"
         decoration-success="state == 'waiting'"
@@ -316,47 +316,7 @@
                                 <field name="total_amount" optional="hide" />
                                 <field name="state" />
                                 <field name="type" optional="hide" />
-                            </tree>
-        </field>
-    </record>
-    <!--Compassion sponsorship kanban view -->
-    <record model="ir.ui.view" id="view_compassion_sponsorship_kanban">
-        <field name="name">compassion.sponsorship.kanban</field>
-        <field name="model">recurring.contract</field>
-        <field name="type">kanban</field>
-        <field name="arch" type="xml">
-            <kanban>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_vignette">
-                            <!-- Left side image: -->
-                            <div class="oe_kanban_details">
-                                <!-- Title and data -->
-                                <div class="oe_product_desc">
-                                    <a type="open">
-                                        <h4>
-                                            <field name="display_name" />
-                                        </h4>
-                                    </a>
-                                    <ul>
-                                        <li>
-                                            Sponsorship :
-                                            <field name="partner_id" />
-                                        </li>
-                                        <li>
-                                            Correspondent :
-                                            <field name="correspondent_id" />
-                                        </li>
-                                        <li>Sponsored child :
-                                            <field name="child_id" />
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
+                            </list>
         </field>
     </record>
 
@@ -364,7 +324,7 @@
         <field name="name">Contracts</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('type','in',['O','G'])]</field>
         <field name="context">{'default_type':'O'}</field>
     </record>
@@ -373,7 +333,7 @@
         <field name="name">Sponsorships</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
-        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="view_mode">list,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
         <field
       name="context"

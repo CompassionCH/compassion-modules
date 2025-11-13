@@ -35,13 +35,13 @@
                         <group>
                             <field
                 name="sponsor_letter_ids"
-                context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
+                context="{'list_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
               />
                         </group>
                         <group>
                             <field
                 name="child_letter_ids"
-                context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
+                context="{'list_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
               />
                         </group>
                     </group>

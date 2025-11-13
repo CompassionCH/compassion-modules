@@ -46,7 +46,7 @@ class SubSponsorshipWizard(models.TransientModel):
         contract_obj = self.env["recurring.contract"]
         contract = contract_obj.browse(sponsorship_id)
         contract.sds_uid = self.env.user
-        sub_contract = contract.with_context({}).copy(
+        sub_contract = contract.copy(
             {
                 "parent_id": sponsorship_id,
                 "child_id": self.child_id.id,
@@ -67,11 +67,9 @@ class SubSponsorshipWizard(models.TransientModel):
                 "res_model": "recurring.contract",
                 "res_id": sub_contract.id,
                 "target": "current",
-                "context": self.with_context(
-                    {
-                        "default_type": "S",
-                    }
-                ).env.context,
+                "context": {
+                    "default_type": "S",
+                },
             }
         else:
             return {
@@ -80,16 +78,14 @@ class SubSponsorshipWizard(models.TransientModel):
                 "view_mode": "form",
                 "res_model": "compassion.childpool.search",
                 "target": "current",
-                "context": self.with_context(
-                    {
-                        "default_take": 1,
-                        "contract_id": sub_contract.id,
-                        "default_type": HoldType.SUB_CHILD_HOLD.value,
-                        "default_channel": "sub",
-                        "default_return_action": "sub",
-                        "default_source_code": "sub_proposal",
-                    }
-                ).env.context,
+                "context": {
+                    "default_take": 1,
+                    "contract_id": sub_contract.id,
+                    "default_type": HoldType.SUB_CHILD_HOLD.value,
+                    "default_channel": "sub",
+                    "default_return_action": "sub",
+                    "default_source_code": "sub_proposal",
+                },
             }
 
     def no_sub(self):

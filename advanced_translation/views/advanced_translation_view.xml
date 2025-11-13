@@ -4,7 +4,7 @@
         <field name="name">Advanced translation</field>
         <field name="model">ir.advanced.translation</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="lang" />
                 <field name="src" />
                 <field name="male_singular" />
@@ -12,7 +12,7 @@
                 <field name="male_plural" />
                 <field name="female_plural" />
                 <field name="group" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="advanced_translation_view_search" model="ir.ui.view">
@@ -44,7 +44,7 @@
         <field name="name">Advanced translation</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ir.advanced.translation</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <menuitem
     action="action_advanced_translation_view"

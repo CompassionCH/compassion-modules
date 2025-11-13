@@ -23,15 +23,15 @@
             </field>
         </record>
 
-        <!-- Tree view -->
+        <!-- List view -->
         <record id="view_compassion_child_pictures_tree" model="ir.ui.view">
-            <field name="name">compassion.child.pictures.tree</field>
+            <field name="name">compassion.child.pictures.list</field>
             <field name="model">compassion.child.pictures</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="date" />
                     <field name="image_url_compassion" />
-                </tree>
+                </list>
             </field>
         </record>
 </odoo>

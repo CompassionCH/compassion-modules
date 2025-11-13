@@ -37,8 +37,9 @@ class AccountMove(models.Model):
         return res
 
     def _invoice_paid_hook(self):
-        super()._invoice_paid_hook()
+        res = super()._invoice_paid_hook()
         self._filter_moves_to_gift()._trigger_gifts()
+        return res
 
     def _filter_moves_to_gift(self):
         return self.filtered(

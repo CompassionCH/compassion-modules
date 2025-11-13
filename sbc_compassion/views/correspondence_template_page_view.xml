@@ -1,12 +1,12 @@
 <odoo>
     <record id="view_correspondence_template_page_tree" model="ir.ui.view">
-        <field name="name">correspondence.template.page.tree</field>
+        <field name="name">correspondence.template.page.list</field>
         <field name="model">correspondence.template.page</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="page_index" widget="handle" />
                 <field name="name" />
-            </tree>
+            </list>
         </field>
     </record>
 

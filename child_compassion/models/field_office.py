@@ -23,7 +23,7 @@ class FieldOffice(models.Model):
     _description = "National Office"
     _order = "country_name,field_office_id"
 
-    name = fields.Char("Name")
+    name = fields.Char()
     field_office_id = fields.Char(required=True)
     project_ids = fields.One2many(
         "compassion.project", "field_office_id", "Compassion projects", readonly=False
@@ -38,9 +38,7 @@ class FieldOffice(models.Model):
     country = fields.Char(string="country")
     country_id = fields.Many2one("res.country", "Country", readonly=False)
     country_code = fields.Char(related="country_id.code")
-    country_name = fields.Char(
-        related="country_id.name", store=True, readonly=True, translate=True
-    )
+    country_name = fields.Char(related="country_id.name", readonly=True)
     street = fields.Char()
     city = fields.Char()
     province = fields.Char()
@@ -181,7 +179,7 @@ class FieldOffice(models.Model):
             return
 
         def fetch_capital(url):
-            response = requests.get(url)
+            response = requests.get(url, timeout=1)
             if response.status_code == 200:
                 data = response.json()
                 if len(data) > 1 and data[1] and isinstance(data[1][0], dict):
@@ -206,7 +204,7 @@ class FieldOffice(models.Model):
         self.ensure_one()
         if not self.factbook_url:
             return
-        response = requests.get(self.factbook_url)
+        response = requests.get(self.factbook_url, timeout=3)
         if response.status_code == 200:
             country_data = response.json()
             religion_data = country_data.get("People and Society", {}).get(

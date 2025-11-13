@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class ImportLetterLine(models.Model):
@@ -45,11 +45,11 @@ class ImportLetterLine(models.Model):
     reviewed = fields.Boolean()
     status = fields.Selection(
         [
-            ("no_lang", _("Language not Detected")),
-            ("no_sponsorship", _("Sponsorship not Found")),
-            ("no_child_partner", _("Partner or Child not Found")),
-            ("no_template", _("Template not Detected")),
-            ("ok", _("OK")),
+            ("no_lang", "Language not Detected"),
+            ("no_sponsorship", "Sponsorship not Found"),
+            ("no_child_partner", "Partner or Child not Found"),
+            ("no_template", "Template not Detected"),
+            ("ok", "OK"),
         ],
         compute="_compute_check_status",
         store=True,

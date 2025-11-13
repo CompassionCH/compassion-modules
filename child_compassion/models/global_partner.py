@@ -19,4 +19,4 @@ class GlobalPartner(models.Model):
 
     name = fields.Char(required=True)
     country_id = fields.Many2one("res.country", "Country", readonly=False)
-    code = fields.Char(related="country_id.code", store=True)
+    code = fields.Char(related="country_id.code")
