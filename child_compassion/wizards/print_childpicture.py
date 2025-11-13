@@ -51,9 +51,11 @@ class PrintChildPicture(models.TransientModel):
         if self.pdf:
             name = children.local_id if len(children) == 1 else "childpicture"
             self.pdf_name = f"{name}_{data['type'].split('_')[-1]}.pdf"
-            pdf_data = self.env["ir.actions.report"].with_context(
-                must_skip_send_to_printer=True
-            )._render_qweb_pdf(report_name, children.ids, data=data)
+            pdf_data = (
+                self.env["ir.actions.report"]
+                .with_context(must_skip_send_to_printer=True)
+                ._render_qweb_pdf(report_name, children.ids, data=data)
+            )
             self.pdf_download = base64.encodebytes(pdf_data[0])
             self.state = "pdf"
             return {
