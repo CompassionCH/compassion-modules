@@ -204,7 +204,7 @@ class ResPartner(models.Model):
         #    - Conditions on 'c' are in the ON clause.
         #    - COUNT(c.id) correctly handles partners with 0 contracts.
         #    - %%s is used to escape the '%' for the value placeholder.
-        query = """
+        query = f"""
             SELECT
                 p.id
             FROM
@@ -217,8 +217,8 @@ class ResPartner(models.Model):
             GROUP BY
                 p.id
             HAVING
-                COUNT(c.id) {} %s
-        """.format(operator)
+                COUNT(c.id) {operator} %s
+        """
         # 3. Execute the query with the value as a safe parameter.
         self._cr.execute(query, (value,))
         partner_ids = [res[0] for res in self._cr.fetchall()]
