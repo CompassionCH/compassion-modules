@@ -78,7 +78,7 @@
         "views/res_config_settings_view.xml",
     ],
     "demo": ["demo/product_product.xml"],
-    "installable": True,
+    'installable': False,
     "auto_install": False,
     "development_status": "Production/Stable",
     "post_init_hook": "load_mappings",

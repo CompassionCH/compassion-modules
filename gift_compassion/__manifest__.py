@@ -47,7 +47,7 @@
         "data/base_automation.xml",
     ],
     "demo": [],
-    "installable": True,
+    'installable': False,
     "auto_install": False,
     "post_init_hook": "load_mappings",
 }

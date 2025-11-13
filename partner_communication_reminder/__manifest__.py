@@ -41,5 +41,5 @@
         "data/email_reminder_template.xml",
         "data/contract_reminder.xml",
     ],
-    "installable": True,
+    'installable': False,
 }

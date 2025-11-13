@@ -35,7 +35,7 @@
     "author": "Compassion Switzerland",
     "maintainers": ["ecino"],
     "license": "AGPL-3",
-    "installable": True,
+    'installable': False,
     "depends": [
         "base_search_fuzzy",  # OCA/server-tools
     ],

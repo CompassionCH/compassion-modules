@@ -37,7 +37,7 @@
     "author": "Compassion CH",
     "maintainers": ["ecino"],
     "license": "AGPL-3",
-    "installable": True,
+    'installable': False,
     "depends": [
         "advanced_translation",
         "partner_firstname",  # OCA/partner-contact

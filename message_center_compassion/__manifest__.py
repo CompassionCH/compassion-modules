@@ -52,7 +52,7 @@
         "data/queue_job.xml",
     ],
     "demo": ["demo/res_users.xml"],
-    "installable": True,
+    'installable': False,
     "auto_install": False,
     "post_init_hook": "load_mappings",
 }

@@ -52,6 +52,6 @@
         "data/ir.advanced.translation.csv",
     ],
     "demo": ["demo/ir.advanced.translation.csv"],
-    "installable": True,
+    'installable': False,
     "auto_install": False,
 }
