@@ -20,7 +20,7 @@ class ContractGroup(models.Model):
     ):
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
         if gift_wizard:
-            res["user_id"] = gift_wizard.contract_id.ambassador_id.id
+            res["user_id"] = gift_wizard.current_contract_id.ambassador_id.id
         elif contract_line:
             res["user_id"] = contract_line.contract_id.ambassador_id.id
         return res
