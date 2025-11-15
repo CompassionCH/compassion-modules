@@ -36,6 +36,7 @@ class GenerateGiftWizard(models.TransientModel):
     invoice_date = fields.Date(default=fields.Date.today)
     description = fields.Char("Additional comments", size=200)
     quantity = fields.Integer(default=1)
+    bypass_invoice_suspension = fields.Boolean(default=False)
 
     def generate_invoice(self, due_date=None):
         if not self.description:
@@ -68,6 +69,7 @@ class GenerateGiftWizard(models.TransientModel):
                 if (
                     contract.group_id.invoice_suspended_until
                     and contract.group_id.invoice_suspended_until > invoice_date
+                    and not self.bypass_invoice_suspension
                 ):
                     logger.warning("The invoices are suspended")
                     return 1
