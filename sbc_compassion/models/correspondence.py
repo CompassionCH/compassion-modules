@@ -17,7 +17,7 @@ import uuid
 from collections import defaultdict
 from io import BytesIO
 
-from odoo import _, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
 
@@ -32,7 +32,6 @@ try:
     from wand.image import Image
 except ImportError:
     _logger.error("Please install magic, PyPDF2 and wand in order to use SBC module")
-
 
 DEFAULT_LETTER_DPI = 100
 
@@ -642,8 +641,44 @@ class Correspondence(models.Model):
 
     def compose_letter_button(self):
         """Remove old images, download original and compose translation."""
-        self.attach_original()
-        return self.compose_letter_image()
+        self.ensure_one()
+
+        try:
+            self.attach_original()
+            compose_success = self.compose_letter_image()
+
+        except Exception:
+            # Manage error if an exception is raised during compose_letter_image process
+            self.with_user(SUPERUSER_ID).with_delay(
+                channel="root.sbc_compassion",
+                description="Handle failure after technical exception",
+            )._handle_compose_letter_failure()
+
+            # Rerun the exception so that the job is marked as “Failed” in the queue
+            raise
+
+        if compose_success is True:
+            # Everything went well, we'll send the email.
+            self.with_user(SUPERUSER_ID).with_delay(
+                channel="root.partner_communication",
+                priority=100,
+                description="Send B2S letter communication",
+            ).send_communication()
+
+        else:
+            # Logical failure during compose_letter_image process
+            # (template or image missing)
+            # Manage error because something failed in
+            # compose_letter_image process (function returned false)
+            self.with_user(SUPERUSER_ID).with_delay(
+                channel="root.sbc_compassion",
+                priority=10,
+                description="Handle failure after logical failure (returned False)",
+            )._handle_compose_letter_failure()
+
+        # Return True so that Job 1 is marked “Done” in the queue
+        # in case of success or logical failure.
+        return True
 
     def compose_letter_image(self):
         """
@@ -680,6 +715,60 @@ class Correspondence(models.Model):
             self.letter_image = base64.b64encode(pdf_out)
 
         return True
+
+    def _handle_compose_letter_failure(self):
+        # Mark as exception while keeping translation_status on ‘done’
+        self.ensure_one()
+        self.write({"state": "Exception"})
+
+        # Determine the SDS partner ID according to the language
+        config_settings = self.env["res.config.settings"].sudo()
+        lang = self.partner_id.lang
+
+        # Language mapping
+        lang_to_method = {
+            "fr_CH": config_settings.get_sponsorship_fr_id,
+            "it_IT": config_settings.get_sponsorship_it_id,
+            "de_DE": config_settings.get_sponsorship_de_id,
+        }
+
+        # Retrieve the ID according to the language
+        get_sds_id = lang_to_method.get(lang, config_settings.get_sponsorship_de_id)
+        sds_partner_id = get_sds_id()
+
+        # Find the right odoo user
+        sds_user = (
+            self.env["res.users"]
+            .sudo()
+            .search([("partner_id", "=", int(sds_partner_id))], limit=1)
+        )
+
+        if not sds_user:
+            # No SDS user found for the partner
+            sds_user = self.env.ref("base.user_admin")  # Fallback on admin user
+
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            date_deadline=fields.Date.today(),
+            summary=f"Failure to generate BDS letter (PDF) ({self.name})",
+            note=(
+                f"The generation of the BDS letter **{self.name}** for the supporter "
+                f"**{self.partner_id.name}** has failed. "
+                "The PDF could not be generated and therefore the email was not sent."
+            ),
+            user_id=sds_user.id,
+        )
+
+        # Note in the letter's chat
+        self.message_post(
+            body=(
+                f"**PDF generation failure: Asynchronous job failure "
+                f"'Compose B2S letter image'. The correspondence was marked as "
+                f"'Exception' and an SDS activity was created for {sds_user.name}."
+            ),
+            subject=_("Error during B2S letter generation"),
+            subtype_xmlid="mail.mt_note",
+        )
 
     def _get_translation_boxes(self):
         """
