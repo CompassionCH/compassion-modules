@@ -507,7 +507,7 @@ class SponsorshipContract(models.Model):
     @api.depends("payment_mode_id")
     def _compute_is_gift_auth(self):
         for contract in self:
-            contract.is_gift_authorized = True
+            contract.is_gift_authorized = contract.child_id
             if not contract.is_direct_debit and (
                 contract.birthday_invoice or contract.christmas_invoice
             ):
@@ -1176,12 +1176,12 @@ class SponsorshipContract(models.Model):
             base_description = f"Automatic {gift_type} gift"
             gift_wizard = (
                 self.env["generate.gift.wizard"]
-                .with_context(recurring_invoicer_id=invoicer.id)
+                .with_context(invoicer=invoicer.id)
                 .create(
                     {
                         "product_id": product_id,
                         "amount": 0.0,
-                        "contract_id": 0,
+                        "contract_ids": [(6, 0, contracts.ids)],
                     }
                 )
             )
@@ -1198,7 +1198,7 @@ class SponsorshipContract(models.Model):
                 gift_wizard.write(
                     {
                         "amount": getattr(contract, f"{gift_type}_invoice"),
-                        "contract_id": contract.id,
+                        "contract_ids": [(6, 0, [contract.id])],
                         "description": description,
                     }
                 )
