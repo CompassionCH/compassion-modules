@@ -348,7 +348,6 @@ class SponsorshipGift(models.Model):
         gift_vals = {
             "sponsorship_id": sponsorship.id,
             "invoice_line_ids": [(4, invoice_line.id)],
-            "instructions": invoice_line.move_id.narration,
             "gift_type_id": product.sponsorship_gift_type_id.id,
         }
 
