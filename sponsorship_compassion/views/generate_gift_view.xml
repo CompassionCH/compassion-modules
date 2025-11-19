@@ -17,7 +17,7 @@
                     <field name="invoice_date" />
                     <field name="description" />
                     <field name="bypass_invoice_suspension" />
-                    <field name="contract_ids" widget="many2many_tags"/>
+                    <field name="contract_ids" widget="many2many_tags" />
                 </group>
                 <footer>
                     <button
