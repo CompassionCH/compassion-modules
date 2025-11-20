@@ -1,6 +1,6 @@
 # pylint: disable=C8101
 {
-    "name": "mis_builder_spn_info",
+    "name": "mis_builder_analytic",
     "summary": """
         Dummy module kept for migration purposes.
         """,
