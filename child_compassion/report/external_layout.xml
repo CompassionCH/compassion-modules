@@ -4,18 +4,17 @@
     inherit_id="web.external_layout_standard"
   >
         <!-- support for custom header -->
-        <div
-      t-attf-class="header o_company_#{company.id}_layout"
+        <xpath expr="/div[contains(@class, 'header')]"
       position="attributes"
     >
             <attribute name="t-if">not disable_header</attribute>
-        </div>
+        </xpath>
         <!-- support for custom footer -->
-        <div
-      t-attf-class="footer o_company_#{company.id}_layout {{report_type != 'pdf' and 'mt-auto'}}"
+        <xpath
+      expr="/div[contains(@class, 'footer')]"
       position="attributes"
     >
             <attribute name="t-if">not disable_footer</attribute>
-        </div>
+        </xpath>
     </template>
 </odoo>
