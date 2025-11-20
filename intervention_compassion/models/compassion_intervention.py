@@ -16,7 +16,7 @@ from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 
-INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
+INTERVENTION_PORTAL_URL = "https://compassionci.my.site.com/GlobalPartners/"
 
 
 class CompassionIntervention(models.Model):

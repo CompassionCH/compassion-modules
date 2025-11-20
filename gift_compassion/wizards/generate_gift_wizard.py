@@ -32,20 +32,18 @@ class GenerateGiftWizard(models.TransientModel):
         :param contract:  the sponsorship
         :return: None
         """
-        self.ensure_one()
-        if self.contract_id.no_birthday_invoice:
-            bd_prod = self.env["product.product"].search(
-                [("default_code", "=", GIFT_PRODUCTS_REF[0])]
-            )
-            gift_obj = self.env["sponsorship.gift"]
-            gift_vals = gift_obj.get_gift_types(bd_prod)
-            gift_date = self.compute_date_birthday_invoice(
-                self.contract_id.child_id.birthdate
-            )
+        no_birthday_contracts = self.contract_ids.filtered("no_birthday_invoice")
+        bd_prod = self.env["product.product"].search(
+            [("default_code", "=", GIFT_PRODUCTS_REF[0])]
+        )
+        gift_obj = self.env["sponsorship.gift"]
+        gift_vals = gift_obj.get_gift_types(bd_prod)
+        for contract in no_birthday_contracts:
+            gift_date = self.compute_date_birthday_invoice(contract.child_id.birthdate)
             # Search that a gift is not already pending
             existing_gifts = gift_obj.search(
                 [
-                    ("sponsorship_id", "=", self.contract_id.id),
+                    ("sponsorship_id", "=", contract.id),
                     ("gift_date", ">=", gift_date.replace(day=1, month=1)),
                     ("gift_date", "<=", gift_date.replace(day=31, month=12)),
                     ("gift_type", "=", gift_vals["gift_type"]),
@@ -59,13 +57,17 @@ class GenerateGiftWizard(models.TransientModel):
             )
             if not existing_gifts:
                 # Create a gift record
-                gift_vals["sponsorship_id"] = self.contract_id.id
-                gift_vals["date_partner_paid"] = gift_date
-                gift_vals["gift_date"] = gift_date
-                gift_vals["amount"] = self.contract_id.birthday_invoice
-                gift_obj.create(gift_vals)
-        else:
-            super().generate_invoice(due_date)
+                gift_vals.update(
+                    {
+                        "sponsorship_id": contract.id,
+                        "date_partner_paid": gift_date,
+                        "gift_date": gift_date,
+                        "amount": contract.birthday_invoice,
+                    }
+                )
+                gift_obj.create(gift_vals.copy())
+        self.contract_ids -= no_birthday_contracts
+        return super().generate_invoice(due_date)
 
     def compute_date_birthday_invoice(self, child_birthdate, payment_date=None):
         """Set date of invoice two months before child's birthdate"""

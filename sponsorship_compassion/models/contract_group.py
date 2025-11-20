@@ -53,7 +53,10 @@ class ContractGroup(models.Model):
     ):
         # Push analytic account
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
-        if gift_wizard:
+        analytic = self.active_contract_ids.mapped("origin_id.analytic_id")
+        if len(analytic) == 1:
+            res["analytic_account_id"] = analytic.id
+        elif gift_wizard:
             res[
                 "analytic_account_id"
             ] = gift_wizard.contract_id.origin_id.analytic_id.id

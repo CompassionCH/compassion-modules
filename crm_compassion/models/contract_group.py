@@ -19,7 +19,10 @@ class ContractGroup(models.Model):
         self, invoicing_date=False, gift_wizard=False, contract_line=False
     ):
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
-        if gift_wizard:
+        ambassador = self.active_contract_ids.mapped("ambassador_id")
+        if len(ambassador) == 1:
+            res["user_id"] = ambassador.id
+        elif gift_wizard:
             res["user_id"] = gift_wizard.contract_id.ambassador_id.id
         elif contract_line:
             res["user_id"] = contract_line.contract_id.ambassador_id.id
