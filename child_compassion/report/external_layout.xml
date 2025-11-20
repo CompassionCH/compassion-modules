@@ -4,14 +4,14 @@
     inherit_id="web.external_layout_standard"
   >
         <!-- support for custom header -->
-        <xpath expr="/div[contains(@t-attf-class, 'header')]"
+        <xpath expr="//div[contains(@t-attf-class, 'header')]"
       position="attributes"
     >
             <attribute name="t-if">not disable_header</attribute>
         </xpath>
         <!-- support for custom footer -->
         <xpath
-      expr="/div[contains(@t-attf-class, 'footer')]"
+      expr="//div[contains(@t-attf-class, 'footer')]"
       position="attributes"
     >
             <attribute name="t-if">not disable_footer</attribute>
