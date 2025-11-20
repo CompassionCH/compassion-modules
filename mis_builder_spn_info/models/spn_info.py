@@ -89,27 +89,28 @@ class MisSpnInfo(models.Model):
         mis_contract_created = param_obj.get_param("mis_contract_created_id")
         mis_main_company = param_obj.get_param("mis_main_company_id")
         mis_child_sponsored = param_obj.get_param("mis_child_sponsored_id")
-        script = opj(os.path.dirname(__file__), "spn_info.sql")
-        currency = (
-            self.env["res.company"]
-            .search([("id", "=", mis_main_company.id)])
-            .currency_id.id
-        )
-        with open(script) as f:
-            tools.drop_view_if_exists(self.env.cr, "mid_spn_info")
-            sql = f.read()
-            params = (
-                mis_child_sponsored.id,
-                currency,
-                mis_main_company.id,
-                mis_child_sponsored.id,
-                currency,
-                mis_main_company.id,
-                mis_contract_created.id,
-                currency,
-                mis_main_company.id,
-                mis_contract_created.id,
-                currency,
-                mis_main_company.id,
+        if mis_main_company and mis_child_sponsored and mis_contract_created:
+            script = opj(os.path.dirname(__file__), "spn_info.sql")
+            currency = (
+                self.env["res.company"]
+                .search([("id", "=", mis_main_company)])
+                .currency_id.id
             )
-            self.env.cr.execute(sql, params)
+            with open(script) as f:
+                tools.drop_view_if_exists(self.env.cr, "mid_spn_info")
+                sql = f.read()
+                params = (
+                    mis_child_sponsored,
+                    currency,
+                    mis_main_company,
+                    mis_child_sponsored,
+                    currency,
+                    mis_main_company,
+                    mis_contract_created,
+                    currency,
+                    mis_main_company,
+                    mis_contract_created,
+                    currency,
+                    mis_main_company,
+                )
+                self.env.cr.execute(sql, params)
