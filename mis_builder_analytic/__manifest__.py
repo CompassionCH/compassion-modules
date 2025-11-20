@@ -15,7 +15,6 @@
         "account",  # source
         "sponsorship_compassion",
     ],
-    "data": [
-    ],
+    "data": [],
     "installable": True,
 }
