@@ -14,14 +14,21 @@ def migrate(cr, version):
     WHERE id IN (SELECT id FROM to_delete);
     """)
     cr.execute("""
-        select report_id from mis_report_instance
-        where name->>'en_US' = 'Sponsorship report';""")
-    mis_report = cr.fetchone()
-    cr.execute("""
-        delete from mis_report_instance where name->>'en_US' = 'Sponsorship report';
-    """)
-    cr.execute(
-        """
-            delete from mis_report where id = %s;""",
-        (mis_report and mis_report[0],),
-    )
+        select id, report_id from mis_report_instance
+        where name->>'en_US' IN (
+            'Sponsorship report', 'Monthly Acquisitions and Cancellations'
+        );""")
+    res = cr.fetchall()
+    instance_ids = tuple(r[0] for r in res)
+    report_ids = tuple(r[1] for r in res)
+
+    if instance_ids:
+        cr.execute(
+            "DELETE FROM mis_report_instance WHERE id = ANY(%s);",
+            (list(instance_ids),),
+        )
+    if report_ids:
+        cr.execute(
+            "DELETE FROM mis_report WHERE id = ANY(%s);",
+            (list(report_ids),),
+        )
