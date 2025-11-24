@@ -680,6 +680,11 @@ class Correspondence(models.Model):
         # in case of success or logical failure.
         return True
 
+    def send_communication(self):
+        """Sends the letter to the sponsor via email.
+        Can be implemented by modules inheriting from this one."""
+        pass
+
     def compose_letter_image(self):
         """
         Puts the translated text of a letter inside the original image given
@@ -721,53 +726,28 @@ class Correspondence(models.Model):
         self.ensure_one()
         self.write({"state": "Exception"})
 
-        # Determine the SDS partner ID according to the language
         config_settings = self.env["res.config.settings"].sudo()
-        lang = self.partner_id.lang
+        sds_partner_id = config_settings.get_param("letter_responsible", 0)
+        sds_user = self.env.ref("base.user_admin")  # Fallback on admin user
 
-        # Language mapping
-        lang_to_method = {
-            "fr_CH": config_settings.get_sponsorship_fr_id,
-            "it_IT": config_settings.get_sponsorship_it_id,
-            "de_DE": config_settings.get_sponsorship_de_id,
-        }
-
-        # Retrieve the ID according to the language
-        get_sds_id = lang_to_method.get(lang, config_settings.get_sponsorship_de_id)
-        sds_partner_id = get_sds_id()
-
-        # Find the right odoo user
-        sds_user = (
-            self.env["res.users"]
-            .sudo()
-            .search([("partner_id", "=", int(sds_partner_id))], limit=1)
-        )
-
-        if not sds_user:
-            # No SDS user found for the partner
-            sds_user = self.env.ref("base.user_admin")  # Fallback on admin user
+        if sds_partner_id:
+            # Find the right odoo user
+            sds_user = (
+                self.env["res.users"]
+                .sudo()
+                .search([("partner_id", "=", int(sds_partner_id))], limit=1)
+            )
 
         self.activity_schedule(
             "mail.mail_activity_data_todo",
             date_deadline=fields.Date.today(),
-            summary=f"Failure to generate BDS letter (PDF) ({self.name})",
+            summary=f"Failure to generate B2S letter (PDF) ({self.name})",
             note=(
-                f"The generation of the BDS letter **{self.name}** for the supporter "
+                f"The generation of the B2S letter **{self.name}** for the supporter "
                 f"**{self.partner_id.name}** has failed. "
                 "The PDF could not be generated and therefore the email was not sent."
             ),
             user_id=sds_user.id,
-        )
-
-        # Note in the letter's chat
-        self.message_post(
-            body=(
-                f"**PDF generation failure: Asynchronous job failure "
-                f"'Compose B2S letter image'. The correspondence was marked as "
-                f"'Exception' and an SDS activity was created for {sds_user.name}."
-            ),
-            subject=_("Error during B2S letter generation"),
-            subtype_xmlid="mail.mt_note",
         )
 
     def _get_translation_boxes(self):
