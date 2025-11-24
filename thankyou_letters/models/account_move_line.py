@@ -102,6 +102,9 @@ class AccountInvoiceLine(models.Model):
 
             if existing_comm:
                 invoice_lines |= existing_comm.get_objects()
+            if len(existing_comm) > 1:
+                existing_comm[1:].cancel()
+                existing_comm = existing_comm[:1]
 
             send_mode, auto_mode = thankyou_config.build_inform_mode(
                 partner, communication_config.print_if_not_email
