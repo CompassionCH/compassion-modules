@@ -3,14 +3,14 @@
         <field name="name">Wordpress configurations</field>
         <field name="model">wordpress.configuration</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="host" />
                 <field name="company_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
-    <!-- Action opening the tree view -->
+    <!-- Action opening the list view -->
     <record
     id="open_view_wordpress_configuration"
     model="ir.actions.act_window"
