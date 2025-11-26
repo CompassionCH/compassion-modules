@@ -29,6 +29,26 @@ class CompassionProject(models.Model):
         data = self[:1].data_to_json("mobile_app_project")
         return data
 
+
+
+    def get_obfuscated_coordinates_json(self):
+        """
+        Return the obfuscated coordinates in a json format
+        :return: dictionary with JSON data of the obfuscated coordinates
+        """
+        self.update_obfuscated_coordinates()
+
+        if not self.gps_latitude_obfuscated or not self.gps_longitude_obfuscated:
+            return {
+                "Latitude": int(self.gps_latitude),
+                "Longitude": int(self.gps_longitude_obfuscated),
+            }
+
+        return {
+                "Latitude": self.gps_latitude_obfuscated,
+                "Longitude": self.gps_longitude_obfuscated,
+        }
+
     def get_weather_json(self, multi=False):
         if not self:
             return {}

@@ -85,6 +85,8 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
+    gps_latitude_obfuscated = fields.Float(readonly=True)
+    gps_longitude_obfuscated = fields.Float(readonly=True)
     google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
     cluster = fields.Char(readonly=True)
@@ -510,6 +512,46 @@ class CompassionProject(models.Model):
             ("Plastic", _("Plastic")),
         ]
 
+    def update_obfuscated_coordinates(self):
+        api_key = self.env["ir.config_parameter"].sudo().get_param(
+            "google_maps_api_key")
+        if not api_key:
+            return
+
+        base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+
+        for project in self:
+            # Check if we already have coords to avoid wasting API calls
+            if project.gps_latitude_obfuscated or project.gps_longitude_obfuscated:
+                continue
+
+            # Build the list of available address parts
+            parts = [
+                project.closest_city,
+                project.state_province,
+                project.country_id.name
+            ]
+            address_string = ", ".join(filter(None, parts))
+            if not address_string:
+                continue
+            params = {
+                "address": address_string,
+                "key": api_key
+            }
+
+            try:
+                response = requests.get(base_url, params=params)
+                data = response.json()
+
+                if data["status"] == "OK":
+                    location = data["results"][0]["geometry"]["location"]
+                    project.gps_latitude_obfuscated = location["lat"]
+                    project.gps_longitude_obfuscated = location["lng"]
+                else:
+                    logging.error(f"Geocoding error for {project.id}: {data['status']}")
+
+            except Exception as e:
+                logging.error(f"Request failed: {e}")
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):
         tf = TimezoneFinder()
