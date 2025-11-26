@@ -54,9 +54,6 @@ class CompassionChild(models.Model):
     )
     last_review_date = fields.Date(tracking=True, readonly=True)
     last_photo_date = fields.Date()
-    type = fields.Selection(
-        [("CDSP", "CDSP"), ("LDP", "LDP")], required=True, default="CDSP"
-    )
     date = fields.Datetime("Allocation date")
     completion_date = fields.Date(readonly=True)
     completion_date_change_reason = fields.Char(readonly=True)
