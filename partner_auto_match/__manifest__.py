@@ -25,20 +25,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# pylint: disable=C8101
 {
     "name": "Partner auto match",
     "summary": """Find existing contact given any partner data.""",
-    "version": "14.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Beta",
     "category": "Technical",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "author": "Compassion Switzerland",
+    "author": "Compassion CH",
     "maintainers": ["ecino"],
     "license": "AGPL-3",
     "installable": True,
     "depends": [
         "mail",
         "queue_job",  # OCA/queue
+        "advanced_translation",
     ],
     "data": [
         "data/activity_data.xml",

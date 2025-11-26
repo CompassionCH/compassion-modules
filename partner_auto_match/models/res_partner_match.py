@@ -96,7 +96,7 @@ class ResPartnerMatch(models.AbstractModel):
     def update_partner(self, partner, vals):
         filtered_vals = self._process_update_vals(partner, vals)
         partner_context = {"skip_check_zip": True, "no_upsert": True}
-        partner.with_context(partner_context).with_delay(
+        partner.with_context(**partner_context).with_delay(
             eta=60,
             channel="root.res_partner",
         ).write(filtered_vals)
