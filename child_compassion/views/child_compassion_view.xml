@@ -96,7 +96,6 @@
                                 </group>
                                 <group>
                                     <field name="global_id" />
-                                    <field name="type" />
                                     <field name="cdsp_type" />
                                     <field name="date" />
                                     <field name="completion_date" />
