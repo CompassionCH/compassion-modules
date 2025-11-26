@@ -13,7 +13,7 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
-from odoo.tools import datetime
+from odoo.tools.date_utils import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -124,43 +124,60 @@ class ProductProduct(models.Model):
 
     @api.model
     def create_missing_products(self):
-        """
-        Create the new survival products for the field offices that don't have one
-        This is called on installation of this module
-        """
-        _logger.info("Start creating products")
-        # Retrieve the survival sponsorship product field offices
-        ps_field_office = (
-            self.env["product.product"]
-            .search([("survival_sponsorship_sale", "=", True)])
-            .mapped("survival_sponsorship_field_office_id")
+        template = self.env.ref(
+            "survival_sponsorship_compassion.survival_product_template"
         )
-        # Retrieve the current interventions
-        interventions = self.env["compassion.intervention"].search(
-            [("state", "not in", ["close", "cancel"]), ("type", "ilike", "survival")]
+        field_office_attribute = self.env.ref(
+            "survival_sponsorship_compassion.attribute_field_office"
         )
-        # Ensure all the informations on the interventions are up to date
-        interventions.sudo().get_infos()
-        # We create the product for the field offices that doesn't already have one
-        for field_office in interventions.filtered(
-            lambda i: i.field_office_id not in ps_field_office
-        ).mapped("field_office_id"):
-            self.env["product.product"].create(
+        field_offices = self.env["compassion.field.office"].search([])
+
+        # Find the attribute line for the "Field Office" attribute
+        attribute_line = template.attribute_line_ids.filtered(
+            lambda line: line.attribute_id == field_office_attribute
+        )
+
+        if not attribute_line:
+            attribute_line = self.env["product.template.attribute.line"].create(
                 {
-                    "name": "Survival Sponsorships",
-                    "default_code": "csp_" + field_office.field_office_id,
-                    "taxes_id": False,
-                    "product_tmpl_id": self.env.ref(
-                        "survival_sponsorship_compassion.survival_product_template"
-                    ).id,
-                    "survival_sponsorship_field_office_id": field_office.id,
-                    "categ_id": self.env.ref(
-                        "sponsorship_compassion.product_category_fund"
-                    ).id,
+                    "product_tmpl_id": template.id,
+                    "attribute_id": field_office_attribute.id,
+                    "active": False,
                 }
             )
-            _logger.info(f"Product for {field_office.name} ({field_office.id}) created")
-        _logger.info("Products creation done")
+
+        # Get existing attribute values for this attribute
+        existing_value_names = {val.name for val in attribute_line.value_ids}
+
+        # Create attribute values for field offices that don't have one yet
+        new_values = []
+        for office in field_offices:
+            if office.field_office_id not in existing_value_names:
+                new_values.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "name": office.field_office_id,
+                            "attribute_id": field_office_attribute.id,
+                        },
+                    )
+                )
+
+        if new_values:
+            attribute_line.write({"value_ids": new_values, "active": True})
+
+        # Odoo automatically creates/updates variants. Now, link them.
+        for office in field_offices:
+            # Find the specific variant for this office
+            product_variant = template.product_variant_ids.filtered(
+                lambda p, fo_id=office.field_office_id: fo_id
+                in p.product_template_attribute_value_ids.mapped("name")
+            )
+            if product_variant:
+                product_variant.write(
+                    {"survival_sponsorship_field_office_id": office.id}
+                )
 
     def warn_admin(self):
         responsible_product_warn_user = (

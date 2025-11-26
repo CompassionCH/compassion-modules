@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Survival Sponsorships",
-    "version": "14.0.1.0.1",
+    "version": "18.0.1.0.0",
     "summary": "New type for the sponsorships that add the possibility "
     "to sponsor a country in the survival program (CSP).",
     "category": "Other",
@@ -39,7 +39,6 @@
     "depends": [
         "sponsorship_compassion",
         "intervention_compassion",
-        "wordpress_configuration",
     ],
     "data": [
         "views/product_product_view.xml",

@@ -23,8 +23,9 @@ class RecurringContract(models.Model):
     )
 
     def invoice_paid(self, invoice):
-        super().invoice_paid(invoice)
+        res = super().invoice_paid(invoice)
         self.filtered(lambda c: c.type == "CSP").contract_active()
+        return res
 
     def limited_time(self):
         for contract in self:

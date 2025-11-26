@@ -18,16 +18,17 @@ class WordpressConfiguration(models.Model):
 
     host = fields.Char(required=True)
     sponsorship_url = fields.Char(translate=True)
+    survival_sponsorship_url = fields.Char(translate=True)
     fund_gift_url = fields.Char(translate=True)
     child_gift_url = fields.Char(translate=True)
     user = fields.Char(required=True)
     password = fields.Char(required=True)
 
-    @api.model
-    def create(self, values):
-        self._check_values(values)
-        self._remove_previous_config(values)
-        return super().create(values)
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_values(vals_list)
+        self._remove_previous_config(vals_list)
+        return super().create(vals_list)
 
     def write(self, values):
         self._check_values(values)
@@ -80,21 +81,25 @@ class WordpressConfiguration(models.Model):
         )
 
     @api.model
-    def _remove_previous_config(self, values):
+    def _remove_previous_config(self, vals_list):
         """
         ensure a one-to-one relationship (companies have at most one config)
         """
-        if "company_id" in values and values["company_id"] is not False:
-            configs = self.search([("company_id", "=", values["company_id"])]) - self
-            for cfg in configs:
-                cfg.company_id = False
+        for vals in vals_list:
+            if "company_id" in vals and vals["company_id"] is not False:
+                configs = self.search([("company_id", "=", vals["company_id"])]) - self
+                for cfg in configs:
+                    cfg.company_id = False
 
     @api.model
-    def _check_values(self, values):
+    def _check_values(self, vals_list):
         """
         The dependent modules do not expect the http part
         """
-        if "host" in values and values.get("host").lower().startswith("http"):
-            raise ValidationError(
-                _("Hostname should not contain the protocol part ('http://').")
-            )
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+        for vals in vals_list:
+            if "host" in vals and vals.get("host").lower().startswith("http"):
+                raise ValidationError(
+                    _("Hostname should not contain the protocol part ('http://').")
+                )

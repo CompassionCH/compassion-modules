@@ -5,7 +5,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     def _compute_related_contracts(self):
-        super()._compute_related_contracts()
+        res = super()._compute_related_contracts()
         contract_obj = self.env["recurring.contract"]
         for partner in self:
             partner.contracts_correspondant += contract_obj.search(
@@ -35,3 +35,4 @@ class ResPartner(models.Model):
             partner.other_contract_ids = partner.other_contract_ids.filtered(
                 lambda c: c.type != "CSP"
             )
+        return res

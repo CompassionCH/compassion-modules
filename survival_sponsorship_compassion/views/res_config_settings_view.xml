@@ -5,23 +5,18 @@
         <field name="model">res.config.settings</field>
         <field
       name="inherit_id"
-      ref="message_center_compassion.notification_settings"
+      ref="message_center_compassion.compassion_settings"
     />
         <field name="arch" type="xml">
-            <xpath
-        expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']"
-      >
-                <div name="survival_sponsorship">
-                    <label
-            for="survival_sponsorship_warn_user_ids"
-            class="o_light_label"
-          />
+            <block name="notification_configuration">
+                <setting id="survival_notification_setting"
+                help="Users to notify when a survival sponsorship is expiring soon">
                     <field
             name="survival_sponsorship_warn_user_ids"
             widget="many2many_tags"
           />
-                </div>
-            </xpath>
+                </setting>
+            </block>
         </field>
     </record>
 </odoo>

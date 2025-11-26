@@ -24,11 +24,12 @@ class ResConfigSettings(models.TransientModel):
     )
 
     def set_values(self):
-        super().set_values()
+        res = super().set_values()
         self.env["ir.config_parameter"].sudo().set_param(
             "survival_sponsorship_compassion.survival_sponsorship_warn_user_ids",
             ",".join(list(map(str, self.survival_sponsorship_warn_user_ids.ids))),
         )
+        return res
 
     def get_values(self):
         param_obj = self.env["ir.config_parameter"].sudo()

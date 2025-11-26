@@ -13,7 +13,7 @@
                         <field name="survival_sponsorship_sale" />
                     </group>
                     <group
-            attrs="{'invisible':[('survival_sponsorship_sale', '=', False)]}"
+                            invisible="survival_sponsorship_sale == False"
           >
                         <group string="Communications">
                             <field name="survival_mom_name" />
@@ -22,7 +22,7 @@
                         <group string="Statistics">
                             <field
                 name="survival_sponsorship_field_office_id"
-                attrs="{'required':[('survival_sponsorship_sale', '=', True)]}"
+                required="survival_sponsorship_sale == True"
               />
                             <field name="slot_used" widget="progressbar" />
                             <field name="survival_slot_number" />

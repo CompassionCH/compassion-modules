@@ -12,7 +12,7 @@
           type='object'
           name='limited_time'
           string="Limited time CSP"
-          attrs="{'invisible': ['|', ('type','!=', 'CSP'), ('state', '!=', 'draft')]}"
+          invisible="type != 'CSP' or state != 'draft'"
           help="This button will calculate an end date in 18 months from now."
         />
             </field>
@@ -36,7 +36,7 @@
         </field>
     </record>
     <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
-        <field name="name">sponsorship.compassion.tree</field>
+        <field name="name">sponsorship.compassion.list</field>
         <field name="model">recurring.contract</field>
         <field
       name="inherit_id"
