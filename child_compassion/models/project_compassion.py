@@ -513,8 +513,17 @@ class CompassionProject(models.Model):
         ]
 
     def update_obfuscated_coordinates(self):
-        api_key = self.env["ir.config_parameter"].sudo().get_param(
-            "google_maps_api_key")
+        """
+        Update obfuscated coordinates using Google Maps Geocoding API.
+        1. Check if API key is configured.
+        2. If the current project has no obfuscated coordinates, build the address str.
+        3. Make a request to Google Maps Geocoding API.
+        4. If successful, update the obfuscated coordinates.
+        Used in compassion-modules/mobile_app_connector/models/compassion_project.py
+        """
+        api_key = (
+            self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
+        )
         if not api_key:
             return
 
@@ -529,15 +538,12 @@ class CompassionProject(models.Model):
             parts = [
                 project.closest_city,
                 project.state_province,
-                project.country_id.name
+                project.country_id.name,
             ]
             address_string = ", ".join(filter(None, parts))
             if not address_string:
                 continue
-            params = {
-                "address": address_string,
-                "key": api_key
-            }
+            params = {"address": address_string, "key": api_key}
 
             try:
                 response = requests.get(base_url, params=params)
@@ -552,6 +558,7 @@ class CompassionProject(models.Model):
 
             except Exception as e:
                 logging.error(f"Request failed: {e}")
+
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):
         tf = TimezoneFinder()
