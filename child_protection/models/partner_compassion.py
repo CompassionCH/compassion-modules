@@ -22,10 +22,10 @@ class ResPartner(models.Model):
         "protection charter.",
         tracking=True,
     )
-    criminal_record = fields.Binary(
-        attachment=True,
+    criminal_record = fields.Binary(groups="child_protection.group_criminal_record")
+    criminal_record_name = fields.Char(
+        compute="_compute_criminal_record_name",
     )
-    criminal_record_name = fields.Char(compute="_compute_criminal_record_name")
     criminal_record_date = fields.Date(tracking=True)
 
     code_of_conduct_file = fields.Binary(

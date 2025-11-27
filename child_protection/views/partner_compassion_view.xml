@@ -28,7 +28,6 @@
                     <field
             name="criminal_record"
             filename="criminal_record_name"
-            groups="child_protection.group_criminal_record"
           />
                     <field name="criminal_record_date" />
                 </group>
