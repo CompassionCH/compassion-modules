@@ -42,7 +42,7 @@ class CompassionProject(models.Model):
         if not self.gps_latitude_obfuscated or not self.gps_longitude_obfuscated:
             return {
                 "Latitude": int(self.gps_latitude),
-                "Longitude": int(self.gps_longitude_obfuscated),
+                "Longitude": int(self.gps_longitude),
             }
 
         return {
