@@ -20,7 +20,7 @@ class MoveLine(models.Model):
     event_id = fields.Many2one(
         "crm.event.compassion",
         "Event",
-        related="analytic_account_id.event_id",
+        related="analytic_line_ids.account_id.event_id",
         store=True,
         readonly=True,
     )

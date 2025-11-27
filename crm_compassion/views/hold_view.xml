@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <odoo>
     <record id="view_hold_crm_tree" model="ir.ui.view">
-        <field name="name">compassion.hold.crm.tree</field>
+        <field name="name">compassion.hold.crm.list</field>
         <field name="model">compassion.hold</field>
         <field
       name="inherit_id"
@@ -51,7 +51,7 @@
     </record>
 
     <record id="view_child_crm_tree" model="ir.ui.view">
-        <field name="name">compassion.child.crm.tree</field>
+        <field name="name">compassion.child.crm.list</field>
         <field name="model">compassion.child</field>
         <field
       name="inherit_id"

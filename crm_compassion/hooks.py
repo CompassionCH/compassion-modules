@@ -2,10 +2,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from openupgradelib import openupgrade
 
-from odoo import SUPERUSER_ID, api
 
-
-def pre_init_hook(cr):
+def pre_init_hook(env):
     """Loaded before installing the module.
 
     None of this module's DB modifications will be available yet.
@@ -17,7 +15,6 @@ def pre_init_hook(cr):
         Database cursor.
     """
     # This will avoid computing all values at module installation, which takes forever.
-    env = api.Environment(cr, SUPERUSER_ID, {})
     openupgrade.add_fields(
         env,
         [

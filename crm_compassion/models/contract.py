@@ -46,7 +46,7 @@ class Contracts(models.Model):
                 }
 
     def contract_waiting(self):
-        super().contract_waiting()
+        res = super().contract_waiting()
         for contract in self:
             notif_template = (
                 contract.origin_id.event_id.ambassador_sponsorship_config_id
@@ -65,3 +65,4 @@ class Contracts(models.Model):
                         "object_ids": contract.id,
                     }
                 )
+        return res

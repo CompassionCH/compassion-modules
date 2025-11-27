@@ -1,0 +1,5 @@
+<odoo noupdate="1">
+    <record model="account.analytic.plan" id="plan_events">
+        <field name="name">Events</field>
+    </record>
+</odoo>

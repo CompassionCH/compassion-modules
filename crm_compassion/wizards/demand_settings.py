@@ -22,7 +22,7 @@ class DemandPlanningSettings(models.TransientModel):
     days_hold_after_event = fields.Integer()
 
     def set_values(self):
-        super().set_values()
+        res = super().set_values()
         config = self.env["ir.config_parameter"]
         config.set_param(
             "crm_compassion.number_children_web", str(self.number_children_website)
@@ -38,6 +38,7 @@ class DemandPlanningSettings(models.TransientModel):
         config.set_param(
             "crm_compassion.days_hold_after_event", str(self.days_hold_after_event)
         )
+        return res
 
     @api.model
     def get_values(self):

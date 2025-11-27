@@ -30,7 +30,7 @@ class CrmLead(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "New event",
-            "view_mode": "form,calendar,tree",
+            "view_mode": "form,calendar,list",
             "res_model": "crm.event.compassion",
             "target": "current",
             "context": {
@@ -99,8 +99,8 @@ class CrmLead(models.Model):
                 lead.name = lead.partner_id.name
 
     @api.model
-    def _read_group_stage_ids(self, stages, domain, order):
-        res = super()._read_group_stage_ids(stages, domain, order)
+    def _read_group_stage_ids(self, stages, domain):
+        res = super()._read_group_stage_ids(stages, domain)
 
         # if the domain contains team_id filters, add them to the search domain
         team_id_domain = [
@@ -114,9 +114,7 @@ class CrmLead(models.Model):
                 *(["|"] * (len(team_id_domain) - 1) + team_id_domain),
             ]
             res += stages.browse(
-                stages._search(
-                    search_domain, order=order, access_rights_uid=SUPERUSER_ID
-                )
+                stages._search(search_domain, access_rights_uid=SUPERUSER_ID)
             )
 
             # Order is lost by the merge and empty stages are pushed back, so we need

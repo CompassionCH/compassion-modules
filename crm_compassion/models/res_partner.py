@@ -50,7 +50,7 @@ class Partner(models.Model):
         return {
             "name": _("Events"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "crm.event.compassion",
             "target": "current",
             "domain": [("id", "in", event_ids)],
@@ -58,13 +58,11 @@ class Partner(models.Model):
 
     def create_odoo_user(self):
         portal = self.env["portal.wizard"].create({})
-        users_portal = portal.mapped("user_ids")
-        users_portal.write({"in_portal": True})
         res = portal.action_apply()
         return res
 
     def _compute_opportunity_count(self):
-        super()._compute_opportunity_count()
+        res = super()._compute_opportunity_count()
         for partner in self:
             operator = "child_of" if partner.is_company else "="
             # Using partner.ids[0] is a trick to avoid error with child_of
@@ -76,6 +74,7 @@ class Partner(models.Model):
                     ("active", "=", False),
                 ]
             )
+        return res
 
     def log_call(self):
         """Prepare crm.phonecall creation."""
@@ -96,7 +95,7 @@ class Partner(models.Model):
             "name": _("Log your call"),
             "domain": domain,
             "res_model": "crm.phonecall",
-            "view_mode": "form,tree,calendar",
+            "view_mode": "form,list,calendar",
             "type": "ir.actions.act_window",
             "target": "new",
             "context": action_ctx,

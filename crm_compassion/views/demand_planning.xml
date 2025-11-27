@@ -27,7 +27,7 @@
     </record>
 
     <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
-        <field name="name">demand.weekly.demand.crm.tree</field>
+        <field name="name">demand.weekly.demand.crm.list</field>
         <field name="model">demand.weekly.demand</field>
         <field
       name="inherit_id"

@@ -30,8 +30,8 @@
 {
     "name": "Compassion - Events",
     "summary": "Compassion Events and Opportunities",
-    "version": "14.0.1.4.0",
-    "development_status": "Beta",
+    "version": "18.0.1.0.0",
+    "development_status": "Production/Stable",
     "category": "Customer Relationship Management",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "author": "Compassion CH",
@@ -44,7 +44,6 @@
         "web_widget_numeric_step",  # OCA/web
         "crm_phonecall",  # OCA/crm
         "sponsorship_compassion",  # compassion-modules
-        "partner_contact_in_several_companies",  # oca_addons/partner-contact
         "mail_tracking_mass_mailing",  # OCA/social
         "base_automation",
         "thankyou_letters",
@@ -53,9 +52,9 @@
         "data/calendar_event_type.xml",
         "data/communication_config.xml",
         "data/demand_planning.xml",
+        "data/account_analytic_plan.xml",
         "security/crm_compassion_security.xml",
         "security/ir.model.access.csv",
-        "static/src/xml/assets.xml",
         "views/account_invoice_line.xml",
         "views/calendar_event_view.xml",
         "views/calendar_view.xml",
@@ -73,5 +72,4 @@
         "views/sponsorship_view.xml",
         "wizards/crm_lead_lost_views.xml",
     ],
-    "qweb": ["static/src/xml/kanban_colors.xml"],
 }

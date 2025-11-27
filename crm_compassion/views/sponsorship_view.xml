@@ -36,7 +36,7 @@
     </record>
 
     <record id="view_contract_tree_crm" model="ir.ui.view">
-        <field name="name">recurring.contract.crm.tree</field>
+        <field name="name">recurring.contract.crm.list</field>
         <field name="model">recurring.contract</field>
         <field
       name="inherit_id"

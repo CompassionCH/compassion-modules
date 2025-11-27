@@ -24,7 +24,7 @@ class ChildHoldWizard(models.TransientModel):
                 {
                     "res_model": "crm.event.compassion",
                     "res_id": self.env.context.get("default_event_id"),
-                    "view_mode": "form,tree",
+                    "view_mode": "form,list",
                 }
             )
         return action

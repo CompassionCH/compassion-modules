@@ -21,11 +21,13 @@ class ContractOrigin(models.Model):
 
     @api.depends("type")
     def _compute_name(self):
+        res = True
         for origin in self:
             if origin.type == "event":
                 origin.name = origin.event_id.full_name
             else:
-                super(ContractOrigin, origin)._compute_name()
+                res &= super(ContractOrigin, origin)._compute_name()
+        return res
 
     def write(self, vals):
         """Propagate ambassador into contracts and invoice lines."""

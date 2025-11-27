@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.fields import Datetime
 
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
@@ -25,11 +25,11 @@ class WeeklyRevision(models.Model):
     week_end_date = fields.Date(required=True)
     type = fields.Selection(
         [
-            ("web", _("Web")),
-            ("ambassador", _("Ambassador")),
-            ("events", _("Events")),
-            ("sub", _("Sub")),
-            ("cancel", _("Cancellation")),
+            ("web", "Web"),
+            ("ambassador", "Ambassador"),
+            ("events", "Events"),
+            ("sub", "Sub"),
+            ("cancel", "Cancellation"),
         ],
         required=True,
     )
@@ -50,19 +50,27 @@ class WeeklyRevision(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model_create_single
-    def create(self, vals):
-        """Compute all results."""
-        start_date = vals["week_start_date"]
-        revision = self.search(
-            [("week_start_date", "=", start_date), ("type", "=", vals["type"])], limit=1
-        )
-        if revision:
-            return revision
+    @api.model_create_multi
+    def create(self, vals_list):
+        revisions = self.env[self._name]
+        to_create = []
+        for vals in vals_list:
+            start_date = vals["week_start_date"]
+            revision = self.search(
+                [("week_start_date", "=", start_date), ("type", "=", vals["type"])],
+                limit=1,
+            )
+            if revision:
+                revisions |= revision
+            else:
+                to_create.append(vals)
 
-        revision = super().create(vals)
-        revision.recompute_effective_numbers()
-        return revision
+        if to_create:
+            new_revisions = super().create(to_create)
+            new_revisions.recompute_effective_numbers()
+            revisions |= new_revisions
+
+        return revisions
 
     def recompute_effective_numbers(self):
         depart = self.env.ref("sponsorship_compassion.end_reason_depart")

@@ -28,7 +28,7 @@
             type="object"
           />
                     <field name="event_ids">
-                        <tree>
+                        <list>
                             <field name="name" />
                             <field name="type" />
                             <field name="start_date" />
@@ -40,14 +40,14 @@
                             <field name="planned_sponsorships" sum="Total" />
                             <field name="won_sponsorships" sum="Total" />
                             <field name="conversion_rate" avg="Avg" />
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </xpath>
         </field>
     </record>
 
-    <!-- Opportunities Tree View -->
+    <!-- Opportunities List View -->
     <record model="ir.ui.view" id="crm_case_tree_view_oppor_spons1">
         <field name="name">Opportunities Tree</field>
         <field name="model">crm.lead</field>
@@ -75,21 +75,10 @@
           help="."
         />
             </xpath>
-            <xpath
-        expr="//div[hasclass('dropdown-menu')]/t/a[@type='delete']"
-        position="after"
-      >
-                <a
-          role="menuitem"
-          name="create_event"
-          type="object"
-          class="dropdown-item"
-        >Create event</a>
-            </xpath>
-            <xpath
-        expr="//div[hasclass('o_kanban_record_subtitle')]/t"
-        position="replace"
-      >
+            <field name="color" position="before">
+                <a role="menuitem" name="create_event" type="object" class="dropdown-item">Delete</a>
+            </field>
+            <xpath expr="//div/t[1]" position="replace">
                 <t t-if="record.planned_sponsorships.raw_value"><field
             name="planned_sponsorships"
           /> sponsorships</t>

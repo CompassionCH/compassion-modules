@@ -43,7 +43,12 @@ class EventCompassion(models.Model):
     zip_id = fields.Many2one("res.city.zip", "Address", readonly=False)
     street = fields.Char()
     user_id = fields.Many2one(
-        "res.users", "Responsible", tracking=True, readonly=False, check_company=True
+        "res.users",
+        "Responsible",
+        tracking=True,
+        readonly=False,
+        check_company=True,
+        default=lambda self: self.env.user.id,
     )
     communication_config_id = fields.Many2one(
         "partner.communication.config",
@@ -245,63 +250,54 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model_create_single
-    def create(self, vals):
-        """When an event is created:
-        - Format the name to remove year of it,
-        - Create an analytic_account,
-        - Create an origin for sponsorships.
-        """
-        # Avoid putting twice the date in linked objects name
-        event_year = str(datetime.today().year)
-        if vals.get("start_date") and isinstance(vals["start_date"], str):
-            event_year = str(fields.Date.from_string(vals["start_date"]).year)
-        event_name = vals.get("name", "0000")
-        if event_name[-4:] == event_year:
-            vals["name"] = event_name[:-4]
-        elif event_name[-2:] == event_year[-2:]:
-            vals["name"] = event_name[:-2]
-
-        # Compute hold_start_date from vals if it hasn't been set
-        if not vals.get("hold_start_date"):
-            hold_start_date = self.compute_hold_start_date(
-                start=fields.Datetime.from_string(vals["start_date"])
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            start_value = vals.get("start_date")
+            start_dt = (
+                (
+                    fields.Datetime.from_string(start_value)
+                    if isinstance(start_value, str)
+                    else start_value
+                )
+                if start_value
+                else None
             )
-            vals["hold_start_date"] = hold_start_date
+            event_year = str(start_dt.year if start_dt else datetime.today().year)
+            event_name = vals.get("name", "0000")
+            if event_name[-4:] == event_year:
+                vals["name"] = event_name[:-4]
+            elif event_name[-2:] == event_year[-2:]:
+                vals["name"] = event_name[:-2]
+            if not vals.get("hold_start_date") and start_dt:
+                vals["hold_start_date"] = self.compute_hold_start_date(start=start_dt)
 
-        event = super().create(vals)
+        events = super().create(vals_list)
 
-        # Analytic account and Origin linked to this event
-        analytic_id = (
-            self.env["account.analytic.account"].create(event._get_analytic_vals()).id
-        )
-        origin_id = (
-            self.env["recurring.contract.origin"]
-            .create(event._get_origin_vals(analytic_id))
-            .id
-        )
-        event.with_context(no_sync=True).write(
-            {
-                "origin_id": origin_id,
-                "analytic_id": analytic_id,
-            }
-        )
+        calendar_obj = self.env["calendar.event"].with_context(default_start_date=None)
 
-        # Workaround, default_start_date must be removed from context,
-        # details in commit
-        context = dict(self._context)
-        context.pop("default_start_date", None)
-        calendar_obj = self.env["calendar.event"].with_context({}, context)
+        for event in events:
+            analytic_id = (
+                self.env["account.analytic.account"]
+                .create(event._get_analytic_vals())
+                .id
+            )
+            origin_id = (
+                self.env["recurring.contract.origin"]
+                .create(event._get_origin_vals(analytic_id))
+                .id
+            )
+            event.with_context(no_sync=True).write(
+                {"origin_id": origin_id, "analytic_id": analytic_id}
+            )
+            calendar_event = calendar_obj.create(event._get_calendar_vals())
+            event.with_context(no_calendar=True).calendar_event_id = calendar_event
 
-        # Add calendar event
-        calendar_event = calendar_obj.create(event._get_calendar_vals())
-        event.with_context(no_calendar=True).calendar_event_id = calendar_event
-
-        return event
+        return events
 
     def write(self, vals):
         """Push values to linked objects."""
-        super().write(vals)
+        res = super().write(vals)
         if not self.env.context.get("no_sync"):
             for event in self:
                 # Update Analytic Account and Origin
@@ -317,7 +313,7 @@ class EventCompassion(models.Model):
                 if not self.env.context.get("no_calendar"):
                     event.calendar_event_id.write(event._get_calendar_vals())
 
-        return True
+        return res
 
     def copy(self, default=None):
         this_year = str(datetime.now().year)
@@ -374,7 +370,7 @@ class EventCompassion(models.Model):
         return {
             "name": _("Sponsorships"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "recurring.contract",
             "context": {
                 "default_type": "S",
@@ -390,12 +386,12 @@ class EventCompassion(models.Model):
         return {
             "name": _("Expenses"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move.line",
             "context": {
                 "expense_from_event": True,
                 "search_view_ref": "crm_compassion.event_income_search",
-                "tree_view_ref": "crm_compassion.event_income_tree",
+                "list_view_ref": "crm_compassion.event_income_tree",
             },
             "domain": [("id", "in", self.expense_line_ids.mapped("move_id").ids)],
         }
@@ -405,7 +401,7 @@ class EventCompassion(models.Model):
         return {
             "name": _("Income"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move.line",
             "context": self.with_context(
                 default_analytic_account_id=self.analytic_id.id,
@@ -413,7 +409,7 @@ class EventCompassion(models.Model):
                 default_move_type="out_invoice",
                 search_default_paid=True,
                 search_view_ref="crm_compassion.event_income_search",
-                tree_view_ref="crm_compassion.event_income_tree",
+                list_view_ref="crm_compassion.event_income_tree",
             ).env.context,
             "domain": [
                 ("id", "in", self.income_line_ids.ids),
@@ -424,7 +420,7 @@ class EventCompassion(models.Model):
         return {
             "name": _("Allocated Children"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "compassion.child",
             "context": self.with_context(search_default_available=1).env.context,
             "domain": [("id", "in", self.allocate_child_ids.ids)],
@@ -461,7 +457,7 @@ class EventCompassion(models.Model):
         return {
             "name": _("Opportunities"),
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form" if len(self.lead_ids) > 1 else "form",
+            "view_mode": "list,form" if len(self.lead_ids) > 1 else "form",
             "res_model": "crm.lead",
             "res_id": self.lead_ids and self.lead_ids[0].id or False,
             "domain": [("id", "in", self.lead_ids.ids)],
@@ -479,6 +475,7 @@ class EventCompassion(models.Model):
             "year": self.year,
             "partner_id": self.user_id.partner_id.id,
             "event_id": self.id,
+            "plan_id": self.env.ref("crm_compassion.plan_events").id,
         }
 
     def _get_origin_vals(self, analytic_id):
@@ -532,21 +529,19 @@ class EventCompassion(models.Model):
             "view_mode": "form",
             "res_model": "compassion.childpool.search",
             "target": "current",
-            "context": self.with_context(
-                {
-                    "default_take": (
-                        self.number_allocate_children - self.effective_allocated
-                    ),
-                    "default_event_id": self.id,
-                    "default_channel": "event",
-                    "default_ambassador": self.user_id.partner_id.id,
-                    "default_source_code": self.name,
-                    "default_no_money_yield_rate": no_money_yield * 100,
-                    "default_yield_rate": yield_rate * 100,
-                    "default_expiration_date": expiration_date,
-                    "default_campaign_id": self.campaign_id.id,
-                }
-            ).env.context,
+            "context": {
+                "default_take": (
+                    self.number_allocate_children - self.effective_allocated
+                ),
+                "default_event_id": self.id,
+                "default_channel": "event",
+                "default_ambassador": self.user_id.partner_id.id,
+                "default_source_code": self.name,
+                "default_no_money_yield_rate": no_money_yield * 100,
+                "default_yield_rate": yield_rate * 100,
+                "default_expiration_date": expiration_date,
+                "default_campaign_id": self.campaign_id.id,
+            },
         }
 
     def allocate_children(self):
@@ -557,7 +552,9 @@ class EventCompassion(models.Model):
         for event in self:
             context = event.allocate_children()["context"]
             childpool = (
-                self.env["compassion.childpool.search"].with_context(context).create({})
+                self.env["compassion.childpool.search"]
+                .with_context(**context)
+                .create({})
             )
             childpool.rich_mix()
             hold_wizard = (
@@ -570,12 +567,12 @@ class EventCompassion(models.Model):
     ##########################################################################
     #              SUBSCRIPTION METHODS TO SUBSCRIBE STAFF ONLY              #
     ##########################################################################
-    def message_auto_subscribe(self, updated_fields, values=None):
+    def _message_auto_subscribe_followers(self, updated_fields, default_subtype_ids):
         """
         Subscribe from user_ids field which is a computed field.
         """
-        if "staff_ids" in updated_fields and values:
-            updated_fields = ["user_ids"]
+        res = []
+        if "staff_ids" in updated_fields:
             for event in self:
                 users = event.user_ids
                 # Subscribe each staff individually
@@ -587,9 +584,10 @@ class EventCompassion(models.Model):
                         "UPDATE crm_event_compassion SET user_id = %s WHERE id = %s",
                         (user.id, event.id),
                     )
-                    values = {"user_ids": user.id}
-                    super(EventCompassion, event).message_auto_subscribe(
-                        updated_fields, values
+                    res.extend(
+                        super(EventCompassion, event)._message_auto_subscribe_followers(
+                            {"user_ids": user.id}, default_subtype_ids
+                        )
                     )
                 # Restore ambassador
                 user_id = "NULL"
@@ -599,16 +597,4 @@ class EventCompassion(models.Model):
                     "UPDATE crm_event_compassion SET user_id = %s WHERE id = %s",
                     (user_id, event.id),
                 )
-        return True
-
-    @api.model
-    def _message_get_auto_subscribe_fields(
-        self, updated_fields, auto_follow_fields=None
-    ):
-        """Add user_ids field to followers"""
-        auto_follow_fields = ["user_ids"]
-        if "staff_ids" in updated_fields:
-            updated_fields.append("user_ids")
-        return super()._message_get_auto_subscribe_fields(
-            updated_fields, auto_follow_fields
-        )
+        return res
