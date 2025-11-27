@@ -973,6 +973,7 @@ class Correspondence(models.Model):
             ]
         )
         gmc_messages.write({"state": "new"})
+        gmc_messages.process_messages()
 
     def _get_file_name(self):
         self.ensure_one()
