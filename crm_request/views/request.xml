@@ -52,7 +52,7 @@
                 <field name='partner_id' />
                 <field name='color' />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
               t-attf-class="#{kanban_color(record.color.raw_value)}"
             >
@@ -150,18 +150,11 @@
                     <group>
                         <field
               name="description"
-              attrs="{'invisible': [('description', '=', False)]}"
+              invisible="description == False"
             />
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field
-            name="message_follower_ids"
-            groups="base.group_user"
-          />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -223,12 +216,12 @@
     <record model="ir.actions.act_window" id="request_action">
         <field name="name">Requests</field>
         <field name="res_model">crm.claim</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field
       name="view_ids"
       eval="[(5, 0, 0),
     (0, 0, {'view_mode': 'kanban', 'view_id': ref('crm_request.crm_request_kanban_view')}),
-    (0, 0, {'view_mode': 'tree', 'view_id': ref('crm_claim.crm_case_claims_tree_view')}),
+    (0, 0, {'view_mode': 'list', 'view_id': ref('crm_claim.crm_case_claims_tree_view')}),
     (0, 0, {'view_mode': 'form', 'view_id': ref('crm_request.crm_request_form_view_id')})]"
     />
         <field
@@ -243,6 +236,7 @@
                 Record and track your customers' requests. Requests may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a request (emails sent, intervention type and so on).Requests may automatically be linked to an email address using the mail gateway module.
             </p>
         </field>
+        <field name="path">requests</field>
     </record>
 
     <!-- Top menu -->

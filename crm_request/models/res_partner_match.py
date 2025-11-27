@@ -21,11 +21,7 @@ class ResPartnerMatch(models.AbstractModel):
         partner = self.env["res.partner"].search(
             [
                 ("email", "not like", "compassion"),
-                "|",
-                "|",
                 ("email", "=ilike", email),
-                ("email_alias_ids.email", "=ilike", email),
-                ("other_contact_ids.email", "=ilike", email),
             ]
         )
         return partner

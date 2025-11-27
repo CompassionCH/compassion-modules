@@ -24,7 +24,7 @@ class ResPartner(models.Model):
         for partner in self:
             language = self.env.context.get("salutation_language", partner.lang)
             lang_partner = partner.with_context(lang=language)
-            if hasattr(lang_partner, "_get_salutation_" + partner.lang):
+            if hasattr(lang_partner, "_get_salutation_" + language):
                 partner.salutation = getattr(
                     lang_partner, "_get_salutation_" + language
                 )()

@@ -5,11 +5,9 @@ import logging
 from email.utils import parseaddr
 
 from dateutil.relativedelta import relativedelta
-from psycopg2 import IntegrityError
 
 from odoo import _, api, exceptions, fields, models
-from odoo.exceptions import ValidationError
-from odoo.tools import email_normalize, html_sanitize, prepend_html_content
+from odoo.tools.mail import email_normalize, html_sanitize, prepend_html_content
 
 _logger = logging.getLogger(__name__)
 
@@ -18,14 +16,11 @@ class CrmClaim(models.Model):
     _inherit = "crm.claim"
     _description = "Request"
 
-    date = fields.Datetime(string="Date", readonly=True, index=False)
     alias_id = fields.Many2one(
         "mail.alias",
-        "Alias",
         help="The destination email address that the contacts used.",
         readonly=False,
     )
-    user_id = fields.Many2one(string="Assign to", readonly=False)
     stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
     ref = fields.Char(related="partner_id.ref")
     color = fields.Integer("Color index", compute="_compute_color")
@@ -92,19 +87,18 @@ class CrmClaim(models.Model):
         template_id = self.categ_id.template_id.id
         ctx = {
             "default_model": "crm.claim",
-            "default_res_id": self.id,
+            "default_res_ids": self.ids,
             "default_use_template": bool(template_id),
             "default_template_id": template_id,
             "default_composition_mode": "comment",
             "default_partner_ids": [(4, self.partner_id.id)],
-            "default_subject": self.name,
+            "default_subject": _("RE: ") + self.name,
             "use_email_alias": self.reply_to or self.email_from,
             "mark_so_as_sent": True,
             "salutation_language": self.language,
             "default_body": prepend_html_content(
                 self.quoted_reply,
-                f"<div style='margin-bottom: 20px;'>"
-                f"<p>{self.partner_id.salutation}</p></div>",
+                self.partner_id.salutation,
             ),
         }
 
@@ -127,8 +121,8 @@ class CrmClaim(models.Model):
         return res
 
     @api.model
-    def _read_group_stage_ids(self, stages, domain, order):
-        stage_ids = stages._search([("active", "=", True)], order=order)
+    def _read_group_stage_ids(self, stages, domain):
+        stage_ids = stages._search([("active", "=", True)], order=stages._order)
         return stages.browse(stage_ids)
 
     # -------------------------------------------------------
@@ -258,17 +252,15 @@ class CrmClaim(models.Model):
                 partner = request.partner_id
                 if request.email_from:
                     if partner.email and request.email_from:
-                        try:
-                            with self.env.cr.savepoint():
-                                partner.write(
-                                    {
-                                        "email_alias_ids": [
-                                            (0, 0, {"email": request.email_from})
-                                        ]
-                                    }
-                                )
-                        except (IntegrityError, ValidationError):
-                            _logger.warning("Unable to sync email to partner")
+                        # Create an alias if the email differs
+                        partner_alias = self.env["res.partner"].create(
+                            {
+                                "parent_id": partner.id,
+                                "email": request.email_from,
+                                "type": "other",
+                            }
+                        )
+                        request.partner_id = partner_alias
                     else:
                         partner.email = request.email_from
                 if request.partner_phone and not partner.phone:
@@ -310,6 +302,6 @@ class CrmClaim(models.Model):
                 summary=_("A support request requires your attention"),
                 note=_(
                     "The request {} you were assigned to requires your attention."
-                ).format(req.code),
+                ).format(req.name),
                 user_id=req.user_id.id,
             )

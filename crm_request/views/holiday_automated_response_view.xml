@@ -1,16 +1,15 @@
 <odoo>
      <record id="crm_holiday_closure_tree" model="ir.ui.view">
-        <field name="name">crm.holiday.closure.tree</field>
+        <field name="name">crm.holiday.closure.list</field>
         <field name="model">holiday.closure</field>
         <field name="arch" type="xml">
-            <tree
-        string="Holiday periods"
+            <list
         default_order='start_date, end_date, holiday_name'
       >
                 <field name="holiday_name" />
                 <field name="start_date" />
                 <field name="end_date" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -74,7 +73,7 @@
     <record id="crm_holiday_act" model="ir.actions.act_window">
         <field name="name">Holiday</field>
         <field name="res_model">holiday.closure</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

@@ -10,17 +10,15 @@ class RequestCategory(models.Model):
 
     template_id = fields.Many2one(
         "mail.template",
-        "Template",
         domain="[('model_id', '=', 'crm.claim')]",
         readonly=False,
     )
     keywords = fields.Char(
-        string="Keywords",
         help='List of keywords (separated by a comma ",") who could be '
         "contained in the demand subject",
     )
 
-    description = fields.Char(string="Description")
+    description = fields.Char()
 
     @api.constrains("keywords")
     def _check_existing_key(self):
