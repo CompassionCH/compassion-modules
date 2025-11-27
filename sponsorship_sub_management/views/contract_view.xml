@@ -311,6 +311,7 @@
                           ]"
     />
         <field name="search_view_id" ref="contract_tracking_filter" />
+        <field name="path">sub-sponsorships</field>
     </record>
 
     <!-- Menu Items -->

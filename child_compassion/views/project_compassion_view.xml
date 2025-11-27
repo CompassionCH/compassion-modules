@@ -430,6 +430,7 @@
         <field name="res_model">compassion.project</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_compassion_project_tree" />
+        <field name="path">fcps</field>
     </record>
 
     <record id="fetch_missing_project_terms" model="ir.actions.server">

@@ -437,6 +437,7 @@
         <field name="name">Global Childpool</field>
         <field name="res_model">compassion.childpool.search</field>
         <field name="view_mode">form</field>
+        <field name="path">childpool</field>
     </record>
 
     <menuitem

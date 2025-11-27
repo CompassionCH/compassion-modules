@@ -149,6 +149,7 @@
         <field name="res_model">compassion.hold</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_not_expired':1}</field>
+        <field name="path">holds</field>
     </record>
 
     <!-- Release hold action -->

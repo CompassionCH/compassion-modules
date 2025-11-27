@@ -550,6 +550,7 @@
         <field name="res_model">compassion.intervention</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
+        <field name="path">interventions</field>
     </record>
 
     <record id="open_categories_action" model="ir.actions.act_window">

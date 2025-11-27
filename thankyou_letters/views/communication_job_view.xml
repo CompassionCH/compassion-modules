@@ -137,6 +137,7 @@
     >{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id':
             uid}
         </field>
+        <field name="path">thank-you-letters</field>
     </record>
 
     <!-- add Menu in Sales-->

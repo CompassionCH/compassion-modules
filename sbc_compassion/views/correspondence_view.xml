@@ -352,6 +352,7 @@
                 No messages.
             </p>
         </field>
+        <field name="path">letters</field>
     </record>
 
     <menuitem

@@ -234,6 +234,7 @@
                 No messages.
             </p>
         </field>
+        <field name="path">gmc</field>
     </record>
 
     <record id="action_gmc_message_incoming_form" model="ir.actions.act_window">
@@ -250,6 +251,7 @@
                 No messages.
             </p>
         </field>
+        <field name="path">gmc-incoming</field>
     </record>
 
     <record id="action_gmc_message_outgoing_form" model="ir.actions.act_window">
@@ -266,6 +268,7 @@
                 No messages.
             </p>
         </field>
+        <field name="path">gmc-outgoing</field>
     </record>
 
     <record id="action_gmc_action" model="ir.actions.act_window">

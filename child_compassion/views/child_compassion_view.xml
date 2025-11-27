@@ -480,6 +480,7 @@
         <field name="res_model">compassion.child</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_state':'N'}</field>
+        <field name="path">children</field>
     </record>
 
     <!-- Update child picture actions -->

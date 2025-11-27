@@ -187,6 +187,7 @@
         <field name="name">Field Offices</field>
         <field name="res_model">compassion.field.office</field>
         <field name="view_mode">list,form</field>
+        <field name="path">field-offices</field>
     </record>
 
     <menuitem
