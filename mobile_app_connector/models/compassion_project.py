@@ -33,8 +33,9 @@ class CompassionProject(models.Model):
         """
         Return the obfuscated coordinates in a json format
         :return: dictionary with JSON data of the obfuscated coordinates
-        If the obfuscated coordinates are not available, return the integer part of the real coordinates
-        This gives a rough location without revealing the exact position (100km precision)
+        If the obfuscated coordinates are not available, return the integer part of the
+         real coordinates
+        This gives a rough location without revealing the exact position (100km accur.)
         """
         self.update_obfuscated_coordinates()
         # If the obfuscated coord. are not available, return the integer part.
