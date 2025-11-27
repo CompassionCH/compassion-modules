@@ -546,7 +546,7 @@ class CompassionProject(models.Model):
             params = {"address": address_string, "key": api_key}
 
             try:
-                response = requests.get(base_url, params=params)
+                response = requests.get(base_url, params=params, timeout=10)
                 data = response.json()
 
                 if data["status"] == "OK":
