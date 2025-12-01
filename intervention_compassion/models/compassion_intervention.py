@@ -740,17 +740,22 @@ class CompassionIntervention(models.Model):
             [("name", "in", list(account_specs))]
         )
         accounts = {acc.name: acc for acc in existing_accounts}
-        for account_name, vals in account_specs.items():
-            if account_name not in accounts:
-                accounts[account_name] = AnalyticAccount.create(vals)
+        new_account_vals = [
+            vals
+            for account_name, vals in account_specs.items()
+            if account_name not in accounts
+        ]
+        if new_account_vals:
+            created_accounts = AnalyticAccount.create(new_account_vals)
+            accounts.update({acc.name: acc for acc in created_accounts})
 
         # Link accounts to interventions
         for intervention in candidates:
             account = accounts.get(record_account.get(intervention.id))
             if account:
                 intervention.analytic_account_id = account.id
-        accounts = self.mapped("analytic_account_id")
-        if not accounts:
+        linked_accounts = self.mapped("analytic_account_id")
+        if not linked_accounts:
             return {
                 "tag": "display_notification",
                 "type": "ir.actions.client",
@@ -768,8 +773,8 @@ class CompassionIntervention(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Intervention Analytic Accounts"),
             "res_model": "account.analytic.account",
-            "view_mode": "form" if len(accounts) == 1 else "tree,form",
-            "domain": [("id", "in", accounts.ids)],
+            "view_mode": "form" if len(linked_accounts) == 1 else "tree,form",
+            "domain": [("id", "in", linked_accounts.ids)],
         }
 
     def cancel_hold(self):
