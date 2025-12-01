@@ -40,6 +40,7 @@
     ],
     "external_dependencies": {},
     "data": [
+        "data/account.analytic.group.csv",
         "data/compassion.intervention.category.csv",
         "data/compassion.intervention.subcategory.csv",
         "data/compassion.intervention.deliverable.csv",
