@@ -905,7 +905,7 @@ class CommunicationJob(models.Model):
             if job.attachment_ids:
                 print_name = name[:3] + " " + (job.subject or "")
                 job.with_delay(
-                    channel=_JOB_CHANNEL,
+                    channel=_JOB_CHANNEL + ".print_individual",
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:
