@@ -45,6 +45,7 @@
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
         "sale",
+        "partner_communication_compassion",
     ],
     "data": [
         "views/invoice_line_view.xml",
