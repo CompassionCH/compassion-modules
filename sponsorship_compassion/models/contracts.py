@@ -56,14 +56,14 @@ class SponsorshipContract(models.Model):
     birthday_invoice = fields.Float(
         "Annual birthday gift",
         help="Set the amount to enable automatic invoice creation each year "
-             "for a birthday gift. The invoice is set two months before "
-             "child's birthday.",
+        "for a birthday gift. The invoice is set two months before "
+        "child's birthday.",
         tracking=True,
     )
     christmas_invoice = fields.Float(
         "Annual christmas gift",
         help="Set the amount to enable automatic invoice creation each year "
-             "for a christmas gift. The invoice is set depending christmas invoice setting",
+        "for a christmas gift. The invoice is set depending christmas invoice setting",
         tracking=True,
     )
     reading_language = fields.Many2one(
@@ -121,7 +121,7 @@ class SponsorshipContract(models.Model):
         compute="_compute_active",
         store=True,
         help="It indicates that the first invoice has been paid and the "
-             "contract was activated.",
+        "contract was activated.",
     )
     # Field used for identifying gifts from sponsor
     commitment_number = fields.Integer(copy=False)
@@ -182,8 +182,8 @@ class SponsorshipContract(models.Model):
     )
     sponsorship_line_id = fields.Integer(
         help="Identifies the active sponsorship line of a sponsor."
-             "When sponsorship is ended but a SUB is made, the SUB will have"
-             "the same line id. Only new sponsorships will have new ids."
+        "When sponsorship is ended but a SUB is made, the SUB will have"
+        "the same line id. Only new sponsorships will have new ids."
     )
     contract_duration = fields.Integer(
         compute="_compute_contract_duration", help="Contract duration in days"
@@ -308,7 +308,7 @@ class SponsorshipContract(models.Model):
                 contract.invoice_line_ids.with_context(lang="en_US")
                 .filtered(
                     lambda line: line.payment_state == "paid"
-                                 and line.product_id.categ_name != GIFT_CATEGORY
+                    and line.product_id.categ_name != GIFT_CATEGORY
                 )
                 .mapped("move_id.invoice_date")
                 or [False]
@@ -341,7 +341,7 @@ class SponsorshipContract(models.Model):
             )
             gift_invoices = invoices.filtered(
                 lambda i: i.invoice_category == "gift"
-                          and i.state not in ("cancel", "draft")
+                and i.state not in ("cancel", "draft")
             )
             contract.nb_invoices += len(gift_invoices)
 
@@ -454,8 +454,8 @@ class SponsorshipContract(models.Model):
                 "allow_during_suspension"
             )
             is_allowed = (
-                    sponsorship.state not in ["terminated", "cancelled", "draft"]
-                    and not hold_gifts
+                sponsorship.state not in ["terminated", "cancelled", "draft"]
+                and not hold_gifts
             )
             if sponsorship.state == "terminated" and not hold_gifts:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
@@ -471,12 +471,12 @@ class SponsorshipContract(models.Model):
         now = fields.Datetime.now()
         for sponsorship in self:
             hold_letters = (
-                    sponsorship.project_id.hold_s2b_letters
-                    and not self.env.context.get("allow_during_suspension")
+                sponsorship.project_id.hold_s2b_letters
+                and not self.env.context.get("allow_during_suspension")
             )
             is_allowed = (
-                    sponsorship.state not in ["terminated", "cancelled", "draft"]
-                    and not hold_letters
+                sponsorship.state not in ["terminated", "cancelled", "draft"]
+                and not hold_letters
             )
             if sponsorship.state == "terminated" and not hold_letters:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
@@ -488,7 +488,7 @@ class SponsorshipContract(models.Model):
         # Correspondence and gift contracts are also excluded
         valid_contracts = self.filtered(
             lambda s: s.type not in ("SC", "SWP", "G")
-                      and not s.child_id.project_id.hold_cdsp_funds
+            and not s.child_id.project_id.hold_cdsp_funds
         )
         invoices = super(SponsorshipContract, valid_contracts)._filter_due_invoices()
         return invoices.filtered(lambda i: i.invoice_category != "gift")
@@ -509,7 +509,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.is_gift_authorized = contract.child_id
             if not contract.is_direct_debit and (
-                    contract.birthday_invoice or contract.christmas_invoice
+                contract.birthday_invoice or contract.christmas_invoice
             ):
                 contract.is_gift_authorized = False
 
@@ -518,9 +518,8 @@ class SponsorshipContract(models.Model):
         for sponsorship in self:
             old_sponsorships = sponsorship.correspondent_id.sponsorship_ids.filtered(
                 lambda c, sponsorship=sponsorship: c.state != "cancelled"
-                                                   and c.start_date
-                                                   and c.start_date < (
-                                                               sponsorship.start_date or sponsorship.create_date)
+                and c.start_date
+                and c.start_date < (sponsorship.start_date or sponsorship.create_date)
             )
             sponsorship.is_first_sponsorship = not old_sponsorships
 
@@ -641,9 +640,9 @@ class SponsorshipContract(models.Model):
         for contract in self:
             # We can only delete draft sponsorships.
             if (
-                    "S" in contract.type
-                    and contract.state != "draft"
-                    and not self.env.context.get("force_delete")
+                "S" in contract.type
+                and contract.state != "draft"
+                and not self.env.context.get("force_delete")
             ):
                 raise UserError(_("You cannot delete a validated sponsorship."))
             # Remove sponsor of child and release it
@@ -690,8 +689,8 @@ class SponsorshipContract(models.Model):
             ["|", ("hold_id", "=", hold_id), ("id", "=", hold_id)]
         )
         if (
-                self.hold_expiration_date
-                and self.hold_expiration_date > fields.Datetime.now()
+            self.hold_expiration_date
+            and self.hold_expiration_date > fields.Datetime.now()
         ):
             hold_expiration = self.hold_expiration_date
             child = self.child_id
@@ -823,7 +822,9 @@ class SponsorshipContract(models.Model):
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         # Creating the messages to send to GMC when a sponsorship is activated
-        for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST and c.send_introduction_letter):
+        for contract in self.filtered(
+            lambda c: c.type in SPONSORSHIP_TYPE_LIST and c.send_introduction_letter
+        ):
             # Define the payer that will be sync to gmc
             contract.gmc_payer_partner_id = contract.partner_id
             # UpsertConstituent Message
@@ -859,7 +860,7 @@ class SponsorshipContract(models.Model):
                     if sponsorship.state == "active":
                         contract.contract_active()
             elif contract.type == "S" or (
-                    contract.type in ["SC", "SWP"] and contract.total_amount > 0
+                contract.type in ["SC", "SWP"] and contract.total_amount > 0
             ):
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
@@ -1043,9 +1044,9 @@ class SponsorshipContract(models.Model):
         child_id = vals.get("child_id")
         for contract in self:
             if (
-                    contract.type in SPONSORSHIP_TYPE_LIST
-                    and contract.child_id
-                    and contract.child_id.id != child_id
+                contract.type in SPONSORSHIP_TYPE_LIST
+                and contract.child_id
+                and contract.child_id.id != child_id
             ):
                 # Free the previously selected child
                 contract.child_id.child_unsponsored()
@@ -1115,7 +1116,7 @@ class SponsorshipContract(models.Model):
         # don't have an amount for the gift
         for contract in self:
             if (contract.project_id.hold_gifts and not bypass_fcp_state) or getattr(
-                    contract, f"{gift_type}_invoice"
+                contract, f"{gift_type}_invoice"
             ) <= 0:
                 contracts -= contract
                 continue
@@ -1154,9 +1155,9 @@ class SponsorshipContract(models.Model):
                 # invoice.
                 days_in_advance = contract.group_id.advance_billing_months * 31
                 if (
-                        0
-                        <= (due_date - contract.group_id.current_invoice_date).days
-                        <= days_in_advance
+                    0
+                    <= (due_date - contract.group_id.current_invoice_date).days
+                    <= days_in_advance
                 ):
                     due_dates[contract] = due_date
                 else:
@@ -1224,9 +1225,9 @@ class SponsorshipContract(models.Model):
                         f"The contract {contract.display_name} is not active."
                     )
                 if (
-                        contract.state == "terminated"
-                        and contract.end_date
-                        and not bypass_state
+                    contract.state == "terminated"
+                    and contract.end_date
+                    and not bypass_state
                 ):
                     limit = invoice.invoice_date - relativedelta(days=180)
                     ended_since = contract.end_date
@@ -1257,8 +1258,8 @@ class SponsorshipContract(models.Model):
     def _is_a_valid_group(self):
         for contract in self.filtered(lambda c: "S" in c.type):
             if (
-                    not contract.group_id.contains_sponsorship
-                    or contract.group_id.recurring_value != 1
+                not contract.group_id.contains_sponsorship
+                or contract.group_id.recurring_value != 1
             ):
                 raise ValidationError(
                     _(
@@ -1272,7 +1273,7 @@ class SponsorshipContract(models.Model):
         # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
             lambda invl: invl.contract_id.id in self.ids
-                         and invl.product_id.categ_name != GIFT_CATEGORY
+            and invl.product_id.categ_name != GIFT_CATEGORY
         )
         return res
 
