@@ -22,14 +22,14 @@
     </record>
 
     <record id="partner_segmentation_affinity_tree" model="ir.ui.view">
-        <field name="name">res.partner.segment.affinity.tree</field>
+        <field name="name">res.partner.segment.affinity.list</field>
         <field name="model">res.partner.segment.affinity</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="partner_id" />
                 <field name="segment_id" />
                 <field name="affinity" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -39,7 +39,7 @@
   >
         <field name="name">Partners segmentation affinity</field>
         <field name="res_model">res.partner.segment.affinity</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 

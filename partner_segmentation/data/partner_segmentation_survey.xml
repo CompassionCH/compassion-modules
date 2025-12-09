@@ -9,7 +9,6 @@
         <field name="questions_layout">page_per_question</field>
         <field name="scoring_type">no_scoring</field>
         <field name="title">Welcome!</field>
-        <field name="state">open</field>
         <field name="description" type="html">
             <p>
                 Thank you for participating in this 5-minute survey that will allow Compassion to better serve supporters like you.
@@ -39,7 +38,6 @@
         <field name="question_type">matrix</field>
         <field name="comments_allowed" eval="False" />
         <field name="constr_mandatory">True</field>
-        <field name="column_nb">2</field>
         <field name="survey_id" ref="partner_segmentation_survey" />
     </record>
     <record id="pss_q1_1" model="survey.question.answer">

@@ -166,7 +166,9 @@ class ResPartnerSegmentAffinity(models.Model):
         segment_score = [
             sum(x)
             for x in zip(
-                [sum(x) for x in zip(*scaled_engine)], self.answer_constant_engine
+                [sum(x) for x in zip(*scaled_engine, strict=False)],
+                self.answer_constant_engine,
+                strict=False,
             )
         ]
 
