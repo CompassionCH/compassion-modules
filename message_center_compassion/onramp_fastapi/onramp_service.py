@@ -6,7 +6,7 @@ from starlette.datastructures import Headers
 
 from odoo.exceptions import ValidationError
 from odoo.models import AbstractModel
-from odoo.tools import json
+from odoo.tools.json import scriptsafe as json
 
 from ..tools.onramp_connector import OnrampConnector
 
