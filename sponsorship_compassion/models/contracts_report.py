@@ -183,45 +183,18 @@ class PartnerSponsorshipReport(models.Model):
             partner.sr_total_gift = sr_total_gift
 
     def open_sponsorship_report(self):
-        self.ensure_one()
-        return {
+        action = {
             "type": "ir.actions.act_window",
             "name": "Sponsorship Report",
             "res_model": "res.partner",
             "view_mode": "form",
-            "context": self.with_context(
-                form_view_ref="sponsorship_compassion.sponsorship_report_form"
-            ).env.context,
-            "res_id": self.id,
+            "context": {
+                "form_view_ref": "sponsorship_compassion.sponsorship_report_form"
+            },
         }
-
-    def open_donation_details(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Donations details",
-            "res_model": "account.move.line",
-            "views": [
-                [
-                    self.env.ref(
-                        "sponsorship_compassion.view_invoice_line_partner_tree"
-                    ).id,
-                    "list",
-                ]
-            ],
-            "context": self.with_context(
-                search_default_group_product=1,
-                tree_view_ref="sponsorship_compassion"
-                ".view_invoice_line_partner_tree ",
-            ).env.context,
-            "domain": [
-                "|",
-                ("partner_id", "=", self.id),
-                ("partner_id.church_id", "=", self.id),
-                ("move_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
-                ("move_id.move_type", "=", "out_invoice"),
-                ("payment_state", "=", "paid"),
-                ("last_payment", "<", self.end_period),
-                ("last_payment", ">=", self.start_period),
-            ],
-        }
+        if len(self) == 1:
+            action["res_id"] = self.id
+        else:
+            action["domain"] = [("id", "in", self.ids)]
+            action["view_mode"] = "list,form"
+        return action

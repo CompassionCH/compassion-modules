@@ -90,8 +90,15 @@
                     <button
             type="object"
             string="Sponsorship impact"
-            name="action_automatic_entry"
+            name="action_sponsorship_impact"
             icon="fa-file-text-o "
+            display="always"
+          />
+                    <button
+            type="object"
+            string="Fix Payment Dates"
+            name="action_fix_payment_dates_from_lines"
+            icon="fa-calendar"
             display="always"
           />
                 </header>
@@ -102,7 +109,7 @@
           widget="open_move_widget"
         />
                 <field name="date" />
-                <field name="last_payment" optional="hide" />
+                <field name="last_payment" />
                 <field name="move_category" />
                 <field name="product_id" />
                 <field name="account_id" optional="hide" />
@@ -142,6 +149,11 @@
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <search>
+                <searchpanel>
+                    <field name="account_id" select="multi" color="red" />
+                    <field name="product_id" select="multi" color="green" />
+                    <field name="contract_id" select="multi" color="blue" />
+                </searchpanel>
                 <filter
           name="filter_sponsorship"
           string="Sponsorship"
@@ -157,6 +169,18 @@
           string="Fund"
           domain="[('move_category','=','fund')]"
         />
+                <separator />
+                <filter
+          name="filter_last_payment_current_year"
+          string="Current Year"
+          domain="[('last_payment', '&gt;=', context_today().strftime('%Y-01-01')), ('last_payment', '&lt;=', context_today().strftime('%Y-12-31'))]"
+        />
+                <filter
+          name="filter_last_payment_previous_year"
+          string="Previous Year"
+          domain="[('last_payment', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-01-01')), ('last_payment', '&lt;=', (context_today() - relativedelta(years=1)).strftime('%Y-12-31'))]"
+        />
+                <separator />
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner" />
                 <group expand="0" string="Group By...">
@@ -167,10 +191,16 @@
             context="{'group_by':'move_id'}"
           />
                     <filter
-            string="Date"
+            string="Invoice Date"
             name="group_date"
             domain="[]"
             context="{'group_by':'date'}"
+          />
+                    <filter
+            string="Payment Date"
+            name="group_payment_date"
+            domain="[]"
+            context="{'group_by':'last_payment:year'}"
           />
                     <filter
             name="group_contract"
