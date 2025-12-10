@@ -42,43 +42,6 @@ class MoveLine(models.Model):
                     res.append((1, invoice_line.id, data_dict))
             return res
 
-    def action_fix_payment_dates_from_lines(self):
-        """Fix payment dates for partners related to selected move lines."""
-        active_ids = self.env.context.get("active_ids")
-        active_domain = self.env.context.get("active_domain")
-        if not active_ids and not active_domain:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": _("Warning"),
-                    "message": _("No partners found in selected lines."),
-                    "type": "warning",
-                },
-            }
-        if active_ids:
-            moves = self.browse(active_ids).mapped("move_id")
-        else:
-            moves = self.search(active_domain).mapped("move_id")
-        if len(moves) > 100:
-            moves.with_delay(channel="root.accounting")._compute_last_payment()
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": _("Warning"),
-                    "message": _(
-                        "%(number_moves)d moves are being processed in the background. "
-                        "Please come back later to check the result."
-                    )
-                    % {"number_moves": len(moves)},
-                    "type": "warning",
-                    "sticky": True,
-                },
-            }
-        moves._compute_last_payment()
-        return {"type": "ir.actions.client", "tag": "reload"}
-
     def action_sponsorship_impact(self):
         active_domain = self.env.context.get("active_domain")
         active_ids = self.env.context.get("active_ids")

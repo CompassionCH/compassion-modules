@@ -94,13 +94,6 @@
             icon="fa-file-text-o "
             display="always"
           />
-                    <button
-            type="object"
-            string="Fix Payment Dates"
-            name="action_fix_payment_dates_from_lines"
-            icon="fa-calendar"
-            display="always"
-          />
                 </header>
                 <field name="move_id" column_invisible="1" />
                 <field
@@ -109,7 +102,7 @@
           widget="open_move_widget"
         />
                 <field name="date" />
-                <field name="last_payment" />
+                <field name="last_payment" optional="hide" />
                 <field name="move_category" />
                 <field name="product_id" />
                 <field name="account_id" optional="hide" />
@@ -171,14 +164,14 @@
         />
                 <separator />
                 <filter
-          name="filter_last_payment_current_year"
+          name="filter_current_year"
           string="Current Year"
-          domain="[('last_payment', '&gt;=', context_today().strftime('%Y-01-01')), ('last_payment', '&lt;=', context_today().strftime('%Y-12-31'))]"
+          domain="[('date', '&gt;=', context_today().strftime('%Y-01-01')), ('date', '&lt;=', context_today().strftime('%Y-12-31'))]"
         />
                 <filter
-          name="filter_last_payment_previous_year"
+          name="filter_previous_year"
           string="Previous Year"
-          domain="[('last_payment', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-01-01')), ('last_payment', '&lt;=', (context_today() - relativedelta(years=1)).strftime('%Y-12-31'))]"
+          domain="[('date', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-01-01')), ('date', '&lt;=', (context_today() - relativedelta(years=1)).strftime('%Y-12-31'))]"
         />
                 <separator />
                 <field name="product_id" string="Product" />
@@ -191,16 +184,10 @@
             context="{'group_by':'move_id'}"
           />
                     <filter
-            string="Invoice Date"
+            string="Date"
             name="group_date"
             domain="[]"
-            context="{'group_by':'date'}"
-          />
-                    <filter
-            string="Payment Date"
-            name="group_payment_date"
-            domain="[]"
-            context="{'group_by':'last_payment:year'}"
+            context="{'group_by':'date:year'}"
           />
                     <filter
             name="group_contract"

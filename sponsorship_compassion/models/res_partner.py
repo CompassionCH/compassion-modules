@@ -529,13 +529,12 @@ class ResPartner(models.Model):
             "domain": [
                 ("account_id.account_type", "=", "income"),
                 ("credit", ">", 0),
-                ("last_payment", "!=", False),
             ],
             "context": {
                 "tree_view_ref": "sponsorship_compassion.view_move_line_donations",
                 "search_view_ref": "sponsorship_compassion.view_donation_filter",
                 "search_default_partner_id": self.id,
-                "search_default_group_payment_date": 1,
+                "search_default_group_date": 1,
             },
         }
 
