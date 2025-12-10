@@ -72,7 +72,7 @@ class AccountReconcileModel(models.Model):
                 product_id, company_id=statement.company_id.id
             )
             analytic = analytic_default.analytic_id
-            res["analytic_id"] = {
+            res["analytic_account_id"] = {
                 "id": analytic.id,
                 "display_name": analytic.display_name,
             }
