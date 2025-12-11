@@ -136,5 +136,24 @@
         search="[('groups_id.display_name', 'like', 'Accounting')]"
       />
         </record>
+
+        <record id="action_recompute_due_invoices" model="ir.actions.server">
+            <field name="name">Recompute contract due invoices</field>
+            <field name="model_id" ref="recurring_contract.model_recurring_contract" />
+            <field name="state">code</field>
+            <field name="code">records._compute_due_invoices()</field>
+        </record>
+
+        <record id="automation_recompute_due_invoices" model="base.automation">
+            <field name="name">Recompute contract due invoices</field>
+            <field name="model_id" ref="recurring_contract.model_recurring_contract" />
+            <field name="trigger">on_time</field>
+            <field name="trg_date_id" ref="recurring_contract.field_recurring_contract__last_months_due_computed_at" />
+            <field name="trg_date_range">25</field>
+            <field name="trg_date_range_type">day</field>
+            <field name="filter_domain">[('state', '=', 'active')]</field>
+            <field name="action_server_ids" eval="[(4, ref('action_recompute_due_invoices'))]" />
+            <field name="active">True</field>
+        </record>
     </data>
 </odoo>
