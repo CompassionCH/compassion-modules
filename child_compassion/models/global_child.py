@@ -64,6 +64,7 @@ class GenericChild(models.AbstractModel):
     unsponsored_since = fields.Date(readonly=True)
     image_url = fields.Char()
     thumbnail_url = fields.Char(compute="_compute_image_thumb")
+    waiting_days = fields.Integer()
 
     @api.model
     def _get_availability_state(self):
@@ -103,6 +104,7 @@ class GenericChild(models.AbstractModel):
             "unsponsored_since",
             "correspondence_language_id",
             "image_url",
+            "waiting_days",
         ]
 
     def get_child_vals(self):
@@ -213,7 +215,6 @@ class GlobalChild(models.TransientModel):
     holding_global_partner_id = fields.Many2one(
         "compassion.global.partner", "Holding global partner", readonly=False
     )
-    waiting_days = fields.Integer()
     hold_expiration_date = fields.Datetime()
     source_code = fields.Char("origin of the hold")
 

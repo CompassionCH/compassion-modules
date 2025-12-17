@@ -524,24 +524,14 @@ class ResPartner(models.Model):
             "res_model": "account.move.line",
             "view_mode": "list,form",
             "domain": [
-                ("product_id", "!=", False),
                 ("account_id.account_type", "=", "income"),
-                ("parent_state", "=", "posted"),
-                "|",
-                ("product_id.categ_name", "!=", "Sponsorship"),
-                ("move_type", "=", "out_invoice"),
-                "|",
-                ("account_id.is_off_balance", "=", False),
-                "&",
-                ("contract_id", "!=", False),
-                ("payment_state", "=", "paid"),
+                ("credit", ">", 0),
             ],
             "context": {
                 "list_view_ref": "sponsorship_compassion.view_move_line_donations",
                 "search_view_ref": "sponsorship_compassion.view_donation_filter",
                 "search_default_partner_id": self.id,
-                "search_default_group_contract": 1,
-                "search_default_group_product": 1,
+                "search_default_group_date": 1,
             },
         }
 

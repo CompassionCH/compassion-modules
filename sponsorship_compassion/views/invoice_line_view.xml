@@ -89,7 +89,7 @@
                     <button
             type="object"
             string="Sponsorship impact"
-            name="action_automatic_entry"
+            name="action_sponsorship_impact"
             icon="fa-file-text-o "
             display="always"
           />
@@ -141,6 +141,11 @@
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <search>
+                <searchpanel>
+                    <field name="account_id" select="multi" color="red" />
+                    <field name="product_id" select="multi" color="green" />
+                    <field name="contract_id" select="multi" color="blue" />
+                </searchpanel>
                 <filter
           name="filter_sponsorship"
           string="Sponsorship"
@@ -156,6 +161,18 @@
           string="Fund"
           domain="[('move_category','=','fund')]"
         />
+                <separator />
+                <filter
+          name="filter_current_year"
+          string="Current Year"
+          domain="[('date', '&gt;=', context_today().strftime('%Y-01-01')), ('date', '&lt;=', context_today().strftime('%Y-12-31'))]"
+        />
+                <filter
+          name="filter_previous_year"
+          string="Previous Year"
+          domain="[('date', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-01-01')), ('date', '&lt;=', (context_today() - relativedelta(years=1)).strftime('%Y-12-31'))]"
+        />
+                <separator />
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner" />
                 <group expand="0" string="Group By...">
@@ -169,7 +186,7 @@
             string="Date"
             name="group_date"
             domain="[]"
-            context="{'group_by':'date'}"
+            context="{'group_by':'date:year'}"
           />
                     <filter
             name="group_contract"
