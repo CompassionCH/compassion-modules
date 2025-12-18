@@ -58,7 +58,7 @@ class ResPartnerSegment(models.Model):
                 [("primary_segment_id", "!=", False)]
             )
             segment.segment_total = (
-                round(segment.segment_size / all_segmented_partners, 3) * 100
+                round(segment.segment_size / all_segmented_partners, 3)
                 if all_segmented_partners > 0
                 else 0
             )

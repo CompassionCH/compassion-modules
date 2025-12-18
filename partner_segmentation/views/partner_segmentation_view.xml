@@ -12,7 +12,7 @@
                     <group>
                         <group>
                             <field name="name" />
-                            <field name="segment_total" widget="percentpie" />
+                            <field name="segment_total" widget="percentage" />
                             <field name="segment_size" />
                         </group>
                         <group>
@@ -62,10 +62,10 @@
         <field name="name">res.partner.segment.list</field>
         <field name="model">res.partner.segment</field>
         <field name="arch" type="xml">
-            <list default_order="segment_total desc">
+            <list>
                 <field name="name" />
                 <field name="segment_size" />
-                <field name="segment_total" sum="segment_total" />
+                <field name="segment_total" sum="segment_total" widget="percentage"/>
             </list>
         </field>
     </record>
