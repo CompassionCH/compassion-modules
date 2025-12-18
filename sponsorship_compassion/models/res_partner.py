@@ -528,7 +528,6 @@ class ResPartner(models.Model):
             "view_mode": "tree,form",
             "domain": [
                 ("account_id.account_type", "=", "income"),
-                ("credit", ">", 0),
             ],
             "context": {
                 "tree_view_ref": "sponsorship_compassion.view_move_line_donations",
