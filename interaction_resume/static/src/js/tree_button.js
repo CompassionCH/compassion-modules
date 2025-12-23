@@ -80,7 +80,7 @@ odoo.define("interaction_resume.tree_button", function (require) {
           on_close: function () {
             self.reload();
           },
-        }
+        },
       )
         .then(function (result) {
           console.log("Action executed:", result);

@@ -3,7 +3,7 @@
 {
     "name": "Interaction Resume",
     "summary": "Display a timeline of all communications exchanged with a partner",
-    "version": "14.0.1.1.0",
+    "version": "18.0.1.0.0",
     # see https://odoo-community.org/page/development-status
     "development_status": "Beta",
     "category": "Tools",

@@ -4,7 +4,7 @@
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-            <tree
+            <list
         js_class="button_in_tree"
         decoration-muted="communication_type == 'Mass'"
         decoration-info="communication_type in ['Phone', 'SMS']"
@@ -41,7 +41,7 @@
           attrs="{'invisible': [('has_attachment', '=', False)]}"
           title="Attachments"
         />
-            </tree>
+            </list>
         </field>
     </record>
 

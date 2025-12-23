@@ -1,5 +1,4 @@
 <odoo>
-    <data>
         <record
       id="action_convert_mail_message_to_interaction"
       model="ir.actions.server"
@@ -14,5 +13,4 @@
                     action = records.convert_as_other_interaction()
             </field>
         </record>
-    </data>
 </odoo>

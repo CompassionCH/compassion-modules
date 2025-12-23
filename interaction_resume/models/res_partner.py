@@ -48,7 +48,7 @@ class Partner(models.Model):
             "name": _("Interaction resume"),
             "type": "ir.actions.act_window",
             "res_model": "interaction.resume",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": {"search_default_partner_id": self.id},
         }
 

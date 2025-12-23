@@ -35,15 +35,15 @@ Installation
 
 To install this module, you need to install dependencies:
 
--  requires the following libraries (names from apt-get):
+- requires the following libraries (names from apt-get):
 
-   -  libzbar-dev
+  - libzbar-dev
 
--  requires tesseract for extracting text from PDF files (for S2B
-   letters scan):
+- requires tesseract for extracting text from PDF files (for S2B letters
+  scan):
 
-   -  tesseract-ocr
-   -  tesseract-ocr-language_code (for any desired language)
+  - tesseract-ocr
+  - tesseract-ocr-language_code (for any desired language)
 
 Usage
 =====
@@ -56,14 +56,14 @@ Changelog
 17.0.1.1.0 (2024-10-01)
 -----------------------
 
--  Replace FPDF with a QWeb report for the Sponsorship Letter.
+- Replace FPDF with a QWeb report for the Sponsorship Letter.
 
 10.0.1.2.1 (2018-11-02)
 -----------------------
 
--  Change how we send Original Language to GMC. From now on, we map it
-   to the translated language in Odoo, in order to avoid unnecessary
-   translation at the National Office.
+- Change how we send Original Language to GMC. From now on, we map it to
+  the translated language in Odoo, in order to avoid unnecessary
+  translation at the National Office.
 
 Bug Tracker
 ===========
@@ -86,10 +86,10 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
--  Emmanuel Mathier <emmanuel.mathier@gmail.com>
--  Loic Hausammann <loic_hausammann@hotmail.com>
--  Emmanuel Girardin <emmanuel.girardin@outlook.com>
+- Emanuel Cino <ecino@compassion.ch>
+- Emmanuel Mathier <emmanuel.mathier@gmail.com>
+- Loic Hausammann <loic_hausammann@hotmail.com>
+- Emmanuel Girardin <emmanuel.girardin@outlook.com>
 
 Maintainers
 -----------
