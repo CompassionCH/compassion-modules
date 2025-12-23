@@ -400,15 +400,15 @@ translations</li>
 <li>Make models inherit the class ‘translatable.model’ so that they can
 now use these methods:<ul>
 <li>translate(field_name): Will retrieve the translation of a
-char/selection field and replaces keywords by advanced
-translations. Keywords should be placed in brackets.</li>
+char/selection field and replaces keywords by advanced translations.
+Keywords should be placed in brackets.</li>
 <li>get_list: Return comma separated field values (see doc in
 translatable_model.py)</li>
-<li>get_date(field_name, date_format=’date_full’): Returns a date
-field directly formatted in the format wanted. date_format can be
-an advanced translation which will return the date format wanted
-(can change depending on the language), or it can directly be a
-date format used by Babel package :
+<li>get_date(field_name, date_format=’date_full’): Returns a date field
+directly formatted in the format wanted. date_format can be an
+advanced translation which will return the date format wanted (can
+change depending on the language), or it can directly be a date
+format used by Babel package :
 <a class="reference external" href="http://babel.pocoo.org/en/latest/dates.html">http://babel.pocoo.org/en/latest/dates.html</a></li>
 </ul>
 </li>

@@ -35,7 +35,7 @@ Installation
 
 You need to add regex library
 
--  sudo pip install regex
+- sudo pip install regex
 
 Usage
 =====
@@ -45,9 +45,9 @@ Go into communication rules (config) in order to edit translations.
 Known issues / Roadmap
 ======================
 
--  Make javascript widgets to ease the editing process
--  Make possible to use global keywords across the templates
--  Improve usability
+- Make javascript widgets to ease the editing process
+- Make possible to use global keywords across the templates
+- Improve usability
 
 Bug Tracker
 ===========
@@ -70,7 +70,7 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
+- Emanuel Cino <ecino@compassion.ch>
 
 Maintainers
 -----------

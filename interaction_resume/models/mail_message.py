@@ -43,7 +43,7 @@ class MailMessage(models.Model):
             "type": "ir.actions.act_window",
             "name": "Converted Interactions",
             "res_model": "partner.log.other.interaction",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", interactions.ids)],
             "target": "current",
         }
