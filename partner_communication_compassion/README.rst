@@ -30,8 +30,8 @@ communication templates.
 Features
 --------
 
-- **Communication Generation**: Automatically generate and send
-  communications based on predefined templates.
+-  **Communication Generation**: Automatically generate and send
+   communications based on predefined templates.
 
 **Table of contents**
 

@@ -436,8 +436,8 @@ pip<span class="w"> </span>install<span class="w"> </span>odoo-addon-fastapi<spa
 <li>Add the following settings in the <tt class="docutils literal">.conf</tt> file of Odoo:<ul>
 <li><tt class="docutils literal">connect_url</tt>: URL to the entry point of GMC Onramp</li>
 <li><tt class="docutils literal">connect_token_server</tt>: Base URL of the token server</li>
-<li><tt class="docutils literal">connect_token_cert</tt>: Comma-separated list of full URLs of the
-public keys of the token server</li>
+<li><tt class="docutils literal">connect_token_cert</tt>: Comma-separated list of full URLs of
+the public keys of the token server</li>
 </ul>
 </li>
 </ul>
@@ -447,7 +447,8 @@ public keys of the token server</li>
 <tt class="docutils literal">Settings <span class="pre">-&gt;</span> General Settings <span class="pre">-&gt;</span> Compassion <span class="pre">-&gt;</span> Message Center</tt>
 and set the following:<ul>
 <li><tt class="docutils literal">connect_gpid</tt>: Your GPA ID for using GMC message services</li>
-<li><tt class="docutils literal">connect_gp_name</tt>: Your GPA name for using GMC message services</li>
+<li><tt class="docutils literal">connect_gp_name</tt>: Your GPA name for using GMC message
+services</li>
 <li><tt class="docutils literal">connect_api_key</tt>: API key for using GMC message services</li>
 <li><tt class="docutils literal">connect_client</tt>: Username for token requests</li>
 <li><tt class="docutils literal">connect_secret</tt>: Password for token requests</li>
@@ -477,15 +478,16 @@ Compassion International. GMC Managers can view and manage the
 outgoing message queue through the <tt class="docutils literal">Message Center</tt> menu. They can
 also manually trigger the sending of queued messages if needed.</li>
 <li><strong>Receiving Messages</strong>: Listens for incoming messages from Compassion
-International and processes them accordingly. GMC Managers can monitor
-incoming messages in real-time through the <tt class="docutils literal">Incoming Messages</tt> view,
-where they can see the status and details of each message.</li>
-<li><strong>Message Management</strong>: Provides an interface for viewing and managing
-the message queues. GMC Managers have access to the <tt class="docutils literal">Message Queue</tt>
-dashboard, which displays both incoming and outgoing messages. They
-can filter, search, and sort messages based on various criteria.
-Additionally, they can retry failed messages, delete unnecessary ones,
-and view detailed logs for troubleshooting.</li>
+International and processes them accordingly. GMC Managers can
+monitor incoming messages in real-time through the
+<tt class="docutils literal">Incoming Messages</tt> view, where they can see the status and details
+of each message.</li>
+<li><strong>Message Management</strong>: Provides an interface for viewing and
+managing the message queues. GMC Managers have access to the
+<tt class="docutils literal">Message Queue</tt> dashboard, which displays both incoming and
+outgoing messages. They can filter, search, and sort messages based
+on various criteria. Additionally, they can retry failed messages,
+delete unnecessary ones, and view detailed logs for troubleshooting.</li>
 </ul>
 <p>This module ensures that your Odoo system stays in sync with Compassion
 International, facilitating smooth and efficient communication.</p>

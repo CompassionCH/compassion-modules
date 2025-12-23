@@ -81,7 +81,7 @@ class Partner(models.Model):
         for model in models:
             self.env[model].fetch_interaction(self, since, until)
         self.last_interaction_fetch_date = fields.Datetime.now()
-        self.last_interaction_fetch_page += page
+        self.last_interaction_fetch_page = page
         return True
 
     def reset_interactions(self):

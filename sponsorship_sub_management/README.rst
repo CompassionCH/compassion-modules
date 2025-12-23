@@ -66,19 +66,19 @@ Usage
 
 To use this module, you need to:
 
-- Go to Sponsorship -> Track sponsorships
+-  Go to Sponsorship -> Track sponsorships
 
 Known issues / Roadmap
 ======================
 
 To add in the tests:
 
-- Departure -> Departure -> Sub reject
-- Departure -> Exchange of child -> Sub accept
+-  Departure -> Departure -> Sub reject
+-  Departure -> Exchange of child -> Sub accept
 
 Further functionality:
 
-- Make the SDS notifications work
+-  Make the SDS notifications work
 
 Bug Tracker
 ===========
@@ -101,9 +101,9 @@ Authors
 Contributors
 ------------
 
-- David Coninckx <david@coninckx.com>
-- Emanuel Cino <ecino@compassion.ch>
-- Noé Berdoz <nberdoz@compassion.ch>
+-  David Coninckx <david@coninckx.com>
+-  Emanuel Cino <ecino@compassion.ch>
+-  Noé Berdoz <nberdoz@compassion.ch>
 
 Maintainers
 -----------

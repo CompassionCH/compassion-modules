@@ -28,6 +28,7 @@ addon | version | maintainers | summary
 [crm_compassion](crm_compassion/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> | Compassion Events and Opportunities
 [crm_request](crm_request/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> | Enables Customer Support Inbox
 [gift_compassion](gift_compassion/) | 18.0.1.0.0 |  | Compassion Sponsorship Gifts
+[interaction_resume](interaction_resume/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> | Display a timeline of all communications exchanged with a partner
 [intervention_compassion](intervention_compassion/) | 18.0.1.0.0 |  | Compassion Interventions
 [message_center_compassion](message_center_compassion/) | 18.0.1.0.1 |  | Compassion Connect
 [mis_builder_analytic](mis_builder_analytic/) | 18.0.1.0.0 |  | Dummy module kept for migration purposes.

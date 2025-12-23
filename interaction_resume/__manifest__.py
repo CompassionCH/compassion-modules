@@ -1,5 +1,6 @@
 # Copyright 2024 Compassion CH
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# pylint: disable=C8101
 {
     "name": "Interaction Resume",
     "summary": "Display a timeline of all communications exchanged with a partner",
@@ -19,12 +20,13 @@
         "views/res_partner_view.xml",
         "views/interaction_resume.xml",
         "views/mail_message_view.xml",
-        "static/src/xml/assets.xml",
     ],
-    "qweb": [
-        "static/src/xml/tree_button.xml",
-        "static/src/xml/message_edit.xml",
-    ],
+    "assets": {
+        "web.assets_backend": [
+            "interaction_resume/static/src/xml/**/*.xml",
+            "interaction_resume/static/src/js/**/*.js",
+        ],
+    },
     "external_dependencies": {
         "python": [],
         "bin": [],
@@ -35,7 +37,6 @@
         "crm_claim",
         "crm_phonecall",
         "website",
-        "partner_contact_in_several_companies",
         "base_automation",
         "mail_tracking",
     ],

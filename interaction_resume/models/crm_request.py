@@ -10,18 +10,14 @@ class CrmRequest(models.Model):
         res = []
         partner = self.env["res.partner"].browse(partner_id)
         partners = (
-            (
-                self.env["res.partner"]
-                .with_context(active_test=False)
-                .search([("email", "=", partner.email)])
-            )
-            | partner
-            | partner.other_contact_ids
-        )
+            self.env["res.partner"]
+            .with_context(active_test=False)
+            .search([("email", "=", partner.email)])
+        ) | partner
         for claim in self:
             messages = claim.message_ids.filtered(
                 lambda m: (m.partner_ids & partners) or m.author_id in partners
-            ).filtered("subject")
+            )
             res.extend(
                 [
                     {
@@ -44,30 +40,23 @@ class CrmRequest(models.Model):
 
     def _get_interaction_partner_domain(self, partner):
         if not partner.email:
-            return [
-                "|",
-                ("partner_id", "=", partner.id),
-                ("partner_id", "in", partner.other_contact_ids.ids),
-            ]
+            return [("partner_id", "=", partner.id)]
         return [
-            "|",
             "|",
             "|",
             ("partner_id", "=", partner.id),
             ("partner_id.email", "=", partner.email),
-            ("partner_id", "in", partner.other_contact_ids.ids),
             ("email_from", "=", partner.email),
         ]
 
     @api.returns("mail.message", lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)
-        if self.partner_id:
-            self.partner_id.with_delay(
-                channel="root.partner_communication",
-                priority=100,
-                identity_key=self.partner_id._name
-                + ".fetch_interactions."
-                + str(self.partner_id.id),
-            ).fetch_interactions()
+        for claim in self:
+            if claim.partner_id:
+                claim.partner_id.with_delay(
+                    channel="root.partner_communication",
+                    priority=100,
+                    identity_key=f"{claim.partner_id._name}.fetch_interactions.{claim.partner_id.id}",
+                ).fetch_interactions()
         return res
