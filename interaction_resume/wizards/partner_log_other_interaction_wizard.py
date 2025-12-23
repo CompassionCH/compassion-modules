@@ -1,0 +1,81 @@
+from odoo import _, fields, models
+
+
+class LogOtherInteractionWizard(models.TransientModel):
+    _name = "partner.log.other.interaction.wizard"
+    _inherit = "partner.log.other.interaction"
+    _description = "Logging wizard for other interactions"
+    _transient = True
+
+    ir_attachment_ids = fields.Many2many(
+        "ir.attachment",
+        string="Attachments",
+        readonly=False,
+        compute="_compute_attachments",
+        inverse="_inverse_ir_attachments",
+    )
+
+    def _compute_attachments(self):
+        for rec in self:
+            rec.ir_attachment_ids = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_id", "=", rec.id),
+                ]
+            )
+
+    def _inverse_ir_attachments(self):
+        # Copy the attachments to persist them
+        for attachment in self.ir_attachment_ids:
+            self.env["ir.attachment"].create(
+                {
+                    "res_model": self._name,
+                    "res_id": self.id,
+                    "name": attachment.name,
+                    "datas": attachment.datas,
+                }
+            )
+
+    def log_interaction(self):
+        data = {
+            "partner_id": self.partner_id.id,
+            "subject": self.subject,
+            "other_type": self.other_type,
+            "communication_type": self.communication_type,
+            "direction": self.direction,
+            "body": self.body,
+            "date": self.date,
+        }
+        other_interaction = self.env["partner.log.other.interaction"].create(data)
+        self.ir_attachment_ids.write(
+            {
+                "res_model": other_interaction._name,
+                "res_id": other_interaction.id,
+                "res_field": False,
+            }
+        )
+        # used str.format for concatenating other_interaction.subject and
+        # other_interaction.other_type within the anchor tag's display text
+        # dynamic content is formatted into the string after it's been prepared
+        # for translation
+        message_template = (
+            "Your new interaction has been created! Click the link to access it: "
+            "<a href=# data-oe-model={} data-oe-id={}>{}</a>"
+        )
+        formatted_message = message_template.format(
+            other_interaction._name,
+            other_interaction.id,
+            "{} {}".format(
+                other_interaction.subject, other_interaction.other_type or ""
+            ),
+        )
+        message = self.partner_id.message_post(body=_(formatted_message))
+        # Only keep the note within one minute
+        message.with_delay(
+            channel="root.partner_communication",
+            eta=60,
+            priority=500,
+            description="Delete new interaction log after 1 minute",
+        ).unlink()
+        self.partner_id.fetch_interactions()
+        return True
