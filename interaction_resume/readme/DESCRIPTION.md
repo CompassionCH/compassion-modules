@@ -1,0 +1,1 @@
+Adds a nice view of communication exchanges with the partners.
