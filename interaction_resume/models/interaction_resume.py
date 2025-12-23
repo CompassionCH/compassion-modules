@@ -76,7 +76,7 @@ class InteractionResume(models.Model):
             "name": self.subject or self.communication_type,
         }
 
-    def refresh(self):
+    def action_refresh(self):
         partner = self.mapped("partner_id")[:1]
         partner.fetch_interactions()
         return True
@@ -91,14 +91,30 @@ class InteractionResume(models.Model):
         # Avoid duplicates
         res = self.env[self._name]
         for vals in vals_list:
+            subject = vals.get("subject")
+            if not subject:
+                existing_interaction = self.search(
+                    [
+                        ("partner_id", "=", vals.get("partner_id")),
+                        ("direction", "=", vals.get("direction")),
+                        ("date", "=", vals.get("date")),
+                        ("subject", "=", False),
+                    ],
+                    limit=1,
+                )
+                if not existing_interaction:
+                    res += super().create(vals)
+                else:
+                    res += existing_interaction
+                continue
             existing_interaction = self.search(
                 [
-                    ("partner_id", "=", vals["partner_id"]),
-                    ("direction", "=", vals["direction"]),
-                    ("date", "=", vals["date"]),
-                    ("subject", "=", vals["subject"]),
-                    ("subject", "!=", False),
-                ]
+                    ("partner_id", "=", vals.get("partner_id")),
+                    ("direction", "=", vals.get("direction")),
+                    ("date", "=", vals.get("date")),
+                    ("subject", "=", subject),
+                ],
+                limit=1,
             )
             if not existing_interaction:
                 existing_interaction = super().create(vals)

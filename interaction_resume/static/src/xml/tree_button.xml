@@ -1,22 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<template id="template" xml:space="preserve">
-    <t t-extend="ListView.buttons" t-name="button_near_create.buttons">
-        <t t-jquery="div.o_list_buttons" t-operation="prepend">
-            <button
-        class="btn btn-primary btn-refresh"
-        type="object"
-        icon="fa-refresh"
-      >Refresh</button>
-            <button
-        class="btn btn-primary btn-fetch-more"
-        type="object"
-        icon="fa-plus"
-      >Fetch more...</button>
-            <button
-        class="btn btn-primary btn-log-interaction"
-        type="action"
-        icon="fa-plus"
-      >Log interaction</button>
-        </t>
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="interaction_resume.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+            <button type="button" class="btn btn-secondary btn-refresh" t-on-click="onRefresh">
+                <i class="fa fa-refresh"/> Refresh
+            </button>
+            <button type="button" class="btn btn-secondary btn-fetch-more" t-on-click="onFetchMore">
+                <i class="fa fa-plus"/> Fetch More
+            </button>
+            <button type="button" class="btn btn-secondary btn-log-interaction" t-on-click="onLogInteraction">
+                <i class="fa fa-pencil"/> Log Interaction
+            </button>
+        </xpath>
     </t>
-</template>
+</templates>

@@ -21,6 +21,14 @@ class MailMessage(models.Model):
                     partner_id = res_model.browse(message.res_id).partner_id.id
             if not partner_id:
                 continue
+            partner = self.env["res.partner"].browse(partner_id)
+            partners = partner
+            if partner.email:
+                partners |= (
+                    self.env["res.partner"]
+                    .with_context(active_test=False)
+                    .search([("email", "=", partner.email)])
+                )
             user = message.author_id.user_ids[:1] or message.create_uid or self.env.user
             if user.share:
                 user = self.env.user
@@ -32,7 +40,7 @@ class MailMessage(models.Model):
                     "subject": message.subject,
                     "body": message.body,
                     "other_type": "Direct message converted to interaction",
-                    "direction": "out" if message.author_id.id != partner_id else "in",
+                    "direction": "in" if message.author_id in partners else "out",
                 }
             )
             partner_ids.add(partner_id)

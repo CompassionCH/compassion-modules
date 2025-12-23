@@ -1,4 +1,11 @@
 <odoo>
+    <record id="action_vacuum_interaction" model="ir.actions.server">
+        <field name="name">Vacuum interaction</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">records.reset_interactions()</field>
+    </record>
+
     <record model="base.automation" id="vacuum_interaction">
         <field name="name">Vacuum interaction</field>
         <field name="model_id" ref="model_res_partner" />
@@ -9,7 +16,6 @@
     />
         <field name="trg_date_range_type">day</field>
         <field name="trg_date_range">15</field>
-        <field name="state">code</field>
-        <field name="code">records.reset_interactions()</field>
+        <field name="action_server_ids" eval="[(4, ref('action_vacuum_interaction'))]"/>
     </record>
 </odoo>

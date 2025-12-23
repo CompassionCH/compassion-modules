@@ -30,15 +30,15 @@ templates.
 
 Features:
 
-- Detect incoming email address and assign to existing partner.
-- Read and keep the Reply-To field, for answering to the desired email
-  address.
-- Custom automatic replies during holidays.
-- Automatic claim category assignment based on keywords found in the
-  subject.
-- Automatic reply if a customer updates a request on which the assigned
-  employee is on leave.
-- Periodic reminders to users about open requests.
+-  Detect incoming email address and assign to existing partner.
+-  Read and keep the Reply-To field, for answering to the desired email
+   address.
+-  Custom automatic replies during holidays.
+-  Automatic claim category assignment based on keywords found in the
+   subject.
+-  Automatic reply if a customer updates a request on which the assigned
+   employee is on leave.
+-  Periodic reminders to users about open requests.
 
 **Table of contents**
 
@@ -65,12 +65,12 @@ Usage
 
 To use this module, you need to:
 
-- go to Support
+-  go to Support
 
 Known issues / Roadmap
 ======================
 
-- May eventually be replaced with the OCA/helpdesk module
+-  May eventually be replaced with the OCA/helpdesk module
 
 Bug Tracker
 ===========
@@ -93,10 +93,10 @@ Authors
 Contributors
 ------------
 
-- Stephane Eicher <seicher@compassion.ch>
-- Quentin Gigon <gigon.quentin@gmail.com>
-- Simon Gonzlaez <simon.gonzalez@bluewin.ch>
-- Emanuel Cino <ecino@compassion.ch>
+-  Stephane Eicher <seicher@compassion.ch>
+-  Quentin Gigon <gigon.quentin@gmail.com>
+-  Simon Gonzlaez <simon.gonzalez@bluewin.ch>
+-  Emanuel Cino <ecino@compassion.ch>
 
 Maintainers
 -----------

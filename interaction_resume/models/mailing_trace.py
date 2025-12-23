@@ -8,10 +8,18 @@ class MailingTrace(models.Model):
     _inherit = ["mailing.trace", "interaction.source"]
     _name = "mailing.trace"
 
-    date = fields.Datetime(related="sent", search="_search_date")
+    _STATUS_MAPPING = {
+        "open": "opened",
+        "reply": "replied",
+        "bounce": "bounced",
+        "error": "exception",
+        "cancel": "canceled",
+    }
+
+    date = fields.Datetime(related="sent_datetime", search="_search_date")
 
     def _search_date(self, operator, value):
-        return [("sent", operator, value)]
+        return [("sent_datetime", operator, value)]
 
     def _get_body(self):
         self.ensure_one()
@@ -29,15 +37,15 @@ class MailingTrace(models.Model):
                 "res_model": self._name,
                 "res_id": rec.id,
                 "direction": "out",
-                "date": rec.sent,
+                "date": rec.sent_datetime,
                 "email": rec.email,
                 "communication_type": "Mass",
                 "subject": rec.mass_mailing_id.subject,
                 "body": rec._get_body(),
-                "has_attachment": bool(rec.mail_mail_id.attachment_ids),
-                "tracking_status": rec.mail_tracking_id.state
-                if rec.mail_tracking_id
-                else rec.state,
+                "has_attachment": bool(rec.mass_mailing_id.attachment_ids),
+                "tracking_status": self._STATUS_MAPPING.get(
+                    rec.trace_status, rec.trace_status
+                ),
             }
             for rec in self
         ]

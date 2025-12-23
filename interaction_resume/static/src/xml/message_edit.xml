@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
-
-    <t
-    t-inherit="mail.Message"
-    t-inherit-mode="extension"
-    t-name="Message Edit Icon"
-  >
-        <xpath expr="//div[hasclass('o_Message_sidebarCommands')]">
-            <span class="o_Message_command" t-if="message and message.subject">
-                <i
-          class="fa fa-comments"
-          t-att-class="{
-                        'o-mobile': env.messaging.device.isMobile,
-                    }"
-          t-on-click="_onMessageToInteraction"
-        > </i>
+    <t t-inherit="mail.Message" t-inherit-mode="extension" t-name="interaction_resume.Message">
+        <xpath expr="//div[contains(@class, 'o-mail-Message-header')]" position="inside">
+            <span class="ms-2"
+                  style="cursor: pointer;"
+                  t-if="message.subject"
+                  t-on-click="messageToInteraction"
+                  title="Convert to Interaction">
+                <i class="fa fa-comments text-muted"/>
             </span>
         </xpath>
-        <xpath expr="//div[hasclass('o_Message_headerCommands')]">
-            <div
-        class="o_Message_command ml-2"
-        t-if="message and message.subject"
-      >
-                <i
-          class="fa fa-comments"
-          t-att-class="{
-                        'o-mobile': env.messaging.device.isMobile,
-                    }"
-          t-on-click="_onMessageToInteraction"
-        > </i>
-            </div>
-        </xpath>
     </t>
-
 </templates>

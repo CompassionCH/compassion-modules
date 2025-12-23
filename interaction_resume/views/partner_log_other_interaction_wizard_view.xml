@@ -12,7 +12,8 @@
                         <field name="communication_type" />
                         <field
               name="other_type"
-              attrs="{'invisible': [('communication_type', '!=', 'Other')], 'required': [('communication_type', '=', 'Other')]}"
+              invisible="communication_type != 'Other'"
+              required="communication_type == 'Other'"
             />
                         <field name="direction" />
                         <field name="date" />
@@ -23,7 +24,7 @@
                     </group>
                     <field
             name="ir_attachment_ids"
-            context="{'default_res_model': 'partner.log.other.interaction.wizard', 'default_res_id': active_id}"
+            context="{'default_res_model': 'partner.log.other.interaction.wizard', 'default_res_id': id}"
             widget="many2many_binary"
           />
                 </sheet>
@@ -57,7 +58,8 @@
                             <field name="communication_type" />
                             <field
                 name="other_type"
-                attrs="{'invisible': [('communication_type', '!=', 'Other')], 'required': [('communication_type', '=', 'Other')]}"
+                invisible="communication_type != 'Other'"
+                required="communication_type == 'Other'"
               />
                             <field name="direction" />
                         </group>

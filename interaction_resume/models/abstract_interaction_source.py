@@ -37,9 +37,7 @@ class InteractionSource(models.AbstractModel):
     def _get_interaction_partner_domain(self, partner):
         return [
             "|",
-            "|",
             ("partner_id", "=", partner.id),
-            ("partner_id", "in", partner.other_contact_ids.ids),
             "&",
             ("partner_id.email", "!=", False),
             ("partner_id.email", "=", partner.email),
@@ -57,13 +55,12 @@ class InteractionSource(models.AbstractModel):
 
     def create(self, vals_list):
         res = super().create(vals_list)
-        res.mapped("partner_id").with_delay(
-            channel="root.partner_communication",
-            priority=100,
-            identity_key=self.partner_id._name
-            + ".fetch_interactions."
-            + str(self.partner_id.id),
-        ).fetch_interactions()
+        for partner in res.mapped("partner_id"):
+            partner.with_delay(
+                channel="root.partner_communication",
+                priority=100,
+                identity_key=f"{partner._name}.fetch_interactions.{partner.id}",
+            ).fetch_interactions()
         return res
 
     def unlink(self):

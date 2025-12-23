@@ -48,8 +48,6 @@ class PartnerCommunication(models.Model):
                 partner.with_delay(
                     channel="root.partner_communication",
                     priority=100,
-                    identity_key=partner._name
-                    + ".fetch_interactions."
-                    + str(partner.id),
+                    identity_key=f"{partner._name}.fetch_interactions.{partner.id}",
                 ).fetch_interactions()
         return res

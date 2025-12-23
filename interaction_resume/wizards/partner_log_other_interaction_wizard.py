@@ -58,18 +58,19 @@ class LogOtherInteractionWizard(models.TransientModel):
         # other_interaction.other_type within the anchor tag's display text
         # dynamic content is formatted into the string after it's been prepared
         # for translation
-        message_template = (
+        message_template = _(
             "Your new interaction has been created! Click the link to access it: "
-            "<a href=# data-oe-model={} data-oe-id={}>{}</a>"
+            "<a href=# data-oe-model='{model}' data-oe-id='{res_id}'>{name}</a>"
+        )
+        link_name = (
+            f"{other_interaction.subject} {other_interaction.other_type or ''}".strip()
         )
         formatted_message = message_template.format(
-            other_interaction._name,
-            other_interaction.id,
-            "{} {}".format(
-                other_interaction.subject, other_interaction.other_type or ""
-            ),
+            model=other_interaction._name,
+            res_id=other_interaction.id,
+            name=link_name,
         )
-        message = self.partner_id.message_post(body=_(formatted_message))
+        message = self.partner_id.message_post(body=formatted_message)
         # Only keep the note within one minute
         message.with_delay(
             channel="root.partner_communication",
