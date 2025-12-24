@@ -2,54 +2,48 @@
     <record model="ir.ui.view" id="communication_job_form">
         <field name="name">communication.job.phonecall.form</field>
         <field name="model">partner.communication.job</field>
-        <field
-      name="inherit_id"
-      ref="partner_communication.communication_job_form"
-    />
+        <field name="inherit_id" ref="partner_communication.communication_job_form" />
         <field name="arch" type="xml">
             <button name="reset" position="before">
                 <button
-          name="call"
-          string="Call now"
-          icon="fa-phone"
-          class="oe_highlight"
-          type="object"
-          states="pending"
-        />
+                    name="call"
+                    string="Call now"
+                    icon="fa-phone"
+                    class="oe_highlight"
+                    type="object"
+                    invisible="state != 'pending'"
+                />
                 <button
-          name="log_call"
-          string="Log call"
-          icon="fa-history"
-          type="object"
-          attrs="{'invisible': ['|', ('phonecall_id', '!=', False), ('need_call', '=', False)]}"
-        />
+                    name="log_call"
+                    string="Log call"
+                    icon="fa-history"
+                    type="object"
+                    invisible="phonecall_id or not need_call"
+                />
             </button>
             <field name="email_id" position="after">
                 <field
-          name="phonecall_id"
-          readonly="1"
-          attrs="{'invisible': [('phonecall_id', '=', False)]}"
-        />
+                    name="phonecall_id"
+                    readonly="1"
+                    invisible="not phonecall_id"
+                />
             </field>
         </field>
     </record>
 
     <record model="ir.ui.view" id="communication_job_tree">
-        <field name="name">communication.job.phonecall.tree</field>
+        <field name="name">communication.job.phonecall.list</field>
         <field name="model">partner.communication.job</field>
-        <field
-      name="inherit_id"
-      ref="partner_communication.communication_job_tree"
-    />
+        <field name="inherit_id" ref="partner_communication.communication_job_tree" />
         <field name="arch" type="xml">
             <button name="reset" position="before">
                 <button
-          name="call"
-          string="Call"
-          type="object"
-          icon="fa-phone"
-          states='pending'
-        />
+                    name="call"
+                    string="Call"
+                    type="object"
+                    icon="fa-phone"
+                    invisible="state != 'pending'"
+                />
             </button>
         </field>
     </record>

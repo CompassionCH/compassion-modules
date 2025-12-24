@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication CRM Phone",
-    "version": "14.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -45,7 +45,6 @@
         "views/call_wizard_view.xml",
         "views/communication_job.xml",
     ],
-    "qweb": [],
     "demo": [],
     "installable": True,
     "auto_install": True,

@@ -36,6 +36,7 @@ addon | version | maintainers | summary
 [partner_auto_match](partner_auto_match/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> | Find existing contact given any partner data.
 [partner_communication](partner_communication/) | 18.0.1.0.1 |  | Partner Communication
 [partner_communication_compassion](partner_communication_compassion/) | 18.0.1.0.0 |  | Compassion Partner Communications
+[partner_communication_crm_phone](partner_communication_crm_phone/) | 18.0.1.0.0 |  | Partner Communication CRM Phone
 [partner_communication_omr](partner_communication_omr/) | 18.0.1.0.0 |  | Partner Communication OMR
 [partner_communication_reminder](partner_communication_reminder/) | 18.0.1.0.0 |  | Reminder features
 [partner_communication_revision](partner_communication_revision/) | 18.0.1.0.0 |  | Partner Communication Revisions

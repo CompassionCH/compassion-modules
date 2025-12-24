@@ -13,27 +13,30 @@ from odoo import _, fields, models
 class CommunicationJob(models.Model):
     _inherit = "partner.communication.job"
 
-    phonecall_id = fields.Many2one("crm.phonecall", "Phonecall log", readonly=True)
+    # Dependency: ensure 'crm_phone' is installed for 'crm.phonecall'
+    phonecall_id = fields.Many2one(
+        "crm.phonecall", string="Phonecall log", readonly=True
+    )
 
     def log_call(self):
+        self.ensure_one()
         return {
             "name": _("Log your call"),
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": "partner.communication.call.wizard",
-            "context": self.with_context(
-                {
-                    "click2dial_id": self.id,
-                    "phone_number": self.partner_id.phone or self.partner_id.mobile,
-                    "timestamp": fields.Datetime.now(),
-                    "default_communication_id": self.id,
-                }
-            ).env.context,
+            "context": {
+                **self.env.context,
+                "click2dial_id": self.id,
+                "phone_number": self.partner_id.phone or self.partner_id.mobile,
+                "timestamp": fields.Datetime.now(),
+                "default_communication_id": self.id,
+            },
             "target": "new",
         }
 
     def call(self):
-        """Call partner from tree view button."""
+        """Call partner from list view button."""
         self.ensure_one()
         self.env["phone.common"].with_context(
             click2dial_model=self._name, click2dial_id=self.id
