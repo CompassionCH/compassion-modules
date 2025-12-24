@@ -19,11 +19,11 @@ from odoo import api, models
 _logger = logging.getLogger(__name__)
 
 try:
-    from PyPDF2 import PdfFileReader, PdfFileWriter
-    from PyPDF2.utils import PdfReadError
+    from pypdf import PdfReader, PdfWriter
+    from pypdf.errors import PdfReadError
 except ImportError:
     _logger.warning(
-        "Please install PyPDF2 for generating OMR codes in "
+        "Please install pypdf for generating OMR codes in "
         "Printed partner communications"
     )
 
@@ -51,24 +51,21 @@ class CommunicationJob(models.Model):
     def add_omr_marks(self, pdf_data, is_latest_document):
         # Documentation
         # http://meteorite.unm.edu/site_media/pdf/reportlab-userguide.pdf
-        # https://pythonhosted.org/PyPDF2/PdfFileReader.html
-        # https://stackoverflow.com/a/17538003
-        # https://gist.github.com/kzim44/5023021
-        # https://www.blog.pythonlibrary.org/2013/07/16/pypdf-how-to-write-a-pdf-to-memory/
+        # https://pypdf.readthedocs.io/en/stable/
         self.ensure_one()
 
         pdf_buffer = BytesIO()
         pdf_buffer.write(pdf_data)
 
         try:
-            existing_pdf = PdfFileReader(pdf_buffer)
+            existing_pdf = PdfReader(pdf_buffer)
         except PdfReadError:
             # Cannot add OMR marks to non-pdf attachments.
             # The folding machine will unfortunately block here.
             return pdf_data
 
-        output = PdfFileWriter()
-        total_pages = existing_pdf.getNumPages()
+        output = PdfWriter()
+        total_pages = len(existing_pdf.pages)
 
         def lastpair(a):
             b = a - 1
@@ -80,14 +77,14 @@ class CommunicationJob(models.Model):
         latest_omr_page = lastpair(total_pages)
 
         for page_number in range(total_pages):
-            page = existing_pdf.getPage(page_number)
+            page = existing_pdf.pages[page_number]
             # only print omr marks on pair pages (recto)
             if self.omr_single_sided or page_number % 2 == 0:
                 is_latest_page = is_latest_document and page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
                 omr_layer = self._build_omr_layer(marks)
-                page.mergePage(omr_layer)
-            output.addPage(page)
+                page.merge_page(omr_layer)
+            output.add_page(page)
 
         out_buffer = BytesIO()
         output.write(out_buffer)
@@ -150,6 +147,6 @@ class CommunicationJob(models.Model):
 
         # move to the beginning of the BytesIO buffer
         omr_buffer.seek(0)
-        omr_pdf = PdfFileReader(omr_buffer)
+        omr_pdf = PdfReader(omr_buffer)
 
-        return omr_pdf.getPage(0)
+        return omr_pdf.pages[0]
