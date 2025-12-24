@@ -8,6 +8,7 @@ langdetect
 pandas>=1.5.3
 pandas>=2.0.0
 pdf2image
+pypdf
 pyquery
 pytesseract
 pytz

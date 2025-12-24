@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication OMR",
-    "version": "14.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -37,12 +37,11 @@
     "depends": [
         "partner_communication",
     ],
-    "external_dependencies": {"python": ["PyPDF2"]},
+    "external_dependencies": {"python": ["pypdf"]},
     "data": [
         "views/communication_job_view.xml",
         "views/communication_config_view.xml",
     ],
-    "qweb": [],
     "demo": [],
     "installable": True,
     "auto_install": False,
