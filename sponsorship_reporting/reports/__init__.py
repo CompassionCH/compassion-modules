@@ -9,8 +9,8 @@
 ##############################################################################
 
 from . import (
-    #    account_invoice_report,
     fiscal_year_report,
+    account_invoice_report,
     sponsorship_line_report,
     sponsorships_evolution_months_report,
     sponsorships_evolution_years_report,
