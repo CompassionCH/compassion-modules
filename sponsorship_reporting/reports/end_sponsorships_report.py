@@ -29,10 +29,11 @@ class EndSponsorshipsMonthReport(models.Model):
             ("12", _("Financial reasons")),
             ("25", _("Not given")),
         ],
+        string="End Reason",
         readonly=True,
     )
     partner_id = fields.Many2one("res.partner", "Partner", readonly=True)
-    lang = fields.Selection("select_lang", readonly=True)
+    lang = fields.Selection(selection="select_lang", readonly=True)
     sds_state = fields.Selection(
         [
             ("draft", _("Draft")),
@@ -44,6 +45,7 @@ class EndSponsorshipsMonthReport(models.Model):
             ("no_sub", _("No sub")),
             ("cancelled", _("Cancelled")),
         ],
+        string="SDS State",
         readonly=True,
     )
     active_percentage = fields.Float(
@@ -94,27 +96,31 @@ class EndSponsorshipsMonthReport(models.Model):
         # We disable the check for SQL injection. The only risk of sql
         # injection is from 'self._table' which is not controlled by an
         # external source.
-        # ruff: noqa: UP031
-        self.env.cr.execute(
-            """
-            CREATE OR REPLACE VIEW %s AS
-            SELECT c.id, c.end_date, c.end_reason_id, c.sub_sponsorship_id,
-                   c.sds_state, p.id as partner_id, %s, %s, %s,
-                   p.lang, 100/s.sponsored as active_percentage,
-                   100.0/s.sponsored_terminated as total_percentage,
-                   s.sponsored_terminated,
-                   s.study_date
-            FROM recurring_contract c JOIN res_partner p
-              ON c.correspondent_id = p.id
-              %s
-            WHERE c.state = 'terminated' AND c.child_id IS NOT NULL
-            AND c.end_date IS NOT NULL
+        query = f"""
+                CREATE OR REPLACE VIEW {self._table} AS
+                SELECT
+                    c.id,
+                    c.end_date,
+                    c.end_reason_id,
+                    c.sub_sponsorship_id,
+                    c.sds_state,
+                    p.id as partner_id,
+                    {self._select_fiscal_year("c.end_date")},
+                    {self._select_category()}, {self._select_sub_category()},
+                    p.lang,
+                    CASE
+                        WHEN s.sponsored > 0 THEN 100.0/s.sponsored
+                        ELSE 0 END as active_percentage,
+                    CASE
+                        WHEN s.sponsored_terminated > 0
+                            THEN 100.0/s.sponsored_terminated
+                        ELSE 0 END as total_percentage,
+                    s.sponsored_terminated,
+                    s.study_date
+                FROM recurring_contract c JOIN res_partner p
+                  ON c.correspondent_id = p.id
+                  {self._join_stats()}
+                WHERE c.state = 'terminated' AND c.child_id IS NOT NULL
+                AND c.end_date IS NOT NULL
         """
-            % (
-                self._table,
-                self._select_fiscal_year("c.end_date"),
-                self._select_category(),
-                self._select_sub_category(),
-                self._join_stats(),
-            )
-        )
+        self.env.cr.execute(query)

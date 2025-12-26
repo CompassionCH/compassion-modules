@@ -11,14 +11,18 @@ from odoo import models
 
 
 class SponsorshipsEvolutionYearsReport(models.Model):
+    """
+    Inherits the Monthly report logic but changes the table name
+    and the date grouping format to 'year'.
+    """
+
     _inherit = "sponsorships.evolution_months.report"
     _name = "sponsorships.evolution_years.report"
-    _table = "sponsorships_evolution_years_report"
     _description = "Sponsorships Evolution By Years"
+    _table = "sponsorships_evolution_years_report"
 
     def _date_format(self):
         """
-         Used to aggregate data in various formats (in subclasses) "
-        :return: (date_trunc value, date format)
-        """ ""
-        return ("year", "YYYY")
+        Overrides the parent method to group by Year instead of Month.
+        """
+        return "year", "YYYY"
