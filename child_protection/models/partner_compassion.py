@@ -38,6 +38,11 @@ class ResPartner(models.Model):
         compute="_compute_code_of_conduct_filename",
     )
 
+    passport = fields.Binary(
+        attachment=True
+    )
+    passport_name = fields.Char(compute="_compute_passport_name")
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -54,6 +59,13 @@ class ResPartner(models.Model):
                 record.code_of_conduct_filename = f"Code_of_Conduct_{record.name}"
             else:
                 record.code_of_conduct_filename = False
+
+    def _compute_passport_name(self):
+        for partner in self:
+            if partner.passport:
+                partner.passport_name = f"Passport_{partner.name}"
+            else:
+                partner.passport_name = False
 
     ##########################################################################
     #                              ORM METHODS                               #
