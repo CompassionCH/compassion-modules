@@ -38,9 +38,7 @@ class ResPartner(models.Model):
         compute="_compute_code_of_conduct_filename",
     )
 
-    passport = fields.Binary(
-        attachment=True
-    )
+    passport = fields.Binary(attachment=True)
     passport_name = fields.Char(compute="_compute_passport_name")
 
     ##########################################################################
