@@ -744,7 +744,8 @@ class CommunicationJob(models.Model):
         object_ids = list()
         object_id_strings = self.mapped("object_ids")
         for id_strings in object_id_strings:
-            object_ids += list(map(int, id_strings.split(",")))
+            unlist_string = id_strings.strip("[]")
+            object_ids += list(map(int, unlist_string.split(",")))
         return self.env[model[0]].browse(set(object_ids))
 
     def set_attachments(self):
