@@ -525,6 +525,14 @@ class CompassionProject(models.Model):
         3. Make a request to Google Maps Geocoding API.
         4. If successful, update the obfuscated coordinates.
         Used in compassion-modules/mobile_app_connector/models/compassion_project.py
+
+        Note : This method has to be called on everytime the obfuscated coords
+        are required.
+
+        Upon migration to 14.0.1.0.2, the obfuscated coords empty columns are created
+        to prevent odoo from sending an api request for each project when updating the
+        first time.
+        see my_compassion/migrations/14.0.1.0.2/pre-migration.py
         """
         api_key = (
             self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
@@ -536,7 +544,7 @@ class CompassionProject(models.Model):
 
         for project in self:
             # Check if we already have coords to avoid wasting API calls
-            if project.gps_latitude_obfuscated or project.gps_longitude_obfuscated:
+            if project.gps_latitude_obfuscated and project.gps_longitude_obfuscated:
                 continue
 
             # Build the list of available address parts
@@ -551,7 +559,7 @@ class CompassionProject(models.Model):
             params = {"address": address_string, "key": api_key}
 
             try:
-                response = requests.get(base_url, params=params, timeout=10)
+                response = requests.get(base_url, params=params, timeout=3)
                 data = response.json()
 
                 if data["status"] == "OK":
