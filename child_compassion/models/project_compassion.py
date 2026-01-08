@@ -512,7 +512,8 @@ class CompassionProject(models.Model):
             ("Plastic", _("Plastic")),
         ]
 
-    def update_obfuscated_coordinates(self):
+    @api.onchange("gps_latitude", "gps_longitude")
+    def _compute_gps_obfuscated(self):
         """
         Update obfuscated coordinates using Google Maps Geocoding API.
         1. Check if API key is configured.
