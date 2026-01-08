@@ -11,6 +11,7 @@
 import logging
 import re
 from datetime import datetime, timedelta
+from random import random
 
 import requests
 
@@ -567,7 +568,16 @@ class CompassionProject(models.Model):
                     project.gps_latitude_obfuscated = location["lat"]
                     project.gps_longitude_obfuscated = location["lng"]
                 else:
-                    logging.error(f"Geocoding error for {project.id}: {data['status']}")
+                    # Fallback to randomized gps coords
+                    project.gps_latitude_obfuscated = (
+                        int(project.gps_latitude) + random()
+                    )
+                    project.gps_longitude_obfuscated = (
+                        int(project.gps_longitude) + random()
+                    )
+                    raise UserError(
+                        f"Geocoding error for {project.id}: {data['status']}"
+                    )
 
             except Exception as e:
                 logging.error(f"Request failed: {e}")
