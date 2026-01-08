@@ -518,7 +518,7 @@ class CompassionProject(models.Model):
         ]
 
     @api.onchange("gps_latitude", "gps_longitude")
-    def _compute_gps_obfuscated(self):
+    def _compute_gps_obfuscated(self, is_onchange_call=True):
         """
         Update obfuscated coordinates using Google Maps Geocoding API.
         1. Check if API key is configured.
@@ -545,8 +545,13 @@ class CompassionProject(models.Model):
 
         for project in self:
             # Check if we already have coords to avoid wasting API calls
-            if project.gps_latitude_obfuscated and project.gps_longitude_obfuscated:
-                continue
+            # If this method is called by onchange, update teh coords anyway
+            if (
+                project.gps_latitude_obfuscated
+                and project.gps_longitude_obfuscated
+                and not is_onchange_call
+            ):
+                return
 
             # Build the list of available address parts
             parts = [
