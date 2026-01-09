@@ -575,10 +575,14 @@ class CompassionProject(models.Model):
                 else:
                     # Fallback to randomized gps coords
                     project.gps_latitude_obfuscated = (
-                        int(project.gps_latitude) + random()
+                        (int(project.gps_latitude) + random())
+                        if project.gps_latitude
+                        else 0
                     )
                     project.gps_longitude_obfuscated = (
-                        int(project.gps_longitude) + random()
+                        (int(project.gps_longitude) + random())
+                        if project.gps_longitude
+                        else 0
                     )
                     raise UserError(
                         f"Geocoding error for {project.id}: {data['status']}"
