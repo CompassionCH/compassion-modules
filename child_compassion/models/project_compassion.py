@@ -517,8 +517,39 @@ class CompassionProject(models.Model):
             ("Plastic", _("Plastic")),
         ]
 
+    def _update_gps_obfuscated(self, force=False):
+        """
+        Triggers the update of obfuscated GPS coordinates.
+
+        This method serves as a manual trigger to calculate and store the obfuscated
+        coordinates (latitude and longitude). By default, it skips the update if
+        valid obfuscated coordinates already exist to avoid unnecessary API calls.
+
+        :param force: If True, forces the re-computation of obfuscated coordinates
+                      via the API even if they are already set.
+        :type force: bool
+
+        .. note::
+            This method is distinct from ``_compute_gps_obfuscated``.
+            - ``_compute_gps_obfuscated``: Performs the actual API call and logic to
+              calculate values. It is typically triggered automatically when standard
+              coordinates (gps_latitude/gps_longitude) change.
+            - ``_update_gps_obfuscated``: A wrapper to safely invoke the computation
+              manually, adding a check to prevent redundant updates unless forced.
+        """
+        for project in self:
+            # Check if values exist and we are not forcing an update
+            if (
+                project.gps_latitude_obfuscated
+                and project.gps_longitude_obfuscated
+                and not force
+            ):
+                continue
+
+            project._compute_gps_obfuscated()
+
     @api.onchange("gps_latitude", "gps_longitude")
-    def _compute_gps_obfuscated(self, is_onchange_call=True):
+    def _compute_gps_obfuscated(self):
         """
         Update obfuscated coordinates using Google Maps Geocoding API.
         1. Check if API key is configured.
@@ -546,13 +577,6 @@ class CompassionProject(models.Model):
         for project in self:
             # Check if we already have coords to avoid wasting API calls
             # If this method is called by onchange, update teh coords anyway
-            if (
-                project.gps_latitude_obfuscated
-                and project.gps_longitude_obfuscated
-                and not is_onchange_call
-            ):
-                return
-
             # Build the list of available address parts
             parts = [
                 project.closest_city,
