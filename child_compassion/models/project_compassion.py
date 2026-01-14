@@ -86,11 +86,9 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
-    gps_latitude_obfuscated = fields.Float(
-        compute="_compute_gps_obfuscated", store=True
-    )
+    gps_latitude_obfuscated = fields.Float(compute="_update_gps_obfuscated", store=True)
     gps_longitude_obfuscated = fields.Float(
-        compute="_compute_gps_obfuscated", store=True
+        compute="_update_gps_obfuscated", store=True
     )
     google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
