@@ -86,9 +86,11 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
-    gps_latitude_obfuscated = fields.Float(compute="_update_gps_obfuscated", store=True)
+    gps_latitude_obfuscated = fields.Float(
+        compute="_compute_gps_obfuscated", store=True
+    )
     gps_longitude_obfuscated = fields.Float(
-        compute="_update_gps_obfuscated", store=True
+        compute="_compute_gps_obfuscated", store=True
     )
     google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
@@ -515,7 +517,7 @@ class CompassionProject(models.Model):
             ("Plastic", _("Plastic")),
         ]
 
-    def _update_gps_obfuscated(self, force=False):
+    def _compute_gps_obfuscated(self, force=False):
         """
         Triggers the update of obfuscated GPS coordinates.
 
@@ -529,10 +531,10 @@ class CompassionProject(models.Model):
 
         .. note::
             This method is distinct from ``_compute_gps_obfuscated``.
-            - ``_compute_gps_obfuscated``: Performs the actual API call and logic to
+            - ``_fetch_gps_obfuscated_cords``: Performs the actual API call and logic to
               calculate values. It is typically triggered automatically when standard
               coordinates (gps_latitude/gps_longitude) change.
-            - ``_update_gps_obfuscated``: A wrapper to safely invoke the computation
+            - ``_compute_gps_obfuscated``: A wrapper to safely invoke the computation
               manually, adding a check to prevent redundant updates unless forced.
         """
         for project in self:
@@ -544,10 +546,10 @@ class CompassionProject(models.Model):
             ):
                 continue
 
-            project._compute_gps_obfuscated()
+            project._fetch_gps_obfuscated_cords()
 
     @api.onchange("gps_latitude", "gps_longitude")
-    def _compute_gps_obfuscated(self):
+    def _fetch_gps_obfuscated_cords(self):
         """
         Update obfuscated coordinates using Google Maps Geocoding API.
         1. Check if API key is configured.
@@ -555,9 +557,6 @@ class CompassionProject(models.Model):
         3. Make a request to Google Maps Geocoding API.
         4. If successful, update the obfuscated coordinates.
         Used in compassion-modules/mobile_app_connector/models/compassion_project.py
-
-        Note : This method has to be called on everytime the obfuscated coords
-        are required.
 
         Upon migration to 14.0.1.0.2, the obfuscated coords empty columns are created
         to prevent odoo from sending an api request for each project when updating the
