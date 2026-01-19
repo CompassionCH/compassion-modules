@@ -30,20 +30,19 @@ class GenerateGiftWizard(models.TransientModel):
         :param contract:  the sponsorship
         :return: None
         """
-        self.ensure_one()
-        if self.contract_id.no_birthday_invoice:
+        for contract_id in self.contract_ids.filtered("no_birthday_invoice"):
             gift_obj = self.env["sponsorship.gift"]
             birthday_gift_type = self.env.ref(
                 "sponsorship_compassion.gift_type_birthday"
             )
             gift_vals = {"sponsorship_gift_type_id": birthday_gift_type.id}
             gift_date = self.compute_date_birthday_invoice(
-                self.contract_id.child_id.birthdate
+                contract_id.child_id.birthdate
             )
             # Search that a gift is not already pending
             existing_gifts = gift_obj.search(
                 [
-                    ("sponsorship_id", "=", self.contract_id.id),
+                    ("sponsorship_id", "=", contract_id.id),
                     ("gift_date", ">=", gift_date.replace(day=1, month=1)),
                     ("gift_date", "<=", gift_date.replace(day=31, month=12)),
                     ("gift_type_id", "=", birthday_gift_type.id),
@@ -51,13 +50,13 @@ class GenerateGiftWizard(models.TransientModel):
             )
             if not existing_gifts:
                 # Create a gift record
-                gift_vals["sponsorship_id"] = self.contract_id.id
+                gift_vals["sponsorship_id"] = contract_id.id
                 gift_vals["date_partner_paid"] = gift_date
                 gift_vals["gift_date"] = gift_date
-                gift_vals["amount"] = self.contract_id.birthday_invoice
+                gift_vals["amount"] = contract_id.birthday_invoice
                 gift_obj.create(gift_vals)
-        else:
-            return super().generate_invoice(due_date)
+            self.contract_ids -= contract_id
+        return super().generate_invoice(due_date)
 
     def compute_date_birthday_invoice(self, child_birthdate, payment_date=None):
         """Set date of invoice two months before child's birthdate"""

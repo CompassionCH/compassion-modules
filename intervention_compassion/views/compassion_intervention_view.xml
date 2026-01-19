@@ -18,6 +18,7 @@
             type="object"
             invisible="state != 'on_hold'"
             class="oe_highlight"
+            icon="fa-money"
           />
                     <button
             name="cancel_hold"
@@ -35,6 +36,14 @@
               icon="fa-refresh"
               string="get infos"
               context="{'queue_job__no_delay': True}"
+            />
+                                                <button
+              name="create_analytic_account"
+              type="object"
+              class="oe_stat_button"
+              icon="fa-line-chart"
+              string="Create analytic account"
+              invisible="analytic_account_id"
             />
 
                         <button
@@ -69,16 +78,16 @@
               name="show_contract"
               type="object"
               class="oe_stat_button"
-              icon="fa-external-link"
-              string="Contract"
+              icon="fa-file-text"
+              string="Contracts"
             />
 
                         <button
               name="show_partner"
               type="object"
               class="oe_stat_button"
-              icon="fa-male"
-              string="Partner"
+              icon="fa-users"
+              string="Partners"
             />
                     </div>
                     <div class="oe_title">
@@ -131,6 +140,7 @@
               />
                             <field name="cancel_reason" readonly="1" />
                             <field name="product_template_id" />
+                            <field name="analytic_account_id" />
                         </group>
                     </group>
                     <notebook>
@@ -562,6 +572,19 @@
         <field name="name">Intervention Subcategories</field>
         <field name="res_model">compassion.intervention.subcategory</field>
         <field name="view_mode">list,form</field>
+    </record>
+    <record
+    id="action_compassion_intervention_create_analytic_account"
+    model="ir.actions.server"
+  >
+        <field name="name">Create analytic account</field>
+        <field name="model_id" ref="model_compassion_intervention" />
+        <field name="binding_model_id" ref="model_compassion_intervention" />
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+action = records.create_analytic_account()
+        </field>
     </record>
 
     <menuitem

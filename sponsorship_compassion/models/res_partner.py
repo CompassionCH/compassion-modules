@@ -525,7 +525,7 @@ class ResPartner(models.Model):
             "view_mode": "list,form",
             "domain": [
                 ("account_id.account_type", "=", "income"),
-                ("credit", ">", 0),
+                ("parent_state", "=", "posted"),
             ],
             "context": {
                 "list_view_ref": "sponsorship_compassion.view_move_line_donations",

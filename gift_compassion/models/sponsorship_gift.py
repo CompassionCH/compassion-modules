@@ -275,8 +275,8 @@ class SponsorshipGift(models.Model):
             return self.env[self._name]
 
     def _blend_in_other_gift(self, other_gift_vals):
-        self.ensure_one()
         # Update gift invoice lines
+        self.ensure_one()
         invl_write = list()
         for line_write in other_gift_vals.get("invoice_line_ids", []):
             if line_write[0] == 6:

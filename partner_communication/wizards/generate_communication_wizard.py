@@ -179,6 +179,8 @@ class GenerateCommunicationWizard(models.TransientModel):
         INSERT INTO partner_communication_generation_rel
         (partner_communication_generate_wizard_id, partner_communication_job_id)
         VALUES (%s, %s)
+        ON CONFLICT (partner_communication_generate_wizard_id,
+            partner_communication_job_id) DO NOTHING
             """,
                 (self.id, communication.id),
             )

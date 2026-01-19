@@ -838,6 +838,7 @@ class Correspondence(models.Model):
             ]
         )
         gmc_messages.write({"state": "new"})
+        gmc_messages.process_messages()
 
     def _get_file_name(self):
         self.ensure_one()
@@ -943,11 +944,6 @@ class Correspondence(models.Model):
 
     def resubmit_letter(self):
         for letter in self:
-            if letter.state != "Translation check unsuccessful":
-                raise UserError(
-                    _("Letter must be in state 'Translation check unsuccessful'")
-                )
-
             letter.write(
                 {
                     "kit_identifier": False,
@@ -955,7 +951,7 @@ class Correspondence(models.Model):
                     "state": "Received in the system",
                 }
             )
-            letter.create_commkit()
+        self.create_commkit().process_messages()
 
     def quality_check_failed(self):
         return self.write(

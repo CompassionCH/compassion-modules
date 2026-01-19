@@ -7,7 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import datetime
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -67,34 +66,28 @@ class StaffNotificationSettings(models.TransientModel):
 
     @api.model
     def is_in_christmas_period(self, date_to_check):
-        if self.is_christmas_period_defined():
-            year_of_date_to_check = date_to_check.year
-            begin_christmas_period = datetime.date(
-                year_of_date_to_check,
-                int(self.get_christmas_period_start_month()),
-                int(self.get_christmas_period_start_day()),
-            )
-            end_christmas_period = datetime.date(
-                year_of_date_to_check,
-                int(self.get_christmas_period_end_month()),
-                int(self.get_christmas_period_end_day()),
-            )
-            if end_christmas_period < begin_christmas_period:
-                end_christmas_period = datetime.date(
-                    year_of_date_to_check + 1,
-                    int(self.get_christmas_period_end_month()),
-                    int(self.get_christmas_period_end_day()),
-                )
-            if (date_to_check >= begin_christmas_period) and (
-                date_to_check <= end_christmas_period
-            ):
-                return True
-        else:
-            # When no Christmas period is defined,
-            # we consider that we are always in the Christmas period
-            # for avoiding blocking any letter.
+        if not self.is_christmas_period_defined():
+            # If no period is defined, we don't block any letters
             return True
-        return False
+
+        # Create (month, day) tuples for comparison
+        start_md = (
+            int(self.get_christmas_period_start_month()),
+            int(self.get_christmas_period_start_day()),
+        )
+        end_md = (
+            int(self.get_christmas_period_end_month()),
+            int(self.get_christmas_period_end_day()),
+        )
+        check_md = (date_to_check.month, date_to_check.day)
+
+        if start_md <= end_md:
+            # Period is within the same calendar year (e.g. Nov 1 -> Dec 25)
+            return start_md <= check_md <= end_md
+        else:
+            # Period spans across New Year (e.g. Dec 20 -> Jan 15)
+            # It matches if it's after start date (in Dec) OR before end date (in Jan)
+            return check_md >= start_md or check_md <= end_md
 
     @api.model
     def get_christmas_period_start_day(self):

@@ -744,7 +744,8 @@ class CommunicationJob(models.Model):
         object_ids = list()
         object_id_strings = self.mapped("object_ids")
         for id_strings in object_id_strings:
-            object_ids += list(map(int, id_strings.split(",")))
+            unlist_string = id_strings.strip("[]")
+            object_ids += list(map(int, unlist_string.split(",")))
         return self.env[model[0]].browse(set(object_ids))
 
     def set_attachments(self):
@@ -892,7 +893,7 @@ class CommunicationJob(models.Model):
             if job.attachment_ids:
                 print_name = name[:3] + " " + (job.subject or "")
                 job.with_company(job.company_id).with_delay(
-                    channel=_JOB_CHANNEL,
+                    channel=_JOB_CHANNEL + ".print_individual",
                     identity_key=self._name + "._print." + str(job.ids),
                 )._print_job_asynchronous(print_name)
             else:

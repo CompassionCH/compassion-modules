@@ -72,6 +72,9 @@ class CompassionIntervention(models.Model):
     product_template_id = fields.Many2one(
         "product.template", "Linked product", readonly=False
     )
+    analytic_account_id = fields.Many2one(
+        "account.analytic.account", "Analytic account", readonly=False
+    )
     subcategory_ids = fields.Many2many(
         "compassion.intervention.subcategory",
         "compassion_intervention_subcategory_rel",
@@ -651,6 +654,84 @@ class CompassionIntervention(models.Model):
             if "failure" in message.state:
                 raise UserError(message.failure_reason)
         return True
+
+    def create_analytic_account(self):
+        """
+        Creates or finds an analytic group and an analytic account for each record,
+        then links the new analytic account to the record.
+        """
+        AnalyticAccount = self.env["account.analytic.account"]
+
+        candidates = self.filtered(
+            lambda r: not r.analytic_account_id
+            and r.category_id.analytic_group_id
+            and r.field_office_id.field_office_id
+        )
+
+        account_specs = {}
+        record_account = {}
+        # Construct analytic account values
+        for intervention in candidates:
+            field_office_code = intervention.field_office_id.field_office_id
+            label = intervention.parent_intervention_name or intervention.name
+            account_name = f"{field_office_code}-{label}"
+            ref = (
+                intervention.parent_intervention_name
+                or intervention.intervention_id
+                or intervention.name
+            )
+            account_specs.setdefault(
+                account_name,
+                {
+                    "name": account_name,
+                    "code": ref,
+                    "plan_id": intervention.category_id.analytic_group_id.id,
+                },
+            )
+            record_account[intervention.id] = account_name
+
+        # Map analytic accounts to interventions, creating those that do not exist
+        existing_accounts = AnalyticAccount.search(
+            [("name", "in", list(account_specs))]
+        )
+        accounts = {acc.name: acc for acc in existing_accounts}
+        new_account_vals = [
+            vals
+            for account_name, vals in account_specs.items()
+            if account_name not in accounts
+        ]
+        if new_account_vals:
+            created_accounts = AnalyticAccount.create(new_account_vals)
+            accounts.update({acc.name: acc for acc in created_accounts})
+
+        # Link accounts to interventions
+        for intervention in candidates:
+            account = accounts.get(record_account.get(intervention.id))
+            if account:
+                intervention.analytic_account_id = account.id
+        linked_accounts = self.mapped("analytic_account_id")
+        if not linked_accounts:
+            return {
+                "tag": "display_notification",
+                "type": "ir.actions.client",
+                "params": {
+                    "title": _("No Analytic Account created"),
+                    "message": _(
+                        "No Analytic Account could be created. "
+                        "Please check that the Intervention has a Category "
+                        "with an Analytic Group and a Field Office set."
+                    ),
+                    "sticky": False,
+                },
+            }
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Intervention Analytic Accounts"),
+            "res_model": "account.analytic.account",
+            "view_mode": "form" if len(linked_accounts) == 1 else "tree,form",
+            "domain": [("id", "in", linked_accounts.ids)],
+            "res_id": linked_accounts.ids[0],
+        }
 
     def cancel_hold(self):
         action_id = self.env.ref(

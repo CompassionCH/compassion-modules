@@ -109,6 +109,7 @@
                 <field name="contract_id" />
                 <field name="company_currency_id" column_invisible="1" />
                 <field name="credit" sum="Total" decoration-bf="1" />
+                <field name="debit" sum="Total" decoration-bf="1" />
                 <field name="move_type" optional="hide" />
                 <field
           name="payment_state"

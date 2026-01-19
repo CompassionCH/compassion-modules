@@ -24,7 +24,8 @@
                 <div
           class="alert alert-warning text-center o_form_header"
           role="alert"
-          invisible="is_gift_authorized or state in ('terminated', 'cancelled')"
+          invisible="is_gift_authorized or state in ('terminated', 'cancelled')
+                     or not child_id"
         >
                     <a class="close" data-dismiss="alert" href="#">x</a>
                     <div>
