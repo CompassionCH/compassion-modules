@@ -683,7 +683,7 @@ class CompassionIntervention(models.Model):
                 {
                     "name": account_name,
                     "code": ref,
-                    "group_id": intervention.category_id.analytic_group_id.id,
+                    "plan_id": intervention.category_id.analytic_group_id.id,
                 },
             )
             record_account[intervention.id] = account_name
@@ -728,6 +728,7 @@ class CompassionIntervention(models.Model):
             "res_model": "account.analytic.account",
             "view_mode": "form" if len(linked_accounts) == 1 else "tree,form",
             "domain": [("id", "in", linked_accounts.ids)],
+            "res_id": linked_accounts.ids[0],
         }
 
     def cancel_hold(self):

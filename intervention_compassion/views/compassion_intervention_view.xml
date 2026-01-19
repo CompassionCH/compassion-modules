@@ -43,7 +43,7 @@
               class="oe_stat_button"
               icon="fa-line-chart"
               string="Create analytic account"
-              attrs="{'invisible': [('analytic_account_id', '!=', False)]}"
+              invisible="analytic_account_id"
             />
 
                         <button

@@ -17,7 +17,7 @@ class InterventionCategory(models.Model):
 
     name = fields.Char(required=True, translate=False)
     type = fields.Selection("get_types")
-    analytic_group_id = fields.Many2one("account.analytic.group")
+    analytic_group_id = fields.Many2one("account.analytic.plan")
     subcategory_ids = fields.Many2many(
         "compassion.intervention.subcategory",
         "compassion_intervention_cat_subcat_rel",
