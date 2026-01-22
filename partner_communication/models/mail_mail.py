@@ -49,7 +49,7 @@ class MailMail(models.Model):
         "Communication type",
     )
 
-    def send(self, auto_commit=False, raise_exception=False):
+    def send(self, auto_commit=False, raise_exception=False, post_send_callback=None):
         """Create communication for partner, if not already existing."""
         comm_obj = self.env["partner.communication.job"].with_context(no_print=True)
         config = self.env.ref("partner_communication.default_communication")
@@ -77,7 +77,7 @@ class MailMail(models.Model):
                             "ir_attachment_ids": [(6, 0, email.attachment_ids.ids)],
                         }
                     )
-        return super().send(auto_commit, raise_exception)
+        return super().send(auto_commit, raise_exception, post_send_callback)
 
     @api.model_create_multi
     def create(self, values_list):

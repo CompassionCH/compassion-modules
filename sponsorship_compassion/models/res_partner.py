@@ -66,7 +66,6 @@ class ResPartner(models.Model):
     )
     unrec_items = fields.Integer(compute="_compute_count_items")
     receivable_items = fields.Integer(compute="_compute_count_items")
-    has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer(
         string="Number of sponsorships",
         compute="_compute_number_sponsorships",
@@ -181,7 +180,6 @@ class ResPartner(models.Model):
             partner.number_sponsorships = self.env["recurring.contract"].search_count(
                 active_sponsorship_domain
             )
-            partner.has_sponsorships = partner.number_sponsorships
         return True
 
     def _search_number_sponsorships(self, operator, value):
@@ -195,8 +193,6 @@ class ResPartner(models.Model):
         if operator not in ("=", "!=", "<", ">", "<=", ">="):
             raise ValueError(f"Invalid operator: {operator}")
 
-        # TODO: Remove this block after all Scheduled Actions using obsolete
-        # domains (e.g., 'number_sponsorships = 'false') are migrated or deleted.
         if value == "false" or not value:
             value = 0
 

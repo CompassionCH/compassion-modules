@@ -235,7 +235,7 @@ class ImportLettersHistory(models.Model):
             partner_obj = self.env["res.partner"]
             if partner_code:
                 partner = partner_obj.search(
-                    [("ref", "=", partner_code), ("has_sponsorships", "=", True)],
+                    [("ref", "=", partner_code), ("number_sponsorships", ">", 0)],
                     limit=2,
                 )
                 data["partner_id"] = partner.id
