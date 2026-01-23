@@ -25,9 +25,7 @@
                     </group>
                     <group>
                         <group>
-                            <field
-                name="proposition_text"
-              />
+                            <field name="proposition_text" />
                         </group>
                         <group>
                             <field name="body_html" widget="ace" />

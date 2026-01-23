@@ -59,7 +59,7 @@ class HolidayClosure(models.Model):
     @api.constrains("end_date", "start_date")
     def _validate_dates(self):
         for h in self:
-            if h.start_date and h.end_date and (h.start_date >= h.end_date):
+            if h.start_date and h.end_date and (h.start_date > h.end_date):
                 raise ValidationError(
                     _("Please choose an end_date greater than the start_date")
                 )
@@ -83,7 +83,7 @@ class HolidayClosure(models.Model):
         user = self.env["res.users"]
         template = self.get_holiday_template()
         if template._name == "partner.communication.config":
-            omr_config = template.get_config_for_lang(self.env.lang)[0]
+            omr_config = template.get_default_config(self.env.lang)
             user = omr_config.user_id or template.user_id
         for holiday in self:
             holiday.signature = user.signature or _("The Compassion team")
