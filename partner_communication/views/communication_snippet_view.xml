@@ -8,8 +8,14 @@
                     <group>
                         <field name="name" />
                         <field name="snippet_text" />
-                        <field name="category_id" options="{'no_create_edit': False}"/>
-                        <field name="description" placeholder="Useful for global numbers..."/>
+                        <field
+              name="category_id"
+              options="{'no_create_edit': False}"
+            />
+                        <field
+              name="description"
+              placeholder="Useful for global numbers..."
+            />
                     </group>
                 </sheet>
             </form>
