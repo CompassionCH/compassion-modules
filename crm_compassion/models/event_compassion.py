@@ -163,9 +163,11 @@ class EventCompassion(models.Model):
     def _compute_income_lines(self):
         for event in self:
             event.income_line_ids = event.invoice_line_ids.filtered(
-                lambda line: line.payment_state == "paid"
-                and not line.contract_id
-                and line.move_id.move_type == "out_invoice"
+                lambda line: not line.contract_id
+                             and line.account_id.user_type_id.name == "Income"
+                             and ((line.payment_state == "paid"
+                                   and line.move_id.move_type == "out_invoice") or
+                                  (line.move_id.move_type == "entry"))
             )
 
     @api.depends("analytic_id.line_ids")
@@ -178,7 +180,8 @@ class EventCompassion(models.Model):
     def _compute_income(self):
         for event in self:
             incomes = event.income_line_ids
-            event.total_income = sum(incomes.mapped("price_subtotal") or [0])
+            event.total_income = (sum(incomes.mapped("credit") or [0])
+                                  -sum(incomes.mapped("debit") or [0]))
 
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):
