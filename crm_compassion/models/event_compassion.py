@@ -180,8 +180,7 @@ class EventCompassion(models.Model):
     def _compute_income(self):
         for event in self:
             incomes = event.income_line_ids
-            event.total_income = (sum(incomes.mapped("credit") or [0])
-                                  -sum(incomes.mapped("debit") or [0]))
+            event.total_income = sum(incomes.mapped("balance") or [0])
 
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):
