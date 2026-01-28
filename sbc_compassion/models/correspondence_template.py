@@ -112,13 +112,24 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def generate_pdf(self, pdf_name, header, text, image_data, background_list=None):
+    # ruff: noqa: C901 (Yes this function is complex... it will be removed in v17)
+    def generate_pdf(
+        self,
+        pdf_name,
+        header,
+        text,
+        image_data,
+        background_list=None,
+        s2b_generator=None,
+    ):
         """
         Generate a pdf file
         This function is nearly as generic as it should be to be implemented
         directly to generate PDF for any template, text and image
         We save every text to a temp txt file to avoid having to escape all
         characters that could potentially be problematic
+        :param s2b_generator: <optional> a s2b.generator record to update
+                              the generation status
         :param pdf_name: path and name of the pdf file to write on
         :param header: tuple of text for the headers to display
                        (first value is for front pages, second for back pages)
@@ -130,129 +141,170 @@ class CorrespondenceTemplate(models.Model):
                                 the template.
         """
         self.ensure_one()
+        if s2b_generator is None:
+            s2b_generator = self.env["correspondence.s2b.generator"]
 
-        # Images stored on disk for FPDF processing. We keep them in these lists
-        # to make sure we properly remove the files at the end of the process.
-        temp_img = []
+        # Keep file objects alive to prevent auto-deletion
+        temp_files = []
+        std_err_file = None
+        pdf_file = None
 
-        if background_list is None:
-            background_list = []
-        overflow_template = False
-
-        pages = self.mapped("page_ids") - self.additional_page_id
-        template_list, header_data, image_boxes = self._generate_template_list(
-            pages, header, background_list, temp_img
-        )
-        image_list = []
-
-        if background_list:
-            # An original document is provided. We want
-            # to complete the PDF document with the remaining pages
-            # and provide an overflow template in case the text is longer
-            # and we should add pages for additional translation.
-            if len(background_list) > len(pages):
-                for i in range(len(pages), len(background_list)):
-                    bf = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
-                    bf.write(base64.b64decode(background_list[i]))
-                    bf.flush()
-                    temp_img.append(bf)
-                    template_list.append([bf.name, [], [], []])
-            additional_page = self.env.ref("sbc_compassion.b2s_additional_page")
-            bf_name = False
-            if additional_page.background:
-                bf = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
-                bf.write(base64.b64decode(additional_page.background))
-                bf.flush()
-                bf_name = bf.name
-                temp_img.append(bf)
-            text_list = []
-            for text_box in additional_page.text_box_ids:
-                text_list.append(text_box.get_json_repr())
-            overflow_template = [bf_name, [], text_list, image_boxes]
-        elif self.additional_page_id:
-            # We are generating a new PDF (S2B case). We provide
-            # an overflow template using the template
-            add_background = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
-            add_background.write(base64.b64decode(self.additional_page_id.background))
-            add_background.flush()
-            temp_img.append(add_background)
-            text_list = []
-            for text_box in self.additional_page_id.text_box_ids:
-                text_list.append(text_box.get_json_repr())
-            overflow_template = [add_background.name, header_data, text_list, []]
-
-        text_list = []
-        for t_type, t_boxes in list(text.items()):
-            for txt in t_boxes:
-                txt_file = tempfile.NamedTemporaryFile(
-                    "w", prefix=t_type + "_", suffix=".txt", encoding="utf-8"
-                )
-                txt_file.write(txt)
-                txt_file.flush()
-                temp_img.append(txt_file)
-                text_list.append([txt_file.name, t_type])
-
-        for image in image_data:
-            ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
-            ifile.write(base64.b64decode(image))
-            ifile.flush()
-            image_list.append(ifile.name)
-            temp_img.append(ifile)
-
-        generated_json = {
-            "images": image_list,
-            "templates": template_list,
-            "texts": text_list,
-            # The output should at least contain 2 pages
-            "original_size": max(2, len(background_list)),
-            "overflow_template": overflow_template,
-            "lang": self.env.lang,
-            "prevent_overflow": self.type == "b2s",
-        }
-
-        json_val = json.dumps(generated_json).replace(" ", "")
-
-        std_err_file_path = self.path_to("stderr.txt")
-        std_err_file = open(std_err_file_path, "w", encoding="utf-8")
-
-        php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
-        if config.get("php_debug"):
-            # Allow php debugging with Xend
-            os.environ["XDEBUG_CONFIG"] = "PHPSTORM"
-            php_command_args.extend(
-                [
-                    "-dxdebug.remote_enable=1",
-                    "-dxdebug.remote_mode=req",
-                    "-dxdebug.remote_port=9000",
-                    "-dxdebug.remote_host=127.0.0.1",
-                ]
-            )
-        proc = subprocess.Popen(php_command_args, stderr=std_err_file)
-        proc.communicate()
-
-        if proc.returncode != 0:
-            with open(std_err_file_path, "r", encoding="utf-8") as stderr:
-                _logger.error(
-                    "FPDF returned nonzero exit code %d. stderr:\n%s",
-                    proc.returncode,
-                    stderr.read(),
-                )
-
-        # Clean temp files
-        for img in temp_img:
-            img.close()
-        std_err_file.close()
-
-        # Read and return output
         try:
+            if background_list is None:
+                background_list = []
+            overflow_template = False
+
+            pages = self.mapped("page_ids") - self.additional_page_id
+            template_list, header_data, image_boxes = self._generate_template_list(
+                pages, header, background_list, temp_files
+            )
+            image_list = []
+
+            s2b_generator.isolated_write({"generation_status": "apply_template"})
+
+            if background_list:
+                # An original document is provided. We want
+                # to complete the PDF document with the remaining pages
+                # and provide an overflow template in case the text is longer
+                # and we should add pages for additional translation.
+                if len(background_list) > len(pages):
+                    for i in range(len(pages), len(background_list)):
+                        bf = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
+                        bf.write(base64.b64decode(background_list[i]))
+                        bf.flush()
+                        temp_files.append(bf)
+                        template_list.append([bf.name, [], [], []])
+                additional_page = self.env.ref("sbc_compassion.b2s_additional_page")
+                bf_name = False
+                if additional_page.background:
+                    bf = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
+                    bf.write(base64.b64decode(additional_page.background))
+                    bf.flush()
+                    bf_name = bf.name
+                    temp_files.append(bf)
+                text_list = []
+                for text_box in additional_page.text_box_ids:
+                    text_list.append(text_box.get_json_repr())
+                overflow_template = [bf_name, [], text_list, image_boxes]
+            elif self.additional_page_id:
+                # We are generating a new PDF (S2B case). We provide
+                # an overflow template using the template
+                add_background = tempfile.NamedTemporaryFile(
+                    prefix="img_", suffix=".jpg"
+                )
+                add_background.write(
+                    base64.b64decode(self.additional_page_id.background)
+                )
+                add_background.flush()
+                temp_files.append(add_background)
+                text_list = []
+                for text_box in self.additional_page_id.text_box_ids:
+                    text_list.append(text_box.get_json_repr())
+                overflow_template = [add_background.name, header_data, text_list, []]
+
+            s2b_generator.isolated_write({"generation_status": "apply_text"})
+
+            text_list = []
+            for t_type, t_boxes in list(text.items()):
+                for txt in t_boxes:
+                    txt_file = tempfile.NamedTemporaryFile(
+                        "w", prefix=t_type + "_", suffix=".txt", encoding="utf-8"
+                    )
+                    txt_file.write(txt)
+                    txt_file.flush()
+                    temp_files.append(txt_file)
+                    text_list.append([txt_file.name, t_type])
+
+            s2b_generator.isolated_write({"generation_status": "apply_images"})
+
+            for image in image_data:
+                ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
+                ifile.write(base64.b64decode(image))
+                ifile.flush()
+                image_list.append(ifile.name)
+                temp_files.append(ifile)
+
+            generated_json = {
+                "images": image_list,
+                "templates": template_list,
+                "texts": text_list,
+                # The output should at least contain 2 pages
+                "original_size": max(2, len(background_list)),
+                "overflow_template": overflow_template,
+                "lang": self.env.lang,
+                "prevent_overflow": self.type == "b2s",
+            }
+
+            json_val = json.dumps(generated_json).replace(" ", "")
+
+            std_err_file_path = self.path_to("stderr.txt")
+            std_err_file = open(std_err_file_path, "w", encoding="utf-8")
+
+            s2b_generator.isolated_write({"generation_status": "generate_pdf"})
+
+            php_command_args = ["php", self.path_to("pdf.php"), pdf_name, json_val]
+            if config.get("php_debug"):
+                # Allow php debugging with Xend
+                os.environ["XDEBUG_CONFIG"] = "PHPSTORM"
+                php_command_args.extend(
+                    [
+                        "-dxdebug.remote_enable=1",
+                        "-dxdebug.remote_mode=req",
+                        "-dxdebug.remote_port=9000",
+                        "-dxdebug.remote_host=127.0.0.1",
+                    ]
+                )
+            proc = subprocess.Popen(php_command_args, stderr=std_err_file)
+            proc.communicate()
+
+            if proc.returncode != 0:
+                with open(std_err_file_path, "r", encoding="utf-8") as stderr:
+                    _logger.error(
+                        "FPDF returned nonzero exit code %d. stderr:\n%s",
+                        proc.returncode,
+                        stderr.read(),
+                    )
+
+            # Read and return output
             pdf_file = open(pdf_name, "rb")
             res = pdf_file.read()
             pdf_file.close()
-            os.remove(pdf_file.name)
-        except FileNotFoundError:
-            _logger.error("Cannot read PDF made by FPDF.")
-            res = False
-        return res
+            pdf_file = None
+            os.remove(pdf_name)
+
+            return res
+
+        except Exception:
+            _logger.error("Cannot read PDF made by FPDF.", exc_info=True)
+            return False
+
+        finally:
+            # Clean up all temporary files (they will be auto-deleted when closed)
+            for temp_file in temp_files:
+                try:
+                    temp_file.close()
+                except Exception as e:
+                    _logger.warning("Failed to close temp file: %s", str(e))
+
+            # Clean up stderr file
+            if std_err_file:
+                try:
+                    std_err_file.close()
+                except Exception:
+                    pass
+                try:
+                    std_err_file_path = self.path_to("stderr.txt")
+                    if os.path.exists(std_err_file_path):
+                        os.remove(std_err_file_path)
+                except Exception as e:
+                    _logger.warning("Failed to clean up stderr file: %s", str(e))
+
+            # Clean up PDF file if still open
+            if pdf_file:
+                try:
+                    pdf_file.close()
+                except Exception:
+                    pass
 
     # path of the FPDF folder
     _absolute_path = os.path.join(
