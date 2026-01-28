@@ -205,7 +205,7 @@ class GlobalChildSearch(models.TransientModel):
 
     def add_search(self):
         self.ensure_one()
-        self.skip += self.nb_selected
+        self.skip += self.take
         if not self.advanced_criteria_used:
             self._call_search_service(
                 "profile_search",
