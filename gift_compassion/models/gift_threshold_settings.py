@@ -68,3 +68,10 @@ class GiftThresholdSettings(models.Model):
             round=False,
         )
         return f"{company.currency_id.name} {int(math.ceil(raw_amount))}"
+
+    def get_gift_frequency_indicator(self):
+        if self.yearly_threshold and self.gift_frequency == 2:
+            return "*"
+        if not self.yearly_threshold and self.gift_frequency == 1:
+            return "**"
+        return ""
