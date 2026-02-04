@@ -45,22 +45,25 @@ class GiftThresholdSettings(models.Model):
     def get_sponsorship_gifts(self):
         return self.env["sponsorship.gift"].get_sponsorship_gifts()
 
-    def get_sponsorship_gift_labels(self):
-        self.ensure_one()
-        if not self.sponsorship_gift_type:
+    @staticmethod
+    def _get_selection_label(selection_values, key):
+        if not key:
             return ""
-        return dict(self.get_sponsorship_gifts()).get(
-            self.sponsorship_gift_type, self.sponsorship_gift_type
+        return dict(selection_values).get(key, key)
+
+    def get_sponsorship_gift_labels(self):
+        return self._get_selection_label(
+            self.get_sponsorship_gifts(),
+            self.sponsorship_gift_type
         )
 
     def get_gift_type_label(self):
-        self.ensure_one()
-        if not self.gift_type:
-            return ""
-        return dict(self.get_gift_types()).get(self.gift_type, self.gift_type)
+        return self._get_selection_label(
+            self.get_gift_types(),
+            self.gift_type
+        )
 
     def get_ceiling_converted_amount(self, amount, company, date):
-        self.ensure_one()
         raw_amount = self.currency_id._convert(
             from_amount=amount,
             to_currency=company.currency_id,
