@@ -53,15 +53,11 @@ class GiftThresholdSettings(models.Model):
 
     def get_sponsorship_gift_labels(self):
         return self._get_selection_label(
-            self.get_sponsorship_gifts(),
-            self.sponsorship_gift_type
+            self.get_sponsorship_gifts(), self.sponsorship_gift_type
         )
 
     def get_gift_type_label(self):
-        return self._get_selection_label(
-            self.get_gift_types(),
-            self.gift_type
-        )
+        return self._get_selection_label(self.get_gift_types(), self.gift_type)
 
     def get_ceiling_converted_amount(self, amount, company, date):
         raw_amount = self.currency_id._convert(
