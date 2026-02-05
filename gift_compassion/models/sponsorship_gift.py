@@ -173,9 +173,9 @@ class SponsorshipGift(models.Model):
     @api.model
     def get_gift_type_selection(self):
         return [
-            ("Project Gift", _("Project")),
-            ("Family Gift", _("Family")),
-            ("Beneficiary Gift", _("Participant")),
+            ("Project Gift", _("Project Gift")),
+            ("Family Gift", _("Family Gift")),
+            ("Beneficiary Gift", _("Participant Gift")),
         ]
 
     @api.model
