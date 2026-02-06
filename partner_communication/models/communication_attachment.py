@@ -55,38 +55,31 @@ class CommunicationAttachment(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """
-        Allows to send binary data for attachment instead of record.
-        :param vals: vals for creation
-        :return: record created
-        """
-        res = self.browse()
         for vals in vals_list:
-            if not vals.get("report_id"):
-                vals["report_id"] = (
-                    self.env["ir.actions.report"]
-                    ._get_report_from_name(vals.get("report_name"))
-                    .id
-                )
+            # Get the technical name (e.g., 'partner_communication.a4_communication')
+            r_name = vals.get("report_name")
 
-            new_record = "data" in vals and "attachment_id" not in vals
-            if new_record:
-                name = vals["name"]
-                attachment = self.env["ir.attachment"].create(
-                    {
-                        "res_model": "partner.communication.job",
-                        "datas": vals["data"],
-                        "name": name,
-                        "report_id": vals["report_id"],
-                    }
-                )
+            if r_name:
+                report = self.env["ir.actions.report"]._get_report_from_name(r_name)
+                if report:
+                    vals["report_id"] = report.id
+                    # Ensure the value is in the dict for the SQL INSERT
+                    vals["report_name"] = r_name
+
+                    # POP the heavy data to prevent the 'S' / Type error
+            binary_data = vals.pop("data", None) or vals.pop("datas", None)
+
+            if binary_data and not vals.get("attachment_id"):
+                attachment = self.env["ir.attachment"].create({
+                    "res_model": "partner.communication.job",
+                    "datas": binary_data,
+                    "name": vals.get("name"),
+                    "type": "binary",
+                })
                 vals["attachment_id"] = attachment.id
 
-            record = super().create(vals_list)
-            res += record
-            if new_record:
-                record.attachment_id.res_id = res.communication_id.id
-        return res
+        # Odoo will now include 'report_name' in the INSERT if it's defined in the class
+        return super().create(vals_list)
 
     def unlink(self):
         attachments = self.mapped("attachment_id")

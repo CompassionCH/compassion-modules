@@ -48,6 +48,7 @@
         "security/ir.model.access.csv",
         "security/communication_job_security.xml",
         "report/a4_communication.xml",
+        "report/test_report.xml",
         "views/communication_job_view.xml",
         "views/communication_config_view.xml",
         "views/res_partner_view.xml",

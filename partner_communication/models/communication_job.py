@@ -765,11 +765,17 @@ class CommunicationJob(models.Model):
                         )()
                         if binaries and isinstance(binaries, dict):
                             for name, data in list(binaries.items()):
+
+                                report = self.env['ir.actions.report'].search([
+                                    ('report_name', '=', data[0])
+                                ], limit=1)
+
                                 attachment_id = attachment_obj.create(
                                     {
                                         "name": name,
                                         "communication_id": job.id,
                                         "report_name": data[0],
+                                        "report_id": report.id,
                                         "data": data[1],
                                     }
                                 )
@@ -907,6 +913,7 @@ class CommunicationJob(models.Model):
                     channel=_JOB_CHANNEL,
                     identity_key=self._name + "._print." + str(jobs.ids),
                 )._print_job_asynchronous(print_name)
+
         return self.download_data()
 
     def _print_job_asynchronous(self, print_name):

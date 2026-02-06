@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="report_test_communication" model="ir.actions.report">
+        <field name="name">Test Communication Report</field>
+        <field name="model">partner.communication.job</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">partner_communication.test_communication_template</field>
+        <field name="report_file">partner_communication.test_communication_template</field>
+        <field name="paperformat_id" ref="base.paperformat_us" />
+    </record>
+
+    <template id="test_communication_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h1>TEST OUTPUT</h1>
+                        <p>Job ID: <t t-esc="o.id"/></p>
+                        <div t-out="o.body_html" />
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

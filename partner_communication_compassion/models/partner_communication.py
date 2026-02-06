@@ -88,9 +88,6 @@ class PartnerCommunication(models.Model):
         res = dict()
         biennial = self.env.ref("partner_communication_compassion.biennial")
         if self.config_id == biennial:
-            if self.send_mode == "physical":
-                # In this case the photo is printed from Smartphoto and manually added
-                return res
             children = self.get_objects()
         else:
             children = self.get_objects().mapped("child_id")
