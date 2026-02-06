@@ -99,6 +99,30 @@ class PartnerCommunication(models.Model):
         res[name] = ("child_compassion.child_picture", pdf)
         return res
 
+
+    def get_attachment_testing(self):
+        self.ensure_one()
+        # The technical name of the report template from your XML
+        report_name = "partner_communication.test_communication_template"
+
+        # Even if 'data' is mostly empty, we pass the essential context
+        data = {
+            "lang": self.partner_id.lang,
+            "doc_ids": self.ids,
+            "type": report_name,
+        }
+
+        # Use the helper method just like the childpack function does
+        pdf = self._get_pdf_from_data(data, report_name)
+
+        # Validation: Ensure we didn't get an empty stream
+        if not pdf or len(pdf) < 1000:
+            return {}
+
+        # Return the tuple so the "Print configuration" column is filled
+        return {"test_attachment.pdf": (report_name, pdf)}
+
+
     def _convert_pdf(self, pdf_data):
         """
         Converts all pages of PDF in A4 format if communication is
