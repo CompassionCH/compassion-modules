@@ -98,7 +98,7 @@
                             <field name="intervention_id" />
                             <field name="field_office_id" />
                             <field name="fcp_ids" widget="many2many_tags" />
-                            <field name="additional_marketing_information" />
+                            <field name="additional_marketing_information" widget="html" />
                             <field name="category_id" />
                             <field
                 name="subcategory_ids"
