@@ -121,7 +121,7 @@ class Correspondence(models.Model):
     def _compute_translation_url(self):
         host = self.env.ref("sbc_translation.translation_website").sudo().domain
         for letter in self:
-            letter.translation_url = f"https://{host}/letters/letter-edit/{letter.id}"
+            letter.translation_url = f"{host}/letters/letter-edit/{letter.id}"
 
     def _compute_paragraph_ids(self):
         for correspondence in self:
