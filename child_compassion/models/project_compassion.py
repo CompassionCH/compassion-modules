@@ -11,6 +11,7 @@
 import logging
 import re
 from datetime import datetime, timedelta
+from random import random
 
 import requests
 
@@ -85,6 +86,12 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
+    gps_latitude_obfuscated = fields.Float(
+        compute="_compute_gps_obfuscated", store=True
+    )
+    gps_longitude_obfuscated = fields.Float(
+        compute="_compute_gps_obfuscated", store=True
+    )
     google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
     cluster = fields.Char(readonly=True)
@@ -514,6 +521,45 @@ class CompassionProject(models.Model):
             ("Tin", "Tin"),
             ("Plastic", "Plastic"),
         ]
+
+    @api.depends("gps_latitude", "gps_longitude", "closest_city")
+    def _compute_gps_obfuscated(self):
+        """
+        This method calculates and stores the obfuscated coordinates
+        (latitude and longitude).
+        """
+        api_key = (
+            self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
+        )
+        base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+        for project in self:
+            try:
+                parts = [
+                    project.closest_city,
+                    project.state_province,
+                    project.country_id.name,
+                ]
+                address_string = ", ".join(filter(None, parts))
+                params = {"address": address_string, "key": api_key}
+                response = requests.get(base_url, params=params, timeout=3)
+                data = response.json()
+                if data["status"] == "OK":
+                    location = data["results"][0]["geometry"]["location"]
+                    project.gps_latitude_obfuscated = location["lat"]
+                    project.gps_longitude_obfuscated = location["lng"]
+            except Exception:
+                # Fallback to randomized gps coords
+                logging.warning("Request failed", exc_info=True)
+                project.gps_latitude_obfuscated = (
+                    (int(project.gps_latitude) + random())
+                    if project.gps_latitude
+                    else 0
+                )
+                project.gps_longitude_obfuscated = (
+                    (int(project.gps_longitude) + random())
+                    if project.gps_longitude
+                    else 0
+                )
 
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):
