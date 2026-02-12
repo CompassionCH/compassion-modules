@@ -517,100 +517,44 @@ class CompassionProject(models.Model):
             ("Plastic", _("Plastic")),
         ]
 
-    def _compute_gps_obfuscated(self, force=False):
+    @api.depends("gps_latitude", "gps_longitude", "closest_city")
+    def _compute_gps_obfuscated(self):
         """
-        Triggers the update of obfuscated GPS coordinates.
-
-        This method serves as a manual trigger to calculate and store the obfuscated
-        coordinates (latitude and longitude). By default, it skips the update if
-        valid obfuscated coordinates already exist to avoid unnecessary API calls.
-
-        :param force: If True, forces the re-computation of obfuscated coordinates
-                      via the API even if they are already set.
-        :type force: bool
-
-        .. note::
-            This method is distinct from ``_compute_gps_obfuscated``.
-            - ``_fetch_gps_obfuscated_cords``: Performs the actual API call and logic to
-              calculate values. It is typically triggered automatically when standard
-              coordinates (gps_latitude/gps_longitude) change.
-            - ``_compute_gps_obfuscated``: A wrapper to safely invoke the computation
-              manually, adding a check to prevent redundant updates unless forced.
-        """
-        for project in self:
-            # Check if values exist and we are not forcing an update
-            if (
-                project.gps_latitude_obfuscated
-                and project.gps_longitude_obfuscated
-                and not force
-            ):
-                continue
-
-            project._fetch_gps_obfuscated_cords()
-
-    @api.onchange("gps_latitude", "gps_longitude")
-    def _fetch_gps_obfuscated_cords(self):
-        """
-        Update obfuscated coordinates using Google Maps Geocoding API.
-        1. Check if API key is configured.
-        2. If the current project has no obfuscated coordinates, build the address str.
-        3. Make a request to Google Maps Geocoding API.
-        4. If successful, update the obfuscated coordinates.
-        Used in compassion-modules/mobile_app_connector/models/compassion_project.py
-
-        Upon migration to 14.0.1.0.2, the obfuscated coords empty columns are created
-        to prevent odoo from sending an api request for each project when updating the
-        first time.
-        see my_compassion/migrations/14.0.1.0.2/pre-migration.py
+        This method calculates and stores the obfuscated coordinates
+        (latitude and longitude).
         """
         api_key = (
             self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
         )
-        if not api_key:
-            return
-
         base_url = "https://maps.googleapis.com/maps/api/geocode/json"
-
         for project in self:
-            # Check if we already have coords to avoid wasting API calls
-            # If this method is called by onchange, update teh coords anyway
-            # Build the list of available address parts
-            parts = [
-                project.closest_city,
-                project.state_province,
-                project.country_id.name,
-            ]
-            address_string = ", ".join(filter(None, parts))
-            if not address_string:
-                continue
-            params = {"address": address_string, "key": api_key}
-
             try:
+                parts = [
+                    project.closest_city,
+                    project.state_province,
+                    project.country_id.name,
+                ]
+                address_string = ", ".join(filter(None, parts))
+                params = {"address": address_string, "key": api_key}
                 response = requests.get(base_url, params=params, timeout=3)
                 data = response.json()
-
                 if data["status"] == "OK":
                     location = data["results"][0]["geometry"]["location"]
                     project.gps_latitude_obfuscated = location["lat"]
                     project.gps_longitude_obfuscated = location["lng"]
-                else:
-                    # Fallback to randomized gps coords
-                    project.gps_latitude_obfuscated = (
-                        (int(project.gps_latitude) + random())
-                        if project.gps_latitude
-                        else 0
-                    )
-                    project.gps_longitude_obfuscated = (
-                        (int(project.gps_longitude) + random())
-                        if project.gps_longitude
-                        else 0
-                    )
-                    raise UserError(
-                        f"Geocoding error for {project.id}: {data['status']}"
-                    )
-
-            except Exception as e:
-                logging.error(f"Request failed: {e}")
+            except Exception:
+                # Fallback to randomized gps coords
+                logging.warning("Request failed", exc_info=True)
+                project.gps_latitude_obfuscated = (
+                    (int(project.gps_latitude) + random())
+                    if project.gps_latitude
+                    else 0
+                )
+                project.gps_longitude_obfuscated = (
+                    (int(project.gps_longitude) + random())
+                    if project.gps_longitude
+                    else 0
+                )
 
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):
