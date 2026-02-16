@@ -106,7 +106,7 @@ class GmcMessage(models.Model):
             )
 
         if not message:
-            message = super().create(vals)
+            message = super(GmcMessage, self).create(vals)
 
         if message.action_id.auto_process:
             message.process_messages()
