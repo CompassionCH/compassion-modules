@@ -609,12 +609,13 @@ class Correspondence(models.Model):
         )
         messages = self.env["gmc.message"]
         for letter in self:
-            action_id = self.env.ref("sbc_compassion.create_letter").id
+            action = self.env.ref("sbc_compassion.create_letter")
             message_vals = {
-                "action_id": action_id,
+                "action_id": action.id,
                 "object_id": letter.id,
                 "child_id": letter.child_id.id,
                 "partner_id": letter.partner_id.id,
+                "direction": action.direction
             }
             if (
                 letter.sponsorship_id.state not in ("active", "terminated")
