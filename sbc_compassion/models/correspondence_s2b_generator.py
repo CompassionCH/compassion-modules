@@ -119,6 +119,19 @@ class CorrespondenceS2bGenerator(models.Model):
                         _("Only JPG images are allowed as attached images.")
                     )
 
+    @api.model
+    def create(self, vals):
+        """
+        Overwrites the default create method
+        """
+        if vals.get("body") and not vals.get("language_id"):
+            detected_language = (
+                self.env["langdetect"].sudo().detect_language(vals["body"])
+            )
+            if detected_language:
+                vals["language_id"] = detected_language.id
+        return super().create(vals)
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
