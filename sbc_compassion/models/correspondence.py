@@ -615,7 +615,7 @@ class Correspondence(models.Model):
                 "object_id": letter.id,
                 "child_id": letter.child_id.id,
                 "partner_id": letter.partner_id.id,
-                "direction": action.direction
+                "direction": action.direction,
             }
             if (
                 letter.sponsorship_id.state not in ("active", "terminated")
