@@ -37,6 +37,7 @@
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "sponsorship_compassion",
+        "advanced_translation",
     ],
     "external_dependencies": {
         "bin": ["php"],
