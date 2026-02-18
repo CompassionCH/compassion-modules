@@ -232,10 +232,10 @@ class Correspondence(models.Model):
             )
 
             # Is the letter still in the translation process?
-            translation_hold = {
+            translation_hold = (
                 letter.translation_status in ["to do", "in progress", "to validate"]
                 or letter.translation_issue
-            }
+            )
 
             if (langs_match and not translation_hold) or force_publish:
                 super(Correspondence, letter).process_letter()
