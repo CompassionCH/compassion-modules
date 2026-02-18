@@ -149,7 +149,7 @@ class Correspondence(models.Model):
     # Whether the pdf should be stored on creation or generated when needed
     store_letter_image = fields.Boolean("Store PDF letter", default=True)
     letter_image = fields.Binary()
-    file_name = fields.Char()
+    file_name = fields.Char(compute="_compute_file_name", store=True)
     letter_format = fields.Selection(
         [("pdf", "pdf"), ("tiff", "tiff"), ("zip", "zip")],
         compute="_compute_letter_format",
@@ -536,7 +536,6 @@ class Correspondence(models.Model):
                 raise UserError(_("You can only attach tiff or pdf files"))
 
         letter = super().create(vals)
-        letter.file_name = letter._get_file_name()
         # Set the correct number of pages
         if letter_data and type_ == ".pdf":
             image_pdf = PdfFileReader(BytesIO(letter_data))
@@ -889,9 +888,7 @@ class Correspondence(models.Model):
                     _("Image of letter %s was not found remotely.")
                     % letter.kit_identifier
                 )
-            letter.write(
-                {"file_name": letter._get_file_name(), "letter_image": image_data}
-            )
+            letter.write({"letter_image": image_data})
 
     def attach_original(self):
         self.download_attach_letter_image(letter_type="original_letter_url")
@@ -976,21 +973,24 @@ class Correspondence(models.Model):
         gmc_messages.write({"state": "new"})
         gmc_messages.process_messages()
 
-    def _get_file_name(self):
-        self.ensure_one()
-        name = ""
-        if self.communication_type_ids.ids:
-            name = (
-                self.communication_type_ids[0]
-                .with_context(lang=self.partner_id.lang)
-                .name
-                + " "
-            )
-        name += self.child_id.local_id
-        if self.kit_identifier:
-            name += " " + self.kit_identifier
-        name += "." + (self.letter_format or "pdf")
-        return name
+    @api.depends(
+        "communication_type_ids", "child_id", "kit_identifier", "letter_format"
+    )
+    def _compute_file_name(self):
+        for letter in self:
+            name = ""
+            if self.communication_type_ids.ids:
+                name = (
+                    self.communication_type_ids[0]
+                    .with_context(lang=self.partner_id.lang)
+                    .name
+                    + " "
+                )
+            name += self.child_id.local_id
+            if self.kit_identifier:
+                name += " " + self.kit_identifier
+            name += "." + (self.letter_format or "pdf")
+            letter.file_name = name
 
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
