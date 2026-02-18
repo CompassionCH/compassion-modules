@@ -142,7 +142,7 @@ class Correspondence(models.Model):
     # 2. Attachments and scans
     ##########################
     sponsor_letter_scan = fields.Binary()
-    file_name = fields.Char()
+    file_name = fields.Char(compute="_compute_file_name", store=True)
     letter_format = fields.Selection(
         [("pdf", "pdf"), ("zip", "zip")],
         compute="_compute_letter_format",
@@ -607,7 +607,6 @@ class Correspondence(models.Model):
         # Make sure the translation language is set correctly.
         letters._check_translation_language()
         for letter in letters:
-            letter.file_name = letter._get_file_name()
             attachment = self.env["ir.attachment"].search(
                 [
                     ("res_model", "=", "correspondence"),
@@ -841,21 +840,24 @@ class Correspondence(models.Model):
         gmc_messages.write({"state": "new"})
         gmc_messages.process_messages()
 
-    def _get_file_name(self):
-        self.ensure_one()
-        name = ""
-        if self.communication_type_ids.ids:
-            name = (
-                self.communication_type_ids[0]
-                .with_context(lang=self.partner_id.lang)
-                .name
-                + " "
-            )
-        name += self.child_id.local_id
-        if self.kit_identifier:
-            name += " " + self.kit_identifier
-        name += "." + (self.letter_format or "pdf")
-        return name
+    @api.depends(
+        "communication_type_ids", "child_id", "kit_identifier", "letter_format"
+    )
+    def _compute_file_name(self):
+        for letter in self:
+            name = ""
+            if self.communication_type_ids.ids:
+                name = (
+                    self.communication_type_ids[0]
+                    .with_context(lang=self.partner_id.lang)
+                    .name
+                    + " "
+                )
+            name += self.child_id.local_id
+            if self.kit_identifier:
+                name += " " + self.kit_identifier
+            name += "." + (self.letter_format or "pdf")
+            letter.file_name = name
 
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
