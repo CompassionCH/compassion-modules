@@ -849,17 +849,17 @@ class Correspondence(models.Model):
     def _compute_file_name(self):
         for letter in self:
             name = ""
-            if self.communication_type_ids.ids:
+            if letter.communication_type_ids.ids:
                 name = (
-                    self.communication_type_ids[0]
-                    .with_context(lang=self.partner_id.lang)
+                    letter.communication_type_ids[0]
+                    .with_context(lang=letter.partner_id.lang)
                     .name
                     + " "
                 )
-            name += self.child_id.local_id
-            if self.kit_identifier:
-                name += " " + self.kit_identifier
-            name += "." + (self.letter_format or "pdf")
+            name += letter.child_id.local_id
+            if letter.kit_identifier:
+                name += " " + letter.kit_identifier
+            name += "." + (letter.letter_format or "pdf")
             letter.file_name = name
 
     def data_to_json(self, mapping_name=None):
