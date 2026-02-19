@@ -219,17 +219,36 @@ class Correspondence(models.Model):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
-            if not self.env.context.get("force_publish"):
+            force_publish = letter.env.context.get("force_publish")
+
+            # Update language detection if not forced
+            if not force_publish:
                 letter._check_translation_language()
-            if (
-                (letter.beneficiary_language_ids & letter.supporter_languages_ids)
-                or letter.translation_language_id in letter.supporter_languages_ids
-                or self.env.context.get("force_publish")
-            ):
+
+            # Can sponser read the letter?
+            langs_match = (
+                    (letter.beneficiary_language_ids & letter.supporter_languages_ids)
+                    or letter.translation_language_id in letter.supporter_languages_ids
+            )
+
+            # Is the letter still in the translation process?
+            translation_hold = (
+                letter.translation_status in ["to do", "in progress", "to validate"]
+                or letter.translation_issue
+            )
+
+            if (langs_match and not translation_hold) or force_publish:
                 super(Correspondence, letter).process_letter()
             else:
-                letter.download_attach_letter_image()
-                letter.send_local_translate()
+                try:
+                    letter.download_attach_letter_image()
+                except UserError:
+                    _logger.warning(
+                        f"Could not download image for letter {letter.id}, "
+                        f"but proceeding to translation queue.")
+                # (re)send to translation queue ONLY if not on hold
+                if not translation_hold:
+                    letter.send_local_translate()
         return True
 
     def calculate_translation_priority(self):
