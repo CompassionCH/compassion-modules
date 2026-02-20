@@ -510,9 +510,6 @@ class Correspondence(models.Model):
             self.unread_comments or # there are unread comments
             self.new_translator_id.force_validation # validation is forced
         )
-        _logger.info(
-            f"Translator: {self.new_translator_id.name}'s skills are verified? {user_skill.verified} \n Are there any unread comments? {self.unread_comments} \n Force validation? {self.new_translator_id.force_validation}"
-        )
 
         if validation_needed:
             self.translation_status = "to validate"
