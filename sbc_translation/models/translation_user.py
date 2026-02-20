@@ -43,6 +43,13 @@ class TranslationUser(models.Model):
         "translation.competence", help="Utility field only used for the search view"
     )
     avatar = fields.Binary(related="partner_id.image_128")
+    force_validation = fields.Boolean(
+        string="Force Validation",
+        default=False,
+        help="If checked, all translations submitted by this user will "
+             "require validation by a supervisor, regardless of their verified"
+             "skills"
+    )
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")

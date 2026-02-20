@@ -491,7 +491,7 @@ class Correspondence(models.Model):
         _logger.info("Translation saved.")
         return True
 
-    def submit_translation(self, letter_elements, translator_id=None):
+    def submit_translation(self, letter_elements, translator_id=None) -> bool:
         """
         TP API for saving a translation
         :param letter_elements: list of dict containing paragraphs or pagebreak data
@@ -504,10 +504,20 @@ class Correspondence(models.Model):
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id
         )
-        if user_skill.verified and not self.unread_comments:
-            self._post_process_translation()
-        else:
+
+        validation_needed: bool =  (
+            not user_skill.verified or # user skill not verified
+            self.unread_comments or # there are unread comments
+            self.new_translator_id.force_validation # validation is forced
+        )
+        _logger.info(
+            f"Translator: {self.new_translator_id.name}'s skills are verified? {user_skill.verified} \n Are there any unread comments? {self.unread_comments} \n Force validation? {self.new_translator_id.force_validation}"
+        )
+
+        if validation_needed:
             self.translation_status = "to validate"
+        else:
+            self._post_process_translation()
         _logger.info("Translation submitted.")
         return True
 
