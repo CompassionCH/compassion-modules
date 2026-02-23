@@ -693,14 +693,13 @@ class Correspondence(models.Model):
             datetime.date.today()
         )
         messages = self.env["gmc.message"]
+        action_id = self.env.ref("sbc_compassion.create_letter").id
         for letter in self:
-            action = self.env.ref("sbc_compassion.create_letter")
             message_vals = {
-                "action_id": action.id,
+                "action_id": action_id,
                 "object_id": letter.id,
                 "child_id": letter.child_id.id,
                 "partner_id": letter.partner_id.id,
-                "direction": action.direction,
             }
             if (
                 letter.sponsorship_id.state not in ("active", "terminated")
@@ -856,7 +855,8 @@ class Correspondence(models.Model):
                     .name
                     + " "
                 )
-            name += letter.child_id.local_id
+            if letter.child_id:
+                name += letter.child_id.local_id
             if letter.kit_identifier:
                 name += " " + letter.kit_identifier
             name += "." + (letter.letter_format or "pdf")

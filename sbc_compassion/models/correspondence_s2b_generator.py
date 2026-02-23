@@ -169,11 +169,11 @@ class CorrespondenceS2bGenerator(models.Model):
                 "original_language_id": self.language_id.id,
                 "original_text": text,
                 "state": "Draft" if preview_mode else "Received in the system",
-                    "email_read": fields.Datetime.now(),
-                }
-                if self.image_ids:
-                    vals["original_attachment_ids"] = [
-                        Command.clear()] + [
+                "email_read": fields.Datetime.now(),
+                "generator_id": self.id,
+            }
+            if self.image_ids:
+                vals["original_attachment_ids"] = [Command.clear()] + [
                     Command.create(
                         {
                             "datas": atchmt.datas,
@@ -183,14 +183,14 @@ class CorrespondenceS2bGenerator(models.Model):
                     )
                     for atchmt in self.image_ids
                 ]
-            letter = self.letter_ids.filtered(
-                lambda c, _sp=sponsorship: c.sponsorship_id == _sp
-            )
-            if letter:
-                letter.write(vals)
-            else:
-                letter = letters.create(vals)
-            letters += letter
+                letter = self.letter_ids.filtered(
+                    lambda c, _sp=sponsorship: c.sponsorship_id == _sp
+                )
+                if letter:
+                    letter.write(vals)
+                else:
+                    letter = letters.create(vals)
+                letters += letter
         letters.create_text_boxes()
         self.write({"letter_ids": [Command.set(letters.ids)]})
         if not preview_mode:
