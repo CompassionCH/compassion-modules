@@ -163,19 +163,20 @@ class CorrespondenceS2bGenerator(models.Model):
                 "original_text": text,
                 "state": "Draft" if preview_mode else "Received in the system",
                     "email_read": fields.Datetime.now(),
+                "generator_id": self.id,
                 }
-                if self.image_ids:
-                    vals["original_attachment_ids"] = [
-                        Command.clear()] + [
-                    Command.create(
-                        {
-                            "datas": atchmt.datas,
-                            "name": atchmt.name,
-                            "res_model": letters._name,
-                        }
-                    )
-                    for atchmt in self.image_ids
-                ]
+            if self.image_ids:
+                vals["original_attachment_ids"] = [
+                    Command.clear()] + [
+                Command.create(
+                    {
+                        "datas": atchmt.datas,
+                        "name": atchmt.name,
+                        "res_model": letters._name,
+                    }
+                )
+                for atchmt in self.image_ids
+            ]
             letter = self.letter_ids.filtered(
                 lambda c, _sp=sponsorship: c.sponsorship_id == _sp
             )
