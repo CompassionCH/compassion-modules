@@ -52,33 +52,10 @@ def migrate(cr, version):
          """,
     )
     # 1. Child letters
-    for message in publish_messages:
-        try:
-            letter_ids = _parse_object_ids(message.object_ids)
-            if not letter_ids:
-                continue
-            letters_without_pages = env["correspondence"].search(
-                [("id", "in", letter_ids), ("page_ids", "=", False)]
-            )
-            letters_with_pages = env["correspondence"].search(
-                [("id", "in", letter_ids), ("page_ids", "!=", False)]
-            )
-            letters = letters_without_pages + letters_with_pages
-            content = json.loads(message.content)
-            final_url = content.get("CloudinaryFinalURL")
-            original_url = content.get("CloudinaryOriginalURL")
-            if letters and (final_url or original_url):
-                for letter in letters_without_pages:
-                    letter._create_missing_pages(len(content.get("Pages", [])))
-                letters.with_delay(channel="root.sbc_migration").write(
-                    {
-                        "cloudinary_final_letter_url": final_url,
-                        "cloudinary_original_letter_url": original_url or False,
-                        "sponsor_letter_scan": False,
-                    }
-                )
-        except (ValueError, TypeError, json.JSONDecodeError):
-            continue
+    publish_messages.delayable(
+        channel="root.sbc_migration",
+        priority=500,
+    )._migrate_correspondence().split(1).delay()
 
     # 2. Supporter letters
     supporter_letters = env["correspondence"].search(

@@ -471,3 +471,18 @@ class GmcMessage(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [("state", "in", ("new", "pending"))]
+
+    def _parse_object_ids(self):
+        res = []
+        if len(self.mapped("action_id.model")) > 1:
+            raise UserError(
+                _("Cannot parse object ids for messages with different models.")
+            )
+        for message in self.filtered("object_ids"):
+            try:
+                res.extend(
+                    [int(part) for part in message.object_ids.split(",") if part]
+                )
+            except (TypeError, ValueError):
+                continue
+        return list(set(res))
