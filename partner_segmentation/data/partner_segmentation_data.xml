@@ -15,50 +15,14 @@
       >Did you know? We guarantee that at least 80% of sponsorship donations - for gifts to your sponsored child and fund donations up to 100% -  are invested in projects and programmes in the countries of the South. Thank you for the considerable impact you’ve already made.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="personalized_links" type="html">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Why not take a look at our latest updates?</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/news/"
-                target="_blank"
-              >https://compassion.ch/news/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/neues/"
-                target="_blank"
-              >https://compassion.ch/de/neues</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/notizie/"
-                target="_blank"
-              >https://compassion.ch/it/notizie/</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Take a look at Compassion’s finances</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/finances/"
-                target="_blank"
-              >https://compassion.ch/finances/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/finanzen/"
-                target="_blank"
-              >https://compassion.ch/de/finanzen/</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/finanze/"
-                target="_blank"
-              >https://compassion.ch/it/finanze/</a></li>
-                    </ul>
-                </div>
-            </div>
-        </field>
+        <field name="link_ids" eval="[
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Finances (FR)', 'url': 'https://compassion.ch/finances/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Finances (DE)', 'url': 'https://compassion.ch/de/finanzen/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Finances (IT)', 'url': 'https://compassion.ch/it/finanze/', 'language_id': ref('base.lang_it')}),
+        ]"/>
     </record>
     <record id="movement_mobilizers" model="res.partner.segment">
         <field name="name">Movement Mobilizers</field>
@@ -73,116 +37,20 @@
       >We are thrilled about your determination to fight injustices. We are so happy to count you as part of the growing number of people who are joining us in the fight against extreme poverty. We commit to providing platforms where you can advocate for children in need and the fight against extreme poverty and inspire others to join you.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="personalized_links" type="html">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Join or create a project to raise help for the children in need</h5>
-                    <a
-            href="https://together.compassion.ch/homepage"
-            target="_blank"
-          >TOGETHER</a>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Take a look at our latest updates</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/news/"
-                target="_blank"
-              >https://compassion.ch/news/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/neues/"
-                target="_blank"
-              >https://compassion.ch/de/neues</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/notizie/"
-                target="_blank"
-              >https://compassion.ch/it/notizie/</a></li>
-                    </ul>
-                </div>
-            </div>
-            <h5
-        class="text-uppercase mb-2"
-        style="color: #005eb8;"
-      >Follow us on the social medias</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="text-uppercase font-weight-bold">Facebook</p>
-                    <ul>
-                        <li>French: <a
-                href="https://facebook.com/compassionsuisse/"
-                target="_blank"
-              >https://facebook.com/compassionsuisse/</a></li>
-                        <li>German: <a
-                href="https://facebook.com/compassionschweiz/"
-                target="_blank"
-              >https://facebook.com/compassionschweiz/</a></li>
-                        <li>Italian: <a
-                href="https://www.facebook.com/compassionsvizzera"
-                target="_blank"
-              >https://www.facebook.com/compassionsvizzera</a></li>
-                    </ul>
-                    <div class="my-2">
-                        <a
-              href="https://www.instagram.com/compassionswiss/"
-              class="text-uppercase font-weight-bold mb-2"
-              target="_blank"
-            >Instagram</a>
-                    </div>
-                    <div class="my-2">
-                        <a
-              href="https://vimeo.com/compassionswitzerland"
-              class="text-uppercase font-weight-bold"
-              target="_blank"
-            >Vimeo</a>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <p class="text-uppercase font-weight-bold">Youtube</p>
-                    <ul>
-                        <li>French: <a
-                href="https://www.youtube.com/user/CompassionSuisse"
-                target="_blank"
-              >https://www.youtube.com/user/CompassionSuisse</a></li>
-                        <li>German: <a
-                href="https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ"
-                target="_blank"
-              >https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ</a></li>
-                        <li>Italian: <a
-                href="https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA"
-                target="_blank"
-              >https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                     <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Volunteering with Compassion</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/participer/"
-                target="_blank"
-              >https://compassion.ch/participer/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/sich-mehr-engagieren/"
-                target="_blank"
-              >https://compassion.ch/de/sich-mehr-engagieren/</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/participare/"
-                target="_blank"
-              >https://compassion.ch/it/participare/</a></li>
-                    </ul>
-                </div>
-            </div>
-        </field>
+        <field name="link_ids" eval="[
+            (0, 0, {'label': 'TOGETHER Project', 'url': 'https://together.compassion.ch/homepage', 'language_id': ref('base.lang_en')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Facebook FR', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Facebook DE', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Facebook IT', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Instagram', 'url': 'https://www.instagram.com/compassionswiss/'}),
+            (0, 0, {'label': 'Vimeo', 'url': 'https://vimeo.com/compassionswitzerland'}),
+            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
+        ]"/>
     </record>
     <record id="compassionate_caregiver" model="res.partner.segment">
         <field name="name">Compassionate Caregivers</field>
@@ -199,80 +67,17 @@ Thanks to our holistic approach to child development, we commit to a personal an
       >You can join us by making a spiritual impact in the lives of children in need through prayer and even get children in your surroundings involved in this endeavour. </p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="personalized_links" type="html">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Support one of our funds</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/donations/"
-                target="_blank"
-              >https://compassion.ch/donations/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/spenden/"
-                target="_blank"
-              >https://compassion.ch/de/spenden/</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/donare/"
-                target="_blank"
-              >https://compassion.ch/it/donare/</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Get future generations involved in the fight against extreme poverty</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/bienvenue-dans-mon-monde-philippines/"
-                target="_blank"
-              >Step In My Shoes</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/komm-mit/"
-                target="_blank"
-              >Step In My Shoes</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/sonntagschulmaterial//"
-                target="_blank"
-              >Cool</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Take a look at our latest updates</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/news/"
-                target="_blank"
-              >https://compassion.ch/news/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/neues/"
-                target="_blank"
-              >https://compassion.ch/de/neues</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/notizie/"
-                target="_blank"
-              >https://compassion.ch/it/notizie/</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Watch our latest videos</h5>
-                    <a
-            href="https://vimeo.com/compassionswitzerland"
-            target="_blank"
-          >Compassion Videos</a>
-                </div>
-            </div>
-        </field>
+        <field name="link_ids" eval="[
+            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Step In My Shoes (FR)', 'url': 'https://compassion.ch/bienvenue-dans-mon-monde-philippines/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Step In My Shoes (DE)', 'url': 'https://compassion.ch/de/komm-mit/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Watch Videos', 'url': 'https://vimeo.com/compassionswitzerland'}),
+        ]"/>
     </record>
     <record id="hands_on_helpers" model="res.partner.segment">
         <field name="name">Hands-On Helpers</field>
@@ -301,50 +106,14 @@ Thanks to our holistic approach to child development, we commit to a personal an
             </ul>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="personalized_links" type="html">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Volunteering with Compassion</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/participer/"
-                target="_blank"
-              >https://compassion.ch/participer/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/sich-mehr-engagieren/"
-                target="_blank"
-              >https://compassion.ch/de/sich-mehr-engagieren/</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/participare/"
-                target="_blank"
-              >https://compassion.ch/it/participare/</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Take a look at our latest updates</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/news/"
-                target="_blank"
-              >https://compassion.ch/news/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/neues/"
-                target="_blank"
-              >https://compassion.ch/de/neues</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/notizie/"
-                target="_blank"
-              >https://compassion.ch/it/notizie/</a></li>
-                    </ul>
-                </div>
-            </div>
-        </field>
+        <field name="link_ids" eval="[
+            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
+        ]"/>
     </record>
     <record id="curious_novices" model="res.partner.segment">
         <field name="name">Curious Novices</field>
@@ -360,103 +129,16 @@ Thanks to our holistic approach to child development, we commit to a personal an
             <p>You can engage with us in flexible and manifold ways.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="personalized_links" type="html">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Support one of our funds</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/donations/"
-                target="_blank"
-              >https://compassion.ch/donations/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/spenden/"
-                target="_blank"
-              >https://compassion.ch/de/spenden/</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/donare/"
-                target="_blank"
-              >https://compassion.ch/it/donare/</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h5
-            class="text-uppercase"
-            style="color: #005eb8;"
-          >Why not take a look at our latest updates?</h5>
-                    <ul>
-                        <li>French: <a
-                href="https://compassion.ch/news/"
-                target="_blank"
-              >https://compassion.ch/news/</a></li>
-                        <li>German: <a
-                href="https://compassion.ch/de/neues/"
-                target="_blank"
-              >https://compassion.ch/de/neues</a></li>
-                        <li>Italian: <a
-                href="https://compassion.ch/it/notizie/"
-                target="_blank"
-              >https://compassion.ch/it/notizie/</a></li>
-                    </ul>
-                </div>
-            </div>
-            <h5
-        class="text-uppercase mb-2"
-        style="color: #005eb8;"
-      >Follow us on the social medias</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="text-uppercase font-weight-bold">Facebook</p>
-                    <ul>
-                        <li>French: <a
-                href="https://facebook.com/compassionsuisse/"
-                target="_blank"
-              >https://facebook.com/compassionsuisse/</a></li>
-                        <li>German: <a
-                href="https://facebook.com/compassionschweiz/"
-                target="_blank"
-              >https://facebook.com/compassionschweiz/</a></li>
-                        <li>Italian: <a
-                href="https://www.facebook.com/compassionsvizzera"
-                target="_blank"
-              >https://www.facebook.com/compassionsvizzera</a></li>
-                    </ul>
-                    <div class="my-2">
-                        <a
-              href="https://www.instagram.com/compassionswiss/"
-              class="text-uppercase font-weight-bold mb-2"
-              target="_blank"
-            >Instagram</a>
-                    </div>
-                    <div class="my-2">
-                        <a
-              href="https://vimeo.com/compassionswitzerland"
-              class="text-uppercase font-weight-bold"
-              target="_blank"
-            >Vimeo</a>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <p class="text-uppercase font-weight-bold">Youtube</p>
-                    <ul>
-                        <li>French: <a
-                href="https://www.youtube.com/user/CompassionSuisse"
-                target="_blank"
-              >https://www.youtube.com/user/CompassionSuisse</a></li>
-                        <li>German: <a
-                href="https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ"
-                target="_blank"
-              >https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ</a></li>
-                        <li>Italian: <a
-                href="https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA"
-                target="_blank"
-              >https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA</a></li>
-                    </ul>
-                </div>
-            </div>
-        </field>
+        <field name="link_ids" eval="[
+            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Facebook FR', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Facebook DE', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Facebook IT', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
+        ]"/>
     </record>
 </odoo>
