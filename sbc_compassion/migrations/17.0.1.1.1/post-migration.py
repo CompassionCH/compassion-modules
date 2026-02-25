@@ -44,6 +44,13 @@ def migrate(cr, version):
         "Populating Cloudinary URLs for letter images using %d messages",
         len(publish_messages),
     )
+    openupgrade.logged_query(
+        cr,
+        """
+         CREATE INDEX IF NOT EXISTS correspondence_page__correspondence_id_index
+            ON correspondence_page USING btree (correspondence_id);
+         """,
+    )
     # 1. Child letters
     for message in publish_messages:
         try:
