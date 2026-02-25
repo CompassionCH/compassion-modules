@@ -44,19 +44,26 @@ def migrate(cr, version):
         "Populating Cloudinary URLs for letter images using %d messages",
         len(publish_messages),
     )
+    # 1. Child letters
     for message in publish_messages:
         try:
             letter_ids = _parse_object_ids(message.object_ids)
             if not letter_ids:
                 continue
-            letters = env["correspondence"].browse(letter_ids).exists()
+            letters_without_pages = env["correspondence"].search(
+                [("id", "in", letter_ids), ("page_ids", "=", False)]
+            )
+            letters_with_pages = env["correspondence"].search(
+                [("id", "in", letter_ids), ("page_ids", "!=", False)]
+            )
+            letters = letters_without_pages + letters_with_pages
             content = json.loads(message.content)
             final_url = content.get("CloudinaryFinalURL")
             original_url = content.get("CloudinaryOriginalURL")
             if letters and (final_url or original_url):
-                for letter in letters:
+                for letter in letters_without_pages:
                     letter._create_missing_pages(len(content.get("Pages", [])))
-                letters.with_delay().write(
+                letters.with_delay(channel="root.sbc_migration").write(
                     {
                         "cloudinary_final_letter_url": final_url,
                         "cloudinary_original_letter_url": original_url or False,
@@ -66,7 +73,7 @@ def migrate(cr, version):
         except (ValueError, TypeError, json.JSONDecodeError):
             continue
 
-    # For letters not covered by the above messages, get the latest message per letter
+    # 2. Supporter letters
     supporter_letters = env["correspondence"].search(
         [
             ("direction", "=", "Supporter To Beneficiary"),
@@ -109,7 +116,7 @@ def migrate(cr, version):
         final_url = content.get("CloudinaryFinalURL")
         original_url = content.get("CloudinaryOriginalURL")
         if original_url:
-            letter.with_delay().write(
+            letter.with_delay(channel="root.sbc_migration").write(
                 {
                     "cloudinary_final_letter_url": final_url or False,
                     "cloudinary_original_letter_url": original_url,
