@@ -11,10 +11,11 @@ from odoo.addons.fastapi.dependencies import odoo_env
 _logger = logging.getLogger(__name__)
 
 try:
-    from jwt import JWT, jwk
-    from jwt.exceptions import JWTDecodeError
+    import jwt
+    from jwt import PyJWK
+    from jwt.exceptions import PyJWTError
 except ImportError as e:
-    _logger.error("Please install python jwt")
+    _logger.error("Please install python pyjwt")
     raise e
 
 # Put any authorized sender here. Its address must be part of the headers
@@ -45,11 +46,11 @@ def _decode_token_with_certs(token: str, cert_urls: tuple[str, ...]) -> dict | N
 
         for key_data in keys:
             try:
-                public_key = jwk.RSAJWK.from_dict(key_data)
-                return JWT().decode(
-                    token, key=public_key, algorithms={"RS256"}, do_verify=True
+                public_key = PyJWK(key_data).key
+                return jwt.decode(
+                    token, key=public_key, algorithms=["RS256"], options={"verify_signature": True}
                 )
-            except (JWTDecodeError, TypeError, KeyError):
+            except (PyJWTError, TypeError, KeyError):
                 continue
     return None
 

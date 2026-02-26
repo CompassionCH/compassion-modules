@@ -37,7 +37,7 @@
     "development_status": "Production/Stable",
     "depends": ["base", "queue_job", "fastapi"],
     "external_dependencies": {
-        "python": ["jwt"],
+        "python": ["pyjwt"],
     },
     "data": [
         "security/gmc_groups.xml",

@@ -3,7 +3,7 @@ PyPDF2
 babel
 bs4
 iso639-lang
-jwt
+pyjwt
 langdetect
 pandas>=2.3.0
 pdf2image
