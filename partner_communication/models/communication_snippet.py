@@ -7,6 +7,14 @@ class CommunicationSnippetCategory(models.Model):
 
     name = fields.Char(string="Category Name", required=True)
 
+    _sql_constraints = [
+        (
+            "name_unique",
+            "unique(name)",
+            "The name of the category must be unique.",
+        )
+    ]
+
 
 class CommunicationSnippet(models.Model):
     _name = "communication.snippet"
