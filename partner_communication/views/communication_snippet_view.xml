@@ -8,6 +8,14 @@
                     <group>
                         <field name="name" />
                         <field name="snippet_text" />
+                        <field
+              name="category_id"
+              options="{'no_create_edit': False}"
+            />
+                        <field
+              name="description"
+              placeholder="Useful for global numbers..."
+            />
                     </group>
                 </sheet>
             </form>
@@ -20,6 +28,8 @@
             <tree editable="top">
                 <field name="name" />
                 <field name="snippet_text" />
+                <field name="category_id" />
+                <field name="description" />
                 <button
           name="action_edit_snippet"
           type="object"
@@ -27,6 +37,24 @@
           icon="fa-external-link"
         />
             </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="communication_snippet_search">
+        <field name="name">communication.snippet.search</field>
+        <field name="model">communication.snippet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="category_id" />
+                <group expand="0" string="Group By">
+                    <filter
+            string="Category"
+            name="group_category"
+            domain="[]"
+            context="{'group_by': 'category_id'}"
+          />
+                </group>
+            </search>
         </field>
     </record>
     <record model="ir.actions.act_window" id="action_communication_snippet">
