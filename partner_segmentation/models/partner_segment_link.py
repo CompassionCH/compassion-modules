@@ -34,10 +34,12 @@ class ResPartnerSegmentLink(models.Model):
     language_id = fields.Many2one(
         "res.lang",
         string="Language",
-        help="Language of the link, used to provide the link to the partner based on their language",
+        help="Language of the link, used to provide the link to "
+        "the partner based on their language",
     )
     category_id = fields.Many2one(
         "res.partner.segment",
         string="Category",
-        help="Segmentation category of the link, used to provide the link to the partner based on their segmentation category",
+        help="Segmentation category of the link, used to provide the "
+        "link to the partner based on their segmentation category",
     )
