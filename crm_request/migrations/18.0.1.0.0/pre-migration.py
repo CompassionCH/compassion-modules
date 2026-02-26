@@ -12,8 +12,8 @@ def migrate(cr, version):
     for alias_data in cr.dictfetchall():
         env["res.partner"].create(
             {
-                "parent_id": alias_data[0],
+                "parent_id": alias_data["partner_id"],
                 "type": "other",
-                "email": alias_data[1],
+                "email": alias_data["email"],
             }
         )
