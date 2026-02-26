@@ -314,7 +314,7 @@
                 No events.
             </p>
         </field>
-        <field name="path">events</field>
+        <field name="path">engagements</field>
     </record>
 
     <menuitem
