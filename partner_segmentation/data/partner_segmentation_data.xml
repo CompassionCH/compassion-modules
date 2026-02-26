@@ -18,10 +18,10 @@
         <field
       name="link_ids"
       eval="[
-            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Finances (FR)', 'url': 'https://compassion.ch/finances/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Finances (FR)', 'url': 'https://compassion.ch/finances/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Finances (DE)', 'url': 'https://compassion.ch/de/finanzen/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Finances (IT)', 'url': 'https://compassion.ch/it/finanze/', 'language_id': ref('base.lang_it')}),
         ]"
@@ -44,15 +44,15 @@
       name="link_ids"
       eval="[
             (0, 0, {'label': 'TOGETHER Project', 'url': 'https://together.compassion.ch/homepage', 'language_id': ref('base.lang_en')}),
-            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Facebook FR', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr')}),
-            (0, 0, {'label': 'Facebook DE', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
-            (0, 0, {'label': 'Facebook IT', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Facebook (FR)', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr_CH')}),
+            (0, 0, {'label': 'Facebook (DE)', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Facebook (IT)', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
             (0, 0, {'label': 'Instagram', 'url': 'https://www.instagram.com/compassionswiss/', 'language_id': ref('base.lang_en')}),
             (0, 0, {'label': 'Vimeo', 'url': 'https://vimeo.com/compassionswitzerland', 'language_id': ref('base.lang_en')}),
-            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
         ]"
@@ -76,16 +76,16 @@ Thanks to our holistic approach to child development, we commit to a personal an
         <field
       name="link_ids"
       eval="[
-            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Step In My Shoes (FR)', 'url': 'https://compassion.ch/bienvenue-dans-mon-monde-philippines/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Step In My Shoes (FR)', 'url': 'https://compassion.ch/bienvenue-dans-mon-monde-philippines/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Step In My Shoes (DE)', 'url': 'https://compassion.ch/de/komm-mit/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Cool (DE)', 'url': 'https://compassion.ch/de/sonntagschulmaterial//', 'language_id': ref('base.lang_de')}),
-            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Watch Videos', 'url': 'https://vimeo.com/compassionswitzerland'}),
+            (0, 0, {'label': 'Watch Videos', 'url': 'https://vimeo.com/compassionswitzerland', 'language_id': ref('base.lang_en')}),
         ]"
     />
     </record>
@@ -119,10 +119,10 @@ Thanks to our holistic approach to child development, we commit to a personal an
         <field
       name="link_ids"
       eval="[
-            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
         ]"
@@ -145,15 +145,15 @@ Thanks to our holistic approach to child development, we commit to a personal an
         <field
       name="link_ids"
       eval="[
-            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
+            (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr_CH')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
-            (0, 0, {'label': 'Facebook FR', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr')}),
-            (0, 0, {'label': 'Facebook DE', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
-            (0, 0, {'label': 'Facebook IT', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
+            (0, 0, {'label': 'Facebook (FR)', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr_CH')}),
+            (0, 0, {'label': 'Facebook (DE)', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
+            (0, 0, {'label': 'Facebook (IT)', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
             (0, 0, {'label': 'Instagram', 'url': 'https://www.instagram.com/compassionswiss/', 'language_id': ref('base.lang_en')}),
             (0, 0, {'label': 'Vimeo', 'url': 'https://vimeo.com/compassionswitzerland', 'language_id': ref('base.lang_en')}),
 
