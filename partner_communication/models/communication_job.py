@@ -17,6 +17,8 @@ from io import BytesIO
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
 
+from odoo.addons.base.models.ir_qweb import QWebException
+
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
@@ -192,11 +194,18 @@ class CommunicationJob(models.Model):
             template_vals = {}
             template = job.email_template_id
             if template:
-                template_vals = template.with_context(
-                    lang=job.partner_id.lang
-                )._generate_template(
-                    job.ids, ["body_html", "subject", "email_from", "reply_to"]
-                )
+                try:
+                    template_vals = template.with_context(
+                        lang=job.partner_id.lang
+                    )._generate_template(
+                        job.ids, ["body_html", "subject", "email_from", "reply_to"]
+                    )
+                except QWebException as e:
+                    _logger.error("Error during template rendering for job %s", job.id)
+                    if job.state == "pending":
+                        job.with_delay(channel="root.partner_communication").write(
+                            {"state": "failure", "body_html": str(e)}
+                        )
             if job.id in template_vals:
                 job.body_html = template_vals[job.id]["body_html"]
                 job.subject = template_vals[job.id]["subject"]
