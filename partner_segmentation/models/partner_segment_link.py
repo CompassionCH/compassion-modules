@@ -9,6 +9,7 @@
 ##############################################################################
 from odoo import fields, models
 
+
 class ResPartnerSegmentLink(models.Model):
     """
     Model to store the
@@ -20,24 +21,23 @@ class ResPartnerSegmentLink(models.Model):
     provide useful links to the partners based on their segmentation
     category and language.
     """
+
     _name = "res.partner.segment.link"
     _description = "Partner Segmentation Link"
 
     url = fields.Char(
-        required=True,
-        help="URL of the link to be provided to the partner"
+        required=True, help="URL of the link to be provided to the partner"
     )
     label = fields.Char(
-        required=True,
-        help="Label of the link to be provided to the partner"
+        required=True, help="Label of the link to be provided to the partner"
     )
     language_id = fields.Many2one(
         "res.lang",
         string="Language",
-        help="Language of the link, used to provide the link to the partner based on their language"
+        help="Language of the link, used to provide the link to the partner based on their language",
     )
     category_id = fields.Many2one(
         "res.partner.segment",
         string="Category",
-        help="Segmentation category of the link, used to provide the link to the partner based on their segmentation category"
+        help="Segmentation category of the link, used to provide the link to the partner based on their segmentation category",
     )

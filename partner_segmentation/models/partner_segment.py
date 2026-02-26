@@ -37,7 +37,7 @@ class ResPartnerSegment(models.Model):
         "res.partner.segment.link",
         "category_id",
         string="Personalized Links",
-        help="Useful resources for partners in this segment"
+        help="Useful resources for partners in this segment",
     )
 
     image = fields.Binary(help="segment illustration")

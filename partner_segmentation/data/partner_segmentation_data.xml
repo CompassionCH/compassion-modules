@@ -15,14 +15,17 @@
       >Did you know? We guarantee that at least 80% of sponsorship donations - for gifts to your sponsored child and fund donations up to 100% -  are invested in projects and programmes in the countries of the South. Thank you for the considerable impact you’ve already made.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="link_ids" eval="[
+        <field
+      name="link_ids"
+      eval="[
             (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
             (0, 0, {'label': 'Finances (FR)', 'url': 'https://compassion.ch/finances/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Finances (DE)', 'url': 'https://compassion.ch/de/finanzen/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Finances (IT)', 'url': 'https://compassion.ch/it/finanze/', 'language_id': ref('base.lang_it')}),
-        ]"/>
+        ]"
+    />
     </record>
     <record id="movement_mobilizers" model="res.partner.segment">
         <field name="name">Movement Mobilizers</field>
@@ -37,7 +40,9 @@
       >We are thrilled about your determination to fight injustices. We are so happy to count you as part of the growing number of people who are joining us in the fight against extreme poverty. We commit to providing platforms where you can advocate for children in need and the fight against extreme poverty and inspire others to join you.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="link_ids" eval="[
+        <field
+      name="link_ids"
+      eval="[
             (0, 0, {'label': 'TOGETHER Project', 'url': 'https://together.compassion.ch/homepage', 'language_id': ref('base.lang_en')}),
             (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
@@ -50,7 +55,8 @@
             (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
-        ]"/>
+        ]"
+    />
     </record>
     <record id="compassionate_caregiver" model="res.partner.segment">
         <field name="name">Compassionate Caregivers</field>
@@ -67,7 +73,9 @@ Thanks to our holistic approach to child development, we commit to a personal an
       >You can join us by making a spiritual impact in the lives of children in need through prayer and even get children in your surroundings involved in this endeavour. </p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="link_ids" eval="[
+        <field
+      name="link_ids"
+      eval="[
             (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
@@ -77,7 +85,8 @@ Thanks to our holistic approach to child development, we commit to a personal an
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
             (0, 0, {'label': 'Watch Videos', 'url': 'https://vimeo.com/compassionswitzerland'}),
-        ]"/>
+        ]"
+    />
     </record>
     <record id="hands_on_helpers" model="res.partner.segment">
         <field name="name">Hands-On Helpers</field>
@@ -106,14 +115,17 @@ Thanks to our holistic approach to child development, we commit to a personal an
             </ul>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="link_ids" eval="[
+        <field
+      name="link_ids"
+      eval="[
             (0, 0, {'label': 'Volunteering (FR)', 'url': 'https://compassion.ch/participer/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Volunteering (DE)', 'url': 'https://compassion.ch/de/sich-mehr-engagieren/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Volunteering (IT)', 'url': 'https://compassion.ch/it/participare/', 'language_id': ref('base.lang_it')}),
             (0, 0, {'label': 'Latest Updates (FR)', 'url': 'https://compassion.ch/news/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Latest Updates (DE)', 'url': 'https://compassion.ch/de/neues/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Latest Updates (IT)', 'url': 'https://compassion.ch/it/notizie/', 'language_id': ref('base.lang_it')}),
-        ]"/>
+        ]"
+    />
     </record>
     <record id="curious_novices" model="res.partner.segment">
         <field name="name">Curious Novices</field>
@@ -129,7 +141,9 @@ Thanks to our holistic approach to child development, we commit to a personal an
             <p>You can engage with us in flexible and manifold ways.</p>
             <p>Thank you for your precious support.</p>
         </field>
-        <field name="link_ids" eval="[
+        <field
+      name="link_ids"
+      eval="[
             (0, 0, {'label': 'Support Funds (FR)', 'url': 'https://compassion.ch/donations/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Support Funds (DE)', 'url': 'https://compassion.ch/de/spenden/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Support Funds (IT)', 'url': 'https://compassion.ch/it/donare/', 'language_id': ref('base.lang_it')}),
@@ -139,6 +153,7 @@ Thanks to our holistic approach to child development, we commit to a personal an
             (0, 0, {'label': 'Facebook FR', 'url': 'https://facebook.com/compassionsuisse/', 'language_id': ref('base.lang_fr')}),
             (0, 0, {'label': 'Facebook DE', 'url': 'https://facebook.com/compassionschweiz/', 'language_id': ref('base.lang_de')}),
             (0, 0, {'label': 'Facebook IT', 'url': 'https://www.facebook.com/compassionsvizzera', 'language_id': ref('base.lang_it')}),
-        ]"/>
+        ]"
+    />
     </record>
 </odoo>
