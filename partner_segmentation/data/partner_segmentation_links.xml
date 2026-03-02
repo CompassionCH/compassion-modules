@@ -1,118 +1,131 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="segment_link_latest_updates_fr" model="res.partner.segment.link">
+    <record
+    id="segment_link_latest_updates_fr"
+    model="res.partner.segment.link"
+  >
         <field name="label">Latest Updates (FR)</field>
         <field name="url">https://compassion.ch/news/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
-    <record id="segment_link_latest_updates_de" model="res.partner.segment.link">
+    <record
+    id="segment_link_latest_updates_de"
+    model="res.partner.segment.link"
+  >
         <field name="label">Latest Updates (DE)</field>
         <field name="url">https://compassion.ch/de/neues/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
-    <record id="segment_link_latest_updates_it" model="res.partner.segment.link">
+    <record
+    id="segment_link_latest_updates_it"
+    model="res.partner.segment.link"
+  >
         <field name="label">Latest Updates (IT)</field>
         <field name="url">https://compassion.ch/it/notizie/</field>
-        <field name="language_id" ref="base.lang_it"/>
+        <field name="language_id" ref="base.lang_it" />
     </record>
 
     <record id="segment_link_finances_fr" model="res.partner.segment.link">
         <field name="label">Finances (FR)</field>
         <field name="url">https://compassion.ch/finances/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
     <record id="segment_link_finances_de" model="res.partner.segment.link">
         <field name="label">Finances (DE)</field>
         <field name="url">https://compassion.ch/de/finanzen/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
     <record id="segment_link_finances_it" model="res.partner.segment.link">
         <field name="label">Finances (IT)</field>
         <field name="url">https://compassion.ch/it/finanze/</field>
-        <field name="language_id" ref="base.lang_it"/>
+        <field name="language_id" ref="base.lang_it" />
     </record>
 
     <record id="segment_link_volunteering_fr" model="res.partner.segment.link">
         <field name="label">Volunteering (FR)</field>
         <field name="url">https://compassion.ch/participer/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
     <record id="segment_link_volunteering_de" model="res.partner.segment.link">
         <field name="label">Volunteering (DE)</field>
         <field name="url">https://compassion.ch/de/sich-mehr-engagieren/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
     <record id="segment_link_volunteering_it" model="res.partner.segment.link">
         <field name="label">Volunteering (IT)</field>
         <field name="url">https://compassion.ch/it/participare/</field>
-        <field name="language_id" ref="base.lang_it"/>
+        <field name="language_id" ref="base.lang_it" />
     </record>
 
     <record id="segment_link_support_funds_fr" model="res.partner.segment.link">
         <field name="label">Support Funds (FR)</field>
         <field name="url">https://compassion.ch/donations/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
     <record id="segment_link_support_funds_de" model="res.partner.segment.link">
         <field name="label">Support Funds (DE)</field>
         <field name="url">https://compassion.ch/de/spenden/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
     <record id="segment_link_support_funds_it" model="res.partner.segment.link">
         <field name="label">Support Funds (IT)</field>
         <field name="url">https://compassion.ch/it/donare/</field>
-        <field name="language_id" ref="base.lang_it"/>
+        <field name="language_id" ref="base.lang_it" />
     </record>
 
     <record id="segment_link_facebook_fr" model="res.partner.segment.link">
         <field name="label">Facebook (FR)</field>
         <field name="url">https://facebook.com/compassionsuisse/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
     <record id="segment_link_facebook_de" model="res.partner.segment.link">
         <field name="label">Facebook (DE)</field>
         <field name="url">https://facebook.com/compassionschweiz/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
     <record id="segment_link_facebook_it" model="res.partner.segment.link">
         <field name="label">Facebook (IT)</field>
         <field name="url">https://www.facebook.com/compassionsvizzera</field>
-        <field name="language_id" ref="base.lang_it"/>
+        <field name="language_id" ref="base.lang_it" />
     </record>
     <record id="segment_link_instagram" model="res.partner.segment.link">
         <field name="label">Instagram</field>
         <field name="url">https://www.instagram.com/compassionswiss/</field>
-        <field name="language_id" ref="base.lang_en"/>
+        <field name="language_id" ref="base.lang_en" />
     </record>
     <record id="segment_link_vimeo" model="res.partner.segment.link">
         <field name="label">Vimeo</field>
         <field name="url">https://vimeo.com/compassionswitzerland</field>
-        <field name="language_id" ref="base.lang_en"/>
+        <field name="language_id" ref="base.lang_en" />
     </record>
     <record id="segment_link_watch_videos" model="res.partner.segment.link">
         <field name="label">Watch Videos</field>
         <field name="url">https://vimeo.com/compassionswitzerland</field>
-        <field name="language_id" ref="base.lang_en"/>
+        <field name="language_id" ref="base.lang_en" />
     </record>
 
     <record id="segment_link_together_project" model="res.partner.segment.link">
         <field name="label">TOGETHER Project</field>
         <field name="url">https://together.compassion.ch/homepage</field>
-        <field name="language_id" ref="base.lang_en"/>
+        <field name="language_id" ref="base.lang_en" />
     </record>
     <record id="segment_link_sims_fr" model="res.partner.segment.link">
         <field name="label">Step In My Shoes (FR)</field>
-        <field name="url">https://compassion.ch/bienvenue-dans-mon-monde-philippines/</field>
-        <field name="language_id" ref="base.lang_fr_CH"/>
+        <field
+      name="url"
+    >https://compassion.ch/bienvenue-dans-mon-monde-philippines/</field>
+        <field name="language_id" ref="base.lang_fr_CH" />
     </record>
     <record id="segment_link_sims_de" model="res.partner.segment.link">
         <field name="label">Step In My Shoes (DE)</field>
         <field name="url">https://compassion.ch/de/komm-mit/</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field name="language_id" ref="base.lang_de" />
     </record>
     <record id="segment_link_cool_de" model="res.partner.segment.link">
         <field name="label">Cool (DE)</field>
-        <field name="url">https://compassion.ch/de/sonntagschulmaterial//</field>
-        <field name="language_id" ref="base.lang_de"/>
+        <field
+      name="url"
+    >https://compassion.ch/de/sonntagschulmaterial//</field>
+        <field name="language_id" ref="base.lang_de" />
     </record>
 </odoo>
