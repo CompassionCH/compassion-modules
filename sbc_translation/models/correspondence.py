@@ -282,12 +282,15 @@ class Correspondence(models.Model):
 
         return str(calculated_priority)
 
-    def send_local_translate(self):
+    def send_local_translate(self, resubmit=False):
         """
         Sends the letter to the local translation platform.
         :return: None
         """
         self.ensure_one()
+        # Check if resubmit is passed through the context.
+        if not resubmit:
+            resubmit =  self.env.context.get("resubmit")
 
         # Specify the src and dst language
         src_lang, dst_lang = self._get_translation_langs()
@@ -304,10 +307,12 @@ class Correspondence(models.Model):
                 "translation_issue": False,
                 "translation_issue_comments": False,
                 "unread_comments": False,
+                "new_translator_id": False,
             }
         )
-        self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
-            "translated_text": ""})
+        if not resubmit:
+            self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
+                "translated_text": ""})
 
         # Remove any pending GMC message (will be recreated after translation)
         self.env["gmc.message"].search(
@@ -539,19 +544,14 @@ class Correspondence(models.Model):
 
     def resubmit_to_translation(self):
         for letter in self:
-            if letter.state != "Translation check unsuccessful":
-                raise UserError(
-                    _("Letter must be in state 'Translation check unsuccessful'")
+            if letter.direction == "Supporter To Beneficiary" and letter.kit_identifier:
+                letter.write(
+                    {
+                        "kit_identifier": False,
+                        "resubmit_id": letter.resubmit_id + 1,
+                    }
                 )
-
-            letter.write(
-                {
-                    "kit_identifier": False,
-                    "resubmit_id": letter.resubmit_id + 1,
-                    "state": "Received in the system",
-                }
-            )
-            letter.send_local_translate()
+            letter.send_local_translate(resubmit=True)
 
     def _post_process_translation(self):
         self.ensure_one()
