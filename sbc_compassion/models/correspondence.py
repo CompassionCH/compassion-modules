@@ -1296,7 +1296,7 @@ class Correspondence(models.Model):
         _logger.info("Downloading %d old letters", len(correspondences))
         correspondences.delayable()._download_old_correspondence().set(
             priority=500,
-            channel="root.sbc_compassion",
+            channel="root.sbc_migration",
         ).split(10).delay()
 
     def _download_old_correspondence(self):
