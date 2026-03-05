@@ -25,18 +25,27 @@ def migrate(cr, version):
                 [("config_id", "=", record.id)]
             )
             if logs:
-                logs.unlink()
+                logs.write(
+                    {"config_id": 1}
+                )  # Set to Default config (ID=1) to avoid orphaned logs
 
             # 2. Delete the config record itself
             record.unlink()
 
     # Define XML IDs for the communication configs "FCP Suspension Follow up"
-    cr = env.cr
     openupgrade.add_xmlid(
         cr,
         "partner_communication_compassion",
         "email_project_suspension_follow_up",
         "mail.template",
+        389,
+        noupdate=False,
+    )
+    openupgrade.add_xmlid(
+        cr,
+        "partner_communication_compassion",
+        "project_suspension_follow_up",
+        "partner.communication.config",
         292,
         noupdate=False,
     )
