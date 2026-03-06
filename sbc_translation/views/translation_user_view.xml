@@ -37,6 +37,7 @@
                             <field name="user_id"/>
                             <field name="partner_id"/>
                             <field name="translator_since"/>
+                            <field name="force_validation"/>
                         </group>
                         <group>
                             <field name="nb_translated_letters_this_year"/>

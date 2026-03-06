@@ -249,6 +249,7 @@ class CorrespondenceS2bGenerator(models.Model):
                     "source": self.source,
                     "original_language_id": self.language_id.id,
                     "original_text": text,
+                    "generator_id": self.id,
                     "email_read": fields.Datetime.now(),
                 }
                 if self.image_ids:
@@ -266,14 +267,10 @@ class CorrespondenceS2bGenerator(models.Model):
                     ]
                 letters += letters.create(vals)
 
-            letters.create_text_boxes()
-            self.letter_ids = letters
-
             # If the operation succeeds, notify the user
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
-
-            return self.isolated_write(
+            return self.write(
                 {
                     "state": "done",
                     "date": fields.Datetime.now(),
@@ -360,4 +357,4 @@ class CorrespondenceS2bGenerator(models.Model):
             new_env = self.env(cr=new_cr)
             new_s2b_generator = new_env[self._name].browse(self.id)
             new_s2b_generator.write(vals)
-            new_cr.commit()
+        return True

@@ -219,17 +219,36 @@ class Correspondence(models.Model):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
-            if not self.env.context.get("force_publish"):
+            force_publish = letter.env.context.get("force_publish")
+
+            # Update language detection if not forced
+            if not force_publish:
                 letter._check_translation_language()
-            if (
-                (letter.beneficiary_language_ids & letter.supporter_languages_ids)
-                or letter.translation_language_id in letter.supporter_languages_ids
-                or self.env.context.get("force_publish")
-            ):
+
+            # Can sponser read the letter?
+            langs_match = (
+                    (letter.beneficiary_language_ids & letter.supporter_languages_ids)
+                    or letter.translation_language_id in letter.supporter_languages_ids
+            )
+
+            # Is the letter still in the translation process?
+            translation_hold = (
+                letter.translation_status in ["to do", "in progress", "to validate"]
+                or letter.translation_issue
+            )
+
+            if (langs_match and not translation_hold) or force_publish:
                 super(Correspondence, letter).process_letter()
             else:
-                letter.download_attach_letter_image()
-                letter.send_local_translate()
+                try:
+                    letter.download_attach_letter_image()
+                except UserError:
+                    _logger.warning(
+                        f"Could not download image for letter {letter.id}, "
+                        f"but proceeding to translation queue.")
+                # (re)send to translation queue ONLY if not on hold
+                if not translation_hold:
+                    letter.send_local_translate()
         return True
 
     def calculate_translation_priority(self):
@@ -263,12 +282,15 @@ class Correspondence(models.Model):
 
         return str(calculated_priority)
 
-    def send_local_translate(self):
+    def send_local_translate(self, resubmit=False):
         """
         Sends the letter to the local translation platform.
         :return: None
         """
         self.ensure_one()
+        # Check if resubmit is passed through the context.
+        if not resubmit:
+            resubmit =  self.env.context.get("resubmit")
 
         # Specify the src and dst language
         src_lang, dst_lang = self._get_translation_langs()
@@ -285,10 +307,12 @@ class Correspondence(models.Model):
                 "translation_issue": False,
                 "translation_issue_comments": False,
                 "unread_comments": False,
+                "new_translator_id": False,
             }
         )
-        self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
-            "translated_text": ""})
+        if not resubmit:
+            self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
+                "translated_text": ""})
 
         # Remove any pending GMC message (will be recreated after translation)
         self.env["gmc.message"].search(
@@ -472,7 +496,7 @@ class Correspondence(models.Model):
         _logger.info("Translation saved.")
         return True
 
-    def submit_translation(self, letter_elements, translator_id=None):
+    def submit_translation(self, letter_elements, translator_id=None) -> bool:
         """
         TP API for saving a translation
         :param letter_elements: list of dict containing paragraphs or pagebreak data
@@ -485,10 +509,17 @@ class Correspondence(models.Model):
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id
         )
-        if user_skill.verified and not self.unread_comments:
-            self._post_process_translation()
-        else:
+
+        validation_needed: bool =  (
+            not user_skill.verified or # user skill not verified
+            self.unread_comments or # there are unread comments
+            self.new_translator_id.force_validation # validation is forced
+        )
+
+        if validation_needed:
             self.translation_status = "to validate"
+        else:
+            self._post_process_translation()
         _logger.info("Translation submitted.")
         return True
 
@@ -513,19 +544,14 @@ class Correspondence(models.Model):
 
     def resubmit_to_translation(self):
         for letter in self:
-            if letter.state != "Translation check unsuccessful":
-                raise UserError(
-                    _("Letter must be in state 'Translation check unsuccessful'")
+            if letter.direction == "Supporter To Beneficiary" and letter.kit_identifier:
+                letter.write(
+                    {
+                        "kit_identifier": False,
+                        "resubmit_id": letter.resubmit_id + 1,
+                    }
                 )
-
-            letter.write(
-                {
-                    "kit_identifier": False,
-                    "resubmit_id": letter.resubmit_id + 1,
-                    "state": "Received in the system",
-                }
-            )
-            letter.send_local_translate()
+            letter.send_local_translate(resubmit=True)
 
     def _post_process_translation(self):
         self.ensure_one()

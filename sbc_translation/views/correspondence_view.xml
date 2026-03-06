@@ -9,7 +9,7 @@
                 <button name="remove_local_translate" type="object" string="Remove from translation"
                         class="oe_highlight" states="Global Partner translation queue"/>
                 <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                        states="Published to Global Partner,Received in the system"/>
+                        states="Published to Global Partner,Received in the system" context="{'resubmit': True}"/>
             </button>
             <button name="resubmit_letter" position="after">
                 <button name="resubmit_to_translation" type="object"
@@ -42,7 +42,7 @@
                             string="Remove from translation" class="oe_highlight"
                             states="Global Partner translation queue"/>
                     <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                            states="Published to Global Partner,Received in the system"/>
+                            states="Published to Global Partner,Received in the system" context="{'resubmit': True}"/>
 
                     <button name="resubmit_to_translation" type="object"
                         string="Return to translation"
