@@ -122,7 +122,8 @@ class CorrespondenceS2bGenerator(models.Model):
     @api.model
     def create(self, vals):
         """
-        Overwrites the default create method
+        Overwrites the default create method and sets the language
+        if not already provided
         """
         if vals.get("body") and not vals.get("language_id"):
             detected_language = (
@@ -249,6 +250,7 @@ class CorrespondenceS2bGenerator(models.Model):
                     "original_language_id": self.language_id.id,
                     "original_text": text,
                     "generator_id": self.id,
+                    "email_read": fields.Datetime.now(),
                 }
                 if self.image_ids:
                     vals["original_attachment_ids"] = [
