@@ -48,7 +48,10 @@ def _decode_token_with_certs(token: str, cert_urls: tuple[str, ...]) -> dict | N
             try:
                 public_key = PyJWK(key_data).key
                 return jwt.decode(
-                    token, key=public_key, algorithms=["RS256"], options={"verify_signature": True}
+                    token,
+                    key=public_key,
+                    algorithms=["RS256"],
+                    options={"verify_signature": True},
                 )
             except (PyJWTError, TypeError, KeyError):
                 continue

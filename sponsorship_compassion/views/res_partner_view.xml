@@ -17,15 +17,15 @@
             </field>
 
             <!-- Replace parent position of reference and global numbers -->
+            <field name="ref" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="string">Internal Reference</attribute>
+            </field>
             <xpath expr="//sheet/group[1]/group[1]/span" position="before">
-                    <field
+                <field
             name="ref"
             position="move"
           />
-                <field name="ref" position="attributes">
-                    <attribute name="readonly">1</attribute>
-                    <attribute name="string">Internal Reference</attribute>
-                </field>
                     <field name="global_id" readonly="1" />
             </xpath>
 

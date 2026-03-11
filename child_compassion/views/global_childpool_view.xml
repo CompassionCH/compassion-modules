@@ -202,6 +202,7 @@
                         <kanban
               default_order="field_office_id asc"
               default_group_by="gender"
+              highlight_color="color"
             >
                             <field name="field_office_id" />
                             <field name="gender" />

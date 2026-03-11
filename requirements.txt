@@ -3,11 +3,12 @@ PyPDF2
 babel
 bs4
 iso639-lang
-pyjwt
 langdetect
-pandas>=2.3.0
+pandas>=1.5.3
+pandas>=2.0.0
 pdf2image
 phonenumbers
+pyjwt
 pypdf
 pyquery
 pytesseract

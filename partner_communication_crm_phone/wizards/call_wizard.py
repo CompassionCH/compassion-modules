@@ -23,7 +23,7 @@ class CallWizard(models.TransientModel):
     _name = "partner.communication.call.wizard"
     _description = "Partner Communication Call Wizard"
 
-    comments = fields.Text(string="Comments")
+    comments = fields.Text()
 
     def log_fail(self):
         """Log a failed attempt and close the wizard."""

@@ -55,7 +55,7 @@
         <field name="arch" type="xml">
             <list
         decoration-info="parent_state == 'draft'"
-        decoration-bf="parent_state == 'open'"
+        decoration-bf="parent_state == 'posted'"
         decoration-muted="parent_state == 'cancel'"
       >
                 <field name="partner_id" />

@@ -1,0 +1,1 @@
+Adds OMR marks on communications for folding machines.

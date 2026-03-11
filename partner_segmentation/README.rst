@@ -24,11 +24,11 @@ Compassion Sponsor Segmentation
 
 Partner segmentation survey for categorizing Compassion donors:
 
-   -  Compassionate Caregivers
-   -  Savvy Stewards
-   -  Movement Mobilizers
-   -  Hands-On Helpers
-   -  Curious Novices
+   - Compassionate Caregivers
+   - Savvy Stewards
+   - Movement Mobilizers
+   - Hands-On Helpers
+   - Curious Novices
 
 Partners can answer a survey and know their profile.
 
@@ -58,8 +58,8 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
--  Jonathan Guerne
+- Emanuel Cino <ecino@compassion.ch>
+- Jonathan Guerne
 
 Maintainers
 -----------
