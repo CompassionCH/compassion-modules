@@ -463,6 +463,15 @@ class SponsorshipContract(models.Model):
 
     @api.depends_context("allow_during_suspension")
     def _compute_can_write_letter(self):
+        """
+        Computes whether a letter can be written for the current sponsorship.
+
+        A letter is permitted if:
+        1. The project has not suspended S2B letters
+            (or the context bypasses the suspension)
+        2. THe contract is in an active/pending state, OR it is 'terminated' but still
+        within the configured allowed time (default 90 days) since its end date.
+        """
         days_allowed = (
             self.env["ir.config_parameter"]
             .sudo()
@@ -470,14 +479,18 @@ class SponsorshipContract(models.Model):
         )
         now = fields.Datetime.now()
         for sponsorship in self:
+            # Project/center has suspended letters
             hold_letters = (
                 sponsorship.project_id.hold_s2b_letters
                 and not self.env.context.get("allow_during_suspension")
             )
+            # Letter not 'terminated', 'canceled', or a 'draft'. AND not on hold
             is_allowed = (
                 sponsorship.state not in ["terminated", "cancelled", "draft"]
                 and not hold_letters
             )
+            # If 'terminated' but not on hold, check if within allowed
+            # time since end date
             if sponsorship.state == "terminated" and not hold_letters:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_write_letter = is_allowed
