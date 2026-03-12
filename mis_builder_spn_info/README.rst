@@ -22,9 +22,7 @@ mis_builder_spn_info
 
 |badge1| |badge2| |badge3|
 
-In order for the report to display, two accounts needs to be created (in
-each company if multiple) of equity type. with the names: - Sponsorships
-- Child Sponsored
+Adds a product_id field for mis reports
 
 **Table of contents**
 
