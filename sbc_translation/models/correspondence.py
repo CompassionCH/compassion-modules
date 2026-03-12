@@ -183,23 +183,23 @@ class Correspondence(models.Model):
         if vals.get("direction") == "Beneficiary To Supporter":
             correspondence = super().create(vals)
         else:
-            sponsorship = self.env["recurring.contract"].browse(vals["sponsorship_id"])
+            # create letter first and let super.create() run the language detection first
+            correspondence = super(
+                Correspondence, self.with_context(no_comm_kit=True)
+            ).create(vals)
 
-            original_lang = self.env["res.lang.compassion"].browse(
-                vals.get("original_language_id")
-            )
+            sponsorship = correspondence.sponsorship_id
+            original_lang = correspondence.original_language_id
 
             # Languages the office/region understand
             office = sponsorship.child_id.project_id.field_office_id
             language_ids = office.spoken_language_ids + office.translated_language_ids
 
             if original_lang.translatable and original_lang not in language_ids:
-                correspondence = super(
-                    Correspondence, self.with_context(no_comm_kit=True)
-                ).create(vals)
                 correspondence.send_local_translate()
             else:
-                correspondence = super().create(vals)
+                # if no translation is needed, resume GMC dispatch
+                correspondence.create_commkit()
 
         return correspondence
 
