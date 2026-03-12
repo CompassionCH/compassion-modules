@@ -467,6 +467,8 @@ class Correspondence(models.Model):
         lang_detector = self.env["langdetect"]
 
         for letter in self.with_context(skip_lang_detect=True):
+            # Determine which text is analyzed
+            is_translation = bool(letter.translated_text or letter.english_text)
             letter_text = (
                 letter.translated_text or letter.english_text or letter.original_text
             )
@@ -489,8 +491,16 @@ class Correspondence(models.Model):
                 continue
 
             detected_lang = lang_detector.detect_language(clean_text)
-            if detected_lang and detected_lang != letter.translation_language_id:
-                letter.translation_language_id = detected_lang
+            if detected_lang:
+                # update the target langauge only if analyzing translated text
+                if is_translation and detected_lang != letter.translation_language_id:
+                    letter.translation_language_id = detected_lang
+
+                # update the source language if analyzing original text
+                elif (
+                    not is_translation and detected_lang != letter.original_language_id
+                ):
+                    letter.original_language_id = detected_lang
 
     @api.depends("uuid")
     def _compute_read_url(self):
