@@ -479,13 +479,26 @@ class CompassionProject(models.Model):
     @api.depends("lifecycle_ids", "lifecycle_ids.date")
     def _compute_last_lifecycle(self):
         for project in self:
-            last_info = project.lifecycle_ids[:1]
-            reactivation_lifecycle = project.lifecycle_ids.filtered(
+            if not project.lifecycle_ids:
+                project.last_lifecycle_id = False
+                continue
+
+            # Sort lifecycle events by date descending
+            sorted_events = project.lifecycle_ids.sorted(
+                key=lambda r: (str(r.date or ""), r.id), reverse=True
+            )
+            # Take first (newest) event
+            last_info = sorted_events[0]
+
+            reactivation_lifecycle = sorted_events.filtered(
                 lambda r, _last=last_info: r.date == _last.date
                 and r.type == "Reactivation"
-            )[:1]
+            )
+
             # If it exists, lifecycle with type 'Reactivation' is determinant
-            project.last_lifecycle_id = reactivation_lifecycle or last_info
+            project.last_lifecycle_id = (
+                reactivation_lifecycle[0] if reactivation_lifecycle else last_info
+            )
 
     def _search_last_lifecycle_id(self, operator, value):
         return [("lifecycle_ids", operator, value)]

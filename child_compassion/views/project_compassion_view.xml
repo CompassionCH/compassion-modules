@@ -80,7 +80,7 @@
                                 </group>
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">
-                                        <list>
+                                        <list default_order="date desc, id desc">
                                             <field name="create_date" />
                                             <field name="date" />
                                             <field name="type" />
