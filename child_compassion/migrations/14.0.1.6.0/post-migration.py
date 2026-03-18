@@ -16,7 +16,7 @@ def migrate(cr, version):
     projects = env["compassion.project"].search([])
 
     # Invalidate cache
-    projects.invalidate_cache(["last_lifecycle_id", "suspension", "suspension"])
+    projects.invalidate_cache(["last_lifecycle_id", "status", "suspension"])
 
     projects._compute_last_lifecycle()
     projects._compute_suspension()

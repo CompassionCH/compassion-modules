@@ -489,7 +489,8 @@ class CompassionProject(models.Model):
             last_info = sorted_events[0]
 
             reactivation_lifecycle = sorted_events.filtered(
-                lambda r: r.date == last_info.date and r.type == "Reactivation"
+                lambda r, _last=last_info: r.date == _last.date
+                and r.type == "Reactivation"
             )
 
             # If it exists, lifecycle with type 'Reactivation' is determinant
