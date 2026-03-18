@@ -72,6 +72,20 @@
                 </p>
             </field>
         </record>
+        <record id="email_project_suspension_follow_up" model="mail.template">
+            <field name="name">FCP Suspension Follow Up</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
+            <field
+        name="subject"
+      >Additional information about the center</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+        </record>
 
         <!-- FCP Transition -->
         <record id="email_project_transition" model="mail.template">
