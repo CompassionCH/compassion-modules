@@ -483,8 +483,7 @@ class CompassionProject(models.Model):
 
             # Sort lifecycle events by date descending
             sorted_events = project.lifecycle_ids.sorted(
-                key=lambda r: (str(r.date or ''), r.id),
-                reverse=True
+                key=lambda r: (str(r.date or ""), r.id), reverse=True
             )
             # Take first (newest) event
             last_info = sorted_events[0]
@@ -494,8 +493,9 @@ class CompassionProject(models.Model):
             )
 
             # If it exists, lifecycle with type 'Reactivation' is determinant
-            project.last_lifecycle_id = reactivation_lifecycle[0] if reactivation_lifecycle else last_info
-
+            project.last_lifecycle_id = (
+                reactivation_lifecycle[0] if reactivation_lifecycle else last_info
+            )
 
     @api.depends("lifecycle_ids", "lifecycle_ids.write_date")
     def _compute_suspension(self):
