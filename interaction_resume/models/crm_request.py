@@ -40,6 +40,8 @@ class CrmRequest(models.Model):
             messages = claim.message_ids.filtered(
                 lambda m: (m.partner_ids & partners) or m.author_id in partners
             ).filtered("subject")
+            if claim.incoming_message_id in messages:
+                messages -= claim.incoming_message_id
             res.extend(
                 [
                     {
