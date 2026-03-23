@@ -19,6 +19,24 @@ class CrmRequest(models.Model):
             | partner.other_contact_ids
         )
         for claim in self:
+            # Contactus form if applicable
+            res.append(
+                {
+                    "partner_id": partner_id,
+                    "res_model": self._name,
+                    "res_id": claim.id,
+                    "direction": "in",
+                    "date": claim.date or claim.create_date,
+                    "email": claim.email_from or claim.partner_id.email,
+                    "communication_type": "Support",
+                    "subject": "CRM Request: " + str(claim.name),
+                    "body": html2plaintext(claim.description).replace("\n\n", "\n"),
+                    "has_attachment": False,
+                    "tracking_status": False,
+                }
+            )
+
+            # Other messages
             messages = claim.message_ids.filtered(
                 lambda m: (m.partner_ids & partners) or m.author_id in partners
             ).filtered("subject")
@@ -59,10 +77,42 @@ class CrmRequest(models.Model):
             ("email_from", "=", partner.email),
         ]
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """
+        Override create to trigger timeline update for anonymous users by email
+        """
+        claims = super().create(vals_list)
+        for claim in claims:
+            partner_to_update = claim.partner_id
+            # If no partner_id, try to find a partner using email
+            if not partner_to_update and claim.email_from:
+                partner_to_update = self.env["res.partner"].search(
+                    [("email", "=", claim.email_from)], limit=1
+                )
+
+            if partner_to_update:
+                partner_to_update.with_delay(
+                    channel="root.partner_communication",
+                    priority=100,
+                    identity_key=partner_to_update._name
+                    + ".fetch_interactions."
+                    + str(partner_to_update.id),
+                ).fetch_interactions()
+        return claims
+
     @api.returns("mail.message", lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)
-        if self.partner_id:
+
+        partner_to_update = self.partner_id
+        # If no partner_id, try to find a partner using email
+        if not partner_to_update:
+            partner_to_update = self.env["res.partner"].search(
+                "email", "=", self.email_from, limit=1
+            )
+
+        if partner_to_update:
             self.partner_id.with_delay(
                 channel="root.partner_communication",
                 priority=100,
