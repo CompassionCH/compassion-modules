@@ -541,9 +541,7 @@ class CompassionProject(models.Model):
         This method calculates and stores the obfuscated coordinates
         (latitude and longitude).
         """
-        api_key = (
-            self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
-        )
+        website = self.env.ref("website.default_website", False)
         base_url = "https://maps.googleapis.com/maps/api/geocode/json"
         for project in self:
             try:
@@ -553,7 +551,7 @@ class CompassionProject(models.Model):
                     project.country_id.name,
                 ]
                 address_string = ", ".join(filter(None, parts))
-                params = {"address": address_string, "key": api_key}
+                params = {"address": address_string, "key": website.google_maps_api_key}
                 response = requests.get(base_url, params=params, timeout=3)
                 data = response.json()
                 if data["status"] == "OK":
