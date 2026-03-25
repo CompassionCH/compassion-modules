@@ -71,133 +71,19 @@
                 </p>
             </field>
         </record>
-
-        <record id="email_project_suspension_e1" model="mail.template">
-            <field name="name">Project Suspension Extension 1</field>
+        <record id="email_project_suspension_follow_up" model="mail.template">
+            <field name="name">FCP Suspension Follow Up</field>
             <field
         name="model_id"
         ref="partner_communication.model_partner_communication_job"
       />
+            <field name="use_default_to" eval="True" />
             <field
-        name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Extension of the project suspension</field>
-            <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set child = object.get_objects()
-                    % set project = child.mapped('project_id')[0]
-                    % set suspension = project.lifecycle_ids[0]
-                    % set reasons = suspension.suspension_reason_ids
-                    % set details = suspension.suspension_detail
-                </div>
-                <p>
-                    ${object.partner_id.salutation},
-                    <br />
-                    <br />
-                    We informed you some time ago about the project suspension of the center ${project.fcp_id}.
-                    <br />
-                    <br />
-                    We received the information that the suspension was extended for 3 months
-                    % if suspension.extension_1_reason_ids:
-                        <!-- space --> because of ${suspension.get_list('extension_1_reason_ids.value')}.
-                    % else:
-                        in order to put back the project on a sustainable process.
-                    % endif
-                    <br />
-                    <br />
-                    You will receive updated information as soon as we get them.
-                    <br />
-                    <br />
-                    Yours sincerely
-                </p>
-            </field>
-        </record>
-
-        <record id="email_project_suspension_e2" model="mail.template">
-            <field name="name">Project Suspension Extension 2</field>
-            <field
-        name="model_id"
-        ref="partner_communication.model_partner_communication_job"
-      />
-            <field
-        name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Extension of the project suspension</field>
+        name="subject"
+      >Additional information about the center</field>
             <field
         name="email_from"
       >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set child = object.get_objects()
-                    % set project = child.mapped('project_id')[0]
-                    % set suspension = project.lifecycle_ids[0]
-                    % set reasons = suspension.suspension_reason_ids
-                    % set details = suspension.suspension_detail
-                </div>
-                <p>
-                    ${object.partner_id.salutation},
-                    <br />
-                    <br />
-                    We informed you some time ago about the extension of the project suspension ${project.fcp_id}.
-                    <br />
-                    <br />
-                    We received the information that the suspension was again extended for 3 months
-                    % if suspension.extension_2_reason_ids:
-                        <!-- space --> because of ${suspension.get_list('extension_2_reason_ids.value')}.
-                    % else:
-                        in order to put back the project on a sustainable process.
-                    % endif
-                    <!-- space --> This is the last chance for the center to correct their processes or the project will be closed.
-                    <br />
-                    <br />
-                    You will receive updated information as soon as we get them.
-                    <br />
-                    <br />
-                    Yours sincerely
-                </p>
-            </field>
-        </record>
-
-        <record id="email_project_reactivation" model="mail.template">
-            <field name="name">Project Reactivation</field>
-            <field
-        name="model_id"
-        ref="partner_communication.model_partner_communication_job"
-      />
-            <field
-        name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Project Reactivation</field>
-            <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set child = object.get_objects()
-                    % set project = child.mapped('project_id')[0]
-                    % set reactivation = project.lifecycle_ids[0]
-                    % set details = reactivation.fcp_improvement_desc
-                </div>
-                <p>
-                    ${object.partner_id.salutation},
-                    <br />
-                    <br />
-                    A few time ago the project ${project.fcp_id} where ${child.get('your sponsored child')} ${child.get('is')} registered was on suspension.
-                    We are happy to inform you that the problem is resolved and that the project is again sane and active.
-                    The project will do regular tuitions and spiritual activites to keep the situation healthy.
-                    <br />
-                    <br />
-                    % if details:
-                        ${details}
-                        <br />
-                        <br />
-                    % endif
-                    Yours sincerely
-                </p>
-            </field>
         </record>
 
         <!-- FCP Transition -->

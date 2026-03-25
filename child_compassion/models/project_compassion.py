@@ -11,6 +11,7 @@
 import logging
 import re
 from datetime import datetime, timedelta
+from random import random
 
 import requests
 
@@ -85,6 +86,12 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
+    gps_latitude_obfuscated = fields.Float(
+        compute="_compute_gps_obfuscated", store=True
+    )
+    gps_longitude_obfuscated = fields.Float(
+        compute="_compute_gps_obfuscated", store=True
+    )
     google_link = fields.Char(readonly=True, compute="_compute_google_link")
     timezone = fields.Char(readonly=True, compute="_compute_timezone", store=True)
     cluster = fields.Char(readonly=True)
@@ -472,13 +479,26 @@ class CompassionProject(models.Model):
     @api.depends("lifecycle_ids", "lifecycle_ids.date")
     def _compute_last_lifecycle(self):
         for project in self:
-            last_info = project.lifecycle_ids[:1]
-            reactivation_lifecycle = project.lifecycle_ids.filtered(
+            if not project.lifecycle_ids:
+                project.last_lifecycle_id = False
+                continue
+
+            # Sort lifecycle events by date descending
+            sorted_events = project.lifecycle_ids.sorted(
+                key=lambda r: (str(r.date or ""), r.id), reverse=True
+            )
+            # Take first (newest) event
+            last_info = sorted_events[0]
+
+            reactivation_lifecycle = sorted_events.filtered(
                 lambda r, _last=last_info: r.date == _last.date
                 and r.type == "Reactivation"
-            )[:1]
+            )
+
             # If it exists, lifecycle with type 'Reactivation' is determinant
-            project.last_lifecycle_id = reactivation_lifecycle or last_info
+            project.last_lifecycle_id = (
+                reactivation_lifecycle[0] if reactivation_lifecycle else last_info
+            )
 
     def _search_last_lifecycle_id(self, operator, value):
         return [("lifecycle_ids", operator, value)]
@@ -514,6 +534,45 @@ class CompassionProject(models.Model):
             ("Tin", "Tin"),
             ("Plastic", "Plastic"),
         ]
+
+    @api.depends("gps_latitude", "gps_longitude", "closest_city")
+    def _compute_gps_obfuscated(self):
+        """
+        This method calculates and stores the obfuscated coordinates
+        (latitude and longitude).
+        """
+        api_key = (
+            self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
+        )
+        base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+        for project in self:
+            try:
+                parts = [
+                    project.closest_city,
+                    project.state_province,
+                    project.country_id.name,
+                ]
+                address_string = ", ".join(filter(None, parts))
+                params = {"address": address_string, "key": api_key}
+                response = requests.get(base_url, params=params, timeout=3)
+                data = response.json()
+                if data["status"] == "OK":
+                    location = data["results"][0]["geometry"]["location"]
+                    project.gps_latitude_obfuscated = location["lat"]
+                    project.gps_longitude_obfuscated = location["lng"]
+            except Exception:
+                # Fallback to randomized gps coords
+                logging.warning("Request failed", exc_info=True)
+                project.gps_latitude_obfuscated = (
+                    (int(project.gps_latitude) + random())
+                    if project.gps_latitude
+                    else 0
+                )
+                project.gps_longitude_obfuscated = (
+                    (int(project.gps_longitude) + random())
+                    if project.gps_longitude
+                    else 0
+                )
 
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):

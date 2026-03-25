@@ -1,4 +1,4 @@
-<odoo>
+<odoo noupdate="1">
     <!-- Gift Thresholds -->
     <record id="gt-01" model="gift.threshold.settings">
         <field

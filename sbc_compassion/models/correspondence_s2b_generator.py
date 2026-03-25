@@ -82,6 +82,17 @@ class CorrespondenceS2bGenerator(models.Model):
         for generator in self:
             generator.preview = generator.letter_ids[:1].preview
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("body") and not vals.get("language_id"):
+                detected_language = (
+                    self.env["langdetect"].sudo().detect_language(vals["body"])
+                )
+                if detected_language:
+                    vals["language_id"] = detected_language.id
+        return super().create(vals_list)
+
     @api.onchange("selection_domain")
     def onchange_domain(self):
         if self.selection_domain:
@@ -151,6 +162,8 @@ class CorrespondenceS2bGenerator(models.Model):
                 "original_language_id": self.language_id.id,
                 "original_text": text,
                 "state": "Draft" if preview_mode else "Received in the system",
+                "email_read": fields.Datetime.now(),
+                "generator_id": self.id,
             }
             if self.image_ids:
                 vals["original_attachment_ids"] = [Command.clear()] + [

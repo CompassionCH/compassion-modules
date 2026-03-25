@@ -7,6 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import math
 
 from odoo import fields, models
 
@@ -32,3 +33,34 @@ class GiftThresholdSettings(models.Model):
             "You already have a threshold rule for this gift",
         )
     ]
+
+    @staticmethod
+    def _get_selection_label(selection_values, key):
+        if not key:
+            return ""
+        return dict(selection_values).get(key, key)
+
+    def get_sponsorship_gift_labels(self):
+        return self._get_selection_label(
+            self.get_sponsorship_gifts(), self.sponsorship_gift_type
+        )
+
+    def get_gift_type_label(self):
+        return self._get_selection_label(self.get_gift_types(), self.gift_type)
+
+    def get_ceiling_converted_amount(self, amount, company, date):
+        raw_amount = self.currency_id._convert(
+            from_amount=amount,
+            to_currency=company.currency_id,
+            company=company,
+            date=date,
+            round=False,
+        )
+        return f"{company.currency_id.name} {int(math.ceil(raw_amount))}"
+
+    def get_gift_frequency_indicator(self):
+        if self.yearly_threshold and self.gift_frequency == 2:
+            return "*"
+        if not self.yearly_threshold and self.gift_frequency == 1:
+            return "**"
+        return ""

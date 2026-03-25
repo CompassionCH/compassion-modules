@@ -12,9 +12,9 @@ class SponsorshipGiftType(models.Model):
     )
     gmc_gift_type = fields.Selection(
         [
-            ("Project Gift", "Project"),
-            ("Family Gift", "Family"),
-            ("Beneficiary Gift", "Participant"),
+            ("Project Gift", "Project Gift"),
+            ("Family Gift", "Family Gift"),
+            ("Beneficiary Gift", "Participant Gift"),
         ]
     )
     gmc_attribution = fields.Selection(
