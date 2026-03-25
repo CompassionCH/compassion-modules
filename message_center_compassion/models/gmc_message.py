@@ -91,7 +91,7 @@ class GmcMessage(models.Model):
     ##########################################################################
     @api.model_create_multi
     def create(self, vals_list):
-        messages = super(GmcMessage, self).create(vals_list)
+        messages = super().create(vals_list)
         messages.filtered("action_id.auto_process").process_messages()
         return messages
 

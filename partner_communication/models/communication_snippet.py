@@ -22,7 +22,7 @@ class CommunicationSnippet(models.Model):
 
     name = fields.Char(required=True, index=True)
     snippet_text = fields.Html(required=True, translate=True, sanitize=False)
-    description = fields.Text(string="Description")
+    description = fields.Text()
 
     category_id = fields.Many2one(
         "communication.snippet.category",
