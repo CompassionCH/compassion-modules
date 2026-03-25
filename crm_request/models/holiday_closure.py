@@ -70,7 +70,7 @@ class HolidayClosure(models.Model):
             def var_replace(match, holiday=holiday):
                 value = getattr(holiday, match.group(1), "")
                 if isinstance(value, datetime.date):
-                    value = holiday.get_date(match.group(1), "date_full")
+                    value = holiday.get_date(match.group(1), "full")
                 if not isinstance(value, str):
                     value = str(value)
                 return value

@@ -20,10 +20,17 @@ class MoveLine(models.Model):
     event_id = fields.Many2one(
         "crm.event.compassion",
         "Event",
-        related="analytic_line_ids.account_id.event_id",
+        compute="_compute_event",
         store=True,
-        readonly=True,
     )
+
+    @api.depends("analytic_line_ids")
+    def _compute_event(self):
+        for line in self:
+            if not line.event_id and line.analytic_line_ids.account_id.event_id:
+                line.event_id = line.analytic_line_ids.account_id.event_id
+            else:
+                line.event_id = line.event_id
 
     @api.onchange("contract_id")
     def on_change_contract_id(self):

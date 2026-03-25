@@ -33,9 +33,11 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='contract_id']" position="after">
                 <field name="user_id" />
+                <field name="event_id" optional="hide" />
             </xpath>
             <xpath expr="//field[@name='line_ids']/list">
                 <field name="user_id" optional="hide" />
+                <field name="event_id" optional="hide" />
             </xpath>
         </field>
     </record>

@@ -1,9 +1,8 @@
 import logging
 import re
 
-from babel.dates import format_datetime
-
 from odoo import _, fields, models
+from odoo.tools.misc import format_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +111,7 @@ class AdvancedTranslatable(models.AbstractModel):
             values = res_string
         return values
 
-    def get_date(self, field, date_type="date_short"):
+    def get_date(self, field, date_type="short"):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
@@ -121,17 +120,8 @@ class AdvancedTranslatable(models.AbstractModel):
         (one of “full”, “long”, “medium”, or “short”, or a custom date/time pattern)
         :return: the formatted dates
         """
-        _lang = self.env.context.get("lang") or self.env.lang or "en_US"
-        _tz = self.env.user.tz or "Europe/Zurich"
-        _format = self.env["ir.advanced.translation"].get(date_type)
         dates = sorted(set(self.filtered(field).mapped(field)))
-
-        dates = [
-            format_datetime(
-                fields.Datetime.to_datetime(d), _format, tzinfo=_tz, locale=_lang
-            )
-            for d in dates
-        ]
+        dates = [format_datetime(self.env, d, date_type) for d in dates]
 
         if len(dates) > 1:
             res_string = ", ".join(dates[:-1])
