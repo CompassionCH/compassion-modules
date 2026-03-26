@@ -4,8 +4,7 @@ babel
 bs4
 iso639-lang
 langdetect
-pandas>=1.5.3
-pandas>=2.0.0
+pandas>=3.0.0
 pdf2image
 phonenumbers
 pyjwt

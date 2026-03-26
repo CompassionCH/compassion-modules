@@ -41,7 +41,7 @@
             "pytesseract",
             "langdetect",
             "iso639-lang",
-            "pandas>=2.0.0",
+            "pandas>=3.0.0",
         ],
     },
     "data": [
