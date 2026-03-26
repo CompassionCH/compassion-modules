@@ -544,6 +544,7 @@ class CompassionProject(models.Model):
         website = self.env.ref("website.default_website", False)
         base_url = "https://maps.googleapis.com/maps/api/geocode/json"
         for project in self:
+            geocoded = False
             try:
                 parts = [
                     project.closest_city,
@@ -558,9 +559,16 @@ class CompassionProject(models.Model):
                     location = data["results"][0]["geometry"]["location"]
                     project.gps_latitude_obfuscated = location["lat"]
                     project.gps_longitude_obfuscated = location["lng"]
+                    geocoded = True
+            except AttributeError:
+                logger.debug("No google maps api key, fallback to simple obfuscation.")
             except Exception:
-                # Fallback to randomized gps coords
-                logging.warning("Request failed", exc_info=True)
+                logger.warning(
+                    "Google Maps Geocode request failed, "
+                    "fallback to simple obfuscation.",
+                    exc_info=True,
+                )
+            if not geocoded:
                 project.gps_latitude_obfuscated = (
                     (int(project.gps_latitude) + random())
                     if project.gps_latitude
