@@ -1,0 +1,8 @@
+<odoo>
+    <!-- Job functions -->
+    <record id="move_pool_job" model="queue.job.function">
+        <field name="model_id" ref="model_correspondence"/>
+        <field name="method">move_pool</field>
+        <field name="channel_id" ref="sbc_compassion.channel_sbc_compassion"/>
+    </record>
+</odoo>

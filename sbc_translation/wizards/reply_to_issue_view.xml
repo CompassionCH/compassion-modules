@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="reply_to_issue_form" model="ir.ui.view">
+        <field name="name">reply.to.issue.wizard</field>
+        <field name="model">sbc.reply.to.issue.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reply to issue">
+                <group>
+                    <field name="translation_issue"></field>
+                    <field name="translation_issue_comments"></field>
+                </group>
+                <field name="answer"/>
+                <p style="color: #686868;">Your reply will be added in an <b>automatic email with greetings</b>.</p>
+                <footer>
+                    <button name="send_reply" string="Mark issue as resolved and send reply" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="reply_to_issue_wizard" model="ir.actions.act_window">
+        <field name="name">Reply to issue</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sbc.reply.to.issue.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="reply_to_issue_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
