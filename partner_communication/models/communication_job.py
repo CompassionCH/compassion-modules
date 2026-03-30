@@ -16,6 +16,7 @@ from io import BytesIO
 
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
+from odoo.tools import html2plaintext
 
 from odoo.addons.base.models.ir_qweb import QWebException
 
@@ -836,12 +837,15 @@ class CommunicationJob(models.Model):
         return action
 
     @api.model
-    def get_snippet(self, snippet_name):
-        return (
+    def get_snippet(self, snippet_name, strip_html=False):
+        result = (
             self.env["communication.snippet"]
-            .search([("name", "=", snippet_name)])
+            .search([("name", "=", snippet_name)], limit=1)
             .snippet_text
-        )
+        ) or ""
+        if strip_html:
+            result = html2plaintext(result)
+        return result
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
