@@ -11,11 +11,13 @@ def post_init_hook(cr, registry):
     # Update translation done
     cr.execute(
         """
-            UPDATE correspondence SET translate_done = translate_date
-            WHERE translate_date IS NOT NULL;
-            UPDATE correspondence SET translate_date = write_date
-            WHERE state = 'Global Partner translation queue'
-            AND translate_date IS NULL;
+        UPDATE correspondence
+        SET translate_done = translate_date
+        WHERE translate_date IS NOT NULL;
+        UPDATE correspondence
+        SET translate_date = write_date
+        WHERE state = 'Global Partner translation queue'
+          AND translate_date IS NULL;
         """
     )
 
@@ -39,6 +41,7 @@ def post_init_hook(cr, registry):
                     [{"source_language_id": src.id, "dest_language_id": dst.id}]
                 )
             cr.execute(
-                "UPDATE correspondence SET translation_competence_id = %s WHERE id = %s",
+                "UPDATE correspondence SET translation_competence_id = %s "
+                "WHERE id = %s",
                 [competence.id, letter.id],
             )

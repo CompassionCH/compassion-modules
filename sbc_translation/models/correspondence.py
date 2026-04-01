@@ -10,9 +10,8 @@
 import logging
 from random import randint
 
-from odoo import _, api, fields, models, SUPERUSER_ID
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -25,7 +24,8 @@ class Correspondence(models.Model):
     _inherit = "correspondence"
 
     new_translator_id = fields.Many2one(
-        "translation.user", "Local translator", tracking=True)
+        "translation.user", "Local translator", tracking=True
+    )
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
@@ -82,7 +82,8 @@ class Correspondence(models.Model):
         inverse="_inverse_paragraph_ids",
     )
 
-    def _read_group_translation_status(self, values, domain, order):
+    @api.model
+    def _read_group_translation_status(self, statuses, domain, order):
         return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
@@ -100,13 +101,15 @@ class Correspondence(models.Model):
             if letter.translation_status and letter.translation_status != "to do":
                 raise UserError(
                     _(
-                        "You cannot change the translation language of a letter that is being or already translated."
+                        "You cannot change the translation language of a letter that is"
+                        " being or already translated."
                     )
                 )
+            competence = letter.translation_competence_id
             letter.with_context(skip_lang_detect=True).write(
                 {
-                    "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
-                    "translation_language_id": letter.translation_competence_id.dest_language_id.id,
+                    "src_translation_lang_id": competence.source_language_id.id,
+                    "translation_language_id": competence.dest_language_id.id,
                 }
             )
 
@@ -121,7 +124,9 @@ class Correspondence(models.Model):
     def _compute_translation_url(self):
         host = self.env.ref("sbc_translation.translation_website").sudo().domain
         for letter in self:
-            letter.translation_url = f"{host}/translation-platform/letters/letter-edit/{letter.id}"
+            letter.translation_url = (
+                f"{host}/translation-platform/letters/letter-edit/{letter.id}"
+            )
 
     def _compute_paragraph_ids(self):
         for correspondence in self:
@@ -130,14 +135,16 @@ class Correspondence(models.Model):
             )
 
     def _inverse_paragraph_ids(self):
-        # If both deletion and creation is made, creation is not working. I couldn't figure it out...
+        # If both deletion and creation is made, creation is not working.
+        # I couldn't figure it out...
         for correspondence in self:
             # Propagate deletions
             (
                 correspondence.page_ids.mapped("paragraph_ids")
                 - correspondence.paragraph_ids
             ).unlink()
-            # Propagate paragraph creation, we must associate it to a page. We take the last page by default
+            # Propagate paragraph creation, we must associate it to a page.
+            # We take the last page by default
             last_page = correspondence.page_ids[-1:]
             if not last_page:
                 last_page = last_page.create({"correspondence_id": correspondence.id})
@@ -166,7 +173,8 @@ class Correspondence(models.Model):
     @api.onchange("new_translator_id")
     def onchange_new_translator_id(self):
         """
-        When a translator is set, the letter should always be on "in progress" status to ensure that the letter can
+        When a translator is set, the letter should always be on "in progress"
+        status to ensure that the letter can
         be found under the translator's saved letters in the Translation Platform.
         """
         if self.new_translator_id:
@@ -175,38 +183,54 @@ class Correspondence(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Create a message for sending the CommKit after be translated on
         the local translate platform.
         """
-        if vals.get("direction") == "Beneficiary To Supporter":
-            correspondence = super().create(vals)
-        else:
-            # create letter first and let super.create() run the language detection first
-            correspondence = super(
-                Correspondence, self.with_context(no_comm_kit=True)
-            ).create(vals)
-
-            sponsorship = correspondence.sponsorship_id
-            original_lang = correspondence.original_language_id
-
-            # Languages the office/region understand
-            office = sponsorship.child_id.project_id.field_office_id
-            language_ids = office.spoken_language_ids + office.translated_language_ids
-
-            if original_lang.translatable and original_lang not in language_ids:
-                correspondence.send_local_translate()
+        b2s_vals = []
+        s2b_vals = []
+        for vals in vals_list:
+            if vals.get("direction") == "Beneficiary To Supporter":
+                b2s_vals.append(vals)
             else:
-                # if no translation is needed, resume GMC dispatch
-                correspondence.create_commkit()
+                s2b_vals.append(vals)
 
-        return correspondence
+        res = self.env["correspondence"]
+
+        if b2s_vals:
+            res += super().create(b2s_vals)
+
+        if s2b_vals:
+            # create letter first and let super.create()
+            # run the language detection first
+            s2b_records = super(
+                Correspondence, self.with_context(no_comm_kit=True)
+            ).create(s2b_vals)
+            res += s2b_records
+
+            for correspondence in s2b_records:
+                sponsorship = correspondence.sponsorship_id
+                original_lang = correspondence.original_language_id
+
+                # Languages the office/region understand
+                office = sponsorship.child_id.project_id.field_office_id
+                language_ids = (
+                    office.spoken_language_ids + office.translated_language_ids
+                )
+
+                if original_lang.translatable and original_lang not in language_ids:
+                    correspondence.action_send_local_translate()
+                else:
+                    # if no translation is needed, resume GMC dispatch
+                    correspondence.create_commkit()
+
+        return res
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def open_full_view(self):
+    def action_open_full_view(self):
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
@@ -227,9 +251,8 @@ class Correspondence(models.Model):
 
             # Can sponser read the letter?
             langs_match = (
-                    (letter.beneficiary_language_ids & letter.supporter_languages_ids)
-                    or letter.translation_language_id in letter.supporter_languages_ids
-            )
+                letter.beneficiary_language_ids & letter.supporter_languages_ids
+            ) or letter.translation_language_id in letter.supporter_languages_ids
 
             # Is the letter still in the translation process?
             translation_hold = (
@@ -245,10 +268,11 @@ class Correspondence(models.Model):
                 except UserError:
                     _logger.warning(
                         f"Could not download image for letter {letter.id}, "
-                        f"but proceeding to translation queue.")
+                        f"but proceeding to translation queue."
+                    )
                 # (re)send to translation queue ONLY if not on hold
                 if not translation_hold:
-                    letter.send_local_translate()
+                    letter.action_send_local_translate()
         return True
 
     def calculate_translation_priority(self):
@@ -268,7 +292,8 @@ class Correspondence(models.Model):
             self.scanned_date if self.scanned_date else self.create_date.date()
         )
 
-        # Calculate the difference in weeks between the current date and the scanned date.
+        # Calculate the difference in weeks between
+        # the current date and the scanned date.
         calculated_priority = min(
             (fields.Date.today() - letter_date).days // 7, len(priorities) - 1
         )
@@ -282,7 +307,7 @@ class Correspondence(models.Model):
 
         return str(calculated_priority)
 
-    def send_local_translate(self, resubmit=False):
+    def action_send_local_translate(self, resubmit=False):
         """
         Sends the letter to the local translation platform.
         :return: None
@@ -290,7 +315,7 @@ class Correspondence(models.Model):
         self.ensure_one()
         # Check if resubmit is passed through the context.
         if not resubmit:
-            resubmit =  self.env.context.get("resubmit")
+            resubmit = self.env.context.get("resubmit")
 
         # Specify the src and dst language
         src_lang, dst_lang = self._get_translation_langs()
@@ -311,8 +336,9 @@ class Correspondence(models.Model):
             }
         )
         if not resubmit:
-            self.mapped("page_ids.paragraph_ids").with_context(skip_lang_detect=True).write({
-                "translated_text": ""})
+            self.mapped("page_ids.paragraph_ids").with_context(
+                skip_lang_detect=True
+            ).write({"translated_text": ""})
 
         # Remove any pending GMC message (will be recreated after translation)
         self.env["gmc.message"].search(
@@ -336,7 +362,9 @@ class Correspondence(models.Model):
             self.env["res.users"].sudo().search([("groups_id", "=", manager_group.id)])
             - admin
         )
-        for letter in self.filtered(lambda l: not l.translation_supervisor_id):
+        for letter in self.filtered(
+            lambda _letter: not _letter.translation_supervisor_id
+        ):
             letter.translation_supervisor_id = supervisors[
                 randint(0, len(supervisors) - 1)
             ]
@@ -367,12 +395,11 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         reply_template = self.env.ref("sbc_translation.comments_reply").sudo()
-        self.message_post_with_view(
+        self.message_post_with_source(
             reply_template,
-            partner_ids=[(4, self.new_translator_id.partner_id.id)],
-            values={
-                "reply": body_html,
-            },
+            partner_ids=[self.new_translator_id.partner_id.id],
+            render_values={"reply": body_html},
+            subtype_xmlid="mail.mt_note",
         )
         return self.write({"unread_comments": False})
 
@@ -384,16 +411,17 @@ class Correspondence(models.Model):
         reply_template = self.env.ref("sbc_translation.issue_reply").sudo()
         translator_group = self.env.ref("sbc_translation.group_user")
         partner = self.mapped("message_ids.author_id").filtered(
-            lambda p: any(p.user_ids.mapped("share")) and
-            translator_group in p.user_ids.mapped("groups_id")
+            lambda p: any(p.user_ids.mapped("share"))
+            and translator_group in p.user_ids.mapped("groups_id")
         )
         if partner:
-            self.message_post_with_view(
+            self.message_post_with_source(
                 reply_template,
-                partner_ids=[(4, partner[0].id)],
-                values={
+                partner_ids=[partner[0].id],
+                render_values={
                     "reply": body_html,
                 },
+                subtype_xmlid="mail.mt_note",
             )
         return self.write(
             {"translation_issue": False, "translation_issue_comments": False}
@@ -402,7 +430,7 @@ class Correspondence(models.Model):
     def mark_comments_read(self):
         return self.write({"unread_comments": False})
 
-    def remove_local_translate(self):
+    def action_remove_local_translate(self):
         """
         Remove a letter from local translation platform and change state of
         letter in Odoo
@@ -425,11 +453,14 @@ class Correspondence(models.Model):
         :param submit: if True, the translation will be submitted after saving
         """
         _logger.info(
-            "Saving translation for letter %s and translator %s", self.id, translator_id)
+            "Saving translation for letter %s and translator %s", self.id, translator_id
+        )
         self.ensure_one()
         if self.translation_status == "to validate":
-            _logger.warning("Invalid save translation call on letter."
-                            "The letter is already submitted.")
+            _logger.warning(
+                "Invalid save translation call on letter."
+                "The letter is already submitted."
+            )
             return True
         page_index = 0
         paragraph_index = 0
@@ -441,7 +472,9 @@ class Correspondence(models.Model):
                 translator_id = self.new_translator_id
             else:
                 translator_id = (
-                    self.env["translation.user"].search([("user_id", "=", self.env.uid)]).id
+                    self.env["translation.user"]
+                    .search([("user_id", "=", self.env.uid)])
+                    .id
                 )
         letter_vals = {
             "new_translator_id": translator_id,
@@ -454,7 +487,8 @@ class Correspondence(models.Model):
                 page_index += 1
                 paragraph_index = 0
                 current_page = self.page_ids[page_index].with_context(
-                    skip_lang_detect=True)
+                    skip_lang_detect=True
+                )
             elif element.get("type") == "paragraph":
                 paragraph_vals = {
                     "page_id": current_page.id,
@@ -464,7 +498,9 @@ class Correspondence(models.Model):
                 }
                 if self.translation_language_id.code_iso == "eng":
                     # Move translation text into english text field
-                    paragraph_vals["english_text"] = paragraph_vals.pop("translated_text")
+                    paragraph_vals["english_text"] = paragraph_vals.pop(
+                        "translated_text"
+                    )
 
                 if (
                     current_page.paragraph_ids[paragraph_index].comments
@@ -503,17 +539,20 @@ class Correspondence(models.Model):
         :param translator_id: optional translator assigned
         """
         _logger.info(
-            "Submitting translation for letter %s and translator %s", self.id, translator_id)
+            "Submitting translation for letter %s and translator %s",
+            self.id,
+            translator_id,
+        )
         self.ensure_one()
         self.save_translation(letter_elements, translator_id, submit=True)
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id
         )
 
-        validation_needed: bool =  (
-            not user_skill.verified or # user skill not verified
-            self.unread_comments or # there are unread comments
-            self.new_translator_id.force_validation # validation is forced
+        validation_needed: bool = (
+            not user_skill.verified  # user skill not verified
+            or self.unread_comments  # there are unread comments
+            or self.new_translator_id.force_validation  # validation is forced
         )
 
         if validation_needed:
@@ -523,10 +562,11 @@ class Correspondence(models.Model):
         _logger.info("Translation submitted.")
         return True
 
-    def approve_translation(self):
+    def action_approve_translation(self):
         for letter in self:
             skill_to_validate = letter.new_translator_id.translation_skills.filtered(
-                lambda s: s.competence_id == letter.translation_competence_id
+                lambda s, _letter=letter: s.competence_id
+                == _letter.translation_competence_id
                 and not s.verified
             )
             if skill_to_validate:
@@ -542,7 +582,7 @@ class Correspondence(models.Model):
         self._post_process_translation()
         return True
 
-    def resubmit_to_translation(self):
+    def action_resubmit_to_translation(self):
         for letter in self:
             if letter.direction == "Supporter To Beneficiary" and letter.kit_identifier:
                 letter.write(
@@ -551,7 +591,7 @@ class Correspondence(models.Model):
                         "resubmit_id": letter.resubmit_id + 1,
                     }
                 )
-            letter.send_local_translate(resubmit=True)
+            letter.action_send_local_translate(resubmit=True)
 
     def _post_process_translation(self):
         self.ensure_one()
@@ -565,9 +605,12 @@ class Correspondence(models.Model):
                 else "Published to Global Partner",
             }
         )
-        # T2007 : If a TranslationLetterCounting wizard is active, the letter should be added to it
-        translation_letter_counting_wizards = self.env['translation.letter.counting.wizard'].search([])
-        for wizard in translation_letter_counting_wizards :
+        # T2007 : If a TranslationLetterCounting wizard is active,
+        # the letter should be added to it
+        translation_letter_counting_wizards = self.env[
+            "translation.letter.counting.wizard"
+        ].search([])
+        for wizard in translation_letter_counting_wizards:
             wizard.correspondence_ids = [(4, self.id)]
 
         if is_s2b:
@@ -594,10 +637,13 @@ class Correspondence(models.Model):
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
         self.ensure_one()
-        base_url = (
-            request.httprequest.host_url
-            or f"https://{self.env.ref('sbc_translation.translation_website').domain}/"
-        )
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        if base_url:
+            base_url = base_url.rstrip("/") + "/"
+        else:
+            base_url = (
+                f"https://{self.env.ref('sbc_translation.translation_website').domain}/"
+            )
         # Gives access to related objects
         child = self.child_id.sudo()
         partner = self.partner_id.sudo()
@@ -661,9 +707,10 @@ class Correspondence(models.Model):
     @api.model
     def update_translation_priority_cron(self):
         """
-        Update the priority of letters to translate if the letter is not already at the highest priority.
-        When the letter is already at the highest priority, it moves it to another suitable pool.
-        :return: None
+        Update the priority of letters to translate if the letter is not already at the
+        highest priority.
+        When the letter is already at the highest priority, it moves it to another
+        suitable pool. :return: None
         """
         letters_to_translate = self.search(
             [("translation_status", "not in", [False, "done"])]
@@ -677,14 +724,16 @@ class Correspondence(models.Model):
             if current_priority != new_priority:
                 letter.translation_priority = new_priority
 
-            # If the letter is already at the highest priority and has a fallback competence, move it to another pool
+            # If the letter is already at the highest priority and
+            # has a fallback competence, move it to another pool
             elif letter.translation_competence_id.fallback_competence_id:
                 letter.move_pool()
 
     def move_pool(self):
         """
-        Move letter to another common translation pool. This is helpful when a letter is stuck for too long
-        inside a pool, and we want to move it to another one that has more translator resources.
+        Move letter to another common translation pool.
+        This is helpful when a letter is stuck for too long inside a pool,
+        and we want to move it to another one that has more translator resources.
         """
         self.ensure_one()
         if (

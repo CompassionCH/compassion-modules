@@ -1,14 +1,14 @@
 <odoo>
     <record id="view_translation_user_tree" model="ir.ui.view">
-        <field name="name">translation.user.tree</field>
+        <field name="name">translation.user.list</field>
         <field name="model">translation.user</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="translator_since"/>
                 <field name="nb_translated_letters_this_year"/>
                 <field name="nb_translated_letters"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -22,15 +22,15 @@
                         <button name="open_translated_letters" type="object" icon="fa-pencil" class="oe_stat_button">
                             <field string="Translations" name="nb_translated_letters" widget="statinfo"/>
                         </button>
-                        
+
             <field name="active" invisible="1" />
             <widget
                 name="web_ribbon"
                 title="Archived"
                 bg_color="bg-danger"
-                attrs="{'invisible': [('active', '=', True)]}"
+                invisible="active"
             />
-            
+
                     </div>
                     <group>
                         <group>
@@ -45,11 +45,11 @@
                         </group>
                     </group>
                     <group>
-                        <field name="translation_skills" context="{'default_translator_id': active_id}">
-                            <tree editable="bottom">
+                        <field name="translation_skills">
+                            <list editable="bottom">
                                 <field name="competence_id"/>
                                 <field name="verified"/>
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </sheet>
@@ -76,7 +76,7 @@
     <record id="action_compassion_translation_user_form" model="ir.actions.act_window">
         <field name="name">Translator</field>
         <field name="res_model">translation.user</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_translation_platform" parent="sbc_compassion.menu_correspondence" sequence="4" name="Translation Platform"/>

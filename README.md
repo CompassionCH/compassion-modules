@@ -46,6 +46,7 @@ addon | version | maintainers | summary
 [partner_search_fuzzy](partner_search_fuzzy/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> | Add fuzzy search on partners
 [partner_segmentation](partner_segmentation/) | 18.0.1.0.0 |  | Segment Sponsors
 [sbc_compassion](sbc_compassion/) | 18.0.1.0.0 |  | SBC - Supporter to Participant Communication
+[sbc_translation](sbc_translation/) | 18.0.1.0.0 |  | SBC - Translation Platform
 [sponsorship_compassion](sponsorship_compassion/) | 18.0.1.0.2 |  | Compassion Sponsorships
 [sponsorship_reporting](sponsorship_reporting/) | 18.0.1.0.0 |  | Add the reports for the sponsorships
 [sponsorship_sub_management](sponsorship_sub_management/) | 18.0.1.0.0 | <a href='https://github.com/ecino'><img src='https://github.com/ecino.png' width='32' height='32' style='border-radius:50%;' alt='ecino'/></a> <a href='https://github.com/NoeBerdoz'><img src='https://github.com/NoeBerdoz.png' width='32' height='32' style='border-radius:50%;' alt='NoeBerdoz'/></a> | Compassion SUB Sponsorships Management

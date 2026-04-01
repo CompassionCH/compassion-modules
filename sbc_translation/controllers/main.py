@@ -24,7 +24,8 @@ class RestController(http.Controller):
     )
     def translation_platform(self, page=""):
         """
-        Simple server for the translation platform which should be compiled into /static/tp folder.
+        Simple server for the translation platform which should be compiled into
+        /static/tp folder.
         :param page: This the route requested
         :return: index.html, or assets.
         """

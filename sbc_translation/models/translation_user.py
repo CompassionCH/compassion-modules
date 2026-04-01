@@ -7,7 +7,7 @@ class TranslationUser(models.Model):
 
     user_id = fields.Many2one("res.users", "User", required=True, index=True)
     partner_id = fields.Many2one("res.partner", "Partner", related="user_id.partner_id")
-    name = fields.Char(related="user_id.name", store=True)
+    name = fields.Char(related="user_id.name")
     active = fields.Boolean(default=True)
     translator_since = fields.Datetime(default=fields.Datetime.now)
     translation_skills = fields.One2many(
@@ -44,11 +44,9 @@ class TranslationUser(models.Model):
     )
     avatar = fields.Binary(related="partner_id.image_128")
     force_validation = fields.Boolean(
-        string="Force Validation",
-        default=False,
         help="If checked, all translations submitted by this user will "
-             "require validation by a supervisor, regardless of their verified"
-             "skills"
+        "require validation by a supervisor, regardless of their verified"
+        "skills",
     )
 
     _sql_constraints = [
@@ -65,8 +63,8 @@ class TranslationUser(models.Model):
         for translator in self:
             translator.nb_translated_letters_this_year = len(
                 translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date and
-                    it.translate_date.year == fields.Datetime.now().year
+                    lambda it: it.translate_date
+                    and it.translate_date.year == fields.Datetime.now().year
                 )
             )
 
@@ -75,12 +73,12 @@ class TranslationUser(models.Model):
         for translator in self:
             translator.nb_translated_letters_last_year = len(
                 translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date and
-                    it.translate_date.year == fields.Datetime.now().year - 1
+                    lambda it: it.translate_date
+                    and it.translate_date.year == fields.Datetime.now().year - 1
                 )
             )
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """
         When creating a translator, put him the rights for using the platform.
@@ -118,11 +116,11 @@ class TranslationUser(models.Model):
             "name": "Translated letters",
             "res_model": "correspondence",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": {
                 "search_default_new_translator_id": self.id,
                 "form_view_ref": "sbc_translation.view_correspondence_form_translation",
-                "tree_view_ref": "sbc_translation.view_correspondence_translation_tree",
+                "list_view_ref": "sbc_translation.view_correspondence_translation_tree",
             },
         }
 
