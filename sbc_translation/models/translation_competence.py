@@ -23,7 +23,8 @@ class TranslationCompetence(models.Model):
     fallback_competence_id = fields.Many2one(
         "translation.competence",
         "Fallback competence",
-        help="Letters will move to this pool if they sit for too long waiting to be translated.",
+        help="Letters will move to this pool if they sit for too long "
+        "waiting to be translated.",
     )
     name = fields.Char(
         compute="_compute_name", store=True

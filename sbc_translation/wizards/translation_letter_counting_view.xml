@@ -32,9 +32,4 @@
     action="action_translation_letter_counting"
     />
 
-    <template id="asset_backend" name="Translation letter counting js" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="sbc_translation/js/translation_letter_counting_js.js"></script>
-        </xpath>
-    </template>
 </odoo>

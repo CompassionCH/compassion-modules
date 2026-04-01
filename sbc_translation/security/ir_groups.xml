@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
         <record id="module_category_translator" model="ir.module.category">
             <field name="name">Translation Platform</field>
             <field name="description">Security groups for Translation Platform</field>
@@ -22,5 +21,4 @@
         <record id="base.user_admin" model="res.users">
             <field name="groups_id" eval="[(4, ref('group_manager'))]"/>
         </record>
-    </data>
 </odoo>

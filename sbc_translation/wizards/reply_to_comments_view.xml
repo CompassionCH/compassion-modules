@@ -7,11 +7,11 @@
             <form string="Reply to comments">
                 <group>
                     <field name="paragraph_ids">
-                        <tree>
+                        <list>
                             <field name="original_text"/>
                             <field name="translated_text"/>
                             <field name="comments"/>
-                        </tree>
+                        </list>
                     </field>
                 </group>
                 <field name="answer"/>

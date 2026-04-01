@@ -1,20 +1,19 @@
 <odoo>
-    <!-- Add buttons for translation platform -->
     <record id="view_correspondence_form_translation" model="ir.ui.view">
         <field name="name">correspondence.form.translation</field>
         <field name="model">correspondence</field>
         <field name="inherit_id" ref="sbc_compassion.view_correspondence_form" />
         <field name="arch" type="xml">
             <button name="compose_letter_button" position="before">
-                <button name="remove_local_translate" type="object" string="Remove from translation"
-                        class="oe_highlight" states="Global Partner translation queue"/>
-                <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                        states="Published to Global Partner,Received in the system" context="{'resubmit': True}"/>
+                <button name="action_remove_local_translate" type="object" string="Remove from translation"
+                        class="oe_highlight" invisible="state != 'Global Partner translation queue'"/>
+                <button name="action_send_local_translate" type="object" string="To Translate" class="oe_highlight"
+                        invisible="state not in ('Published to Global Partner', 'Received in the system')" context="{'resubmit': True}"/>
             </button>
             <button name="resubmit_letter" position="after">
-                <button name="resubmit_to_translation" type="object"
+                <button name="action_resubmit_to_translation" type="object"
                         string="Put back into translation"
-                        attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+                        invisible="state != 'Translation check unsuccessful'"/>
             </button>
             <field name="translator" position="after">
                 <field name="new_translator_id"/>
@@ -36,33 +35,33 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <field name="translation_status" widget="statusbar" readonly="0"/>
-                    <button name="approve_translation" string="Approve translation" type="object" class="oe_highlight"
-                            attrs="{'invisible': [('translation_status', '!=', 'to validate')]}"/>
-                    <button name="remove_local_translate" type="object"
+                    <button name="action_approve_translation" string="Approve translation" type="object" class="oe_highlight"
+                            invisible="translation_status != 'to validate'"/>
+                    <button name="action_remove_local_translate" type="object"
                             string="Remove from translation" class="oe_highlight"
-                            states="Global Partner translation queue"/>
-                    <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                            states="Published to Global Partner,Received in the system" context="{'resubmit': True}"/>
+                            invisible="state != 'Global Partner translation queue'"/>
+                    <button name="action_send_local_translate" type="object" string="To Translate" class="oe_highlight"
+                            invisible="state not in ('Published to Global Partner', 'Received in the system')" context="{'resubmit': True}"/>
 
-                    <button name="resubmit_to_translation" type="object"
+                    <button name="action_resubmit_to_translation" type="object"
                         string="Return to translation"
-                        attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+                        invisible="state != 'Translation check unsuccessful'"/>
 
                     <button name="%(sbc_translation.reply_to_comments_wizard)d"
                             type="action" string="Reply to comments"
                         class="oe_highlight"
-                        attrs="{'invisible': [('unread_comments', '!=', True)]}"
+                        invisible="not unread_comments"
                         context="{'default_paragraph_ids': paragraph_ids}"/>
 
                     <button name="%(sbc_translation.reply_to_issue_wizard)d"
                             type="action" string="Reply to issue"
                         class="oe_highlight"
-                        attrs="{'invisible': [('translation_issue', '==', False)]}"
+                        invisible="not translation_issue"
                         context="{'default_translation_issue': translation_issue, 'default_translation_issue_comments': translation_issue_comments}"/>
 
-                    <button name="open_full_view" type="object" string="Open full view"/>
+                    <button name="action_open_full_view" type="object" string="Open full view"/>
                 </header>
-                <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
+                <div class="alert alert-danger" role="alert" invisible="not translation_issue">
                     <h4 class="alert-heading" role="status"><field name="translation_issue"/></h4>
                     <field name="translation_issue_comments"/>
                 </div>
@@ -70,17 +69,16 @@
                     <group>
                         <group>
                             <field name="partner_id"/>
-                            <field name="src_translation_lang_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translate_date" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translation_priority" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="letter_image"/>
+                            <field name="src_translation_lang_id" readonly="state != 'Global Partner translation queue'"/>
+                            <field name="translate_date" readonly="state != 'Global Partner translation queue'"/>
+                            <field name="translation_priority" readonly="state != 'Global Partner translation queue'"/>
                             <field name="translation_url" widget="url"/>
                         </group>
                         <group>
                             <field name="child_id" readonly="1"/>
-                            <field name="translation_language_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="new_translator_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translate_done" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
+                            <field name="translation_language_id" readonly="state != 'Global Partner translation queue'"/>
+                            <field name="new_translator_id" readonly="state != 'Global Partner translation queue'"/>
+                            <field name="translate_done" readonly="state != 'Global Partner translation queue'"/>
                             <field name="translation_supervisor_id"/>
                         </group>
                     </group>
@@ -88,29 +86,27 @@
                         <field name="unread_comments"/>
                     </group>
                     <field name="paragraph_ids">
-                        <tree editable="bottom" default_order="page_id asc,sequence asc">
+                        <list editable="bottom" default_order="page_id asc,sequence asc">
                             <field name="sequence" widget="handle"/>
                             <field name="original_text" />
                             <field name="english_text" />
                             <field name="translated_text" />
                             <field name="comments" />
                             <field name="page_id" invisible="1"/>
-                        </tree>
+                        </list>
                     </field>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
 
     <record id="view_correspondence_translation_tree" model="ir.ui.view">
-        <field name="name">correspondence.translation.tree</field>
+        <field name="name">correspondence.translation.list</field>
         <field name="model">correspondence</field>
         <field name="priority">30</field>
         <field name="arch" type="xml">
-            <tree decoration-bf="unread_comments" decoration-danger="translation_issue" decoration-muted="state != 'Global Partner translation queue'" default_order="translate_date">
+            <list decoration-bf="unread_comments" decoration-danger="translation_issue" decoration-muted="state != 'Global Partner translation queue'" default_order="translate_date">
                 <field name="scanned_date"/>
                 <field name="translate_date"/>
                 <field name="name"/>
@@ -122,7 +118,7 @@
                 <field name="translation_priority"/>
                 <field name="translation_status"/>
                 <field name="state" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -131,7 +127,7 @@
         <field name="model">correspondence.page</field>
         <field name="inherit_id" ref="sbc_compassion.view_correspondence_page_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='translated_text']" position="after">
+            <xpath expr="//list/field[@name='translated_text']" position="after">
                 <field name="comments"/>
             </xpath>
         </field>
@@ -211,12 +207,11 @@
         </field>
     </record>
 
-    <!-- Resubmit letter to Translation mass action-->
     <record id="resubmit_letter_translation_action" model="ir.actions.server">
         <field name="name">Resubmit to translation</field>
         <field name="model_id" ref="sbc_compassion.model_correspondence"/>
         <field name="state">code</field>
-        <field name="code">records.resubmit_to_translation()</field>
+        <field name="code">records.action_resubmit_to_translation()</field>
         <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
         <field name="binding_type">action</field>
     </record>
@@ -224,11 +219,11 @@
     <record id="action_letters_kanban" model="ir.actions.act_window">
         <field name="name">Letter translation pool</field>
         <field name="res_model">correspondence</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="view_id" ref="correspondence_translation_kanban"/>
         <field name="context">{
             'form_view_ref': 'sbc_translation.correspondence_simple_translation_form',
-            'tree_view_ref': 'sbc_translation.view_correspondence_translation_tree',
+            'list_view_ref': 'sbc_translation.view_correspondence_translation_tree',
             'search_default_translation_pending': 1,
             'skip_lang_detect': 1,
         }</field>
