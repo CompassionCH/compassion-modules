@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "SBC Translation Platform",
-    "version": "14.0.1.0.1",
+    "version": "18.0.1.0.0",
     "category": "Compassion",
     "summary": "SBC - Translation Platform",
     "sequence": 150,
@@ -36,6 +36,9 @@
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": ["sbc_compassion", "partner_contact_birthdate", "website"],
+    "assets": {
+        "web.assets_backend": ["sbc_translation/js/translation_letter_counting_js.js"]
+    },
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
