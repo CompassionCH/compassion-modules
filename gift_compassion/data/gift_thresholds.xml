@@ -3,9 +3,9 @@
     <!-- Gift Thresholds -->
     <record id="gt-01" model="gift.threshold.settings">
         <field
-      name="gift_type_id"
-      ref="sponsorship_compassion.gift_type_birthday"
-    />
+        name="gift_type_id"
+        ref="sponsorship_compassion.gift_type_birthday"
+      />
         <field name="min_amount">10</field>
         <field name="max_amount">100</field>
         <field name="gift_frequency">2</field>
@@ -22,9 +22,9 @@
     </record>
     <record id="gt-03" model="gift.threshold.settings">
         <field
-      name="gift_type_id"
-      ref="sponsorship_compassion.gift_type_graduation"
-    />
+        name="gift_type_id"
+        ref="sponsorship_compassion.gift_type_graduation"
+      />
         <field name="min_amount">10</field>
         <field name="max_amount">2000</field>
         <field name="gift_frequency">1</field>
@@ -32,18 +32,18 @@
     </record>
     <record id="gt-05" model="gift.threshold.settings">
         <field
-      name="gift_type_id"
-      ref="sponsorship_compassion.gift_type_family"
-    />
+        name="gift_type_id"
+        ref="sponsorship_compassion.gift_type_family"
+      />
         <field name="min_amount">25</field>
         <field name="max_amount">1000</field>
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="gt-07" model="gift.threshold.settings">
         <field
-      name="gift_type_id"
-      ref="sponsorship_compassion.gift_type_project"
-    />
+        name="gift_type_id"
+        ref="sponsorship_compassion.gift_type_project"
+      />
         <field name="min_amount">100</field>
         <field name="max_amount">2000</field>
         <field name="currency_id" ref="base.USD" />

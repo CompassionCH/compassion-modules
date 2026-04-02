@@ -23,7 +23,7 @@ class CompassionProject(models.Model):
         Inherit reactivation to trigger 'FCP Suspension Follow Up'
         """
         # 1. Execute original logic
-        res = super(CompassionProject, self).reactivate_project()
+        res = super().reactivate_project()
 
         # 2. Trigger the communication
         self._trigger_communication("project_suspension_follow_up")
