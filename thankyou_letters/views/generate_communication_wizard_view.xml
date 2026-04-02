@@ -23,17 +23,20 @@
             </field>
         </field>
     </record>
+
     <!-- Action bound to the invoice model -->
-    <act_window
+    <record
     id="action_generate_communication_invoice"
-    name="Generate Communications"
-    res_model="partner.communication.generate.wizard"
-    binding_model="account.move"
-    view_mode="form"
-    target="new"
-    context="{
+    model="ir.actions.act_window"
+  >
+        <field name="name">Generate Communications</field>
+        <field name="res_model">partner.communication.generate.wizard</field>
+        <field name="binding_model_id" ref="account.model_account_move" />
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
             'default_res_model': 'account.move',
             'default_selection_domain': [('id', 'in', active_ids)]
-        }"
-  />
+        }</field>
+    </record>
 </odoo>

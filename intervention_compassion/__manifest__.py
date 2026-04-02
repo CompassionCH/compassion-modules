@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Interventions",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.1",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
