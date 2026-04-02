@@ -37,7 +37,7 @@ class CorrespondencePage(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     correspondence_id = fields.Many2one(
-        "correspondence", ondelete="cascade", required=True, readonly=False
+        "correspondence", ondelete="cascade", required=True, readonly=False, index=True
     )
     original_page_url = fields.Char()
     cloudinary_original_page_url = fields.Char(

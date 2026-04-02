@@ -18,6 +18,7 @@ from . import (
     correspondence_template,
     correspondence_template_page,
     field_to_json,
+    gmc_message,
     import_config,
     import_letter_line,
     import_letters_history,

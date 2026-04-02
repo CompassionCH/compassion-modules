@@ -789,7 +789,6 @@ class SponsorshipContract(models.Model):
         not_active = self.filtered(lambda c: not c.is_active)
         if not_active:
             not_active.write({"activation_date": fields.Datetime.now()})
-        self.write({"state": "active"})
         last_line_id = self.search(
             [("sponsorship_line_id", "!=", False)],
             order="sponsorship_line_id desc",
@@ -802,6 +801,13 @@ class SponsorshipContract(models.Model):
             if contract.child_id and not contract.sponsorship_line_id:
                 last_line_id += 1
                 contract.sponsorship_line_id = last_line_id
+
+        # Flush env so db reflects payment mode
+        self.mapped("partner_id").flush()
+        self.flush()
+
+        # trigger auto comm job after payment info is written to the db
+        self.write({"state": "active"})
 
         # Cancel the old invoices if a contract is activated
         delay = datetime.now() + relativedelta(seconds=30)
