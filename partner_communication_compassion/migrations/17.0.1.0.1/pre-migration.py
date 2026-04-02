@@ -1,5 +1,3 @@
-from openupgradelib import openupgrade
-
 from odoo import SUPERUSER_ID, api
 
 
@@ -31,21 +29,3 @@ def migrate(cr, version):
 
             # 2. Delete the config record itself
             record.unlink()
-
-    # Define XML IDs for the communication configs "FCP Suspension Follow up"
-    openupgrade.add_xmlid(
-        cr,
-        "partner_communication_compassion",
-        "email_project_suspension_follow_up",
-        "mail.template",
-        389,
-        noupdate=False,
-    )
-    openupgrade.add_xmlid(
-        cr,
-        "partner_communication_compassion",
-        "project_suspension_follow_up",
-        "partner.communication.config",
-        292,
-        noupdate=False,
-    )
