@@ -471,7 +471,7 @@ class GmcMessage(models.Model):
 
     def _parse_object_ids(self):
         res = []
-        if len(self.mapped("action_id.model")) > 1:
+        if len(set(self.mapped("action_id.model"))) > 1:
             raise UserError(
                 _("Cannot parse object ids for messages with different models.")
             )
