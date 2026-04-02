@@ -449,6 +449,15 @@ class SponsorshipContract(models.Model):
 
     @api.depends_context("allow_during_suspension")
     def _compute_can_write_letter(self):
+        """
+        Computes whether a letter can be written for the current sponsorship.
+
+        A letter is permitted if:
+        1. The project has not suspended S2B letters
+            (or the context bypasses the suspension)
+        2. THe contract is in an active/pending state, OR it is 'terminated' but still
+        within the configured allowed time (default 90 days) since its end date.
+        """
         days_allowed = (
             self.env["ir.config_parameter"]
             .sudo()
@@ -456,14 +465,18 @@ class SponsorshipContract(models.Model):
         )
         now = fields.Datetime.now()
         for sponsorship in self:
+            # Project/center has suspended letters
             hold_letters = (
                 sponsorship.project_id.hold_s2b_letters
                 and not self.env.context.get("allow_during_suspension")
             )
+            # Letter not 'terminated', 'canceled', or a 'draft'. AND not on hold
             is_allowed = (
                 sponsorship.state not in ["terminated", "cancelled", "draft"]
                 and not hold_letters
             )
+            # If 'terminated' but not on hold, check if within allowed
+            # time since end date
             if sponsorship.state == "terminated" and not hold_letters:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_write_letter = is_allowed
@@ -775,7 +788,6 @@ class SponsorshipContract(models.Model):
         not_active = self.filtered(lambda c: not c.is_active)
         if not_active:
             not_active.write({"activation_date": fields.Datetime.now()})
-        self.write({"state": "active"})
         last_line_id = self.search(
             [("sponsorship_line_id", "!=", False)],
             order="sponsorship_line_id desc",
@@ -788,6 +800,13 @@ class SponsorshipContract(models.Model):
             if contract.child_id and not contract.sponsorship_line_id:
                 last_line_id += 1
                 contract.sponsorship_line_id = last_line_id
+
+        # Flush env so db reflects payment mode
+        self.mapped("partner_id").flush()
+        self.flush()
+
+        # trigger auto comm job after payment info is written to the db
+        self.write({"state": "active"})
 
         # Cancel the old invoices if a contract is activated
         delay = datetime.now() + relativedelta(seconds=30)

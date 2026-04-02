@@ -25,10 +25,13 @@
     </record>
 
     <!-- Action bound to the invoice model -->
-    <record id="action_generate_communication_invoice" model="ir.actions.act_window">
+    <record
+    id="action_generate_communication_invoice"
+    model="ir.actions.act_window"
+  >
         <field name="name">Generate Communications</field>
         <field name="res_model">partner.communication.generate.wizard</field>
-        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_model_id" ref="account.model_account_move" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{

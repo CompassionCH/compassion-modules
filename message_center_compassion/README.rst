@@ -31,18 +31,18 @@ synchronization.
 Key Features
 ~~~~~~~~~~~~
 
--  **Message Queues**: Manages queues for messages to be sent to and
-   received from Compassion International.
--  **REST API Integration**: Adds a route for handling incoming OnRamp
-   messages from Compassion International using REST API authenticated
-   with an OAuth2 token.
--  **Configuration Options**: Provides settings to configure connection
-   details, including API keys, client credentials, and token server
-   URLs.
--  **User Management**: Allows setting up users with specific access
-   rights to manage incoming and outgoing messages.
--  **Security**: Ensures secure communication with Compassion
-   International through OAuth2 authentication and token management.
+- **Message Queues**: Manages queues for messages to be sent to and
+  received from Compassion International.
+- **REST API Integration**: Adds a route for handling incoming OnRamp
+  messages from Compassion International using REST API authenticated
+  with an OAuth2 token.
+- **Configuration Options**: Provides settings to configure connection
+  details, including API keys, client credentials, and token server
+  URLs.
+- **User Management**: Allows setting up users with specific access
+  rights to manage incoming and outgoing messages.
+- **Security**: Ensures secure communication with Compassion
+  International through OAuth2 authentication and token management.
 
 **Table of contents**
 
@@ -79,35 +79,34 @@ To configure this module, follow these steps:
 
 1. **Odoo Configuration**:
 
-   -  Add the following settings in the ``.conf`` file of Odoo:
+   - Add the following settings in the ``.conf`` file of Odoo:
 
-      -  ``connect_url``: URL to the entry point of GMC Onramp
-      -  ``connect_token_server``: Base URL of the token server
-      -  ``connect_token_cert``: Comma-separated list of full URLs of
-         the public keys of the token server
+     - ``connect_url``: URL to the entry point of GMC Onramp
+     - ``connect_token_server``: Base URL of the token server
+     - ``connect_token_cert``: Comma-separated list of full URLs of the
+       public keys of the token server
 
 2. **Odoo Settings**:
 
-   -  Navigate to
-      ``Settings -> General Settings -> Compassion -> Message Center``
-      and set the following:
+   - Navigate to
+     ``Settings -> General Settings -> Compassion -> Message Center``
+     and set the following:
 
-      -  ``connect_gpid``: Your GPA ID for using GMC message services
-      -  ``connect_gp_name``: Your GPA name for using GMC message
-         services
-      -  ``connect_api_key``: API key for using GMC message services
-      -  ``connect_client``: Username for token requests
-      -  ``connect_secret``: Password for token requests
+     - ``connect_gpid``: Your GPA ID for using GMC message services
+     - ``connect_gp_name``: Your GPA name for using GMC message services
+     - ``connect_api_key``: API key for using GMC message services
+     - ``connect_client``: Username for token requests
+     - ``connect_secret``: Password for token requests
 
 3. **User Setup**:
 
-   -  Create a user with the required access rights and set the login
-      credentials to match those sent by GMC in tokens.
-   -  Assign the "GMC Manager" access rights to users responsible for
-      managing messages.
-   -  Go in the FastAPI endpoints and assign the user to the Onramp
-      endpoint.
-   -  Hit the "Sync Registry" button to activate the Onramp service.
+   - Create a user with the required access rights and set the login
+     credentials to match those sent by GMC in tokens.
+   - Assign the "GMC Manager" access rights to users responsible for
+     managing messages.
+   - Go in the FastAPI endpoints and assign the user to the Onramp
+     endpoint.
+   - Hit the "Sync Registry" button to activate the Onramp service.
 
 Usage
 =====
@@ -115,21 +114,20 @@ Usage
 Once configured, the Compassion Connect module will handle the
 following:
 
--  **Sending Messages**: Automatically queues and sends messages to
-   Compassion International. GMC Managers can view and manage the
-   outgoing message queue through the ``Message Center`` menu. They can
-   also manually trigger the sending of queued messages if needed.
--  **Receiving Messages**: Listens for incoming messages from Compassion
-   International and processes them accordingly. GMC Managers can
-   monitor incoming messages in real-time through the
-   ``Incoming Messages`` view, where they can see the status and details
-   of each message.
--  **Message Management**: Provides an interface for viewing and
-   managing the message queues. GMC Managers have access to the
-   ``Message Queue`` dashboard, which displays both incoming and
-   outgoing messages. They can filter, search, and sort messages based
-   on various criteria. Additionally, they can retry failed messages,
-   delete unnecessary ones, and view detailed logs for troubleshooting.
+- **Sending Messages**: Automatically queues and sends messages to
+  Compassion International. GMC Managers can view and manage the
+  outgoing message queue through the ``Message Center`` menu. They can
+  also manually trigger the sending of queued messages if needed.
+- **Receiving Messages**: Listens for incoming messages from Compassion
+  International and processes them accordingly. GMC Managers can monitor
+  incoming messages in real-time through the ``Incoming Messages`` view,
+  where they can see the status and details of each message.
+- **Message Management**: Provides an interface for viewing and managing
+  the message queues. GMC Managers have access to the ``Message Queue``
+  dashboard, which displays both incoming and outgoing messages. They
+  can filter, search, and sort messages based on various criteria.
+  Additionally, they can retry failed messages, delete unnecessary ones,
+  and view detailed logs for troubleshooting.
 
 This module ensures that your Odoo system stays in sync with Compassion
 International, facilitating smooth and efficient communication.
@@ -140,7 +138,7 @@ Changelog
 17.0.1.1.0
 ----------
 
--  Changed the mechanism of the Onramp route for using FastAPI.
+- Changed the mechanism of the Onramp route for using FastAPI.
 
 Bug Tracker
 ===========
@@ -163,10 +161,10 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
--  Cyril Sester <cyril.sester@outlook.com>
--  David Coninckx <david@coninckx.com>
--  Nathan Flückiger <nathan.fluckiger@hotmail.ch>
+- Emanuel Cino <ecino@compassion.ch>
+- Cyril Sester <cyril.sester@outlook.com>
+- David Coninckx <david@coninckx.com>
+- Nathan Flückiger <nathan.fluckiger@hotmail.ch>
 
 Maintainers
 -----------

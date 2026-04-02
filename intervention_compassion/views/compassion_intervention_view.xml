@@ -107,6 +107,7 @@
                             <field
                 name="additional_marketing_information"
                 readonly="1"
+                widget="html"
               />
                             <field name="category_id" readonly="1" />
                             <field

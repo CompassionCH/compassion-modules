@@ -1,4 +1,4 @@
-<odoo>
+<odoo noupdate="1">
     <!-- Gift Thresholds -->
     <record id="gt-01" model="gift.threshold.settings">
         <field
@@ -47,4 +47,4 @@
         <field name="max_amount">2000</field>
         <field name="currency_id" ref="base.USD" />
     </record>
-</odoo>
+    </odoo>

@@ -51,8 +51,8 @@ Authors
 Contributors
 ------------
 
--  Emanuel Cino <ecino@compassion.ch>
--  Quentin Gigon <gigon.quentin@gmail.com>
+- Emanuel Cino <ecino@compassion.ch>
+- Quentin Gigon <gigon.quentin@gmail.com>
 
 Maintainers
 -----------
