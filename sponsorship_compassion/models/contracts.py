@@ -802,8 +802,8 @@ class SponsorshipContract(models.Model):
                 contract.sponsorship_line_id = last_line_id
 
         # Flush env so db reflects payment mode
-        self.mapped("partner_id").flush()
-        self.flush()
+        self.mapped("partner_id").flush_recordset()
+        self.flush_recordset()
 
         # trigger auto comm job after payment info is written to the db
         self.write({"state": "active"})
