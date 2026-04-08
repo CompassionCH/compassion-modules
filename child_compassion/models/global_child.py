@@ -48,7 +48,6 @@ class GenericChild(models.AbstractModel):
     firstname = fields.Char()
     lastname = fields.Char()
     preferred_name = fields.Char()
-    gender = fields.Selection([("F", "Female"), ("M", "Male")], readonly=True)
     birthdate = fields.Date(readonly=True)
     age = fields.Integer(readonly=True, compute="_compute_age", search="_search_age")
     is_orphan = fields.Boolean(readonly=True)
@@ -206,6 +205,7 @@ class GlobalChild(models.TransientModel):
 
     portrait = fields.Image(compute="_compute_image_portrait")
     fullshot = fields.Image(compute="_compute_image_fullshot")
+    gender = fields.Selection([("F", "Female"), ("M", "Male")], readonly=True)
 
     color = fields.Integer(compute="_compute_color")
     is_special_needs = fields.Boolean()
