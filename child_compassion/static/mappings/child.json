@@ -4,7 +4,6 @@
   "mapping": {
     "LocalBeneficiaryId": "local_id",
     "AcademicPerformance_Name": "academic_performance",
-    "ActiveProgram": "type",
     "Age": "age",
     "BeneficiaryHouseholdList": {
       "field": "household_id.id",

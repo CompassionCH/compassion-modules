@@ -138,7 +138,11 @@ class CompassionMapping(models.Model):
                             "[%(mapping_name)s] Invalid mapping: field %(field_name)s "
                             "in %(odoo_model)s doesn't exist"
                         )
-                        % (self.name, field, model)
+                        % {
+                            "mapping_name": self.name,
+                            "field_name": field,
+                            "odoo_model": model,
+                        }
                     ) from error
                 field_spec_vals["odoo_field"] = field_name
             if not short_spec:
