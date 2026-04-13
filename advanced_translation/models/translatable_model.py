@@ -1,5 +1,6 @@
 import logging
 import re
+from datetime import date, datetime, time
 
 from odoo import _, fields, models
 from odoo.tools.misc import format_datetime
@@ -121,7 +122,16 @@ class AdvancedTranslatable(models.AbstractModel):
         :return: the formatted dates
         """
         dates = sorted(set(self.filtered(field).mapped(field)))
-        dates = [format_datetime(self.env, d, date_type) for d in dates]
+        dates = [
+            format_datetime(
+                self.env,
+                datetime.combine(d, time.min)
+                if isinstance(d, date) and not isinstance(d, datetime)
+                else d,
+                date_type,
+            )
+            for d in dates
+        ]
 
         if len(dates) > 1:
             res_string = ", ".join(dates[:-1])
