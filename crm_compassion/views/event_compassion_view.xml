@@ -173,6 +173,11 @@
                 widget="numeric_step"
                 options="{'step': 10, 'min': 0}"
               />
+                            <field
+                name="audience_number"
+                widget="numeric_step"
+                options="{'step': 10, 'min': 0}"
+              />
                         </group>
                         <group>
                             <field name="lead_ids" widget="many2many_tags" />
