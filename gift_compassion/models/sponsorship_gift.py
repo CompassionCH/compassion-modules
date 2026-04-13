@@ -331,8 +331,7 @@ class SponsorshipGift(models.Model):
 
     @api.model
     def create_from_invoice_line(self, invoice_line):
-        """
-        Creates a sponsorship.gift record from an invoice_line
+        """Creates a sponsorship.gift record from an invoice_line
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """

@@ -101,3 +101,8 @@ class SponsorshipContract(models.Model):
         )
         pending_gifts = pending_gifts.filtered(lambda g: g.is_eligible()[0])
         pending_gifts.action_ok()
+
+    def invoice_paid(self, invoice):
+        res = super().invoice_paid(invoice)
+        invoice.line_ids._trigger_gifts()
+        return res
