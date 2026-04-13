@@ -176,7 +176,7 @@
                             <field
                 name="audience_number"
                 widget="numeric_step"
-                options="{'step': 10, 'min': 0}"
+                options="{'step': 1, 'min': 0}"
               />
                         </group>
                         <group>

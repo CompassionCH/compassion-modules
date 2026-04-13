@@ -126,6 +126,8 @@ class EventCompassion(models.Model):
     )
     audience_number = fields.Integer(
         string="Audience number",
+        tracking=True,
+        default=0,
         help="Actual number of attendees present at the event.",
     )
     planned_sponsorships = fields.Integer(
