@@ -445,11 +445,9 @@ class Correspondence(models.Model):
         return str(uuid.uuid4())
 
     def _compute_is_final_letter(self):
+        final_type = self.env.ref("sbc_compassion.correspondence_type_final")
         for letter in self:
-            letter.is_final_letter = (
-                "Final Letter" in letter.communication_type_ids.mapped("name")
-                or letter.sponsorship_state != "active"
-            )
+            letter.is_final_letter = final_type in letter.communication_type_ids
 
     def _compute_beneficiary_language_ids(self):
         for letter in self:

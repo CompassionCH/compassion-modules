@@ -165,6 +165,16 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
+        exit_confs = self.env.ref(
+            "partner_communication_compassion.lifecycle_child_planned_exit"
+        ) + self.env.ref(
+            "partner_communication_compassion.lifecycle_child_unplanned_exit"
+        )
+        exits = self.filtered(lambda j: j.state == "done" and j.config_id in exit_confs)
+        if exits:
+            exits.get_objects().write(
+                {"exit_communication_sent": fields.Datetime.now()}
+            )
         return res
 
     def cancel(self):

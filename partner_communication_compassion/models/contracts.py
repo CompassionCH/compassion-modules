@@ -35,6 +35,7 @@ class RecurringContract(models.Model):
         help="Indicates a new picture was received and not yet "
         "transmitted to the sponsor."
     )
+    exit_communication_sent = fields.Datetime()
 
     @api.onchange("origin_id", "correspondent_id")
     def _do_not_send_letter_to_transfer(self):
