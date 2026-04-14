@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Partner Communications",
-    "version": "14.0.1.1.1",
+    "version": "14.0.1.2.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
