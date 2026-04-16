@@ -9,7 +9,7 @@
         <field name="name">Translation Platform</field>
         <field name="tag">translation_platform</field>
         <!-- Make it full-screen by removing the breadcrumb / action manager header -->
-        <field name="target">main</field>
+        <field name="target">fullscreen</field>
     </record>
 
     <!--
@@ -18,9 +18,9 @@
         Translators are redirected here automatically on login (see translation_user.py).
     -->
     <menuitem id="menu_translation_platform_app"
-              name="My Translations"
+              name="Translation Platform"
               parent="sbc_translation.menu_translation_platform"
               action="action_translation_platform"
               sequence="0"
-              groups="sbc_translation.group_user" />
+              groups="sbc_translation.group_user,sbc_translation.group_manager" />
 </odoo>

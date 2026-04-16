@@ -39,8 +39,11 @@ def migrate(cr, version):
             )
             return
 
-        # Find all active translators and set home action
-        translators = env["translation.user"].search([("active", "=", True)])
+        # Find all active external translators and set home action
+        translators = env["translation.user"].search([
+            ("active", "=", True),
+            ("user_id.share", "=", True),
+        ])
         users = translators.mapped("user_id")
 
         if users:
