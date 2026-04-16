@@ -122,10 +122,11 @@ class Correspondence(models.Model):
             )
 
     def _compute_translation_url(self):
-        host = self.env.ref("sbc_translation.translation_website").sudo().domain
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        base_url = base_url.rstrip("/")
         for letter in self:
             letter.translation_url = (
-                f"{host}/translation-platform/letters/letter-edit/{letter.id}"
+                f"{base_url}/odoo/translation-platform?letterId={letter.id}"
             )
 
     def _compute_paragraph_ids(self):
@@ -637,13 +638,8 @@ class Correspondence(models.Model):
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
         self.ensure_one()
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        if base_url:
-            base_url = base_url.rstrip("/") + "/"
-        else:
-            base_url = (
-                f"https://{self.env.ref('sbc_translation.translation_website').domain}/"
-            )
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        base_url = base_url.rstrip("/") + "/"
         # Gives access to related objects
         child = self.child_id.sudo()
         partner = self.partner_id.sudo()
