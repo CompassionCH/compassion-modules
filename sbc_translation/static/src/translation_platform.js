@@ -1,9 +1,7 @@
 /** @odoo-module */
 
-import { Component, xml, useState, onMounted } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { registry } from "@web/core/registry";
-import { _t } from "@web/core/l10n/translation";
+import { Component, xml, useState, onMounted, mount, whenReady } from "@odoo/owl";
+import { showNotification } from "./notification";
 import { TranslatorDAO } from "./models/translator_dao";
 import { TpHome } from "./pages/tp_home";
 import { TpLetters } from "./pages/tp_letters";
@@ -43,8 +41,7 @@ class TpHelpModal extends Component {
  * and loads the current translator's info.
  */
 export class TranslationPlatform extends Component {
-  // Client actions can receive framework-injected props; accept any shape.
-  static props = ["*"];
+  static props = {};
 
   static template = xml`
         <div class="tp-root d-flex" style="min-height: 100vh;">
@@ -153,26 +150,22 @@ export class TranslationPlatform extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     this.state.loading = true;
     onMounted(() => this._loadTranslator());
   }
 
   async _loadTranslator() {
     try {
-      this.state.translator = await TranslatorDAO.current(this.orm);
+      this.state.translator = await TranslatorDAO.current();
     } catch (e) {
-      this.notification.add(_t("Unable to load your translator profile"), {
-        type: "danger",
-      });
+      showNotification("Unable to load your translator profile", "danger");
     } finally {
       this.state.loading = false;
     }
   }
 
   refreshTranslator = async () => {
-    this.state.translator = await TranslatorDAO.current(this.orm);
+    this.state.translator = await TranslatorDAO.current();
   };
 
   /**
@@ -188,5 +181,9 @@ export class TranslationPlatform extends Component {
   };
 }
 
-// Register as an Odoo client action
-registry.category("actions").add("translation_platform", TranslationPlatform);
+// Mount the app on the portal page container
+whenReady(async () => {
+  const target = document.getElementById("tp-app-root");
+  if (!target) return;
+  await mount(TranslationPlatform, target, { env: {} });
+});

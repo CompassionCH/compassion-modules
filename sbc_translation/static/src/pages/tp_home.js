@@ -1,8 +1,7 @@
 /** @odoo-module */
 
 import { Component, xml, useState, onMounted } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { showNotification } from "../notification";
 import { LetterDAO } from "../models/letter_dao";
 import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal";
 import { TpBlurLoader } from "../components/tp_loader";
@@ -172,8 +171,6 @@ export class TpHome extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     onMounted(() => this._refresh());
   }
 
@@ -192,7 +189,7 @@ export class TpHome extends Component {
 
   async _fetchSaved() {
     if (!this.props.translator) return;
-    this.state.savedLetters = await LetterDAO.list(this.orm, {
+    this.state.savedLetters = await LetterDAO.list({
       sortBy: ["priority desc", "date asc"],
       pageNumber: 0,
       pageSize: 5,
@@ -212,7 +209,7 @@ export class TpHome extends Component {
     if (!this.props.translator) return;
     const results = await Promise.all(
       this.props.translator.skills.map(async (skill) => {
-        const letters = await LetterDAO.list(this.orm, {
+        const letters = await LetterDAO.list({
           search: [
             { column: "status", term: "to validate" },
             { column: "source", term: skill.source },
@@ -231,7 +228,7 @@ export class TpHome extends Component {
     if (!this.props.translator) return;
     const results = await Promise.all(
       this.props.translator.skills.map(async (skill) => {
-        const letters = await LetterDAO.list(this.orm, {
+        const letters = await LetterDAO.list({
           sortBy: ["priority desc", "date asc"],
           pageSize: 5,
           pageNumber: 0,

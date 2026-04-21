@@ -1,10 +1,10 @@
 /** @odoo-module */
 
 import { Component, xml, useState } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { showNotification } from "../notification";
 import { TpModal } from "./tp_modal";
 import { SettingsDAO } from "../models/settings_dao";
+import { call } from "../rpc";
 
 /**
  * Modal for reporting a problem with a letter.
@@ -53,10 +53,8 @@ export class TpSignalProblem extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     this.state.loading = true;
-    SettingsDAO.letterIssues(this.orm).then((res) => {
+    SettingsDAO.letterIssues().then((res) => {
       this.state.types = res;
       this.state.type = res[0]?.id || null;
       this.state.loading = false;
@@ -65,30 +63,26 @@ export class TpSignalProblem extends Component {
 
   async submit() {
     if (!this.state.type) {
-      this.notification.add(_t("Please select a problem in the list"), {
-        type: "warning",
-      });
+      showNotification("Please select a problem in the list", "warning");
       return;
     }
     this.state.loading = true;
     try {
-      await this.orm.call("correspondence", "raise_translation_issue", [
+      await call("correspondence", "raise_translation_issue", [
         [parseInt(this.props.letterId, 10)],
         this.state.type,
         this.state.message,
       ]);
-      this.notification.add(
-        _t("Issue successfully sent, it will be quickly reviewed"),
-        {
-          type: "success",
-        },
+      showNotification(
+        "Issue successfully sent, it will be quickly reviewed",
+        "success",
       );
       this.props.onClose();
       if (this.props.onRefresh) {
         this.props.onRefresh();
       }
     } catch (e) {
-      this.notification.add(_t("Unable to submit issue"), { type: "danger" });
+      showNotification("Unable to submit issue", "danger");
     } finally {
       this.state.loading = false;
     }

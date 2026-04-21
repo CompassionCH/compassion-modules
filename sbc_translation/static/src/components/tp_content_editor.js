@@ -1,7 +1,6 @@
 /** @odoo-module */
 
 import { Component, xml, useState } from "@odoo/owl";
-import { _t } from "@web/core/l10n/translation";
 import { TpModal } from "./tp_modal";
 
 /**

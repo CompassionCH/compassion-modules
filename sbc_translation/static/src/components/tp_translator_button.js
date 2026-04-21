@@ -1,8 +1,6 @@
 /** @odoo-module */
 
 import { Component, xml, useState } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
 import { TpModal } from "./tp_modal";
 import { TranslatorDAO } from "../models/translator_dao";
 
@@ -62,16 +60,11 @@ export class TpTranslatorButton extends Component {
     showModal: false,
   });
 
-  setup() {
-    this.orm = useService("orm");
-  }
-
   async loadAndOpen() {
     if (!this.state.translator) {
       this.state.loading = true;
       try {
         this.state.translator = await TranslatorDAO.find(
-          this.orm,
           this.props.translatorId,
         );
       } finally {

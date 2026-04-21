@@ -1,19 +1,20 @@
 /** @odoo-module */
 
+import { search, searchCount, call } from "../rpc";
+
 /**
  * Translator DAO - data access for the translation.user model.
- * All methods take `orm` (the Odoo ORM service) as first argument.
+ * Uses direct JSON-RPC (portal/frontend compatible).
  */
 
 export const TranslatorDAO = {
   /**
    * Get a single translator's full info.
-   * @param {Object} orm
    * @param {number} id
    * @returns {Promise<Object>}
    */
-  async find(orm, id) {
-    const data = await orm.call("translation.user", "get_user_info", [
+  async find(id) {
+    const data = await call("translation.user", "get_user_info", [
       [parseInt(id, 10)],
     ]);
     return TranslatorDAO._cleanTranslator(data);
@@ -21,11 +22,10 @@ export const TranslatorDAO = {
 
   /**
    * Get the current authenticated user's translator info.
-   * @param {Object} orm
    * @returns {Promise<Object>}
    */
-  async current(orm) {
-    const data = await orm.call("translation.user", "get_my_info", []);
+  async current() {
+    const data = await call("translation.user", "get_my_info", []);
     if (!data) {
       throw new Error("Unable to find current authenticated translator");
     }
@@ -34,28 +34,25 @@ export const TranslatorDAO = {
 
   /**
    * List translators with optional filters and pagination.
-   * @param {Object} orm
    * @param {Object} params
    * @returns {Promise<{data: Object[], total: number}>}
    */
-  async list(orm, params = {}) {
+  async list(params = {}) {
     const domain = TranslatorDAO._buildDomain(params.search || []);
     const offset = (params.pageNumber || 0) * (params.pageSize || 10);
     const limit = params.pageSize || 10;
     const order = TranslatorDAO._buildOrder(params.sortBy || []);
 
     const [ids, total] = await Promise.all([
-      orm.search("translation.user", domain, { offset, limit, order }),
-      orm.searchCount("translation.user", domain),
+      search("translation.user", domain, { offset, limit, order }),
+      searchCount("translation.user", domain),
     ]);
 
     if (!ids || ids.length === 0) {
       return { data: [], total };
     }
 
-    const rawTranslators = await orm.call("translation.user", "list_users", [
-      ids,
-    ]);
+    const rawTranslators = await call("translation.user", "list_users", [ids]);
     const data = (rawTranslators || [])
       .map((t) => TranslatorDAO._cleanTranslator(t))
       .filter((t) => t !== undefined);
@@ -64,41 +61,35 @@ export const TranslatorDAO = {
 
   /**
    * List all matching translator IDs.
-   * @param {Object} orm
    * @param {Object} params
    * @returns {Promise<number[]>}
    */
-  async listIds(orm, params = {}) {
+  async listIds(params = {}) {
     const domain = TranslatorDAO._buildDomain(params.search || []);
-    return orm.search("translation.user", domain);
+    return search("translation.user", domain);
   },
 
   /**
    * Register new translation skills for a translator.
-   * @param {Object} orm
    * @param {number} translatorId
    * @param {number[]} competenceIds
    * @returns {Promise<boolean>}
    */
-  async registerSkills(orm, translatorId, competenceIds) {
+  async registerSkills(translatorId, competenceIds) {
     for (const skillId of competenceIds) {
-      await orm.call("translation.user", "add_skill", [
-        [translatorId],
-        skillId,
-      ]);
+      await call("translation.user", "add_skill", [[translatorId], skillId]);
     }
     return true;
   },
 
   /**
    * Remove a translation skill from a translator.
-   * @param {Object} orm
    * @param {number} translatorId
    * @param {Object} skill - { source, target, verified }
    * @returns {Promise<boolean>}
    */
-  async deleteSkill(orm, translatorId, skill) {
-    await orm.call("translation.user", "unlink_skill", [[translatorId], skill]);
+  async deleteSkill(translatorId, skill) {
+    await call("translation.user", "unlink_skill", [[translatorId], skill]);
     return true;
   },
 

@@ -1,8 +1,7 @@
 /** @odoo-module */
 
 import { Component, xml, useState, onMounted } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { showNotification } from "../notification";
 import { TranslatorDAO } from "../models/translator_dao";
 import { TpTranslatorButton } from "../components/tp_translator_button";
 import { TpLoader } from "../components/tp_loader";
@@ -146,8 +145,6 @@ export class TpTranslators extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     onMounted(() => this._loadTranslators());
   }
 
@@ -158,7 +155,7 @@ export class TpTranslators extends Component {
         .filter(([, term]) => term.trim())
         .map(([col, term]) => ({ column: col, term }));
 
-      const result = await TranslatorDAO.list(this.orm, {
+      const result = await TranslatorDAO.list({
         search,
         sortBy: this.state.sortBy,
         pageNumber: this.state.page,
@@ -167,9 +164,7 @@ export class TpTranslators extends Component {
       this.state.translators = result.data;
       this.state.total = result.total;
     } catch (e) {
-      this.notification.add(_t("Unable to load translators"), {
-        type: "danger",
-      });
+      showNotification("Unable to load translators", "danger");
     } finally {
       this.state.loading = false;
     }

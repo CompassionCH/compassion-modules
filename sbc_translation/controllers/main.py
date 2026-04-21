@@ -11,19 +11,36 @@ import logging
 from werkzeug.utils import redirect
 
 from odoo import http
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
 
-class RestController(http.Controller):
+class TranslationPlatformController(http.Controller):
+    @http.route(
+        "/my/translation-platform",
+        type="http",
+        auth="user",
+        website=True,
+    )
+    def translation_platform_portal(self, **kwargs):
+        """
+        Portal page for the Translation Platform OWL app.
+        Only accessible to authenticated users who belong to the
+        sbc_translation.group_user group.
+        """
+        if not request.env.user.has_group("sbc_translation.group_user"):
+            return redirect("/my")
+        return request.render("sbc_translation.portal_translation_platform", {})
+
     @http.route(
         ["/translation-platform", "/translation-platform/<path:page>"],
         type="http",
         auth="user",
+        website=True,
     )
-    def translation_platform(self, page="", **kwargs):
+    def translation_platform_legacy(self, page="", **kwargs):
         """
-        Legacy route: redirect old standalone-app URLs to the new Odoo 18 backend
-        client action at /odoo/translation-platform.
+        Legacy route: redirect old standalone-app URLs to the new portal page.
         """
-        return redirect("/odoo/translation-platform", 301)
+        return redirect("/my/translation-platform", 301)

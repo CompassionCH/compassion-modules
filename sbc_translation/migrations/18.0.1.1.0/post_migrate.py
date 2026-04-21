@@ -15,41 +15,41 @@ _logger = logging.getLogger(__name__)
 
 def migrate(cr, version):
     """
-    Set the Translation Platform as the home action for all existing active
-    translator (group_user) accounts, and promote them from share/portal users
-    to internal users if needed (since group_user.share is now False).
+    Ensure all existing active translator accounts are portal (share) users and
+    belong to the group_user group.
+    Clears any previously set home action override (action_id) since translators
+    now use the portal route instead of the backend client action.
     """
     if not version:
         return
 
     _logger.info(
         "sbc_translation migration 18.0.1.1.0: "
-        "Setting home action for existing translator users"
+        "Ensuring translator users are portal users with group_user"
     )
 
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
 
-        tp_action = env.ref(
-            "sbc_translation.action_translation_platform", raise_if_not_found=False
-        )
         group_user = env.ref("sbc_translation.group_user", raise_if_not_found=False)
 
-        if not tp_action or not group_user:
-            _logger.warning(
-                "Cannot find translation_platform action or group_user – skipping migration"
-            )
+        if not group_user:
+            _logger.warning("Cannot find group_user – skipping migration")
             return
 
-        # Find all active external translators and set home action
-        translators = env["translation.user"].search(
-            [
-                ("active", "=", True),
-                ("user_id.share", "=", True),
-            ]
-        )
+        # Find all active translators
+        translators = env["translation.user"].search([("active", "=", True)])
         users = translators.mapped("user_id")
 
         if users:
-            users.write({"action_id": tp_action.id})
-            _logger.info("Updated home action for %d translator users", len(users))
+            # Clear any backend home action override and ensure group membership
+            users.write(
+                {
+                    "action_id": False,
+                    "groups_id": [(4, group_user.id)],
+                }
+            )
+            _logger.info(
+                "Updated %d translator users: cleared action_id, ensured group_user",
+                len(users),
+            )

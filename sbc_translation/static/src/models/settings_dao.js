@@ -1,18 +1,19 @@
 /** @odoo-module */
 
+import { searchRead, call } from "../rpc";
+
 /**
  * Settings DAO - data access for translation competences and letter issues.
- * All methods take `orm` (the Odoo ORM service) as first argument.
+ * Uses direct JSON-RPC (portal/frontend compatible).
  */
 
 export const SettingsDAO = {
   /**
    * Fetch all translation competences (language pairs).
-   * @param {Object} orm
    * @returns {Promise<Array<{id: number, source: string, target: string}>>}
    */
-  async translationCompetences(orm) {
-    const raw = await orm.searchRead(
+  async translationCompetences() {
+    const raw = await searchRead(
       "translation.competence",
       [],
       ["source_language_id", "dest_language_id"],
@@ -26,22 +27,20 @@ export const SettingsDAO = {
 
   /**
    * Fetch all unique languages (sources + targets combined).
-   * @param {Object} orm
    * @returns {Promise<string[]>}
    */
-  async languages(orm) {
-    const competences = await SettingsDAO.translationCompetences(orm);
+  async languages() {
+    const competences = await SettingsDAO.translationCompetences();
     const langs = competences.flatMap((c) => [c.source, c.target]);
     return [...new Set(langs)];
   },
 
   /**
    * Fetch the list of possible letter issue types.
-   * @param {Object} orm
    * @returns {Promise<Array<{id: string, text: string}>>}
    */
-  async letterIssues(orm) {
-    const raw = await orm.call(
+  async letterIssues() {
+    const raw = await call(
       "correspondence",
       "get_translation_issue_list",
       [],

@@ -1,8 +1,7 @@
 /** @odoo-module */
 
 import { Component, xml, useState, onMounted, useEffect } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { showNotification } from "../notification";
 import { LetterDAO } from "../models/letter_dao";
 import { TpLetterViewer } from "../components/tp_letter_viewer";
 import { TpContentEditor } from "../components/tp_content_editor";
@@ -120,8 +119,6 @@ export class TpLetterEdit extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     this.state.loading = true;
     onMounted(() => this._refreshLetter());
 
@@ -160,17 +157,17 @@ export class TpLetterEdit extends Component {
 
   async _refreshLetter() {
     try {
-      const letter = await LetterDAO.find(this.orm, this.props.letterId);
+      const letter = await LetterDAO.find(this.props.letterId);
       if (!letter) {
-        this.notification.add(
-          _t("Unable to find letter with identifier ") + this.props.letterId,
-          { type: "danger" },
+        showNotification(
+          "Unable to find letter with identifier " + this.props.letterId,
+          "danger",
         );
       } else {
         this.state.letter = letter;
       }
     } catch (e) {
-      this.notification.add(_t("Error loading letter"), { type: "danger" });
+      showNotification("Error loading letter", "danger");
     } finally {
       this.state.loading = false;
     }
@@ -198,15 +195,15 @@ export class TpLetterEdit extends Component {
     }
 
     try {
-      await LetterDAO.update(this.orm, this.state.letter);
+      await LetterDAO.update(this.state.letter);
       if (!background) {
-        this.notification.add(_t("Letter saved"), { type: "success" });
+        showNotification("Letter saved", "success");
       }
       // Refresh lastUpdate from server
-      const updated = await LetterDAO.find(this.orm, this.props.letterId);
+      const updated = await LetterDAO.find(this.props.letterId);
       if (updated) this.state.letter.lastUpdate = updated.lastUpdate;
     } catch (e) {
-      this.notification.add(_t("Unable to save letter"), { type: "danger" });
+      showNotification("Unable to save letter", "danger");
     } finally {
       if (!background) this.state.internalLoading = false;
       this.state.saveLoading = false;
@@ -218,12 +215,12 @@ export class TpLetterEdit extends Component {
     if (this.state.saveTimeout) clearTimeout(this.state.saveTimeout);
     this.state.internalLoading = true;
     try {
-      await LetterDAO.submit(this.orm, this.state.letter);
+      await LetterDAO.submit(this.state.letter);
       this.state.letterSubmitted = true;
     } catch (e) {
-      this.notification.add(
-        _t("Unable to save and submit letter, please save it first and retry."),
-        { type: "danger" },
+      showNotification(
+        "Unable to save and submit letter, please save it first and retry.",
+        "danger",
       );
     } finally {
       this.state.internalLoading = false;

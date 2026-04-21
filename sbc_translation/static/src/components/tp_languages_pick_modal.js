@@ -1,8 +1,7 @@
 /** @odoo-module */
 
 import { Component, xml, useState } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { showNotification } from "../notification";
 import { TpModal } from "./tp_modal";
 import { SettingsDAO } from "../models/settings_dao";
 import { TranslatorDAO } from "../models/translator_dao";
@@ -41,22 +40,17 @@ export class TpTranslationSkills extends Component {
     onChange: { type: Function },
   };
 
-  setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
-  }
-
   async removeSkill(skill) {
     try {
-      await TranslatorDAO.deleteSkill(this.orm, this.props.translatorId, {
+      await TranslatorDAO.deleteSkill(this.props.translatorId, {
         source: skill.source,
         target: skill.target,
         verified: skill.verified,
       });
-      this.notification.add(_t("Skill removed"), { type: "success" });
+      showNotification("Skill removed", "success");
       this.props.onChange();
     } catch (e) {
-      this.notification.add(_t("Unable to remove skill"), { type: "danger" });
+      showNotification("Unable to remove skill", "danger");
     }
   }
 }
@@ -147,8 +141,6 @@ export class TpLanguagesPickModal extends Component {
   });
 
   setup() {
-    this.orm = useService("orm");
-    this.notification = useService("notification");
     this._loadData();
   }
 
@@ -156,8 +148,8 @@ export class TpLanguagesPickModal extends Component {
     this.state.loading = true;
     try {
       const [competences, translator] = await Promise.all([
-        SettingsDAO.translationCompetences(this.orm),
-        TranslatorDAO.find(this.orm, this.props.translatorId),
+        SettingsDAO.translationCompetences(),
+        TranslatorDAO.find(this.props.translatorId),
       ]);
       this.state.competences = competences;
       this.state.translator = translator;
@@ -165,9 +157,7 @@ export class TpLanguagesPickModal extends Component {
         (c) => !this.translatorHasSkill(c),
       );
     } catch (e) {
-      this.notification.add(_t("Unable to load translator information"), {
-        type: "danger",
-      });
+      showNotification("Unable to load translator information", "danger");
       this.props.onClose();
     } finally {
       this.state.loading = false;
@@ -192,19 +182,14 @@ export class TpLanguagesPickModal extends Component {
     this.state.loading = true;
     try {
       await TranslatorDAO.registerSkills(
-        this.orm,
         this.props.translatorId,
         this.state.potentialSkills.map((s) => parseInt(s.competenceId, 10)),
       );
-      this.notification.add(_t("Your new skills have been registered"), {
-        type: "success",
-      });
+      showNotification("Your new skills have been registered", "success");
       this.state.potentialSkills = [];
       this.props.onChange();
     } catch (e) {
-      this.notification.add(_t("Unable to register translation skills"), {
-        type: "danger",
-      });
+      showNotification("Unable to register translation skills", "danger");
     } finally {
       this.state.loading = false;
     }

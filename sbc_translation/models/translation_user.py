@@ -81,18 +81,15 @@ class TranslationUser(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        When creating a translator, put him the rights for using the platform
-        and set the Translation Platform as their home action.
+        When creating a translator, put him the rights for using the platform.
         """
         records = super().create(vals_list)
         user_group = self.env.ref("sbc_translation.group_user")
-        tp_action = self.env.ref("sbc_translation.action_translation_platform")
         for translator in records:
             translator.user_id.write(
                 {
                     "groups_id": [(4, user_group.id)],
                     "translator_id": translator.id,
-                    "action_id": tp_action.id,
                 }
             )
         return records
@@ -100,26 +97,20 @@ class TranslationUser(models.Model):
     def write(self, vals):
         """
         When activating/deactivating a translator, update rights accordingly.
-        When deactivating, remove the home action override.
         """
         super().write(vals)
         if "active" in vals:
             user_group = self.env.ref("sbc_translation.group_user")
             action = 4 if vals["active"] else 3  # Add or remove group
             self.mapped("user_id").write({"groups_id": [(action, user_group.id)]})
-            if not vals["active"]:
-                # Remove the translation platform home action
-                self.mapped("user_id").write({"action_id": False})
         return True
 
     def unlink(self):
         """
-        Remove Translation Platform rights and home action when removing translator.
+        Remove Translation Platform rights when removing translator.
         """
         user_group = self.env.ref("sbc_translation.group_user")
-        self.mapped("user_id").write(
-            {"groups_id": [(3, user_group.id)], "action_id": False}
-        )
+        self.mapped("user_id").write({"groups_id": [(3, user_group.id)]})
         return super().unlink()
 
     def open_translated_letters(self):

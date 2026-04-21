@@ -10,8 +10,6 @@ import {
   onWillUpdateProps,
   onPatched,
 } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
 import { TpLoader } from "./tp_loader";
 import { TpSignalProblem } from "./tp_signal_problem";
 

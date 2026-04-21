@@ -35,10 +35,12 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "depends": ["sbc_compassion", "partner_contact_birthdate"],
+    "depends": ["sbc_compassion", "partner_contact_birthdate", "portal"],
     "assets": {
-        "web.assets_backend": [
+        "web.assets_frontend": [
             "sbc_translation/static/src/translation_platform.css",
+            "sbc_translation/static/src/rpc.js",
+            "sbc_translation/static/src/notification.js",
             "sbc_translation/static/src/models/letter_dao.js",
             "sbc_translation/static/src/models/translator_dao.js",
             "sbc_translation/static/src/models/settings_dao.js",
@@ -56,6 +58,9 @@
             "sbc_translation/static/src/pages/tp_translators.js",
             "sbc_translation/static/src/translation_platform.js",
         ],
+        "web.assets_backend": [
+            "sbc_translation/js/translation_letter_counting_js.js",
+        ],
     },
     "data": [
         "security/ir_groups.xml",
@@ -67,7 +72,7 @@
         "data/mail_template.xml",
         "data/update_translation_priority_cron.xml",
         "data/queue_job.xml",
-        "views/translation_platform_action.xml",
+        "views/portal_templates.xml",
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",

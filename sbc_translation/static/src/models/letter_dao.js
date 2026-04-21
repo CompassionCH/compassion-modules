@@ -1,19 +1,20 @@
 /** @odoo-module */
 
+import { search, searchCount, call } from "../rpc";
+
 /**
  * Letter DAO - data access for the correspondence model.
- * All methods take `orm` (the Odoo ORM service) as first argument.
+ * Uses direct JSON-RPC (portal/frontend compatible).
  */
 
 export const LetterDAO = {
   /**
    * Fetch a single letter's full info.
-   * @param {Object} orm - Odoo orm service
    * @param {number|string} id
    * @returns {Promise<Object>}
    */
-  async find(orm, id) {
-    const result = await orm.call("correspondence", "get_letter_info", [
+  async find(id) {
+    const result = await call("correspondence", "get_letter_info", [
       [parseInt(id, 10)],
     ]);
     return LetterDAO._cleanLetter(result);
@@ -21,11 +22,10 @@ export const LetterDAO = {
 
   /**
    * List letters matching params.
-   * @param {Object} orm
    * @param {Object} params - { search, sortBy, pageNumber, pageSize }
    * @returns {Promise<{data: Object[], total: number}>}
    */
-  async list(orm, params = {}) {
+  async list(params = {}) {
     const domain = LetterDAO._buildDomain(params.search || []);
     // Always filter to letters in translation queue
     domain.push(["state", "=", "Global Partner translation queue"]);
@@ -34,8 +34,8 @@ export const LetterDAO = {
     const order = LetterDAO._buildOrder(params.sortBy || []);
 
     const [ids, total] = await Promise.all([
-      orm.search("correspondence", domain, { offset, limit, order }),
-      orm.searchCount("correspondence", domain),
+      search("correspondence", domain, { offset, limit, order }),
+      searchCount("correspondence", domain),
     ]);
 
     if (!ids || ids.length === 0) {
@@ -43,31 +43,29 @@ export const LetterDAO = {
     }
 
     // list_letters is a record-level method; pass IDs as first arg
-    const rawLetters = await orm.call("correspondence", "list_letters", [ids]);
+    const rawLetters = await call("correspondence", "list_letters", [ids]);
     const data = (rawLetters || []).map((l) => LetterDAO._cleanLetter(l));
     return { data, total };
   },
 
   /**
    * List all IDs matching params (for select-all).
-   * @param {Object} orm
    * @param {Object} params
    * @returns {Promise<number[]>}
    */
-  async listIds(orm, params = {}) {
+  async listIds(params = {}) {
     const domain = LetterDAO._buildDomain(params.search || []);
     domain.push(["state", "=", "Global Partner translation queue"]);
-    return orm.search("correspondence", domain);
+    return search("correspondence", domain);
   },
 
   /**
    * Save (update) a translation in progress.
-   * @param {Object} orm
    * @param {Object} letter
    * @returns {Promise<boolean>}
    */
-  async update(orm, letter) {
-    return orm.call("correspondence", "save_translation", [
+  async update(letter) {
+    return call("correspondence", "save_translation", [
       [letter.id],
       letter.translatedElements,
       letter.translatorId || false,
@@ -76,12 +74,11 @@ export const LetterDAO = {
 
   /**
    * Submit a completed translation.
-   * @param {Object} orm
    * @param {Object} letter
    * @returns {Promise<boolean>}
    */
-  async submit(orm, letter) {
-    return orm.call("correspondence", "submit_translation", [
+  async submit(letter) {
+    return call("correspondence", "submit_translation", [
       [letter.id],
       letter.translatedElements,
       letter.translatorId || false,
@@ -90,14 +87,13 @@ export const LetterDAO = {
 
   /**
    * Report an issue with a letter.
-   * @param {Object} orm
    * @param {number} letterId
    * @param {string} issueType
    * @param {string} message
    * @returns {Promise<boolean>}
    */
-  async reportIssue(orm, letterId, issueType, message) {
-    return orm.call("correspondence", "raise_translation_issue", [
+  async reportIssue(letterId, issueType, message) {
+    return call("correspondence", "raise_translation_issue", [
       [parseInt(letterId, 10)],
       issueType,
       message,
@@ -106,45 +102,41 @@ export const LetterDAO = {
 
   /**
    * Reply to translator comments on a letter.
-   * @param {Object} orm
    * @param {Object} letter
    * @param {string} html
    * @returns {Promise<boolean>}
    */
-  async replyToComments(orm, letter, html) {
-    return orm.call("correspondence", "reply_to_comments", [[letter.id], html]);
+  async replyToComments(letter, html) {
+    return call("correspondence", "reply_to_comments", [[letter.id], html]);
   },
 
   /**
    * Mark all comments as read.
-   * @param {Object} orm
    * @param {Object} letter
    * @returns {Promise<boolean>}
    */
-  async markCommentsAsRead(orm, letter) {
-    return orm.call("correspondence", "mark_comments_read", [[letter.id]]);
+  async markCommentsAsRead(letter) {
+    return call("correspondence", "mark_comments_read", [[letter.id]]);
   },
 
   /**
    * Put a letter back into the translation queue (resubmit).
-   * @param {Object} orm
    * @param {Object} letter
    * @returns {Promise<boolean>}
    */
-  async makeTranslatable(orm, letter) {
-    return orm.call("correspondence", "action_resubmit_to_translation", [
+  async makeTranslatable(letter) {
+    return call("correspondence", "action_resubmit_to_translation", [
       [letter.id],
     ]);
   },
 
   /**
    * Remove a letter from the translation queue.
-   * @param {Object} orm
    * @param {Object} letter
    * @returns {Promise<boolean>}
    */
-  async deleteLetter(orm, letter) {
-    return orm.call("correspondence", "action_remove_local_translate", [
+  async deleteLetter(letter) {
+    return call("correspondence", "action_remove_local_translate", [
       [letter.id],
     ]);
   },
