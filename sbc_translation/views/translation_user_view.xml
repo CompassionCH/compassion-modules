@@ -79,6 +79,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_translation_platform" parent="sbc_compassion.menu_correspondence" sequence="4" name="Translation Platform"/>
-    <menuitem id="menu_translation_user" parent="menu_translation_platform" name="Translators" action="action_compassion_translation_user_form" sequence="2"/>
+    <menuitem id="menu_translation_platform" parent="menu_translation_platform_app" sequence="2" name="Translation Platform" action="action_translation_platform" />
+    <menuitem id="menu_translation_platform_manager" parent="menu_translation_platform_app" sequence="1" name="Manager" groups="sbc_translation.group_manager" />
+    <menuitem id="menu_translation_user" parent="menu_translation_platform_manager" name="Translators" action="action_compassion_translation_user_form" sequence="2"/>
 </odoo>

@@ -16,7 +16,7 @@ const AUTOSAVE_DELAY_MS = 30000; // 30 seconds
  * Submitted confirmation modal.
  */
 class TpLetterSubmittedModal extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" title="'Translation Submitted'" onClose="props.onClose">
             <div class="p-4 text-center">
                 <i class="fa fa-check-circle fa-4x text-success mb-3 d-block" />
@@ -30,12 +30,12 @@ class TpLetterSubmittedModal extends Component {
             </t>
         </TpModal>
     `;
-    static components = { TpModal };
-    static props = {
-        active: { type: Boolean },
-        onClose: { type: Function },
-        onHome: { type: Function },
-    };
+  static components = { TpModal };
+  static props = {
+    active: { type: Boolean },
+    onClose: { type: Function },
+    onHome: { type: Function },
+  };
 }
 
 /**
@@ -46,7 +46,7 @@ class TpLetterSubmittedModal extends Component {
  *   translator  {Object}
  */
 export class TpLetterEdit extends Component {
-    static template = xml`
+  static template = xml`
         <TpLetterViewer
             letter="state.letter"
             letterId="props.letterId"
@@ -62,7 +62,7 @@ export class TpLetterEdit extends Component {
                     <i class="fa fa-exclamation-triangle me-1" />Signal Problem
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-success"
-                        t-on-click="() => save()">
+                        t-on-click="() => this.save()">
                     <i class="fa fa-floppy-o me-1" />Save
                 </button>
                 <button type="button" class="btn btn-sm btn-primary"
@@ -77,7 +77,7 @@ export class TpLetterEdit extends Component {
                 <TpSignalProblem active="state.signalProblemModal"
                                  letterId="props.letterId"
                                  onClose="() => state.signalProblemModal = false"
-                                 onRefresh="() => _refreshLetter()" />
+                                 onRefresh="() => this._refreshLetter()" />
                 <TpLetterSubmittedModal active="state.letterSubmitted"
                                         onClose="() => state.letterSubmitted = false"
                                         onHome="() => props.navigate('home')" />
@@ -95,133 +95,140 @@ export class TpLetterEdit extends Component {
         </TpLetterViewer>
     `;
 
-    static components = {
-        TpLetterViewer,
-        TpSignalProblem,
-        TpLetterSubmittedModal,
-        TpContentEditor,
-        TpBlurLoader,
-    };
+  static components = {
+    TpLetterViewer,
+    TpSignalProblem,
+    TpLetterSubmittedModal,
+    TpContentEditor,
+    TpBlurLoader,
+  };
 
-    static props = {
-        letterId: {},
-        navigate: { type: Function },
-        translator: { type: Object, optional: true },
-    };
+  static props = {
+    letterId: {},
+    navigate: { type: Function },
+    translator: { type: Object, optional: true },
+  };
 
-    state = useState({
-        loading: false,
-        internalLoading: false,
-        saveLoading: false,
-        letter: undefined,
-        signalProblemModal: false,
-        letterSubmitted: false,
-        saveTimeout: undefined,
+  state = useState({
+    loading: false,
+    internalLoading: false,
+    saveLoading: false,
+    letter: undefined,
+    signalProblemModal: false,
+    letterSubmitted: false,
+    saveTimeout: undefined,
+  });
+
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    this.state.loading = true;
+    onMounted(() => this._refreshLetter());
+
+    // Keyboard shortcuts: Ctrl+S saves
+    useEffect(() => {
+      const listener = (event) => {
+        if (event.ctrlKey && event.key === "s") {
+          event.preventDefault();
+          if (this.state.saveTimeout) {
+            clearTimeout(this.state.saveTimeout);
+            this.state.saveTimeout = undefined;
+          }
+          this.save(true);
+        }
+      };
+      document.addEventListener("keydown", listener);
+
+      // Auto-save triggered by typing in textarea/input inside the editor
+      const inputListener = (event) => {
+        const target = event.target;
+        if (
+          target &&
+          (target.tagName === "TEXTAREA" || target.tagName === "INPUT")
+        ) {
+          this._queueSave();
+        }
+      };
+      document.addEventListener("input", inputListener);
+
+      return () => {
+        document.removeEventListener("keydown", listener);
+        document.removeEventListener("input", inputListener);
+      };
     });
+  }
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        this.state.loading = true;
-        onMounted(() => this._refreshLetter());
+  async _refreshLetter() {
+    try {
+      const letter = await LetterDAO.find(this.orm, this.props.letterId);
+      if (!letter) {
+        this.notification.add(
+          _t("Unable to find letter with identifier ") + this.props.letterId,
+          { type: "danger" },
+        );
+      } else {
+        this.state.letter = letter;
+      }
+    } catch (e) {
+      this.notification.add(_t("Error loading letter"), { type: "danger" });
+    } finally {
+      this.state.loading = false;
+    }
+  }
 
-        // Keyboard shortcuts: Ctrl+S saves
-        useEffect(() => {
-            const listener = (event) => {
-                if (event.ctrlKey && event.key === "s") {
-                    event.preventDefault();
-                    if (this.state.saveTimeout) {
-                        clearTimeout(this.state.saveTimeout);
-                        this.state.saveTimeout = undefined;
-                    }
-                    this.save(true);
-                }
-            };
-            document.addEventListener("keydown", listener);
+  _queueSave() {
+    if (this.state.saveTimeout) clearTimeout(this.state.saveTimeout);
+    this.state.saveTimeout = setTimeout(
+      () => this.save(true),
+      AUTOSAVE_DELAY_MS,
+    );
+  }
 
-            // Auto-save triggered by typing in textarea/input inside the editor
-            const inputListener = (event) => {
-                const target = event.target;
-                if (target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT")) {
-                    this._queueSave();
-                }
-            };
-            document.addEventListener("input", inputListener);
+  async save(background = false) {
+    if (!this.state.letter?.translatedElements || this.state.saveLoading)
+      return;
 
-            return () => {
-                document.removeEventListener("keydown", listener);
-                document.removeEventListener("input", inputListener);
-            };
-        });
+    if (!background) this.state.internalLoading = true;
+    this.state.saveLoading = true;
+
+    // If not yet attributed, assign current translator
+    const newAttribution = !this.state.letter.translatorId;
+    if (newAttribution && this.props.translator) {
+      this.state.letter.translatorId = this.props.translator.translatorId;
     }
 
-    async _refreshLetter() {
-        try {
-            const letter = await LetterDAO.find(this.orm, this.props.letterId);
-            if (!letter) {
-                this.notification.add(
-                    _t("Unable to find letter with identifier ") + this.props.letterId,
-                    { type: "danger" }
-                );
-            } else {
-                this.state.letter = letter;
-            }
-        } catch (e) {
-            this.notification.add(_t("Error loading letter"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
+    try {
+      await LetterDAO.update(this.orm, this.state.letter);
+      if (!background) {
+        this.notification.add(_t("Letter saved"), { type: "success" });
+      }
+      // Refresh lastUpdate from server
+      const updated = await LetterDAO.find(this.orm, this.props.letterId);
+      if (updated) this.state.letter.lastUpdate = updated.lastUpdate;
+    } catch (e) {
+      this.notification.add(_t("Unable to save letter"), { type: "danger" });
+    } finally {
+      if (!background) this.state.internalLoading = false;
+      this.state.saveLoading = false;
     }
+  }
 
-    _queueSave() {
-        if (this.state.saveTimeout) clearTimeout(this.state.saveTimeout);
-        this.state.saveTimeout = setTimeout(() => this.save(true), AUTOSAVE_DELAY_MS);
+  async submit() {
+    if (!this.state.letter?.translatedElements) return;
+    if (this.state.saveTimeout) clearTimeout(this.state.saveTimeout);
+    this.state.internalLoading = true;
+    try {
+      await LetterDAO.submit(this.orm, this.state.letter);
+      this.state.letterSubmitted = true;
+    } catch (e) {
+      this.notification.add(
+        _t("Unable to save and submit letter, please save it first and retry."),
+        { type: "danger" },
+      );
+    } finally {
+      this.state.internalLoading = false;
     }
-
-    async save(background = false) {
-        if (!this.state.letter?.translatedElements || this.state.saveLoading) return;
-
-        if (!background) this.state.internalLoading = true;
-        this.state.saveLoading = true;
-
-        // If not yet attributed, assign current translator
-        const newAttribution = !this.state.letter.translatorId;
-        if (newAttribution && this.props.translator) {
-            this.state.letter.translatorId = this.props.translator.translatorId;
-        }
-
-        try {
-            await LetterDAO.update(this.orm, this.state.letter);
-            if (!background) {
-                this.notification.add(_t("Letter saved"), { type: "success" });
-            }
-            // Refresh lastUpdate from server
-            const updated = await LetterDAO.find(this.orm, this.props.letterId);
-            if (updated) this.state.letter.lastUpdate = updated.lastUpdate;
-        } catch (e) {
-            this.notification.add(_t("Unable to save letter"), { type: "danger" });
-        } finally {
-            if (!background) this.state.internalLoading = false;
-            this.state.saveLoading = false;
-        }
-    }
-
-    async submit() {
-        if (!this.state.letter?.translatedElements) return;
-        if (this.state.saveTimeout) clearTimeout(this.state.saveTimeout);
-        this.state.internalLoading = true;
-        try {
-            await LetterDAO.submit(this.orm, this.state.letter);
-            this.state.letterSubmitted = true;
-        } catch (e) {
-            this.notification.add(
-                _t("Unable to save and submit letter, please save it first and retry."),
-                { type: "danger" }
-            );
-        } finally {
-            this.state.internalLoading = false;
-        }
-    }
+  }
 }
 
 export default TpLetterEdit;

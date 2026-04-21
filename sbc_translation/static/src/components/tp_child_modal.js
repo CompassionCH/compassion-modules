@@ -10,7 +10,7 @@ import { TpModal } from "./tp_modal";
  *   onClose {Function}
  */
 export class TpChildModal extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" onClose="props.onClose" title="'Child Protection'">
             <div class="p-3" style="max-width: 750px; max-height: 70vh; overflow-y: auto;">
                 <h6 class="fw-semibold">Expected/acceptable behaviors:</h6>
@@ -49,12 +49,12 @@ export class TpChildModal extends Component {
         </TpModal>
     `;
 
-    static components = { TpModal };
+  static components = { TpModal };
 
-    static props = {
-        active: { type: Boolean },
-        onClose: { type: Function },
-    };
+  static props = {
+    active: { type: Boolean },
+    onClose: { type: Function },
+  };
 }
 
 export default TpChildModal;

@@ -17,7 +17,7 @@ const PER_PAGE = 10;
  *   navigate {Function}
  */
 export class TpTranslators extends Component {
-    static template = xml`
+  static template = xml`
         <div class="container-fluid py-4">
             <div class="mb-4">
                 <h6 class="text-muted fw-light mb-0">Compassion</h6>
@@ -30,14 +30,14 @@ export class TpTranslators extends Component {
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th t-on-click="() => toggleSort('name')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('name')" class="cursor-pointer">
                                         Name <i t-att-class="sortIcon('name')" />
                                     </th>
-                                    <th t-on-click="() => toggleSort('email')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('email')" class="cursor-pointer">
                                         Email <i t-att-class="sortIcon('email')" />
                                     </th>
                                     <th>Role</th>
-                                    <th t-on-click="() => toggleSort('total')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('total')" class="cursor-pointer">
                                         Letters <i t-att-class="sortIcon('total')" />
                                     </th>
                                     <th>Skills</th>
@@ -48,13 +48,13 @@ export class TpTranslators extends Component {
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Search name…"
                                                t-att-value="getFilter('name')"
-                                               t-on-input="(e) => setFilter('name', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('name', e.target.value)" />
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Search email…"
                                                t-att-value="getFilter('email')"
-                                               t-on-input="(e) => setFilter('email', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('email', e.target.value)" />
                                     </td>
                                     <td colspan="4" />
                                 </tr>
@@ -84,7 +84,7 @@ export class TpTranslators extends Component {
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                t-on-click="() => openSkillsModal(translator)">
+                                                t-on-click="() => this.openSkillsModal(translator)">
                                             <i class="fa fa-cog me-1" />Skills
                                         </button>
                                     </td>
@@ -126,109 +126,111 @@ export class TpTranslators extends Component {
         </div>
     `;
 
-    static components = { TpLoader, TpLanguagesPickModal };
+  static components = { TpLoader, TpLanguagesPickModal };
 
-    static props = {
-        navigate: { type: Function },
-    };
+  static props = {
+    navigate: { type: Function },
+  };
 
-    PER_PAGE = PER_PAGE;
+  PER_PAGE = PER_PAGE;
 
-    state = useState({
-        translators: [],
-        total: 0,
-        page: 0,
-        loading: false,
-        filters: {},
-        sortBy: [],
-        editingTranslator: null,
-        searchTimeout: null,
-    });
+  state = useState({
+    translators: [],
+    total: 0,
+    page: 0,
+    loading: false,
+    filters: {},
+    sortBy: [],
+    editingTranslator: null,
+    searchTimeout: null,
+  });
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        onMounted(() => this._loadTranslators());
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    onMounted(() => this._loadTranslators());
+  }
+
+  async _loadTranslators() {
+    this.state.loading = true;
+    try {
+      const search = Object.entries(this.state.filters)
+        .filter(([, term]) => term.trim())
+        .map(([col, term]) => ({ column: col, term }));
+
+      const result = await TranslatorDAO.list(this.orm, {
+        search,
+        sortBy: this.state.sortBy,
+        pageNumber: this.state.page,
+        pageSize: PER_PAGE,
+      });
+      this.state.translators = result.data;
+      this.state.total = result.total;
+    } catch (e) {
+      this.notification.add(_t("Unable to load translators"), {
+        type: "danger",
+      });
+    } finally {
+      this.state.loading = false;
     }
+  }
 
-    async _loadTranslators() {
-        this.state.loading = true;
-        try {
-            const search = Object.entries(this.state.filters)
-                .filter(([, term]) => term.trim())
-                .map(([col, term]) => ({ column: col, term }));
+  getFilter(col) {
+    return this.state.filters[col] || "";
+  }
 
-            const result = await TranslatorDAO.list(this.orm, {
-                search,
-                sortBy: this.state.sortBy,
-                pageNumber: this.state.page,
-                pageSize: PER_PAGE,
-            });
-            this.state.translators = result.data;
-            this.state.total = result.total;
-        } catch (e) {
-            this.notification.add(_t("Unable to load translators"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
+  setFilter(col, value) {
+    if (this.state.searchTimeout) clearTimeout(this.state.searchTimeout);
+    this.state.filters[col] = value;
+    this.state.searchTimeout = setTimeout(() => {
+      this.state.page = 0;
+      this._loadTranslators();
+    }, 400);
+  }
+
+  sortIcon(col) {
+    const clause = this.state.sortBy.find((s) => s.startsWith(col));
+    if (!clause) return "fa fa-sort text-muted";
+    return clause.endsWith("desc") ? "fa fa-sort-down" : "fa fa-sort-up";
+  }
+
+  toggleSort(col) {
+    const index = this.state.sortBy.findIndex((s) => s.startsWith(col));
+    if (index >= 0) {
+      const dir = this.state.sortBy[index].endsWith("asc") ? "desc" : "asc";
+      this.state.sortBy[index] = `${col} ${dir}`;
+    } else {
+      this.state.sortBy = [`${col} asc`];
     }
+    this._loadTranslators();
+  }
 
-    getFilter(col) {
-        return this.state.filters[col] || "";
+  prevPage() {
+    if (this.state.page > 0) {
+      this.state.page--;
+      this._loadTranslators();
     }
+  }
 
-    setFilter(col, value) {
-        if (this.state.searchTimeout) clearTimeout(this.state.searchTimeout);
-        this.state.filters[col] = value;
-        this.state.searchTimeout = setTimeout(() => {
-            this.state.page = 0;
-            this._loadTranslators();
-        }, 400);
+  nextPage() {
+    if ((this.state.page + 1) * PER_PAGE < this.state.total) {
+      this.state.page++;
+      this._loadTranslators();
     }
+  }
 
-    sortIcon(col) {
-        const clause = this.state.sortBy.find((s) => s.startsWith(col));
-        if (!clause) return "fa fa-sort text-muted";
-        return clause.endsWith("desc") ? "fa fa-sort-down" : "fa fa-sort-up";
-    }
+  openSkillsModal(translator) {
+    this.state.editingTranslator = translator;
+  }
 
-    toggleSort(col) {
-        const index = this.state.sortBy.findIndex((s) => s.startsWith(col));
-        if (index >= 0) {
-            const dir = this.state.sortBy[index].endsWith("asc") ? "desc" : "asc";
-            this.state.sortBy[index] = `${col} ${dir}`;
-        } else {
-            this.state.sortBy = [`${col} asc`];
-        }
-        this._loadTranslators();
-    }
+  closeSkillsModal() {
+    this.state.editingTranslator = null;
+  }
 
-    prevPage() {
-        if (this.state.page > 0) {
-            this.state.page--;
-            this._loadTranslators();
-        }
-    }
-
-    nextPage() {
-        if ((this.state.page + 1) * PER_PAGE < this.state.total) {
-            this.state.page++;
-            this._loadTranslators();
-        }
-    }
-
-    openSkillsModal(translator) {
-        this.state.editingTranslator = translator;
-    }
-
-    closeSkillsModal() {
-        this.state.editingTranslator = null;
-    }
-
-    onSkillsChanged() {
-        this.closeSkillsModal();
-        this._loadTranslators();
-    }
+  onSkillsChanged() {
+    this.closeSkillsModal();
+    this._loadTranslators();
+  }
 }
 
 export default TpTranslators;

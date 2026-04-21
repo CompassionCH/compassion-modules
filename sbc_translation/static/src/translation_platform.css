@@ -5,83 +5,83 @@
 
 /* Compassion brand colour */
 :root {
-    --tp-compassion: #1f6891;
-    --tp-compassion-dark: #155172;
+  --tp-compassion: #1f6891;
+  --tp-compassion-dark: #155172;
 }
 
 /* Sidebar */
 .tp-sidebar {
-    background-color: var(--tp-compassion) !important;
+  background-color: var(--tp-compassion) !important;
 }
 
 .tp-sidebar .btn-link {
-    border-radius: 8px;
-    transition: background 0.15s;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .tp-sidebar .btn-link:hover,
 .tp-sidebar .tp-nav-active {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
 }
 
 /* Brand colour utilities */
 .bg-compassion {
-    background-color: var(--tp-compassion) !important;
+  background-color: var(--tp-compassion) !important;
 }
 
 .text-compassion {
-    color: var(--tp-compassion) !important;
+  color: var(--tp-compassion) !important;
 }
 
 /* Cards in the home screen */
 .tp-translation-card {
-    min-width: 260px;
-    max-width: 300px;
+  min-width: 260px;
+  max-width: 300px;
 }
 
 /* Letter viewer layout */
 .tp-letter-viewer {
-    height: calc(100vh - 50px);
-    overflow: hidden;
+  height: calc(100vh - 50px);
+  overflow: hidden;
 }
 
 #tp-letter-viewer-content {
-    overflow-y: auto;
-    height: 100%;
+  overflow-y: auto;
+  height: 100%;
 }
 
 /* Content editor */
 #tp-content-editor .row {
-    border-radius: 4px;
-    overflow: hidden;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* Modal backdrop z-index fix (Odoo may have its own) */
 .tp-modal.show {
-    z-index: 1055;
+  z-index: 1055;
 }
 .tp-modal + .modal-backdrop {
-    z-index: 1054;
+  z-index: 1054;
 }
 
 /* Cursor utilities */
 .cursor-pointer {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 /* Pagination for tables inside cards */
 .tp-root .pagination .page-link {
-    font-size: 0.85rem;
+  font-size: 0.85rem;
 }
 
 /* Transitions */
 .tp-root .transition-all {
-    transition: all 0.15s ease;
+  transition: all 0.15s ease;
 }

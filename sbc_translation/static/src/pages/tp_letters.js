@@ -1,6 +1,12 @@
 /** @odoo-module */
 
-import { Component, xml, useState, onMounted, onWillUpdateProps } from "@odoo/owl";
+import {
+  Component,
+  xml,
+  useState,
+  onMounted,
+  onWillUpdateProps,
+} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { LetterDAO } from "../models/letter_dao";
@@ -13,7 +19,7 @@ const LETTERS_PER_PAGE = 10;
  * Priority badge.
  */
 class TpLetterPriority extends Component {
-    static template = xml`
+  static template = xml`
         <span class="badge"
               t-att-class="{
                 'bg-danger': props.priority >= 4,
@@ -24,12 +30,12 @@ class TpLetterPriority extends Component {
               }"
               t-esc="priorityLabel" />
     `;
-    static props = { priority: { type: Number, optional: true } };
+  static props = { priority: { type: Number, optional: true } };
 
-    get priorityLabel() {
-        const labels = { 0: "—", 1: "Low", 2: "Normal", 3: "High", 4: "Urgent" };
-        return labels[this.props.priority] || "—";
-    }
+  get priorityLabel() {
+    const labels = { 0: "—", 1: "Low", 2: "Normal", 3: "High", 4: "Urgent" };
+    return labels[this.props.priority] || "—";
+  }
 }
 
 /**
@@ -39,7 +45,7 @@ class TpLetterPriority extends Component {
  *   isAdmin     {Boolean}
  */
 export class TpLetters extends Component {
-    static template = xml`
+  static template = xml`
         <div class="container-fluid py-4">
             <div class="d-flex align-items-center mb-4 gap-3">
                 <div>
@@ -58,10 +64,10 @@ export class TpLetters extends Component {
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th t-on-click="() => toggleSort('priority')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('priority')" class="cursor-pointer">
                                         Priority <i t-att-class="sortIcon('priority')" />
                                     </th>
-                                    <th t-on-click="() => toggleSort('title')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('title')" class="cursor-pointer">
                                         Title <i t-att-class="sortIcon('title')" />
                                     </th>
                                     <th>Status</th>
@@ -69,7 +75,7 @@ export class TpLetters extends Component {
                                     <th>Source</th>
                                     <th>Target</th>
                                     <th t-if="props.isAdmin">Translator</th>
-                                    <th t-on-click="() => toggleSort('date')" class="cursor-pointer">
+                                    <th t-on-click="() => this.toggleSort('date')" class="cursor-pointer">
                                         Date <i t-att-class="sortIcon('date')" />
                                     </th>
                                     <th>Actions</th>
@@ -81,26 +87,26 @@ export class TpLetters extends Component {
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Search title…"
                                                t-att-value="getFilter('title')"
-                                               t-on-input="(e) => setFilter('title', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('title', e.target.value)" />
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Search status…"
                                                t-att-value="getFilter('status')"
-                                               t-on-input="(e) => setFilter('status', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('status', e.target.value)" />
                                     </td>
                                     <td />
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Source lang…"
                                                t-att-value="getFilter('source')"
-                                               t-on-input="(e) => setFilter('source', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('source', e.target.value)" />
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
                                                placeholder="Target lang…"
                                                t-att-value="getFilter('target')"
-                                               t-on-input="(e) => setFilter('target', e.target.value)" />
+                                               t-on-input="(e) => this.setFilter('target', e.target.value)" />
                                     </td>
                                     <td t-if="props.isAdmin" />
                                     <td />
@@ -175,105 +181,105 @@ export class TpLetters extends Component {
         </div>
     `;
 
-    static components = { TpLetterPriority, TpTranslatorButton, TpLoader };
+  static components = { TpLetterPriority, TpTranslatorButton, TpLoader };
 
-    static props = {
-        navigate: { type: Function },
-        isAdmin: { type: Boolean, optional: true },
-        translator: { type: Object, optional: true },
-    };
+  static props = {
+    navigate: { type: Function },
+    isAdmin: { type: Boolean, optional: true },
+    translator: { type: Object, optional: true },
+  };
 
-    LETTERS_PER_PAGE = LETTERS_PER_PAGE;
+  LETTERS_PER_PAGE = LETTERS_PER_PAGE;
 
-    state = useState({
-        letters: [],
-        total: 0,
-        page: 0,
-        loading: false,
-        filters: {},
-        sortBy: [],
-        searchTimeout: null,
-    });
+  state = useState({
+    letters: [],
+    total: 0,
+    page: 0,
+    loading: false,
+    filters: {},
+    sortBy: [],
+    searchTimeout: null,
+  });
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        onMounted(() => this._loadLetters());
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    onMounted(() => this._loadLetters());
+  }
+
+  async _loadLetters() {
+    this.state.loading = true;
+    try {
+      const search = Object.entries(this.state.filters)
+        .filter(([, term]) => term.trim())
+        .map(([col, term]) => ({ column: col, term }));
+
+      const result = await LetterDAO.list(this.orm, {
+        search,
+        sortBy: this.state.sortBy,
+        pageNumber: this.state.page,
+        pageSize: LETTERS_PER_PAGE,
+      });
+      this.state.letters = result.data;
+      this.state.total = result.total;
+    } catch (e) {
+      this.notification.add(_t("Unable to load letters"), { type: "danger" });
+    } finally {
+      this.state.loading = false;
     }
+  }
 
-    async _loadLetters() {
-        this.state.loading = true;
-        try {
-            const search = Object.entries(this.state.filters)
-                .filter(([, term]) => term.trim())
-                .map(([col, term]) => ({ column: col, term }));
+  getFilter(col) {
+    return this.state.filters[col] || "";
+  }
 
-            const result = await LetterDAO.list(this.orm, {
-                search,
-                sortBy: this.state.sortBy,
-                pageNumber: this.state.page,
-                pageSize: LETTERS_PER_PAGE,
-            });
-            this.state.letters = result.data;
-            this.state.total = result.total;
-        } catch (e) {
-            this.notification.add(_t("Unable to load letters"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
+  setFilter(col, value) {
+    if (this.state.searchTimeout) clearTimeout(this.state.searchTimeout);
+    this.state.filters[col] = value;
+    this.state.searchTimeout = setTimeout(() => {
+      this.state.page = 0;
+      this._loadLetters();
+    }, 400);
+  }
+
+  clearFilters() {
+    this.state.filters = {};
+    this.state.sortBy = [];
+    this.state.page = 0;
+    this._loadLetters();
+  }
+
+  sortIcon(col) {
+    const clause = this.state.sortBy.find((s) => s.startsWith(col));
+    if (!clause) return "fa fa-sort text-muted";
+    return clause.endsWith("desc") ? "fa fa-sort-down" : "fa fa-sort-up";
+  }
+
+  toggleSort(col) {
+    const index = this.state.sortBy.findIndex((s) => s.startsWith(col));
+    if (index >= 0) {
+      const current = this.state.sortBy[index];
+      const dir = current.endsWith("asc") ? "desc" : "asc";
+      this.state.sortBy[index] = `${col} ${dir}`;
+    } else {
+      this.state.sortBy = [`${col} asc`];
     }
+    this._loadLetters();
+  }
 
-    getFilter(col) {
-        return this.state.filters[col] || "";
+  prevPage() {
+    if (this.state.page > 0) {
+      this.state.page--;
+      this._loadLetters();
     }
+  }
 
-    setFilter(col, value) {
-        if (this.state.searchTimeout) clearTimeout(this.state.searchTimeout);
-        this.state.filters[col] = value;
-        this.state.searchTimeout = setTimeout(() => {
-            this.state.page = 0;
-            this._loadLetters();
-        }, 400);
+  nextPage() {
+    if ((this.state.page + 1) * LETTERS_PER_PAGE < this.state.total) {
+      this.state.page++;
+      this._loadLetters();
     }
-
-    clearFilters() {
-        this.state.filters = {};
-        this.state.sortBy = [];
-        this.state.page = 0;
-        this._loadLetters();
-    }
-
-    sortIcon(col) {
-        const clause = this.state.sortBy.find((s) => s.startsWith(col));
-        if (!clause) return "fa fa-sort text-muted";
-        return clause.endsWith("desc") ? "fa fa-sort-down" : "fa fa-sort-up";
-    }
-
-    toggleSort(col) {
-        const index = this.state.sortBy.findIndex((s) => s.startsWith(col));
-        if (index >= 0) {
-            const current = this.state.sortBy[index];
-            const dir = current.endsWith("asc") ? "desc" : "asc";
-            this.state.sortBy[index] = `${col} ${dir}`;
-        } else {
-            this.state.sortBy = [`${col} asc`];
-        }
-        this._loadLetters();
-    }
-
-    prevPage() {
-        if (this.state.page > 0) {
-            this.state.page--;
-            this._loadLetters();
-        }
-    }
-
-    nextPage() {
-        if ((this.state.page + 1) * LETTERS_PER_PAGE < this.state.total) {
-            this.state.page++;
-            this._loadLetters();
-        }
-    }
+  }
 }
 
 export default TpLetters;

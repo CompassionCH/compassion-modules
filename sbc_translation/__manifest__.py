@@ -55,8 +55,7 @@
             "sbc_translation/static/src/pages/tp_home.js",
             "sbc_translation/static/src/pages/tp_translators.js",
             "sbc_translation/static/src/translation_platform.js",
-            "sbc_translation/js/translation_letter_counting_js.js",
-        ]
+        ],
     },
     "data": [
         "security/ir_groups.xml",

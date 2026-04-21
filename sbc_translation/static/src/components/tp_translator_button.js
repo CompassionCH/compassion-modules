@@ -12,7 +12,7 @@ import { TranslatorDAO } from "../models/translator_dao";
  *   translatorId {number}
  */
 export class TpTranslatorButton extends Component {
-    static template = xml`
+  static template = xml`
         <span>
             <button type="button"
                     class="btn btn-sm btn-link p-0"
@@ -50,33 +50,36 @@ export class TpTranslatorButton extends Component {
         </span>
     `;
 
-    static components = { TpModal };
+  static components = { TpModal };
 
-    static props = {
-        translatorId: { type: Number },
-    };
+  static props = {
+    translatorId: { type: Number },
+  };
 
-    state = useState({
-        translator: null,
-        loading: false,
-        showModal: false,
-    });
+  state = useState({
+    translator: null,
+    loading: false,
+    showModal: false,
+  });
 
-    setup() {
-        this.orm = useService("orm");
+  setup() {
+    this.orm = useService("orm");
+  }
+
+  async loadAndOpen() {
+    if (!this.state.translator) {
+      this.state.loading = true;
+      try {
+        this.state.translator = await TranslatorDAO.find(
+          this.orm,
+          this.props.translatorId,
+        );
+      } finally {
+        this.state.loading = false;
+      }
     }
-
-    async loadAndOpen() {
-        if (!this.state.translator) {
-            this.state.loading = true;
-            try {
-                this.state.translator = await TranslatorDAO.find(this.orm, this.props.translatorId);
-            } finally {
-                this.state.loading = false;
-            }
-        }
-        this.state.showModal = true;
-    }
+    this.state.showModal = true;
+  }
 }
 
 export default TpTranslatorButton;

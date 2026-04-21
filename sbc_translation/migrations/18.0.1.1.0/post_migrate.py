@@ -30,7 +30,9 @@ def migrate(cr, version):
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
 
-        tp_action = env.ref("sbc_translation.action_translation_platform", raise_if_not_found=False)
+        tp_action = env.ref(
+            "sbc_translation.action_translation_platform", raise_if_not_found=False
+        )
         group_user = env.ref("sbc_translation.group_user", raise_if_not_found=False)
 
         if not tp_action or not group_user:
@@ -40,14 +42,14 @@ def migrate(cr, version):
             return
 
         # Find all active external translators and set home action
-        translators = env["translation.user"].search([
-            ("active", "=", True),
-            ("user_id.share", "=", True),
-        ])
+        translators = env["translation.user"].search(
+            [
+                ("active", "=", True),
+                ("user_id.share", "=", True),
+            ]
+        )
         users = translators.mapped("user_id")
 
         if users:
             users.write({"action_id": tp_action.id})
-            _logger.info(
-                "Updated home action for %d translator users", len(users)
-            )
+            _logger.info("Updated home action for %d translator users", len(users))

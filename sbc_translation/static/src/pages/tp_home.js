@@ -17,7 +17,7 @@ import { TpBlurLoader } from "../components/tp_loader";
  *   navigate  {Function}
  */
 class TpTranslationCard extends Component {
-    static template = xml`
+  static template = xml`
         <div class="card tp-translation-card" style="min-width: 260px; max-width: 300px;"
              t-att-class="{
                'border-primary': props.status === 'highlight',
@@ -70,13 +70,13 @@ class TpTranslationCard extends Component {
         </div>
     `;
 
-    static props = {
-        title: { type: String },
-        remaining: { type: Number },
-        letters: { type: Array },
-        status: { type: String, optional: true },
-        navigate: { type: Function },
-    };
+  static props = {
+    title: { type: String },
+    remaining: { type: Number },
+    letters: { type: Array },
+    status: { type: String, optional: true },
+    navigate: { type: Function },
+  };
 }
 
 /**
@@ -87,15 +87,15 @@ class TpTranslationCard extends Component {
  *   onRefreshTranslator {Function}
  */
 export class TpHome extends Component {
-    static template = xml`
+  static template = xml`
         <div class="container py-4 position-relative">
             <TpBlurLoader active="state.loading" />
 
             <TpLanguagesPickModal
                 active="state.manageSkillsModal"
-                onClose="() => closeSkillsModal()"
+                onClose="() => this.closeSkillsModal()"
                 translatorId="props.translator ? props.translator.translatorId : undefined"
-                onChange="() => onSkillsChange()" />
+                onChange="() => this.onSkillsChange()" />
 
             <div class="text-center pt-4 pb-3">
                 <p class="text-muted fw-light fs-5">Compassion</p>
@@ -155,118 +155,124 @@ export class TpHome extends Component {
         </div>
     `;
 
-    static components = { TpLanguagesPickModal, TpTranslationCard, TpBlurLoader };
+  static components = { TpLanguagesPickModal, TpTranslationCard, TpBlurLoader };
 
-    static props = {
-        translator: { type: Object, optional: true },
-        navigate: { type: Function },
-        onRefreshTranslator: { type: Function },
-    };
+  static props = {
+    translator: { type: Object, optional: true },
+    navigate: { type: Function },
+    onRefreshTranslator: { type: Function },
+  };
 
-    state = useState({
-        loading: false,
-        skillLetters: [],
-        savedLetters: undefined,
-        lettersAwaitingValidation: [],
-        manageSkillsModal: false,
+  state = useState({
+    loading: false,
+    skillLetters: [],
+    savedLetters: undefined,
+    lettersAwaitingValidation: [],
+    manageSkillsModal: false,
+  });
+
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    onMounted(() => this._refresh());
+  }
+
+  async _refresh() {
+    this.state.loading = true;
+    try {
+      await Promise.all([
+        this._fetchLetters(),
+        this._fetchSaved(),
+        this._fetchValidationLetters(),
+      ]);
+    } finally {
+      this.state.loading = false;
+    }
+  }
+
+  async _fetchSaved() {
+    if (!this.props.translator) return;
+    this.state.savedLetters = await LetterDAO.list(this.orm, {
+      sortBy: ["priority desc", "date asc"],
+      pageNumber: 0,
+      pageSize: 5,
+      search: [
+        {
+          column: "translatorId",
+          term: this.props.translator.translatorId,
+          operator: "=",
+        },
+        { column: "status", term: "in progress" },
+        { column: "translationIssue", term: false, operator: "=" },
+      ],
     });
+  }
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        onMounted(() => this._refresh());
-    }
-
-    async _refresh() {
-        this.state.loading = true;
-        try {
-            await Promise.all([
-                this._fetchLetters(),
-                this._fetchSaved(),
-                this._fetchValidationLetters(),
-            ]);
-        } finally {
-            this.state.loading = false;
-        }
-    }
-
-    async _fetchSaved() {
-        if (!this.props.translator) return;
-        this.state.savedLetters = await LetterDAO.list(this.orm, {
-            sortBy: ["priority desc", "date asc"],
-            pageNumber: 0,
-            pageSize: 5,
-            search: [
-                { column: "translatorId", term: this.props.translator.translatorId, operator: "=" },
-                { column: "status", term: "in progress" },
-                { column: "translationIssue", term: false, operator: "=" },
-            ],
+  async _fetchValidationLetters() {
+    if (!this.props.translator) return;
+    const results = await Promise.all(
+      this.props.translator.skills.map(async (skill) => {
+        const letters = await LetterDAO.list(this.orm, {
+          search: [
+            { column: "status", term: "to validate" },
+            { column: "source", term: skill.source },
+            { column: "target", term: skill.target },
+          ],
         });
-    }
+        return { skill, letters: letters.data };
+      }),
+    );
+    this.state.lettersAwaitingValidation = results.filter(
+      (r) => !r.skill.verified && r.letters.length > 0,
+    );
+  }
 
-    async _fetchValidationLetters() {
-        if (!this.props.translator) return;
-        const results = await Promise.all(
-            this.props.translator.skills.map(async (skill) => {
-                const letters = await LetterDAO.list(this.orm, {
-                    search: [
-                        { column: "status", term: "to validate" },
-                        { column: "source", term: skill.source },
-                        { column: "target", term: skill.target },
-                    ],
-                });
-                return { skill, letters: letters.data };
-            })
-        );
-        this.state.lettersAwaitingValidation = results.filter(
-            (r) => !r.skill.verified && r.letters.length > 0
-        );
-    }
-
-    async _fetchLetters() {
-        if (!this.props.translator) return;
-        const results = await Promise.all(
-            this.props.translator.skills.map(async (skill) => {
-                const letters = await LetterDAO.list(this.orm, {
-                    sortBy: ["priority desc", "date asc"],
-                    pageSize: 5,
-                    pageNumber: 0,
-                    search: [
-                        { column: "status", term: "to do" },
-                        { column: "source", term: skill.source },
-                        { column: "target", term: skill.target },
-                        { column: "translationIssue", term: false, operator: "=" },
-                    ],
-                });
-                return { skill, total: letters.total, letters: letters.data };
-            })
-        );
-        // Put unverified skills first
-        this.state.skillLetters = results.sort((a, b) => {
-            if (a.skill.verified && !b.skill.verified) return 1;
-            if (!a.skill.verified && b.skill.verified) return -1;
-            return 0;
+  async _fetchLetters() {
+    if (!this.props.translator) return;
+    const results = await Promise.all(
+      this.props.translator.skills.map(async (skill) => {
+        const letters = await LetterDAO.list(this.orm, {
+          sortBy: ["priority desc", "date asc"],
+          pageSize: 5,
+          pageNumber: 0,
+          search: [
+            { column: "status", term: "to do" },
+            { column: "source", term: skill.source },
+            { column: "target", term: skill.target },
+            { column: "translationIssue", term: false, operator: "=" },
+          ],
         });
-    }
+        return { skill, total: letters.total, letters: letters.data };
+      }),
+    );
+    // Put unverified skills first
+    this.state.skillLetters = results.sort((a, b) => {
+      if (a.skill.verified && !b.skill.verified) return 1;
+      if (!a.skill.verified && b.skill.verified) return -1;
+      return 0;
+    });
+  }
 
-    getCardStatus(item) {
-        if (!item.skill.verified) {
-            const waiting = this.state.lettersAwaitingValidation.find((w) => w.skill === item.skill);
-            return waiting ? "waiting" : "unverified";
-        }
-        return undefined;
+  getCardStatus(item) {
+    if (!item.skill.verified) {
+      const waiting = this.state.lettersAwaitingValidation.find(
+        (w) => w.skill === item.skill,
+      );
+      return waiting ? "waiting" : "unverified";
     }
+    return undefined;
+  }
 
-    async onSkillsChange() {
-        this.state.manageSkillsModal = false;
-        this.state.loading = true;
-        await this.props.onRefreshTranslator();
-        await this._refresh();
-    }
+  async onSkillsChange() {
+    this.state.manageSkillsModal = false;
+    this.state.loading = true;
+    await this.props.onRefreshTranslator();
+    await this._refresh();
+  }
 
-    closeSkillsModal() {
-        this.state.manageSkillsModal = false;
-    }
+  closeSkillsModal() {
+    this.state.manageSkillsModal = false;
+  }
 }
 
 export default TpHome;

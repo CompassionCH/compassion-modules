@@ -622,14 +622,6 @@ class Correspondence(models.Model):
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
             ).create_commkit()
-        else:
-            # Recompose the letter image
-            self.with_user(SUPERUSER_ID).with_delay(
-                channel="root.sbc_compassion",
-                priority=50,
-                description="Compose B2S letter image",
-                identity_key=f"sbc.compose_letter.{self.ids}",
-            ).compose_letter_button()
 
     def list_letters(self):
         """API call to fetch letters to translate"""
@@ -673,7 +665,7 @@ class Correspondence(models.Model):
                 "age": partner.age,
                 "ref": partner.ref,
             },
-            "pdfUrl": f"{base_url}b2s_image?id={self.uuid}&disposition=inline",
+            "pdfUrl": f"/b2s_image?letter_uuid={self.uuid}&disposition=inline",
         }
 
     def get_translated_elements(self):

@@ -10,6 +10,7 @@
         <field name="tag">translation_platform</field>
         <!-- Make it full-screen by removing the breadcrumb / action manager header -->
         <field name="target">fullscreen</field>
+        <field name="path">translation-platform</field>
     </record>
 
     <!--
@@ -19,8 +20,8 @@
     -->
     <menuitem id="menu_translation_platform_app"
               name="Translation Platform"
-              parent="sbc_translation.menu_translation_platform"
-              action="action_translation_platform"
-              sequence="0"
-              groups="sbc_translation.group_user,sbc_translation.group_manager" />
+              sequence="3"
+              groups="sbc_translation.group_user"
+              web_icon="sbc_translation,static/img/menu_icon.png"
+    />
 </odoo>

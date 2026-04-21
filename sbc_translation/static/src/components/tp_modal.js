@@ -1,6 +1,13 @@
 /** @odoo-module */
 
-import { Component, xml, useState, onMounted, onWillUpdateProps, onPatched } from "@odoo/owl";
+import {
+  Component,
+  xml,
+  useState,
+  onMounted,
+  onWillUpdateProps,
+  onPatched,
+} from "@odoo/owl";
 import { TpLoader } from "./tp_loader";
 
 // Duration of the Bootstrap modal fade-in/out CSS transition (ms).
@@ -19,7 +26,7 @@ const MODAL_TRANSITION_DURATION_MS = 200;
  *   closeButtonText {String}  - label for the footer close button
  */
 export class TpModal extends Component {
-    static template = xml`
+  static template = xml`
         <div t-if="state.mounted"
              class="modal tp-modal"
              t-att-class="{ 'show d-block': state.display, 'd-none': !state.display }"
@@ -63,48 +70,48 @@ export class TpModal extends Component {
         <div t-if="state.display" class="modal-backdrop show" />
     `;
 
-    static components = { TpLoader };
+  static components = { TpLoader };
 
-    static props = {
-        active: { type: Boolean, optional: true },
-        title: { type: String, optional: true },
-        subtitle: { type: String, optional: true },
-        onClose: { type: Function, optional: true },
-        loading: { type: Boolean, optional: true },
-        showCloseButton: { type: Boolean, optional: true },
-        closeButtonText: { type: String, optional: true },
-        empty: { type: Boolean, optional: true },
-        dialogClass: { type: String, optional: true },
-        "*": {},
-    };
+  static props = {
+    active: { type: Boolean, optional: true },
+    title: { type: String, optional: true },
+    subtitle: { type: String, optional: true },
+    onClose: { type: Function, optional: true },
+    loading: { type: Boolean, optional: true },
+    showCloseButton: { type: Boolean, optional: true },
+    closeButtonText: { type: String, optional: true },
+    empty: { type: Boolean, optional: true },
+    dialogClass: { type: String, optional: true },
+    "*": {},
+  };
 
-    state = useState({
-        mounted: false,
-        display: false,
-    });
+  state = useState({
+    mounted: false,
+    display: false,
+  });
 
-    setup() {
-        onMounted(() => this._handleMount(this.props));
-        onWillUpdateProps((next) => this._handleMount(next));
-        onPatched(() => this._postRendered());
+  setup() {
+    onMounted(() => this._handleMount(this.props));
+    onWillUpdateProps((next) => this._handleMount(next));
+    onPatched(() => this._postRendered());
+  }
+
+  _handleMount(props) {
+    if (props.active && !this.state.mounted) {
+      this.state.mounted = true;
+    } else if (this.state.mounted && !props.active) {
+      this.state.display = false;
+      setTimeout(() => {
+        this.state.mounted = false;
+      }, MODAL_TRANSITION_DURATION_MS);
     }
+  }
 
-    _handleMount(props) {
-        if (props.active && !this.state.mounted) {
-            this.state.mounted = true;
-        } else if (this.state.mounted && !props.active) {
-            this.state.display = false;
-            setTimeout(() => {
-                this.state.mounted = false;
-            }, MODAL_TRANSITION_DURATION_MS);
-        }
+  _postRendered() {
+    if (this.props.active && this.state.mounted && !this.state.display) {
+      this.state.display = true;
     }
-
-    _postRendered() {
-        if (this.props.active && this.state.mounted && !this.state.display) {
-            this.state.display = true;
-        }
-    }
+  }
 }
 
 export default TpModal;

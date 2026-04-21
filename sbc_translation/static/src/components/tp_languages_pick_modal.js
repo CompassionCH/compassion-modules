@@ -15,7 +15,7 @@ import { TranslatorDAO } from "../models/translator_dao";
  *   onChange     {Function} - called after a skill is removed
  */
 export class TpTranslationSkills extends Component {
-    static template = xml`
+  static template = xml`
         <div>
             <div t-foreach="props.skills" t-as="skill" t-key="skill_index"
                  class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
@@ -35,30 +35,30 @@ export class TpTranslationSkills extends Component {
         </div>
     `;
 
-    static props = {
-        skills: { type: Array },
-        translatorId: { type: Number },
-        onChange: { type: Function },
-    };
+  static props = {
+    skills: { type: Array },
+    translatorId: { type: Number },
+    onChange: { type: Function },
+  };
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-    }
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+  }
 
-    async removeSkill(skill) {
-        try {
-            await TranslatorDAO.deleteSkill(this.orm, this.props.translatorId, {
-                source: skill.source,
-                target: skill.target,
-                verified: skill.verified,
-            });
-            this.notification.add(_t("Skill removed"), { type: "success" });
-            this.props.onChange();
-        } catch (e) {
-            this.notification.add(_t("Unable to remove skill"), { type: "danger" });
-        }
+  async removeSkill(skill) {
+    try {
+      await TranslatorDAO.deleteSkill(this.orm, this.props.translatorId, {
+        source: skill.source,
+        target: skill.target,
+        verified: skill.verified,
+      });
+      this.notification.add(_t("Skill removed"), { type: "success" });
+      this.props.onChange();
+    } catch (e) {
+      this.notification.add(_t("Unable to remove skill"), { type: "danger" });
     }
+  }
 }
 
 /**
@@ -70,7 +70,7 @@ export class TpTranslationSkills extends Component {
  *   translatorId {number}
  */
 export class TpLanguagesPickModal extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" onClose="props.onClose"
                  title="'Languages'" subtitle="'Your translation skills'"
                  loading="state.loading" closeButtonText="'Cancel'">
@@ -129,78 +129,86 @@ export class TpLanguagesPickModal extends Component {
         </TpModal>
     `;
 
-    static components = { TpModal, TpTranslationSkills };
+  static components = { TpModal, TpTranslationSkills };
 
-    static props = {
-        active: { type: Boolean },
-        onClose: { type: Function },
-        onChange: { type: Function },
-        translatorId: { type: Number, optional: true },
-    };
+  static props = {
+    active: { type: Boolean },
+    onClose: { type: Function },
+    onChange: { type: Function },
+    translatorId: { type: Number, optional: true },
+  };
 
-    state = useState({
-        loading: false,
-        competences: [],
-        potentialSkills: [],
-        allowedCompetences: [],
-        translator: null,
-    });
+  state = useState({
+    loading: false,
+    competences: [],
+    potentialSkills: [],
+    allowedCompetences: [],
+    translator: null,
+  });
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        this._loadData();
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    this._loadData();
+  }
+
+  async _loadData() {
+    this.state.loading = true;
+    try {
+      const [competences, translator] = await Promise.all([
+        SettingsDAO.translationCompetences(this.orm),
+        TranslatorDAO.find(this.orm, this.props.translatorId),
+      ]);
+      this.state.competences = competences;
+      this.state.translator = translator;
+      this.state.allowedCompetences = competences.filter(
+        (c) => !this.translatorHasSkill(c),
+      );
+    } catch (e) {
+      this.notification.add(_t("Unable to load translator information"), {
+        type: "danger",
+      });
+      this.props.onClose();
+    } finally {
+      this.state.loading = false;
     }
+  }
 
-    async _loadData() {
-        this.state.loading = true;
-        try {
-            const [competences, translator] = await Promise.all([
-                SettingsDAO.translationCompetences(this.orm),
-                TranslatorDAO.find(this.orm, this.props.translatorId),
-            ]);
-            this.state.competences = competences;
-            this.state.translator = translator;
-            this.state.allowedCompetences = competences.filter((c) => !this.translatorHasSkill(c));
-        } catch (e) {
-            this.notification.add(_t("Unable to load translator information"), { type: "danger" });
-            this.props.onClose();
-        } finally {
-            this.state.loading = false;
-        }
-    }
+  translatorHasSkill(competence) {
+    return (this.state.translator?.skills || []).some(
+      (s) => s.source === competence.source && s.target === competence.target,
+    );
+  }
 
-    translatorHasSkill(competence) {
-        return (this.state.translator?.skills || []).some(
-            (s) => s.source === competence.source && s.target === competence.target
-        );
+  addSkill() {
+    if (this.state.allowedCompetences.length > 0) {
+      this.state.potentialSkills.push({
+        competenceId: this.state.allowedCompetences[0].id,
+      });
     }
+  }
 
-    addSkill() {
-        if (this.state.allowedCompetences.length > 0) {
-            this.state.potentialSkills.push({
-                competenceId: this.state.allowedCompetences[0].id,
-            });
-        }
+  async registerSkills() {
+    this.state.loading = true;
+    try {
+      await TranslatorDAO.registerSkills(
+        this.orm,
+        this.props.translatorId,
+        this.state.potentialSkills.map((s) => parseInt(s.competenceId, 10)),
+      );
+      this.notification.add(_t("Your new skills have been registered"), {
+        type: "success",
+      });
+      this.state.potentialSkills = [];
+      this.props.onChange();
+    } catch (e) {
+      this.notification.add(_t("Unable to register translation skills"), {
+        type: "danger",
+      });
+    } finally {
+      this.state.loading = false;
     }
-
-    async registerSkills() {
-        this.state.loading = true;
-        try {
-            await TranslatorDAO.registerSkills(
-                this.orm,
-                this.props.translatorId,
-                this.state.potentialSkills.map((s) => parseInt(s.competenceId, 10))
-            );
-            this.notification.add(_t("Your new skills have been registered"), { type: "success" });
-            this.state.potentialSkills = [];
-            this.props.onChange();
-        } catch (e) {
-            this.notification.add(_t("Unable to register translation skills"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
-    }
+  }
 }
 
 export default TpLanguagesPickModal;

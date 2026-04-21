@@ -77,6 +77,6 @@
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
-    <menuitem id="menu_translation_pool" parent="menu_translation_platform" name="Translation Pool" action="action_letters_kanban" sequence="1"/>
-    <menuitem id="menu_translation_competence" parent="menu_translation_platform" name="Competences" action="action_compassion_translation_competence_form" sequence="3"/>
+    <menuitem id="menu_translation_pool" parent="menu_translation_platform_manager" name="Translation Pool" action="action_letters_kanban" sequence="1"/>
+    <menuitem id="menu_translation_competence" parent="menu_translation_platform_manager" name="Competences" action="action_compassion_translation_competence_form" sequence="3"/>
 </odoo>

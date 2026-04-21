@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Component, xml, useState, onMounted, reactive } from "@odoo/owl";
+import { Component, xml, useState, onMounted } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
@@ -11,13 +11,12 @@ import { TpLetterEdit } from "./pages/tp_letter_edit";
 import { TpTranslators } from "./pages/tp_translators";
 import { TpChildModal } from "./components/tp_child_modal";
 import { TpModal } from "./components/tp_modal";
-import { TpBlurLoader } from "./components/tp_loader";
 
 /**
  * Help modal.
  */
 class TpHelpModal extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" onClose="props.onClose" title="'Help'">
             <div class="p-3 small" style="max-width: 450px;">
                 <h6 class="fw-semibold">How to use the Translation Platform</h6>
@@ -33,8 +32,8 @@ class TpHelpModal extends Component {
             </div>
         </TpModal>
     `;
-    static components = { TpModal };
-    static props = { active: { type: Boolean }, onClose: { type: Function } };
+  static components = { TpModal };
+  static props = { active: { type: Boolean }, onClose: { type: Function } };
 }
 
 /**
@@ -44,7 +43,10 @@ class TpHelpModal extends Component {
  * and loads the current translator's info.
  */
 export class TranslationPlatform extends Component {
-    static template = xml`
+  // Client actions can receive framework-injected props; accept any shape.
+  static props = ["*"];
+
+  static template = xml`
         <div class="tp-root d-flex" style="min-height: 100vh;">
             <!-- Sidebar navigation -->
             <div class="tp-sidebar d-flex flex-column align-items-center py-3 bg-compassion text-white"
@@ -58,7 +60,7 @@ export class TranslationPlatform extends Component {
                         class="btn btn-link text-white p-2 mb-1"
                         title="Home"
                         t-att-class="{ 'tp-nav-active': state.page === 'home' }"
-                        t-on-click="() => navigate('home')">
+                        t-on-click="() => this.navigate('home')">
                     <i class="fa fa-home fa-lg" />
                 </button>
                 <!-- Letters -->
@@ -66,7 +68,7 @@ export class TranslationPlatform extends Component {
                         class="btn btn-link text-white p-2 mb-1"
                         title="Letters"
                         t-att-class="{ 'tp-nav-active': state.page === 'letters' }"
-                        t-on-click="() => navigate('letters')">
+                        t-on-click="() => this.navigate('letters')">
                     <i class="fa fa-envelope fa-lg" />
                 </button>
                 <!-- Translators (admin only) -->
@@ -75,7 +77,7 @@ export class TranslationPlatform extends Component {
                         t-if="state.translator and state.translator.role === 'admin'"
                         title="Translators"
                         t-att-class="{ 'tp-nav-active': state.page === 'translators' }"
-                        t-on-click="() => navigate('translators')">
+                        t-on-click="() => this.navigate('translators')">
                     <i class="fa fa-users fa-lg" />
                 </button>
                 <!-- Bottom utilities -->
@@ -132,56 +134,58 @@ export class TranslationPlatform extends Component {
         </div>
     `;
 
-    static components = {
-        TpHome,
-        TpLetters,
-        TpLetterEdit,
-        TpTranslators,
-        TpChildModal,
-        TpHelpModal,
-    };
+  static components = {
+    TpHome,
+    TpLetters,
+    TpLetterEdit,
+    TpTranslators,
+    TpChildModal,
+    TpHelpModal,
+  };
 
-    state = useState({
-        page: "home",
-        letterId: null,
-        loading: false,
-        translator: null,
-        childModal: false,
-        helpModal: false,
-    });
+  state = useState({
+    page: "home",
+    letterId: null,
+    loading: false,
+    translator: null,
+    childModal: false,
+    helpModal: false,
+  });
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        this.state.loading = true;
-        onMounted(() => this._loadTranslator());
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    this.state.loading = true;
+    onMounted(() => this._loadTranslator());
+  }
+
+  async _loadTranslator() {
+    try {
+      this.state.translator = await TranslatorDAO.current(this.orm);
+    } catch (e) {
+      this.notification.add(_t("Unable to load your translator profile"), {
+        type: "danger",
+      });
+    } finally {
+      this.state.loading = false;
     }
+  }
 
-    async _loadTranslator() {
-        try {
-            this.state.translator = await TranslatorDAO.current(this.orm);
-        } catch (e) {
-            this.notification.add(_t("Unable to load your translator profile"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
-    }
+  refreshTranslator = async () => {
+    this.state.translator = await TranslatorDAO.current(this.orm);
+  };
 
-    async refreshTranslator() {
-        this.state.translator = await TranslatorDAO.current(this.orm);
+  /**
+   * State-based navigation.
+   * @param {string} page - 'home' | 'letters' | 'letter-edit' | 'translators'
+   * @param {Object} [params] - e.g. { letterId: 42 }
+   */
+  navigate = (page, params = {}) => {
+    this.state.page = page;
+    if (params.letterId !== undefined) {
+      this.state.letterId = params.letterId;
     }
-
-    /**
-     * State-based navigation.
-     * @param {string} page - 'home' | 'letters' | 'letter-edit' | 'translators'
-     * @param {Object} [params] - e.g. { letterId: 42 }
-     */
-    navigate(page, params = {}) {
-        this.state.page = page;
-        if (params.letterId !== undefined) {
-            this.state.letterId = params.letterId;
-        }
-    }
+  };
 }
 
 // Register as an Odoo client action

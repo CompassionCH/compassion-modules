@@ -1,6 +1,15 @@
 /** @odoo-module */
 
-import { Component, xml, useState, useRef, onMounted, onWillUnmount, onWillUpdateProps, onPatched } from "@odoo/owl";
+import {
+  Component,
+  xml,
+  useState,
+  useRef,
+  onMounted,
+  onWillUnmount,
+  onWillUpdateProps,
+  onPatched,
+} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { TpLoader } from "./tp_loader";
@@ -14,7 +23,7 @@ import { TpSignalProblem } from "./tp_signal_problem";
  *   navigateBack {Function} - navigate back to letters list
  */
 class TpLetterInfoHeader extends Component {
-    static template = xml`
+  static template = xml`
         <div t-if="props.letter" id="tp-letter-viewer-header">
             <div class="d-flex bg-white border-bottom p-3 flex-wrap gap-4">
                 <!-- Child info -->
@@ -97,13 +106,13 @@ class TpLetterInfoHeader extends Component {
         </div>
     `;
 
-    static components = { TpLoader };
+  static components = { TpLoader };
 
-    static props = {
-        letter: { type: Object, optional: true },
-        loading: { type: Boolean, optional: true },
-        slots: { optional: true },
-    };
+  static props = {
+    letter: { type: Object, optional: true },
+    loading: { type: Boolean, optional: true },
+    slots: { optional: true },
+  };
 }
 
 /**
@@ -124,7 +133,7 @@ class TpLetterInfoHeader extends Component {
  *     right-pane     - additional overlay for the right pane
  */
 export class TpLetterViewer extends Component {
-    static template = xml`
+  static template = xml`
         <div class="tp-letter-viewer position-relative" style="height: calc(100vh - 50px);">
             <t t-slot="unsafe" />
             <TpSignalProblem active="state.signalProblemModal"
@@ -210,21 +219,21 @@ export class TpLetterViewer extends Component {
         </div>
     `;
 
-    static components = { TpLetterInfoHeader, TpSignalProblem, TpLoader };
+  static components = { TpLetterInfoHeader, TpSignalProblem, TpLoader };
 
-    static props = {
-        letter: { type: Object, optional: true },
-        letterId: {},
-        loading: { type: Boolean, optional: true },
-        smallLoading: { type: Boolean, optional: true },
-        navigateBack: { type: Function, optional: true },
-        slots: { optional: true },
-    };
+  static props = {
+    letter: { type: Object, optional: true },
+    letterId: {},
+    loading: { type: Boolean, optional: true },
+    smallLoading: { type: Boolean, optional: true },
+    navigateBack: { type: Function, optional: true },
+    slots: { optional: true },
+  };
 
-    state = useState({
-        mode: "letter",
-        signalProblemModal: false,
-    });
+  state = useState({
+    mode: "letter",
+    signalProblemModal: false,
+  });
 }
 
 export default TpLetterViewer;

@@ -11,7 +11,7 @@ import { TpModal } from "./tp_modal";
  *   onClose {Function}
  */
 class TpTipsModal extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" onClose="props.onClose" title="'Tips for a Successful Translation'">
             <div class="p-3 small" style="max-width: 500px;">
                 <ul class="mb-0">
@@ -25,11 +25,11 @@ class TpTipsModal extends Component {
             </div>
         </TpModal>
     `;
-    static components = { TpModal };
-    static props = {
-        active: { type: Boolean },
-        onClose: { type: Function },
-    };
+  static components = { TpModal };
+  static props = {
+    active: { type: Boolean },
+    onClose: { type: Function },
+  };
 }
 
 /**
@@ -38,7 +38,7 @@ class TpTipsModal extends Component {
  *   letter {Object} - letter data with translatedElements array
  */
 export class TpContentEditor extends Component {
-    static template = xml`
+  static template = xml`
         <div id="tp-content-editor">
             <div t-foreach="props.letter.translatedElements"
                  t-as="element"
@@ -65,7 +65,7 @@ export class TpContentEditor extends Component {
                      class="d-flex gap-1 px-3 py-1 border-top bg-light">
                     <button type="button" class="btn btn-sm btn-outline-secondary"
                             title="View source text"
-                            t-on-click="() => openSource(element.id)">
+                            t-on-click="() => this.openSource(element.id)">
                         <i class="fa fa-eye" /> Source
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -90,27 +90,29 @@ export class TpContentEditor extends Component {
         </div>
     `;
 
-    static components = { TpModal, TpTipsModal };
+  static components = { TpModal, TpTipsModal };
 
-    static props = {
-        letter: { type: Object },
-    };
+  static props = {
+    letter: { type: Object },
+  };
 
-    state = useState({
-        sourceElem: undefined,
-        showTips: false,
-    });
+  state = useState({
+    sourceElem: undefined,
+    showTips: false,
+  });
 
-    openSource(elemId) {
-        const elem = this.props.letter.translatedElements.find((e) => e.id === elemId);
-        if (elem && elem.type === "paragraph") {
-            this.state.sourceElem = elem.source || "";
-        }
+  openSource(elemId) {
+    const elem = this.props.letter.translatedElements.find(
+      (e) => e.id === elemId,
+    );
+    if (elem && elem.type === "paragraph") {
+      this.state.sourceElem = elem.source || "";
     }
+  }
 
-    openTips() {
-        this.state.showTips = true;
-    }
+  openTips() {
+    this.state.showTips = true;
+  }
 }
 
 export default TpContentEditor;

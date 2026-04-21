@@ -14,7 +14,7 @@ import { SettingsDAO } from "../models/settings_dao";
  *   onClose   {Function}
  */
 export class TpSignalProblem extends Component {
-    static template = xml`
+  static template = xml`
         <TpModal active="props.active" onClose="props.onClose"
                  title="'Signal a Problem'"
                  subtitle="'Notify Compassion of a problem with this letter'"
@@ -36,58 +36,63 @@ export class TpSignalProblem extends Component {
         </TpModal>
     `;
 
-    static components = { TpModal };
+  static components = { TpModal };
 
-    static props = {
-        letterId: {},
-        active: { type: Boolean },
-        onClose: { type: Function },
-        onRefresh: { type: Function, optional: true },
-    };
+  static props = {
+    letterId: {},
+    active: { type: Boolean },
+    onClose: { type: Function },
+    onRefresh: { type: Function, optional: true },
+  };
 
-    state = useState({
-        loading: false,
-        message: "",
-        type: null,
-        types: [],
+  state = useState({
+    loading: false,
+    message: "",
+    type: null,
+    types: [],
+  });
+
+  setup() {
+    this.orm = useService("orm");
+    this.notification = useService("notification");
+    this.state.loading = true;
+    SettingsDAO.letterIssues(this.orm).then((res) => {
+      this.state.types = res;
+      this.state.type = res[0]?.id || null;
+      this.state.loading = false;
     });
+  }
 
-    setup() {
-        this.orm = useService("orm");
-        this.notification = useService("notification");
-        this.state.loading = true;
-        SettingsDAO.letterIssues(this.orm).then((res) => {
-            this.state.types = res;
-            this.state.type = res[0]?.id || null;
-            this.state.loading = false;
-        });
+  async submit() {
+    if (!this.state.type) {
+      this.notification.add(_t("Please select a problem in the list"), {
+        type: "warning",
+      });
+      return;
     }
-
-    async submit() {
-        if (!this.state.type) {
-            this.notification.add(_t("Please select a problem in the list"), { type: "warning" });
-            return;
-        }
-        this.state.loading = true;
-        try {
-            await this.orm.call("correspondence", "raise_translation_issue", [
-                [parseInt(this.props.letterId, 10)],
-                this.state.type,
-                this.state.message,
-            ]);
-            this.notification.add(_t("Issue successfully sent, it will be quickly reviewed"), {
-                type: "success",
-            });
-            this.props.onClose();
-            if (this.props.onRefresh) {
-                this.props.onRefresh();
-            }
-        } catch (e) {
-            this.notification.add(_t("Unable to submit issue"), { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
+    this.state.loading = true;
+    try {
+      await this.orm.call("correspondence", "raise_translation_issue", [
+        [parseInt(this.props.letterId, 10)],
+        this.state.type,
+        this.state.message,
+      ]);
+      this.notification.add(
+        _t("Issue successfully sent, it will be quickly reviewed"),
+        {
+          type: "success",
+        },
+      );
+      this.props.onClose();
+      if (this.props.onRefresh) {
+        this.props.onRefresh();
+      }
+    } catch (e) {
+      this.notification.add(_t("Unable to submit issue"), { type: "danger" });
+    } finally {
+      this.state.loading = false;
     }
+  }
 }
 
 export default TpSignalProblem;
