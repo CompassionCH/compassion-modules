@@ -5362,7 +5362,7 @@ msgstr "Lang"
 #: model:child.major.course.study,value:child_compassion.course_language
 #: model:child.school.subject,value:child_compassion.school_language
 msgid "Language"
-msgstr "Sprache:"
+msgstr "Sprache"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_languages
