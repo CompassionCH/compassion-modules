@@ -5220,7 +5220,7 @@ msgstr "Lang"
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__major_course_study__language
 #, python-format
 msgid "Language"
-msgstr "Sprache:"
+msgstr "Sprache"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__last_attended_project
