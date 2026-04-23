@@ -1,4 +1,4 @@
-import { Component, useState, xml } from "@odoo/owl";
+import { Component, useState } from "@odoo/owl";
 import { SettingsDAO } from "../models/settings_dao.esm";
 import { TpModal } from "./tp_modal.esm";
 import { call } from "../rpc.esm";
@@ -12,27 +12,7 @@ import { showNotification } from "../notification.esm";
  *   onClose   {Function}
  */
 export class TpSignalProblem extends Component {
-  static template = xml`
-        <TpModal active="props.active" onClose="props.onClose"
-                 title="'Signal a Problem'"
-                 subtitle="'Notify Compassion of a problem with this letter'"
-                 loading="state.loading">
-            <div class="p-3">
-                <select class="form-select form-select-sm mb-2" t-model="state.type">
-                    <option t-foreach="state.types" t-as="type" t-key="type.id"
-                            t-att-value="type.id" t-esc="type.text" />
-                </select>
-                <textarea class="form-control form-control-sm" rows="4"
-                          t-model="state.message"
-                          placeholder="Your Message" />
-            </div>
-            <t t-set-slot="footer-buttons">
-                <button type="button" class="btn btn-primary btn-sm" t-on-click="submit">
-                    Send Message
-                </button>
-            </t>
-        </TpModal>
-    `;
+  static template = 'sbc_translation.TpSignalProblem';
 
   static components = { TpModal };
 

@@ -826,3 +826,329 @@ msgstr "priorité à la traduction"
 #~ msgid "Your reply will be added in an automatic email with greetings."
 #~ msgstr ""
 #~ "Votre réponse sera ajoutée à un courriel automatique avec des salutations."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Add Skill"
+msgstr "Ajoute une compétence"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Age"
+msgstr "Âge"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Awaiting approval"
+msgstr "En attente de validation"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Back to Translations"
+msgstr "Retour aux traductions"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Child Data"
+msgstr "Données de l'enfant"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Comment on the translation"
+msgstr "Commentaire sur la traduction"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Comments"
+msgstr "Commentaires"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Compassion"
+msgstr "Compassion"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Expected/acceptable behaviors:"
+msgstr "Comportements attendus/acceptables:"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Help"
+msgstr "Aide"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Home"
+msgstr "Accueil"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will contribute to building an environment where children are respected and encouraged to discuss their concerns and rights."
+msgstr "Je contribuerai à créer un environnement où les enfants sont respectés et encouragés à parler de leurs préoccupations et de leurs droits."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will engage in activities with beneficiaries only in open or visible places, and in the event that an activity needs to take place in an enclosed space, I will ensure that at least one other approved adult is present."
+msgstr "Je ne participerai à des activités avec les bénéficiaires que dans des lieux ouverts et visibles, et au cas où une activité doive être pratiquée dans un espace clos, je veillerai à ce qu’au moins un autre adulte approuvé soit présent."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will engage in age-appropriate communication with beneficiaries."
+msgstr "Je communiquerai avec les bénéficiaires d’une manière adaptée à leur âge."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will keep all information about child protection investigations confidential, keeping in mind privacy and dignity concerns of all involved."
+msgstr "Je préserverai la confidentialité de toutes les informations relatives aux enquêtes sur la protection de l’enfance, en gardant en tête les préoccupations de chacun en termes de vie privée et de dignité."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will never engage in sexual/sexually suggestive behavior with any child under age 18, regardless of the legal age of consent in-country."
+msgstr "Je ne me livrerai jamais à un comportement sexuel/sexuellement suggestif avec un enfant âgé de moins de 18 ans, quelle que soit la majorité sexuelle dans ce pays."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will never use language that is verbally/emotionally abusive, sexually suggestive, degrading, humiliating, shaming or is otherwise culturally inappropriate with a beneficiary."
+msgstr "Je ne m’exprimerai jamais d’une manière qui soit verbalement/émotionnellement abusive, sexuellement suggestive, dégradante, humiliante, stigmatisante ou culturellement inappropriée avec un bénéficiaire."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will not hire any child in any harmful form of child labor and follow local laws regarding child employment."
+msgstr "Je n’emploierai aucun enfant dans aucune forme de travail infantile et je respecterai les lois locales concernant l’emploi d’enfants."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "I will not solicit a romantic/dating relationship and will never engage in sexual/sexually suggestive behavior with any beneficiary, regardless of age."
+msgstr "Je ne solliciterai aucune relation romantique/intime et ne me livrerai jamais à un comportement sexuel/sexuellement suggestif avec un(e) bénéficiaire, quel que soit son âge."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Identifier"
+msgstr "Identifiant"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Issue successfully sent, it will be quickly reviewed"
+msgstr "Problème envoyé avec succès, il sera rapidement examiné"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Language"
+msgstr "Langue"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Letter"
+msgstr "Lettre"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Letter Information"
+msgstr "Informations sur la lettre"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Letter saved"
+msgstr "Traduction sauvegardée"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Letters"
+msgstr "Lettres"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Manage your translation skills"
+msgstr "Gère tes compétences de langues"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Name"
+msgstr "Nom"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "No source text available"
+msgstr "Aucun texte source disponible"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Pick Languages"
+msgstr "Choisir des langues"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Please select a problem in the list"
+msgstr "Veuillez sélectionner un problème dans la liste"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Preferred Name"
+msgstr "Prénom"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Register"
+msgstr "Enregistrer"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Register a new translation skill"
+msgstr "Enregistrer une nouvelle compétence"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Role"
+msgstr "Rôle"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Send Message"
+msgstr "Envoyer un message"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Sex"
+msgstr "Sexe"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Signal a Problem"
+msgstr "Signaler un problème"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Source"
+msgstr "Texte source"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Source Text to translate"
+msgstr "Texte source à traduire"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Sponsor Data"
+msgstr "Données du parrain"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Take the first"
+msgstr "Choisis la première de la liste"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Thank you."
+msgstr "Merci."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "This letter could not be found"
+msgstr "Cette lettre n'a pas pu être trouvée."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Title"
+msgstr "Titre"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translate"
+msgstr "Traduire"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translate Verification Letter"
+msgstr "Traduire la lettre pour vérification"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translated Content"
+msgstr "Contenu traduit"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translation Platform"
+msgstr "Plateforme de traduction"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translator"
+msgstr "Traducteur"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Translators"
+msgstr "Traducteurs"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Unable to load translator information"
+msgstr "Impossible de charger les informations du traducteur"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Unable to register translation skills"
+msgstr "Impossible d'enregistrer les compétences de traduction"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Unable to save and submit letter, please save it first and retry."
+msgstr "Impossible d'enregistrer et soumettre la lettre, veuillez d'abord l'enregistrer et réessayer."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Unable to save letter"
+msgstr "Impossible d'enregistrer la lettre."
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Unable to submit issue"
+msgstr "Impossible de soumettre le problème"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Waiting for your verification letter"
+msgstr "En attente de ta lettre de vérification"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "You have translated a total of"
+msgstr "Tu as traduit un total de"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Your Message"
+msgstr "Ton message"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Your current translation skills"
+msgstr "Tes compétences de langues actuelles"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "Your new skills have been registered"
+msgstr "Vos nouvelles compétences ont été enregistrées"
+
+#. module: sbc_translation
+#: sbc_translation.TranslationPlatform
+msgid "new Skill"
+msgstr "Nouvelle(s) compétence(s)"
+

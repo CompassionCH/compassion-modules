@@ -1,11 +1,4 @@
-import {
-  Component,
-  onMounted,
-  onPatched,
-  onWillUpdateProps,
-  useState,
-  xml,
-} from "@odoo/owl";
+import { Component, onMounted, onPatched, onWillUpdateProps, useState } from "@odoo/owl";
 import { TpLoader } from "./tp_loader.esm";
 
 // Duration of the Bootstrap modal fade-in/out CSS transition (ms).
@@ -24,49 +17,7 @@ const MODAL_TRANSITION_DURATION_MS = 200;
  *   closeButtonText {String}  - label for the footer close button
  */
 export class TpModal extends Component {
-  static template = xml`
-        <div t-if="state.mounted"
-             class="modal tp-modal"
-             t-att-class="{ 'show d-block': state.display, 'd-none': !state.display }"
-             tabindex="-1"
-             t-on-click.self="props.onClose or (() => null)">
-            <div class="modal-dialog modal-dialog-centered modal-lg" t-att-class="props.dialogClass || ''">
-                <div class="modal-content position-relative">
-                    <!-- Loading overlay -->
-                    <div t-if="props.loading"
-                         class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                         style="background: rgba(255,255,255,0.8); z-index: 10; backdrop-filter: blur(2px);">
-                        <TpLoader />
-                    </div>
-                    <!-- Header -->
-                    <div class="modal-header" t-if="props.title or props.onClose">
-                        <div>
-                            <h5 class="modal-title" t-if="props.title" t-esc="props.title" />
-                            <p class="text-muted small mb-0" t-if="props.subtitle" t-esc="props.subtitle" />
-                        </div>
-                        <button t-if="props.onClose" type="button" class="btn-close" t-on-click="props.onClose" />
-                    </div>
-                    <!-- Body -->
-                    <div class="modal-body p-0">
-                        <t t-slot="default" />
-                    </div>
-                    <!-- Footer -->
-                    <t t-slot="footer">
-                        <div class="modal-footer" t-if="!props.empty">
-                            <button t-if="props.onClose and props.showCloseButton !== false"
-                                    type="button"
-                                    class="btn btn-outline-secondary btn-sm"
-                                    t-on-click="props.onClose"
-                                    t-esc="props.closeButtonText or 'Close'" />
-                            <t t-slot="footer-buttons" />
-                        </div>
-                    </t>
-                </div>
-            </div>
-        </div>
-        <!-- Backdrop -->
-        <div t-if="state.display" class="modal-backdrop show" />
-    `;
+  static template = 'sbc_translation.TpModal';
 
   static components = { TpLoader };
 

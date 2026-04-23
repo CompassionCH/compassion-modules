@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="sbc_translation.TpTranslatorButton">
+        <span>
+            <button type="button"
+                    class="btn btn-sm btn-link p-0"
+                    t-on-click="loadAndOpen">
+                <t t-if="state.translator">
+                    <t t-out="state.translator.name ? state.translator.name : ('#' + props.translatorId)" />
+                </t>
+                <t t-else="">
+                    <span class="spinner-border spinner-border-sm" t-if="state.loading" />
+                    <span t-else="" t-out="'#' + props.translatorId" />
+                </t>
+            </button>
+            <TpModal active="state.showModal"
+                     onClose="() => state.showModal = false"
+                     title="'Translator Details'">
+                <div class="p-3 small" t-if="state.translator">
+                    <div class="mb-2">
+                        <span class="fw-medium me-2">Name</span>
+                        <span t-out="state.translator.name" />
+                    </div>
+                    <div class="mb-2">
+                        <span class="fw-medium me-2">Email</span>
+                        <span t-out="state.translator.email ? state.translator.email : '—'" />
+                    </div>
+                    <div class="mb-2">
+                        <span class="fw-medium me-2">Letters translated</span>
+                        <span t-out="state.translator.total" />
+                    </div>
+                    <div>
+                        <span class="fw-medium me-2">Role</span>
+                        <span t-out="state.translator.role" />
+                    </div>
+                </div>
+            </TpModal>
+        </span>
+    </t>
+
+</templates>
