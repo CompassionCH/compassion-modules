@@ -29,7 +29,7 @@ def _get_data(letter):
     if letter.letter_format == "zip":
         fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
     else:
-        fname = f"{letter.get_date('create_date')}-{letter.file_name}"
+        fname = letter.file_name
     return data, fname
 
 
@@ -75,19 +75,20 @@ class RestController(http.Controller):
             letter_uuid = parameters.get("id")
             if letter_uuid is None:
                 raise BadRequest()
-        headers = request.httprequest.headers
-        self._validate_headers(headers)
         correspondence_obj = request.env["correspondence"].sudo()
         correspondence = correspondence_obj.search([("uuid", "=", letter_uuid)])
         if not correspondence:
             raise NotFound()
         correspondence.email_read = datetime.now()
-        disposition = disposition if disposition else "attachment"
+        disposition = disposition or "attachment"
+        if disposition not in ("attachment", "inline"):
+            raise BadRequest()
         content_type = "application/" + (
             "zip" if correspondence.letter_format == "zip" else "pdf"
         )
         data, fname = _get_data(correspondence)
-        headers = Headers([("Content-Disposition", f"{disposition}; filename={fname}")])
+        headers = Headers()
+        headers.add("Content-Disposition", content_disposition(fname, disposition))
         return Response(data or "No data", content_type=content_type, headers=headers)
 
     @http.route("/b2s_image/child", type="http", auth="user", methods=["GET"])

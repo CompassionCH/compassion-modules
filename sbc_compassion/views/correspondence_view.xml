@@ -277,6 +277,7 @@
         <field
       name="context"
     >{'search_default_state_published':1, 'search_default_unread':1, 'skip_lang_detect': 1}</field>
+        <field name="path">letters</field>
     </record>
 
     <!-- Extends the search on sponsorship correspondence -->
@@ -353,7 +354,6 @@
                 No messages.
             </p>
         </field>
-        <field name="path">letters</field>
     </record>
 
     <menuitem
