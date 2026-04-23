@@ -1,4 +1,10 @@
-import { Component, onMounted, onPatched, onWillUpdateProps, useState } from "@odoo/owl";
+import {
+  Component,
+  onMounted,
+  onPatched,
+  onWillUpdateProps,
+  useState,
+} from "@odoo/owl";
 import { TpLoader } from "./tp_loader.esm";
 
 // Duration of the Bootstrap modal fade-in/out CSS transition (ms).
@@ -17,7 +23,7 @@ const MODAL_TRANSITION_DURATION_MS = 200;
  *   closeButtonText {String}  - label for the footer close button
  */
 export class TpModal extends Component {
-  static template = 'sbc_translation.TpModal';
+  static template = "sbc_translation.TpModal";
 
   static components = { TpLoader };
 

@@ -8,7 +8,7 @@ import { TpModal } from "./tp_modal.esm";
  *   onClose {Function}
  */
 export class TpChildModal extends Component {
-  static template = 'sbc_translation.TpChildModal';
+  static template = "sbc_translation.TpChildModal";
 
   static components = { TpModal };
 

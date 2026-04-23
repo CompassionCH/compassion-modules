@@ -3,7 +3,7 @@
 
     <!-- Help modal -->
     <t t-name="sbc_translation.TpHelpModal">
-        <TpModal active="props.active" onClose="props.onClose" title="'Help'">
+        <TpModal active="props.active" onClose="props.onClose" title="Help">
             <div class="p-3 small" style="max-width: 450px;">
                 <h6 class="fw-semibold">How to use the Translation Platform</h6>
                 <ul>

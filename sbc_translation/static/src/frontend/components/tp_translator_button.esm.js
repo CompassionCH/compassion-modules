@@ -8,7 +8,7 @@ import { TranslatorDAO } from "../models/translator_dao.esm";
  *   translatorId {number}
  */
 export class TpTranslatorButton extends Component {
-  static template = 'sbc_translation.TpTranslatorButton';
+  static template = "sbc_translation.TpTranslatorButton";
 
   static components = { TpModal };
 

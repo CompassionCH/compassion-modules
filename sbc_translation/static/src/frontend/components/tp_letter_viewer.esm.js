@@ -10,7 +10,7 @@ import { TpSignalProblem } from "./tp_signal_problem.esm";
  *   navigateBack {Function} - navigate back to letters list
  */
 class TpLetterInfoHeader extends Component {
-  static template = 'sbc_translation.TpLetterInfoHeader';
+  static template = "sbc_translation.TpLetterInfoHeader";
 
   static components = { TpLoader };
 
@@ -39,7 +39,7 @@ class TpLetterInfoHeader extends Component {
  *     right-pane     - additional overlay for the right pane
  */
 export class TpLetterViewer extends Component {
-  static template = 'sbc_translation.TpLetterViewer';
+  static template = "sbc_translation.TpLetterViewer";
 
   static components = { TpLetterInfoHeader, TpSignalProblem, TpLoader };
 

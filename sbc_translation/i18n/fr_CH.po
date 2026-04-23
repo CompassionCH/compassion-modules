@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Compassion Odoo 14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 08:15+0000\n"
+"POT-Creation-Date: 2026-04-23 12:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,7 +10,36 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.9\n"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid ""
+".\n"
+"                    Here are the texts waiting to be translated."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid ""
+".\n"
+"                    It seems you don't have any translation skill yet.\n"
+"                    Start by picking the languages you are confident in."
+msgstr ""
+
+#. module: sbc_translation
+#: model:website,contact_us_button_url:sbc_translation.translation_website
+#| msgid "Contact"
+msgid "/contactus"
+msgstr "/contactus"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.translation_issue_log
+#| msgid "Issue type"
+msgid "<b>Issue type</b>:"
+msgstr "<b>Type de problème</b>:"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_competence_kanban
@@ -41,6 +70,29 @@ msgstr ""
 "span>"
 
 #. module: sbc_translation
+#: model:mail.template,body_html:sbc_translation.translation_issue_notification
+msgid ""
+"<html>\n"
+"  <body><ul>\n"
+"                <li>Issue type: <t t-"
+"out=\"object.translate(&quot;translation_issue&quot;)\"></t></li>\n"
+"            </ul>\n"
+"            <span>\n"
+"                <t t-out=\"object.translation_issue_comments\"></t>\n"
+"            </span>\n"
+"        </body>\n"
+"</html>\n"
+msgstr ""
+"<ul>\n"
+"                <li>Type de problème : $"
+"{object.translate(\"translation_issue\")}</li>\n"
+"            </ul>\n"
+"            <span>\n"
+"                ${object.translation_issue_comments | safe}\n"
+"            </span>\n"
+"        \n"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid ""
 "<i class=\"fa fa-external-link oe_kanban_avatar\" role=\"img\" "
@@ -50,25 +102,11 @@ msgstr ""
 "title=\"Traducteur\"/>"
 
 #. module: sbc_translation
-#: model:mail.template,body_html:sbc_translation.translation_issue_notification
+#: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
 msgid ""
-"<ul>\n"
-"                <li>Issue type: ${object.translate(\"translation_issue\")}</"
-"li>\n"
-"            </ul>\n"
-"            <span>\n"
-"                ${object.translation_issue_comments | safe}\n"
-"            </span>\n"
-"        "
+"<span class=\"o_Message_trackingValueSeparator o_Message_trackingValueItem "
+"fa fa-long-arrow-right\" title=\"Changed\" role=\"img\"/>"
 msgstr ""
-"<ul>\n"
-"                <li>Type de problème : ${object."
-"translate(\"translation_issue\")}</li>\n"
-"            </ul>\n"
-"            <span>\n"
-"                ${object.translation_issue_comments | safe}\n"
-"            </span>\n"
-"        "
 
 #. module: sbc_translation
 #: model:mail.template,subject:sbc_translation.translation_issue_notification
@@ -76,9 +114,30 @@ msgid "A translation issue was raised"
 msgstr "Un problème de traduction a été soulevé"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#, fuzzy
+#| msgid "Active"
+msgid "Actions"
+msgstr "Actif"
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__active
 msgid "Active"
 msgstr "Actif"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid "Add Skill"
+msgstr "Ajoute une compétence"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Age"
+msgstr "Âge"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__all_letter_ids
@@ -108,34 +167,109 @@ msgid "Archived"
 msgstr "Archivé"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Awaiting approval"
+msgstr "En attente de validation"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+msgid "Back to Home"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Back to Translations"
+msgstr "Retour aux traductions"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "CP"
+msgstr ""
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Cancel"
 msgstr "Annuler"
 
 #. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Cannot read properly"
 msgstr "Ne peut être lu correctement"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Child Data"
+msgstr "Données de l'enfant"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Child Protection"
+msgstr "Protection de l'enfance"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid "Child Protection Videos"
+msgstr "Vidéos sur le protection de l'enfance"
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Child name different than expected"
 msgstr "Nom de l'enfant différent"
 
 #. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Child protection issue"
 msgstr "Contenu inapproprié protection des enfants"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Clear Filters"
+msgstr "Enlever les filtres"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Click on a letter link or the"
+msgstr "Cliquez sur une lettre ou sur"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Comment on the translation"
+msgstr "Commentaire sur la traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__comments
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
 msgid "Comments"
 msgstr "Commentaires"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
+msgid "Comments updated"
+msgstr "Commentaires mis à jour"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+msgid "Compassion"
+msgstr "Compassion"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_competence
@@ -166,9 +300,35 @@ msgid "Contact"
 msgstr "Contact"
 
 #. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__correspondence_ids
+msgid "Correspondences"
+msgstr "Lettres"
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_letter_counting_wizard__counting
+msgid ""
+"Counting of the number of translated letters since the \"Start of counting\""
+msgstr ""
+
+#. module: sbc_translation
+#: model:ir.actions.server,name:sbc_translation.action_translation_letter_counting
+#: model:ir.model,name:sbc_translation.model_translation_letter_counting_wizard
+#: model:ir.ui.menu,name:sbc_translation.translation_letter_counting_menu
+#| msgid "Source of translation"
+msgid "Counting of translation letters"
+msgstr ""
+
+#. module: sbc_translation
+#: model_terms:ir.actions.act_window,help:sbc_translation.action_letters_kanban
+#| msgid "Created on"
+msgid "Create new document"
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__create_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_uid
 msgid "Created by"
@@ -178,10 +338,17 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__create_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_date
 msgid "Created on"
 msgstr "Créé le"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Ctrl+S"
+msgstr "Ctrl+S"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__current_letter_ids
@@ -189,7 +356,12 @@ msgid "Current letters"
 msgstr "Lettres actuelles"
 
 #. module: sbc_translation
-#: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Date"
+msgstr "Date"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.issue_reply
 msgid "Dear"
 msgstr "Cher"
@@ -201,17 +373,20 @@ msgid "Destination language"
 msgstr "Langue de destination"
 
 #. module: sbc_translation
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence__display_name
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__display_name
-#: model:ir.model.fields,field_description:sbc_translation.field_res_partner__display_name
-#: model:ir.model.fields,field_description:sbc_translation.field_res_users__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__display_name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Do not paraphrase – translate as closely as possible."
+msgstr "Ne pas paraphraser – traduire aussi fidèlement que possible."
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_status__done
@@ -219,9 +394,45 @@ msgid "Done"
 msgstr "Fait"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_translator_button.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+msgid "Email"
+msgstr "Email"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid "Expected/acceptable behaviors:"
+msgstr "Comportements attendus/acceptables:"
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__fallback_competence_id
 msgid "Fallback competence"
 msgstr "Compétence de repli"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user__force_validation
+#| msgid "Source of translation"
+msgid "Force Validation"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Go to"
+msgstr "Vers"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.portal_my_home_translation
+msgid "Go to the Translation Platform"
+msgstr "Vert la plateforme de traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Help"
+msgstr "Aide"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__2
@@ -229,17 +440,223 @@ msgid "High"
 msgstr "Élevé"
 
 #. module: sbc_translation
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence__id
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__id
-#: model:ir.model.fields,field_description:sbc_translation.field_res_partner__id
-#: model:ir.model.fields,field_description:sbc_translation.field_res_users__id
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Home"
+msgstr "Accueil"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "How to use the Translation Platform"
+msgstr "Comment utiliser la plateforme de traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will contribute to building an environment where children are respected "
+"and encouraged to discuss their concerns and rights."
+msgstr ""
+"Je contribuerai à créer un environnement où les enfants sont respectés et "
+"encouragés à parler de leurs préoccupations et de leurs droits."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will demonstrate the proper respect and dignity of all children and will "
+"demonstrate Jesus's love and care for them, regardless of their gender, age, "
+"race, religion, social background, culture, special need or disability."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will engage in activities with beneficiaries only in open or visible "
+"places, and in the event that an activity needs to take place in an enclosed "
+"space, I will ensure that at least one other approved adult is present."
+msgstr ""
+"Je ne participerai à des activités avec les bénéficiaires que dans des lieux "
+"ouverts et visibles, et au cas où une activité doive être pratiquée dans un "
+"espace clos, je veillerai à ce qu’au moins un autre adulte approuvé soit "
+"présent."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid "I will engage in age-appropriate communication with beneficiaries."
+msgstr ""
+"Je communiquerai avec les bénéficiaires d’une manière adaptée à leur âge."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will follow Compassion's rules about communication with beneficiaries, "
+"including social media interaction."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will keep all information about child protection investigations "
+"confidential, keeping in mind privacy and dignity concerns of all involved."
+msgstr ""
+"Je préserverai la confidentialité de toutes les informations relatives aux "
+"enquêtes sur la protection de l’enfance, en gardant en tête les "
+"préoccupations de chacun en termes de vie privée et de dignité."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will maintain appropriate and reasonable expectations for children based "
+"on their age and ability level."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will never engage in sexual/sexually suggestive behavior with any child "
+"under age 18, regardless of the legal age of consent in-country."
+msgstr ""
+"Je ne me livrerai jamais à un comportement sexuel/sexuellement suggestif "
+"avec un enfant âgé de moins de 18 ans, quelle que soit la majorité sexuelle "
+"dans ce pays."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will never travel alone with a beneficiary, without an approved "
+"representative or prior approval, except in a life-threatening emergency."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will never use any kind of physical discipline or physical punishment as a "
+"method of correction for beneficiaries."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will never use language that is verbally/emotionally abusive, sexually "
+"suggestive, degrading, humiliating, shaming or is otherwise culturally "
+"inappropriate with a beneficiary."
+msgstr ""
+"Je ne m’exprimerai jamais d’une manière qui soit verbalement/"
+"émotionnellement abusive, sexuellement suggestive, dégradante, humiliante, "
+"stigmatisante ou culturellement inappropriée avec un bénéficiaire."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will not gather, disclose or support the disclosure of information about "
+"beneficiaries or their families without prior, express permission."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will not hire any child in any harmful form of child labor and follow "
+"local laws regarding child employment."
+msgstr ""
+"Je n’emploierai aucun enfant dans aucune forme de travail infantile et je "
+"respecterai les lois locales concernant l’emploi d’enfants."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will not solicit a romantic/dating relationship and will never engage in "
+"sexual/sexually suggestive behavior with any beneficiary, regardless of age."
+msgstr ""
+"Je ne solliciterai aucune relation romantique/intime et ne me livrerai "
+"jamais à un comportement sexuel/sexuellement suggestif avec un(e) "
+"bénéficiaire, quel que soit son âge."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will not touch beneficiaries in an inappropriate or culturally insensitive "
+"way."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"I will submit to the appropriate background or police checks as permissible "
+"by law prior to face-to-face contact with beneficiaries."
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__id
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__id
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__id
 msgid "ID"
 msgstr "ID"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Identifier"
+msgstr "Identifiant"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+msgid ""
+"If I witness child abuse, know a child is in danger, observe any concerning "
+"behaviors from colleagues, partners or other representatives, or a child "
+"comes to me with a report of abuse, I will take it seriously and report it "
+"to the proper staff or relevant authorities."
+msgstr ""
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_user__force_validation
+msgid ""
+"If checked, all translations submitted by this user will require validation "
+"by a supervisor, regardless of their verifiedskills"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "If the letter is unavailable, please signal a problem."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "If the source text is unclear, add a comment explaining the issue."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "If there is a problem with the letter, click"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "If you're unsure about a phrase, use the comment field to flag it."
+msgstr ""
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__avatar
@@ -257,15 +674,19 @@ msgid "In progress"
 msgstr "En cours"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "In the editor: fill in the"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Inappropriate content"
 msgstr "Contenu inapproprié"
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.increment_priority_cron_ir_actions_server
-#: model:ir.cron,cron_name:sbc_translation.increment_priority_cron
-#: model:ir.cron,name:sbc_translation.increment_priority_cron
 msgid "Increment translation priority"
 msgstr "Incrémenter la priorité de traduction"
 
@@ -285,22 +706,22 @@ msgid "Issue type"
 msgstr "Type de problème"
 
 #. module: sbc_translation
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_res_partner____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_res_users____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_translation_competence____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_translation_user____last_update
-#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill____last_update
-msgid "Last Modified on"
-msgstr "Dernière Modification le"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Keep the same tone and emotional register as the source text."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Language"
+msgstr "Langue"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__write_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_uid
 msgid "Last Updated by"
@@ -310,19 +731,36 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__write_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+#, fuzzy
+#| msgid "Last Updated by"
+msgid "Last updated"
+msgstr "Dernière mise à jour par"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
 #: model:ir.model,name:sbc_translation.model_correspondence
 msgid "Letter"
 msgstr "Lettre"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Letter Information"
+msgstr "Informations sur la lettre"
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Letter already sent to GMC cannot be translated! [%s]"
 msgstr "La lettre déjà envoyée à GMC ne peut pas être traduite ! [%s]"
 
@@ -332,16 +770,17 @@ msgid "Letter content"
 msgstr "Contenu de la lettre"
 
 #. module: sbc_translation
-#: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
-msgid "Letter in wrong language queue"
-msgstr "Mauvaise catégorie de langue"
+#: model_terms:ir.ui.view,arch_db:sbc_translation.portal_my_home_translation
+#, fuzzy
+#| msgid "Letter translation pool"
+msgid "Letter in translation"
+msgstr "Pool de traduction"
 
 #. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
-msgid "Letter must be in state 'Translation check unsuccessful'"
-msgstr "La lettre doit être en : \"Translation check unsuccessful\"."
+msgid "Letter in wrong language queue"
+msgstr "Mauvaise catégorie de langue"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_correspondence_paragraph
@@ -354,6 +793,30 @@ msgid "Letter translation pool"
 msgstr "Pool de traduction"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Letters"
+msgstr "Lettres"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.portal_my_home_translation
+#, fuzzy
+#| msgid "Return to translation"
+msgid "Letters to translate"
+msgstr "Retour à la traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_translator_button.xml:0
+#, fuzzy
+#| msgid "Letter saved"
+msgid "Letters translated"
+msgstr "Traduction sauvegardée"
+
+#. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_competence__fallback_competence_id
 msgid ""
 "Letters will move to this pool if they sit for too long waiting to be "
@@ -361,6 +824,26 @@ msgid ""
 msgstr ""
 "Les lettres seront transférées dans ce pool si elles restent trop longtemps "
 "en attente d'être traduites."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Loading letter..."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+#, fuzzy
+#| msgid "Translation Platform"
+msgid "Loading translation platform…"
+msgstr "Plate-forme de traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_loader.xml:0
+msgid "Loading..."
+msgstr ""
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__new_translator_id
@@ -371,6 +854,12 @@ msgstr "Traducteur local"
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__0
 msgid "Low"
 msgstr "Basse"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Manage your translation skills"
+msgstr "Gère tes compétences de langues"
 
 #. module: sbc_translation
 #: model:res.groups,name:sbc_translation.group_manager
@@ -388,15 +877,79 @@ msgid "Medium"
 msgstr "Moyen"
 
 #. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
+msgid "Moment from which translated letters are counted"
+msgstr ""
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "My supervision"
 msgstr "Ma supervision"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_translator_button.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__name
 msgid "Name"
 msgstr "Nom"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Names of people and places should be kept as they appear."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+#, fuzzy
+#| msgid "Verified"
+msgid "Never modified"
+msgstr "Vérifié"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "No letters found"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+#, fuzzy
+#| msgid "Source Text to translate"
+msgid "No letters to translate here"
+msgstr "Texte source à traduire"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "No source text available"
+msgstr "Aucun texte source disponible"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+#, fuzzy
+#| msgid "Manage your translation skills"
+msgid "No translation skills defined yet."
+msgstr "Gère tes compétences de langues"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#, fuzzy
+#| msgid "Local translator"
+msgid "No translators found"
+msgstr "Traducteur local"
+
+#. module: sbc_translation
+#: model:website,prevent_zero_price_sale_text:sbc_translation.translation_website
+msgid "Not Available For Sale"
+msgstr ""
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__number_active_translators
@@ -414,6 +967,13 @@ msgid "Number Translators"
 msgstr "Nombre de traducteurs"
 
 #. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__counting
+#, fuzzy
+#| msgid "Number Translators"
+msgid "Number of translated letters"
+msgstr "Nombre de traducteurs"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Open full view"
 msgstr "Ouvrir la vue complète"
@@ -424,16 +984,24 @@ msgid "Open the letter in the translation platform"
 msgstr "Ouvrir la lettre dans la plateforme de traduction"
 
 #. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Other issue"
 msgstr "Autre problème"
 
 #. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "PDF not showing"
 msgstr "PDF ne s'affiche pas"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
+msgid "Page"
+msgstr ""
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
@@ -457,6 +1025,41 @@ msgid "Partner-related data of the user"
 msgstr "Données du partenaire lié à l'utilisateur"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Pick Languages"
+msgstr "Choisir des langues"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid ""
+"Please always signal the problem if the name of the child mentioned in the "
+"letter\n"
+"                    isn't the preferred name. Thank you."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Preferred Name"
+msgstr "Prénom"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Preserve paragraph breaks from the source."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#, fuzzy
+#| msgid "Priority:"
+msgid "Priority"
+msgstr "Priorité :"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid "Priority:"
 msgstr "Priorité :"
@@ -465,6 +1068,18 @@ msgstr "Priorité :"
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_correspondence_form_translation
 msgid "Put back into translation"
 msgstr "Remettre en traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid "Register"
+msgstr "Enregistrer"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid "Register a new translation skill"
+msgstr "Enregistrer une nouvelle compétence"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
@@ -480,10 +1095,24 @@ msgid "Reply to comments"
 msgstr "Répondre aux commentaires"
 
 #. module: sbc_translation
+#: model:ir.model,name:sbc_translation.model_sbc_reply_to_comments_wizard
+#, fuzzy
+#| msgid "Reply to comments"
+msgid "Reply to comments wizard"
+msgstr "Répondre aux commentaires"
+
+#. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.reply_to_issue_wizard
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Reply to issue"
+msgstr "Réponse à la question"
+
+#. module: sbc_translation
+#: model:ir.model,name:sbc_translation.model_sbc_reply_to_issue_wizard
+#, fuzzy
+#| msgid "Reply to issue"
+msgid "Reply to issue wizard"
 msgstr "Réponse à la question"
 
 #. module: sbc_translation
@@ -495,6 +1124,20 @@ msgstr "Renvoyer à la traduction"
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Return to translation"
 msgstr "Retour à la traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_translator_button.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+msgid "Role"
+msgstr "Rôle"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Save"
+msgstr "Enregistrer"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__search_competence_id
@@ -512,9 +1155,41 @@ msgid "Search Source Lang"
 msgstr "Recherche langue source"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+msgid "Search email…"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+msgid "Search name…"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#, fuzzy
+#| msgid "Search Dest Lang"
+msgid "Search status…"
+msgstr "Recherche langue dest"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Search title…"
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.module.category,description:sbc_translation.module_category_translator
 msgid "Security groups for Translation Platform"
 msgstr "Groupes de sécurité pour la plate-forme de traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_signal_problem.xml:0
+msgid "Send Message"
+msgstr "Envoyer un message"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
@@ -522,9 +1197,46 @@ msgid "Send reply"
 msgstr "Envoyer la réponse"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Sex"
+msgstr "Sexe"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+#, fuzzy
+#| msgid "Signal a Problem"
+msgid "Signal Problem"
+msgstr "Signaler un problème"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Signal a Problem"
+msgstr "Signaler un problème"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__translation_skills
 msgid "Skills"
 msgstr "Compétences"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Source"
+msgstr "Texte source"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Source Text to translate"
+msgstr "Texte source à traduire"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__source_language_id
@@ -533,15 +1245,84 @@ msgid "Source language"
 msgstr "Langue source"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#, fuzzy
+#| msgid "Source language"
+msgid "Source lang…"
+msgstr "Langue source"
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__src_translation_lang_id
 msgid "Source of translation"
 msgstr "Source de la traduction"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "Sponsor Data"
+msgstr "Données du parrain"
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Sponsor name different than expected"
 msgstr "Nom du parrain différent"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
+msgid "Start of counting"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Status"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.portal_my_home_translation
+msgid "TP"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Take the first"
+msgstr "Choisis la première de la liste"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Target"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Target lang…"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+msgid ""
+"Thank you for your contribution. You will be redirected to the home page."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Thank you."
+msgstr "Merci."
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user_skill__verified
@@ -549,14 +1330,47 @@ msgid "The competence has been approved by a manager."
 msgstr "La compétence a été approuvée par un responsable."
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "The keyboard shortcut"
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.model.constraint,message:sbc_translation.constraint_translation_competence_unique_competence
 msgid "This competence already exists."
 msgstr "Cette compétence existe déjà."
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "This letter could not be found"
+msgstr "Cette lettre n'a pas pu être trouvée."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid ""
+"This skill must be validated. Translate the given letter for it to be "
+"reviewed."
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.model.constraint,message:sbc_translation.constraint_translation_user_unique_translator
 msgid "This translator already exists."
 msgstr "Ce traducteur existe déjà."
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+msgid "Tips"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Title"
+msgstr "Titre"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
@@ -580,6 +1394,12 @@ msgid "Total translations"
 msgstr "Total des traductions"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Translate"
+msgstr "Traduire"
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_date
 msgid "Translate Date"
 msgstr "Traduire la date"
@@ -588,6 +1408,19 @@ msgstr "Traduire la date"
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_done
 msgid "Translate Done"
 msgstr "Traduction terminée"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Translate Verification Letter"
+msgstr "Traduire la lettre pour vérification"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "Translated Content"
+msgstr "Contenu traduit"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__translated_letter_ids
@@ -605,6 +1438,13 @@ msgid "Translated this year"
 msgstr "Traduit cette année"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid ""
+"Translating from a language to another and back are two different skills."
+msgstr ""
+
+#. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_competence_id
 msgid "Translation Competence"
 msgstr "Compétence en matière de traduction"
@@ -620,6 +1460,8 @@ msgid "Translation Issue Comments"
 msgstr "Question de traduction Commentaires"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
 #: model:ir.module.category,name:sbc_translation.module_category_translator
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_platform
 msgid "Translation Platform"
@@ -657,6 +1499,13 @@ msgid "Translation User"
 msgstr "Utilisateur de la traduction"
 
 #. module: sbc_translation
+#: model:mail.template,name:sbc_translation.translation_issue_notification
+#, fuzzy
+#| msgid "Translation Issue"
+msgid "Translation issue notification"
+msgstr "Problème de traduction"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "Translation status"
 msgstr "État de la traduction"
@@ -665,6 +1514,14 @@ msgstr "État de la traduction"
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_supervisor_id
 msgid "Translation supervisor"
 msgstr "Superviseur de la traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+#, fuzzy
+#| msgid "Translations"
+msgid "Translation tips"
+msgstr "Traductions"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_user_skill
@@ -687,6 +1544,8 @@ msgid "Translations this year"
 msgstr "Traductions cette année"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
 #: model:ir.actions.act_window,name:sbc_translation.action_compassion_translation_user_form
 #: model:ir.model.fields,field_description:sbc_translation.field_res_users__translator_id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__translator_id
@@ -705,9 +1564,26 @@ msgid "Translator skills"
 msgstr "Compétences du traducteur"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_user
 msgid "Translators"
 msgstr "Traducteurs"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+#, fuzzy
+#| msgid "Expected/acceptable behaviors:"
+msgid "Unacceptable behaviors:"
+msgstr "Comportements attendus/acceptables:"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+msgid "Unread"
+msgstr ""
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__unread_comments
@@ -715,9 +1591,15 @@ msgid "Unread Comments"
 msgstr "Commentaires non lus"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+#, fuzzy
+#| msgid "Verified"
+msgid "Unverified"
+msgstr "Vérifié"
+
+#. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.update_translation_priority_cron_ir_actions_server
-#: model:ir.cron,cron_name:sbc_translation.update_translation_priority_cron
-#: model:ir.cron,name:sbc_translation.update_translation_priority_cron
 msgid "Update translation priority"
 msgstr "Mise à jour de la priorité de traduction"
 
@@ -727,15 +1609,19 @@ msgid "Urgent"
 msgstr "Urgent"
 
 #. module: sbc_translation
-#: model:ir.model.fields,field_description:sbc_translation.field_translation_user__user_id
-#: model:res.groups,name:sbc_translation.group_user
-msgid "User"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+#, fuzzy
+#| msgid "User"
+msgid "Use"
 msgstr "Utilisateur"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_res_users
-msgid "Users"
-msgstr "Utilisateurs"
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user__user_id
+#: model:res.groups,name:sbc_translation.group_user
+msgid "User"
+msgstr "Utilisateur"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__search_competence_id
@@ -745,6 +1631,8 @@ msgid "Utility field only used for the search view"
 msgstr "Champ utilitaire utilisé uniquement pour la vue de recherche"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__verified
 msgid "Verified"
 msgstr "Vérifié"
@@ -755,26 +1643,56 @@ msgid "Very high"
 msgstr "Très élevé"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+#, fuzzy
+#| msgid "No source text available"
+msgid "View source text"
+msgstr "Aucun texte source disponible"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Waiting for your verification letter"
+msgstr "En attente de ta lettre de vérification"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_child_modal.xml:0
+#, fuzzy
+#| msgid "Child protection issue"
+msgid "Watch child protection video"
+msgstr "Contenu inapproprié protection des enfants"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid "Wrong translation boxes layout"
 msgstr "Erreur de disposition de l'encart de traduction"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+#, fuzzy
+#| msgid "Your current translation skills"
+msgid "You already have all available translation skills!"
+msgstr "Tes compétences de langues actuelles"
+
+#. module: sbc_translation
+#. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
-#, python-format
 msgid ""
 "You cannot change the translation language of a letter that is being or "
 "already translated."
 msgstr ""
 "Vous ne pouvez pas modifier la langue de traduction d'une lettre en cours de "
 "traduction ou déjà traduite."
-
-#. module: sbc_translation
-#: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
-msgid "You have just received a reply to your comments on the translation:"
-msgstr ""
-"Vous venez de recevoir une réponse à vos commentaires sur la traduction :"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.issue_reply
@@ -786,6 +1704,24 @@ msgstr ""
 "la plateforme de traduction que vous avez signalée :"
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "You have translated a total of"
+msgstr "Tu as traduit un total de"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_signal_problem.xml:0
+msgid "Your Message"
+msgstr "Ton message"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid "Your current translation skills"
+msgstr "Tes compétences de langues actuelles"
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Your reply will be added in an <b>automatic email with greetings</b>."
@@ -793,14 +1729,67 @@ msgstr ""
 "Votre réponse sera ajoutée à un <b>email automatique avec salutations</b>."
 
 #. module: sbc_translation
-#: model:ir.model,name:sbc_translation.model_sbc_reply_to_comments_wizard
-msgid "sbc.reply.to.comments.wizard"
-msgstr "sbc.reply.to.comments.wizard"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letter_edit.xml:0
+msgid "Your translation has been submitted successfully!"
+msgstr ""
 
 #. module: sbc_translation
-#: model:ir.model,name:sbc_translation.model_sbc_reply_to_issue_wizard
-msgid "sbc.reply.to.issue.wizard"
-msgstr "sbc.reply.to.issue.wizard"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid ""
+"Your verification letter is awaiting approval. Once approved you will be "
+"able to start translating."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+#, fuzzy
+#| msgid "Return to translation"
+msgid "button to start translating."
+msgstr "Retour à la traduction"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "field for each paragraph."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_letters.xml:0
+#, fuzzy
+#| msgid "Letters"
+msgid "letters total"
+msgstr "Lettres"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_home.xml:0
+msgid "letters – thank you so much!"
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_languages_pick_modal.xml:0
+msgid "new Skill"
+msgstr "Nouvelle(s) compétence(s)"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
+#, fuzzy
+#| msgid "Paragraph"
+msgid "paragraph"
+msgstr "Paragraphe"
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+#, fuzzy
+#| msgid "Your current translation skills"
+msgid "saves your current translation."
+msgstr "Tes compétences de langues actuelles"
 
 #. module: sbc_translation
 #: model:res.groups,comment:sbc_translation.group_manager
@@ -813,342 +1802,85 @@ msgid "the user will have access to the translation platform."
 msgstr "l'utilisateur aura accès à la plateforme de traduction."
 
 #. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "to save your work in progress."
+msgstr ""
+
+#. module: sbc_translation
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "to see the letters waiting for your skills."
+msgstr ""
+
+#. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid "translation priority"
 msgstr "priorité à la traduction"
 
-#~ msgid ""
-#~ "You just received a reply regarding your comments on the translation:"
-#~ msgstr ""
-#~ "Vous venez de recevoir une réponse concernant vos commentaires sur la "
-#~ "traduction :"
-
-#~ msgid "Your reply will be added in an automatic email with greetings."
-#~ msgstr ""
-#~ "Votre réponse sera ajoutée à un courriel automatique avec des salutations."
-
 #. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Add Skill"
-msgstr "Ajoute une compétence"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Age"
-msgstr "Âge"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Awaiting approval"
-msgstr "En attente de validation"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Back to Translations"
-msgstr "Retour aux traductions"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Child Data"
-msgstr "Données de l'enfant"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Comment on the translation"
-msgstr "Commentaire sur la traduction"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Comments"
-msgstr "Commentaires"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Compassion"
-msgstr "Compassion"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Expected/acceptable behaviors:"
-msgstr "Comportements attendus/acceptables:"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Help"
-msgstr "Aide"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Home"
-msgstr "Accueil"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will contribute to building an environment where children are respected and encouraged to discuss their concerns and rights."
-msgstr "Je contribuerai à créer un environnement où les enfants sont respectés et encouragés à parler de leurs préoccupations et de leurs droits."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will engage in activities with beneficiaries only in open or visible places, and in the event that an activity needs to take place in an enclosed space, I will ensure that at least one other approved adult is present."
-msgstr "Je ne participerai à des activités avec les bénéficiaires que dans des lieux ouverts et visibles, et au cas où une activité doive être pratiquée dans un espace clos, je veillerai à ce qu’au moins un autre adulte approuvé soit présent."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will engage in age-appropriate communication with beneficiaries."
-msgstr "Je communiquerai avec les bénéficiaires d’une manière adaptée à leur âge."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will keep all information about child protection investigations confidential, keeping in mind privacy and dignity concerns of all involved."
-msgstr "Je préserverai la confidentialité de toutes les informations relatives aux enquêtes sur la protection de l’enfance, en gardant en tête les préoccupations de chacun en termes de vie privée et de dignité."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will never engage in sexual/sexually suggestive behavior with any child under age 18, regardless of the legal age of consent in-country."
-msgstr "Je ne me livrerai jamais à un comportement sexuel/sexuellement suggestif avec un enfant âgé de moins de 18 ans, quelle que soit la majorité sexuelle dans ce pays."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will never use language that is verbally/emotionally abusive, sexually suggestive, degrading, humiliating, shaming or is otherwise culturally inappropriate with a beneficiary."
-msgstr "Je ne m’exprimerai jamais d’une manière qui soit verbalement/émotionnellement abusive, sexuellement suggestive, dégradante, humiliante, stigmatisante ou culturellement inappropriée avec un bénéficiaire."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will not hire any child in any harmful form of child labor and follow local laws regarding child employment."
-msgstr "Je n’emploierai aucun enfant dans aucune forme de travail infantile et je respecterai les lois locales concernant l’emploi d’enfants."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "I will not solicit a romantic/dating relationship and will never engage in sexual/sexually suggestive behavior with any beneficiary, regardless of age."
-msgstr "Je ne solliciterai aucune relation romantique/intime et ne me livrerai jamais à un comportement sexuel/sexuellement suggestif avec un(e) bénéficiaire, quel que soit son âge."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Identifier"
-msgstr "Identifiant"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Issue successfully sent, it will be quickly reviewed"
-msgstr "Problème envoyé avec succès, il sera rapidement examiné"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Language"
-msgstr "Langue"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Letter"
-msgstr "Lettre"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Letter Information"
-msgstr "Informations sur la lettre"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Letter saved"
-msgstr "Traduction sauvegardée"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Letters"
-msgstr "Lettres"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Manage your translation skills"
-msgstr "Gère tes compétences de langues"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Name"
-msgstr "Nom"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "No source text available"
-msgstr "Aucun texte source disponible"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Pick Languages"
-msgstr "Choisir des langues"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Please select a problem in the list"
-msgstr "Veuillez sélectionner un problème dans la liste"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Preferred Name"
-msgstr "Prénom"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Register"
-msgstr "Enregistrer"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Register a new translation skill"
-msgstr "Enregistrer une nouvelle compétence"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Role"
-msgstr "Rôle"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Save"
-msgstr "Enregistrer"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Send Message"
-msgstr "Envoyer un message"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Sex"
-msgstr "Sexe"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Signal a Problem"
-msgstr "Signaler un problème"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Source"
-msgstr "Texte source"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Source Text to translate"
-msgstr "Texte source à traduire"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Sponsor Data"
-msgstr "Données du parrain"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Submit"
-msgstr "Soumettre"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Take the first"
-msgstr "Choisis la première de la liste"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Thank you."
-msgstr "Merci."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "This letter could not be found"
-msgstr "Cette lettre n'a pas pu être trouvée."
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Title"
-msgstr "Titre"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translate"
-msgstr "Traduire"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translate Verification Letter"
-msgstr "Traduire la lettre pour vérification"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translated Content"
-msgstr "Contenu traduit"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translation Platform"
-msgstr "Plateforme de traduction"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translator"
-msgstr "Traducteur"
-
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Translators"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/pages/tp_translators.xml:0
+#, fuzzy
+#| msgid "Translators"
+msgid "translators"
 msgstr "Traducteurs"
 
 #. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Unable to load translator information"
-msgstr "Impossible de charger les informations du traducteur"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/translation_platform.xml:0
+msgid "when you are done. Your translation will be reviewed."
+msgstr ""
 
 #. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Unable to register translation skills"
-msgstr "Impossible d'enregistrer les compétences de traduction"
+#. odoo-javascript
+#: code:addons/sbc_translation/static/src/components/tp_content_editor.xml:0
+#: code:addons/sbc_translation/static/src/components/tp_letter_viewer.xml:0
+msgid "— Page Break —"
+msgstr ""
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Unable to save and submit letter, please save it first and retry."
-msgstr "Impossible d'enregistrer et soumettre la lettre, veuillez d'abord l'enregistrer et réessayer."
+#~ msgid "Last Modified on"
+#~ msgstr "Dernière Modification le"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Unable to save letter"
-msgstr "Impossible d'enregistrer la lettre."
+#, python-format
+#~ msgid "Letter must be in state 'Translation check unsuccessful'"
+#~ msgstr "La lettre doit être en : \"Translation check unsuccessful\"."
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Unable to submit issue"
-msgstr "Impossible de soumettre le problème"
+#~ msgid "Users"
+#~ msgstr "Utilisateurs"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Waiting for your verification letter"
-msgstr "En attente de ta lettre de vérification"
+#~ msgid "You have just received a reply to your comments on the translation:"
+#~ msgstr ""
+#~ "Vous venez de recevoir une réponse à vos commentaires sur la traduction :"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Welcome"
-msgstr "Bienvenue"
+#~ msgid "sbc.reply.to.comments.wizard"
+#~ msgstr "sbc.reply.to.comments.wizard"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "You have translated a total of"
-msgstr "Tu as traduit un total de"
+#~ msgid "sbc.reply.to.issue.wizard"
+#~ msgstr "sbc.reply.to.issue.wizard"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Your Message"
-msgstr "Ton message"
+#~ msgid "Issue successfully sent, it will be quickly reviewed"
+#~ msgstr "Problème envoyé avec succès, il sera rapidement examiné"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Your current translation skills"
-msgstr "Tes compétences de langues actuelles"
+#~ msgid "Please select a problem in the list"
+#~ msgstr "Veuillez sélectionner un problème dans la liste"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "Your new skills have been registered"
-msgstr "Vos nouvelles compétences ont été enregistrées"
+#~ msgid "Unable to load translator information"
+#~ msgstr "Impossible de charger les informations du traducteur"
 
-#. module: sbc_translation
-#: sbc_translation.TranslationPlatform
-msgid "new Skill"
-msgstr "Nouvelle(s) compétence(s)"
+#~ msgid "Unable to register translation skills"
+#~ msgstr "Impossible d'enregistrer les compétences de traduction"
 
+#~ msgid "Unable to save and submit letter, please save it first and retry."
+#~ msgstr ""
+#~ "Impossible d'enregistrer et soumettre la lettre, veuillez d'abord "
+#~ "l'enregistrer et réessayer."
+
+#~ msgid "Unable to save letter"
+#~ msgstr "Impossible d'enregistrer la lettre."
+
+#~ msgid "Unable to submit issue"
+#~ msgstr "Impossible de soumettre le problème"
+
+#~ msgid "Your new skills have been registered"
+#~ msgstr "Vos nouvelles compétences ont été enregistrées"

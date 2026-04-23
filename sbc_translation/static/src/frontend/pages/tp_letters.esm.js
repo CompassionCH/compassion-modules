@@ -10,7 +10,7 @@ const LETTERS_PER_PAGE = 10;
  * Priority badge.
  */
 class TpLetterPriority extends Component {
-  static template = 'sbc_translation.TpLetterPriority';
+  static template = "sbc_translation.TpLetterPriority";
   static props = { priority: { type: Number, optional: true } };
 
   get priorityLabel() {
@@ -26,7 +26,7 @@ class TpLetterPriority extends Component {
  *   isAdmin     {Boolean}
  */
 export class TpLetters extends Component {
-  static template = 'sbc_translation.TpLetters';
+  static template = "sbc_translation.TpLetters";
 
   static components = { TpLetterPriority, TpTranslatorButton, TpLoader };
 

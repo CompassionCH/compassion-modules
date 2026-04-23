@@ -12,7 +12,7 @@ import { showNotification } from "../notification.esm";
  *   onClose   {Function}
  */
 export class TpSignalProblem extends Component {
-  static template = 'sbc_translation.TpSignalProblem';
+  static template = "sbc_translation.TpSignalProblem";
 
   static components = { TpModal };
 

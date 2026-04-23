@@ -12,7 +12,7 @@ import { showNotification } from "../notification.esm";
  *   onChange     {Function} - called after a skill is removed
  */
 export class TpTranslationSkills extends Component {
-  static template = 'sbc_translation.TpTranslationSkills';
+  static template = "sbc_translation.TpTranslationSkills";
 
   static props = {
     skills: { type: Array },
@@ -44,7 +44,7 @@ export class TpTranslationSkills extends Component {
  *   translatorId {number}
  */
 export class TpLanguagesPickModal extends Component {
-  static template = 'sbc_translation.TpLanguagesPickModal';
+  static template = "sbc_translation.TpLanguagesPickModal";
 
   static components = { TpModal, TpTranslationSkills };
 

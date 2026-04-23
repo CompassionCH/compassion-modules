@@ -14,7 +14,7 @@ const AUTOSAVE_DELAY_MS = 30000;
  * Submitted confirmation modal.
  */
 class TpLetterSubmittedModal extends Component {
-  static template = 'sbc_translation.TpLetterSubmittedModal';
+  static template = "sbc_translation.TpLetterSubmittedModal";
   static components = { TpModal };
   static props = {
     active: { type: Boolean },
@@ -31,7 +31,7 @@ class TpLetterSubmittedModal extends Component {
  *   translator  {Object}
  */
 export class TpLetterEdit extends Component {
-  static template = 'sbc_translation.TpLetterEdit';
+  static template = "sbc_translation.TpLetterEdit";
 
   static components = {
     TpLetterViewer,

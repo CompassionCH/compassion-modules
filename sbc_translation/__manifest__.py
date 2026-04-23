@@ -38,43 +38,9 @@
     "depends": ["sbc_compassion", "partner_contact_birthdate", "portal"],
     "assets": {
         "web.assets_frontend": [
-            "sbc_translation/static/src/translation_platform.css",
-            "sbc_translation/static/src/rpc.esm.js",
-            "sbc_translation/static/src/notification.esm.js",
-            "sbc_translation/static/src/models/letter_dao.esm.js",
-            "sbc_translation/static/src/models/translator_dao.esm.js",
-            "sbc_translation/static/src/models/settings_dao.esm.js",
-            # Component XML templates (must be loaded before the JS classes)
-            "sbc_translation/static/src/components/tp_loader.xml",
-            "sbc_translation/static/src/components/tp_modal.xml",
-            "sbc_translation/static/src/components/tp_signal_problem.xml",
-            "sbc_translation/static/src/components/tp_child_modal.xml",
-            "sbc_translation/static/src/components/tp_translator_button.xml",
-            "sbc_translation/static/src/components/tp_content_editor.xml",
-            "sbc_translation/static/src/components/tp_letter_viewer.xml",
-            "sbc_translation/static/src/components/tp_languages_pick_modal.xml",
-            # Component JS
-            "sbc_translation/static/src/components/tp_loader.esm.js",
-            "sbc_translation/static/src/components/tp_modal.esm.js",
-            "sbc_translation/static/src/components/tp_signal_problem.esm.js",
-            "sbc_translation/static/src/components/tp_child_modal.esm.js",
-            "sbc_translation/static/src/components/tp_translator_button.esm.js",
-            "sbc_translation/static/src/components/tp_content_editor.esm.js",
-            "sbc_translation/static/src/components/tp_letter_viewer.esm.js",
-            "sbc_translation/static/src/components/tp_languages_pick_modal.esm.js",
-            # Page XML templates
-            "sbc_translation/static/src/pages/tp_letters.xml",
-            "sbc_translation/static/src/pages/tp_letter_edit.xml",
-            "sbc_translation/static/src/pages/tp_home.xml",
-            "sbc_translation/static/src/pages/tp_translators.xml",
-            # Page JS
-            "sbc_translation/static/src/pages/tp_letters.esm.js",
-            "sbc_translation/static/src/pages/tp_letter_edit.esm.js",
-            "sbc_translation/static/src/pages/tp_home.esm.js",
-            "sbc_translation/static/src/pages/tp_translators.esm.js",
-            # Root app XML template and JS entry point
-            "sbc_translation/static/src/translation_platform.xml",
-            "sbc_translation/static/src/translation_platform.esm.js",
+            "sbc_translation/static/src/frontend/**/*.css",
+            "sbc_translation/static/src/frontend/**/*.xml",
+            "sbc_translation/static/src/frontend/**/*.esm.js",
         ],
     },
     "data": [

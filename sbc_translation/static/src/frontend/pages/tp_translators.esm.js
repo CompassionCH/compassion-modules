@@ -12,7 +12,7 @@ const PER_PAGE = 10;
  *   navigate {Function}
  */
 export class TpTranslators extends Component {
-  static template = 'sbc_translation.TpTranslators';
+  static template = "sbc_translation.TpTranslators";
 
   static components = { TpLoader, TpLanguagesPickModal };
 

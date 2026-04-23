@@ -13,7 +13,7 @@ import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal.esm"
  *   navigate  {Function}
  */
 class TpTranslationCard extends Component {
-  static template = 'sbc_translation.TpTranslationCard';
+  static template = "sbc_translation.TpTranslationCard";
 
   static props = {
     title: { type: String },
@@ -32,7 +32,7 @@ class TpTranslationCard extends Component {
  *   onRefreshTranslator {Function}
  */
 export class TpHome extends Component {
-  static template = 'sbc_translation.TpHome';
+  static template = "sbc_translation.TpHome";
 
   static components = { TpLanguagesPickModal, TpTranslationCard, TpBlurLoader };
 

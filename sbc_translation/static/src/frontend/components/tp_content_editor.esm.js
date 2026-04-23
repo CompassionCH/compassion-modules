@@ -8,7 +8,7 @@ import { TpModal } from "./tp_modal.esm";
  *   onClose {Function}
  */
 class TpTipsModal extends Component {
-  static template = 'sbc_translation.TpTipsModal';
+  static template = "sbc_translation.TpTipsModal";
   static components = { TpModal };
   static props = {
     active: { type: Boolean },
@@ -22,7 +22,7 @@ class TpTipsModal extends Component {
  *   letter {Object} - letter data with translatedElements array
  */
 export class TpContentEditor extends Component {
-  static template = 'sbc_translation.TpContentEditor';
+  static template = "sbc_translation.TpContentEditor";
 
   static components = { TpModal, TpTipsModal };
 
