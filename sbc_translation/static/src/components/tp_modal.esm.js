@@ -1,14 +1,12 @@
-/** @odoo-module */
-
 import {
   Component,
-  xml,
-  useState,
   onMounted,
-  onWillUpdateProps,
   onPatched,
+  onWillUpdateProps,
+  useState,
+  xml,
 } from "@odoo/owl";
-import { TpLoader } from "./tp_loader";
+import { TpLoader } from "./tp_loader.esm";
 
 // Duration of the Bootstrap modal fade-in/out CSS transition (ms).
 // The unmount delay must match the animation so the backdrop disappears correctly.

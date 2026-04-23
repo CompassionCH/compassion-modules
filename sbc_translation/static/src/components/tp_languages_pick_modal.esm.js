@@ -1,10 +1,8 @@
-/** @odoo-module */
-
-import { Component, xml, useState } from "@odoo/owl";
-import { showNotification } from "../notification";
-import { TpModal } from "./tp_modal";
-import { SettingsDAO } from "../models/settings_dao";
-import { TranslatorDAO } from "../models/translator_dao";
+import { Component, useState, xml } from "@odoo/owl";
+import { SettingsDAO } from "../models/settings_dao.esm";
+import { TpModal } from "./tp_modal.esm";
+import { TranslatorDAO } from "../models/translator_dao.esm";
+import { showNotification } from "../notification.esm";
 
 /**
  * Component that renders a translator's current skills and allows deletion.
@@ -49,7 +47,7 @@ export class TpTranslationSkills extends Component {
       });
       showNotification("Skill removed", "success");
       this.props.onChange();
-    } catch (e) {
+    } catch {
       showNotification("Unable to remove skill", "danger");
     }
   }
@@ -156,7 +154,7 @@ export class TpLanguagesPickModal extends Component {
       this.state.allowedCompetences = competences.filter(
         (c) => !this.translatorHasSkill(c),
       );
-    } catch (e) {
+    } catch {
       showNotification("Unable to load translator information", "danger");
       this.props.onClose();
     } finally {
@@ -188,7 +186,7 @@ export class TpLanguagesPickModal extends Component {
       showNotification("Your new skills have been registered", "success");
       this.state.potentialSkills = [];
       this.props.onChange();
-    } catch (e) {
+    } catch {
       showNotification("Unable to register translation skills", "danger");
     } finally {
       this.state.loading = false;

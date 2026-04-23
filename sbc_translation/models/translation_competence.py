@@ -33,18 +33,22 @@ class TranslationCompetence(models.Model):
         "correspondence", "translation_competence_id", "All letters"
     )
     current_letter_ids = fields.One2many(
-        "correspondence", string="Current letters", compute="_compute_current_letters"
+        "correspondence",
+        string="Current letters",
+        compute="_compute_current_letters",
     )
     number_current_letters = fields.Integer(
-        compute="_compute_current_letters", store=True, compute_sudo=False
+        compute="_compute_current_letters_count", store=True
     )
     skill_ids = fields.One2many(
         "translation.user.skill", "competence_id", "Translator skills"
     )
     number_translators = fields.Integer(
-        compute="_compute_number_translators", store=True, compute_sudo=False
+        compute="_compute_number_translators", store=True
     )
-    number_active_translators = fields.Integer(compute="_compute_number_translators")
+    number_active_translators = fields.Integer(
+        compute="_compute_number_active_translators"
+    )
 
     _sql_constraints = [
         (
@@ -70,11 +74,20 @@ class TranslationCompetence(models.Model):
                 [
                     ("state", "=", "Global Partner translation queue"),
                     ("translation_competence_id", "=", competence.id),
-                    ("translation_competence_id", "!=", False),
                 ]
             )
             competence.current_letter_ids = current_letters
             competence.number_current_letters = len(current_letters)
+
+    @api.depends("all_letter_ids")
+    def _compute_current_letters_count(self):
+        for competence in self:
+            competence.number_current_letters = self.env["correspondence"].search_count(
+                [
+                    ("state", "=", "Global Partner translation queue"),
+                    ("translation_competence_id", "=", competence.id),
+                ]
+            )
 
     @api.depends("skill_ids", "skill_ids.translator_id.active")
     def _compute_number_translators(self):
@@ -84,6 +97,10 @@ class TranslationCompetence(models.Model):
                     ("translation_skills.competence_id", "=", competence.id),
                 ]
             )
+
+    @api.depends("skill_ids", "skill_ids.translator_id.active")
+    def _compute_number_active_translators(self):
+        for competence in self:
             competence.number_active_translators = self.env[
                 "translation.user"
             ].search_count(

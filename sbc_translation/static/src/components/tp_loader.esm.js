@@ -1,12 +1,4 @@
-/** @odoo-module */
-
-import {
-  Component,
-  xml,
-  useState,
-  onMounted,
-  onWillUpdateProps,
-} from "@odoo/owl";
+import { Component, xml } from "@odoo/owl";
 
 /**
  * Generic loading spinner.

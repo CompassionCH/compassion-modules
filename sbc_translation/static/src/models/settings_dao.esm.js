@@ -1,6 +1,4 @@
-/** @odoo-module */
-
-import { searchRead, call } from "../rpc";
+import { call, searchRead } from "../rpc.esm";
 
 /**
  * Settings DAO - data access for translation competences and letter issues.
@@ -40,11 +38,7 @@ export const SettingsDAO = {
    * @returns {Promise<Array<{id: string, text: string}>>}
    */
   async letterIssues() {
-    const raw = await call(
-      "correspondence",
-      "get_translation_issue_list",
-      [],
-    );
+    const raw = await call("correspondence", "get_translation_issue_list", []);
     return (raw || []).map(([id, text]) => ({ id, text }));
   },
 };

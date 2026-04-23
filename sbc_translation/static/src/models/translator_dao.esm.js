@@ -1,6 +1,4 @@
-/** @odoo-module */
-
-import { search, searchCount, call } from "../rpc";
+import { call, search, searchCount } from "../rpc.esm";
 
 /**
  * Translator DAO - data access for the translation.user model.
@@ -10,7 +8,7 @@ import { search, searchCount, call } from "../rpc";
 export const TranslatorDAO = {
   /**
    * Get a single translator's full info.
-   * @param {number} id
+   * @param {Number} id
    * @returns {Promise<Object>}
    */
   async find(id) {
@@ -71,7 +69,7 @@ export const TranslatorDAO = {
 
   /**
    * Register new translation skills for a translator.
-   * @param {number} translatorId
+   * @param {Number} translatorId
    * @param {number[]} competenceIds
    * @returns {Promise<boolean>}
    */
@@ -84,7 +82,7 @@ export const TranslatorDAO = {
 
   /**
    * Remove a translation skill from a translator.
-   * @param {number} translatorId
+   * @param {Number} translatorId
    * @param {Object} skill - { source, target, verified }
    * @returns {Promise<boolean>}
    */
@@ -97,7 +95,7 @@ export const TranslatorDAO = {
   // Private helpers
   // -------------------------------------------------------------------------
 
-  _buildDomain(search) {
+  _buildDomain(search_vals) {
     const fieldMap = {
       total: "nb_translated_letters",
       year: "nb_translated_letters_this_year",
@@ -106,7 +104,7 @@ export const TranslatorDAO = {
       email: "user_id.email",
     };
     const domain = [];
-    for (const item of search) {
+    for (const item of search_vals) {
       const field = fieldMap[item.column] || item.column;
       domain.push([field, item.operator || "ilike", item.term]);
     }
@@ -133,14 +131,14 @@ export const TranslatorDAO = {
     if (!data) return undefined;
     return {
       ...data,
-      email: data.email !== "None" ? data.email : undefined,
-      name: data.name !== "None" ? data.name : undefined,
-      age: data.age !== "None" ? data.age : undefined,
-      language: data.language !== "None" ? data.language : undefined,
-      total: data.total !== "None" ? data.total : 0,
-      year: data.year !== "None" ? data.year : 0,
-      lastYear: data.lastYear !== "None" ? data.lastYear : 0,
-      skills: data.skills !== "None" ? data.skills || [] : [],
+      email: data.email === "None" ? undefined : data.email,
+      name: data.name === "None" ? undefined : data.name,
+      age: data.age === "None" ? undefined : data.age,
+      language: data.language === "None" ? undefined : data.language,
+      total: data.total === "None" ? 0 : data.total,
+      year: data.year === "None" ? 0 : data.year,
+      lastYear: data.lastYear === "None" ? 0 : data.lastYear,
+      skills: data.skills === "None" ? [] : data.skills || [],
     };
   },
 };

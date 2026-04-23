@@ -1,16 +1,8 @@
-/** @odoo-module */
-
-import {
-  Component,
-  xml,
-  useState,
-  onMounted,
-  onWillUpdateProps,
-} from "@odoo/owl";
-import { showNotification } from "../notification";
-import { LetterDAO } from "../models/letter_dao";
-import { TpLoader } from "../components/tp_loader";
-import { TpTranslatorButton } from "../components/tp_translator_button";
+import { Component, onMounted, useState, xml } from "@odoo/owl";
+import { LetterDAO } from "../models/letter_dao.esm";
+import { TpLoader } from "../components/tp_loader.esm";
+import { TpTranslatorButton } from "../components/tp_translator_button.esm";
+import { showNotification } from "../notification.esm";
 
 const LETTERS_PER_PAGE = 10;
 
@@ -219,7 +211,7 @@ export class TpLetters extends Component {
       });
       this.state.letters = result.data;
       this.state.total = result.total;
-    } catch (e) {
+    } catch {
       showNotification("Unable to load letters", "danger");
     } finally {
       this.state.loading = false;

@@ -1,12 +1,8 @@
-/** @odoo-module */
-
-import { Component, xml, useState, onMounted } from "@odoo/owl";
-import { showNotification } from "../notification";
-import { TranslatorDAO } from "../models/translator_dao";
-import { TpTranslatorButton } from "../components/tp_translator_button";
-import { TpLoader } from "../components/tp_loader";
-import { TpModal } from "../components/tp_modal";
-import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal";
+import { Component, onMounted, useState, xml } from "@odoo/owl";
+import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal.esm";
+import { TpLoader } from "../components/tp_loader.esm";
+import { TranslatorDAO } from "../models/translator_dao.esm";
+import { showNotification } from "../notification.esm";
 
 const PER_PAGE = 10;
 
@@ -163,7 +159,7 @@ export class TpTranslators extends Component {
       });
       this.state.translators = result.data;
       this.state.total = result.total;
-    } catch (e) {
+    } catch {
       showNotification("Unable to load translators", "danger");
     } finally {
       this.state.loading = false;

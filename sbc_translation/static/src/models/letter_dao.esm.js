@@ -1,6 +1,4 @@
-/** @odoo-module */
-
-import { search, searchCount, call } from "../rpc";
+import { call, search, searchCount } from "../rpc.esm";
 
 /**
  * Letter DAO - data access for the correspondence model.
@@ -42,7 +40,7 @@ export const LetterDAO = {
       return { data: [], total };
     }
 
-    // list_letters is a record-level method; pass IDs as first arg
+    // List_letters is a record-level method; pass IDs as first arg
     const rawLetters = await call("correspondence", "list_letters", [ids]);
     const data = (rawLetters || []).map((l) => LetterDAO._cleanLetter(l));
     return { data, total };
@@ -87,9 +85,9 @@ export const LetterDAO = {
 
   /**
    * Report an issue with a letter.
-   * @param {number} letterId
-   * @param {string} issueType
-   * @param {string} message
+   * @param {Number} letterId
+   * @param {String} issueType
+   * @param {String} message
    * @returns {Promise<boolean>}
    */
   async reportIssue(letterId, issueType, message) {
@@ -103,7 +101,7 @@ export const LetterDAO = {
   /**
    * Reply to translator comments on a letter.
    * @param {Object} letter
-   * @param {string} html
+   * @param {String} html
    * @returns {Promise<boolean>}
    */
   async replyToComments(letter, html) {
@@ -147,10 +145,10 @@ export const LetterDAO = {
 
   /**
    * Map the frontend search params to an Odoo domain.
-   * @param {Array} search - [{column, term, operator}]
+   * @param {Array} search_vals - [{column, term, operator}]
    * @returns {Array}
    */
-  _buildDomain(search) {
+  _buildDomain(search_vals) {
     const fieldMap = {
       status: "translation_status",
       title: "name",
@@ -163,7 +161,7 @@ export const LetterDAO = {
       translationIssue: "translation_issue",
     };
     const domain = [];
-    for (const item of search) {
+    for (const item of search_vals) {
       const field = fieldMap[item.column] || item.column;
       const op = item.operator || "ilike";
       let term = item.term;
@@ -178,7 +176,7 @@ export const LetterDAO = {
   /**
    * Map the frontend sortBy array to an Odoo order string.
    * @param {string[]} sortBy
-   * @returns {string}
+   * @returns {String}
    */
   _buildOrder(sortBy) {
     const fieldMap = {
@@ -212,9 +210,9 @@ export const LetterDAO = {
           ? new Date(letter.lastUpdate)
           : undefined,
       translatorId:
-        letter.translatorId !== "None" ? letter.translatorId : undefined,
+        letter.translatorId === "None" ? undefined : letter.translatorId,
       translatedElements:
-        letter.translatedElements !== "None" ? letter.translatedElements : [],
+        letter.translatedElements === "None" ? [] : letter.translatedElements,
       priority: parseInt(letter.priority, 10) || 0,
     };
   },

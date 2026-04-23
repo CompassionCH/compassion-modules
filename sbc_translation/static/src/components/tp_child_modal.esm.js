@@ -1,7 +1,5 @@
-/** @odoo-module */
-
 import { Component, xml } from "@odoo/owl";
-import { TpModal } from "./tp_modal";
+import { TpModal } from "./tp_modal.esm";
 
 /**
  * Child protection policy modal.

@@ -1,14 +1,19 @@
-/** @odoo-module */
-
-import { Component, xml, useState, onMounted, mount, whenReady } from "@odoo/owl";
-import { showNotification } from "./notification";
-import { TranslatorDAO } from "./models/translator_dao";
-import { TpHome } from "./pages/tp_home";
-import { TpLetters } from "./pages/tp_letters";
-import { TpLetterEdit } from "./pages/tp_letter_edit";
-import { TpTranslators } from "./pages/tp_translators";
-import { TpChildModal } from "./components/tp_child_modal";
-import { TpModal } from "./components/tp_modal";
+import {
+  Component,
+  mount,
+  onMounted,
+  useState,
+  whenReady,
+  xml,
+} from "@odoo/owl";
+import { TpChildModal } from "./components/tp_child_modal.esm";
+import { TpHome } from "./pages/tp_home.esm";
+import { TpLetterEdit } from "./pages/tp_letter_edit.esm";
+import { TpLetters } from "./pages/tp_letters.esm";
+import { TpModal } from "./components/tp_modal.esm";
+import { TpTranslators } from "./pages/tp_translators.esm";
+import { TranslatorDAO } from "./models/translator_dao.esm";
+import { showNotification } from "./notification.esm";
 
 /**
  * Help modal.
@@ -157,7 +162,7 @@ export class TranslationPlatform extends Component {
   async _loadTranslator() {
     try {
       this.state.translator = await TranslatorDAO.current();
-    } catch (e) {
+    } catch {
       showNotification("Unable to load your translator profile", "danger");
     } finally {
       this.state.loading = false;
@@ -170,7 +175,7 @@ export class TranslationPlatform extends Component {
 
   /**
    * State-based navigation.
-   * @param {string} page - 'home' | 'letters' | 'letter-edit' | 'translators'
+   * @param {String} page - 'home' | 'letters' | 'letter-edit' | 'translators'
    * @param {Object} [params] - e.g. { letterId: 42 }
    */
   navigate = (page, params = {}) => {

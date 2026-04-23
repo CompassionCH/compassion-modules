@@ -1,10 +1,8 @@
-/** @odoo-module */
-
-import { Component, xml, useState } from "@odoo/owl";
-import { showNotification } from "../notification";
-import { TpModal } from "./tp_modal";
-import { SettingsDAO } from "../models/settings_dao";
-import { call } from "../rpc";
+import { Component, useState, xml } from "@odoo/owl";
+import { SettingsDAO } from "../models/settings_dao.esm";
+import { TpModal } from "./tp_modal.esm";
+import { call } from "../rpc.esm";
+import { showNotification } from "../notification.esm";
 
 /**
  * Modal for reporting a problem with a letter.
@@ -81,7 +79,7 @@ export class TpSignalProblem extends Component {
       if (this.props.onRefresh) {
         this.props.onRefresh();
       }
-    } catch (e) {
+    } catch {
       showNotification("Unable to submit issue", "danger");
     } finally {
       this.state.loading = false;

@@ -1,10 +1,7 @@
-/** @odoo-module */
-
-import { Component, xml, useState, onMounted } from "@odoo/owl";
-import { showNotification } from "../notification";
-import { LetterDAO } from "../models/letter_dao";
-import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal";
-import { TpBlurLoader } from "../components/tp_loader";
+import { Component, onMounted, useState, xml } from "@odoo/owl";
+import { LetterDAO } from "../models/letter_dao.esm";
+import { TpBlurLoader } from "../components/tp_loader.esm";
+import { TpLanguagesPickModal } from "../components/tp_languages_pick_modal.esm";
 
 /**
  * Card showing a set of letters to translate for a given skill.

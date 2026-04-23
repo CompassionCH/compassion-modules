@@ -1,8 +1,6 @@
-/** @odoo-module */
-
-import { Component, xml, useState } from "@odoo/owl";
-import { TpModal } from "./tp_modal";
-import { TranslatorDAO } from "../models/translator_dao";
+import { Component, useState, xml } from "@odoo/owl";
+import { TpModal } from "./tp_modal.esm";
+import { TranslatorDAO } from "../models/translator_dao.esm";
 
 /**
  * Inline button showing a translator's name; opens a detail modal on click.

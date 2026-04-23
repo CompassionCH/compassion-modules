@@ -1,17 +1,6 @@
-/** @odoo-module */
-
-import {
-  Component,
-  xml,
-  useState,
-  useRef,
-  onMounted,
-  onWillUnmount,
-  onWillUpdateProps,
-  onPatched,
-} from "@odoo/owl";
-import { TpLoader } from "./tp_loader";
-import { TpSignalProblem } from "./tp_signal_problem";
+import { Component, useState, xml } from "@odoo/owl";
+import { TpLoader } from "./tp_loader.esm";
+import { TpSignalProblem } from "./tp_signal_problem.esm";
 
 /**
  * Header that shows child/sponsor data and letter metadata.

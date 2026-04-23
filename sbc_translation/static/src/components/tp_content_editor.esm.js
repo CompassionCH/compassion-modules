@@ -1,7 +1,5 @@
-/** @odoo-module */
-
-import { Component, xml, useState } from "@odoo/owl";
-import { TpModal } from "./tp_modal";
+import { Component, useState, xml } from "@odoo/owl";
+import { TpModal } from "./tp_modal.esm";
 
 /**
  * Tips modal showing translation best practices.
