@@ -1,1 +1,0 @@
-Please put the compiled code of the translation platform here.

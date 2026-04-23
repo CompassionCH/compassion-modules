@@ -196,6 +196,12 @@ const config = [{
     languageOptions: {
         ecmaVersion: 2024,
         sourceType: "module",
+        globals: {
+            "document": "readonly",
+            "setTimeout": "readonly",
+            "clearTimeout": "readonly",
+            "fetch": "readonly",
+        }
     },
 }];
 

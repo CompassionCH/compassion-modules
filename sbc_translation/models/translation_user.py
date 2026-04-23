@@ -87,7 +87,10 @@ class TranslationUser(models.Model):
         user_group = self.env.ref("sbc_translation.group_user")
         for translator in records:
             translator.user_id.write(
-                {"groups_id": [(4, user_group.id)], "translator_id": translator.id}
+                {
+                    "groups_id": [(4, user_group.id)],
+                    "translator_id": translator.id,
+                }
             )
         return records
 

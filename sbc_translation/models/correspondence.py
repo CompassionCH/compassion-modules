@@ -122,10 +122,11 @@ class Correspondence(models.Model):
             )
 
     def _compute_translation_url(self):
-        host = self.env.ref("sbc_translation.translation_website").sudo().domain
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        base_url = base_url.rstrip("/")
         for letter in self:
             letter.translation_url = (
-                f"{host}/translation-platform/letters/letter-edit/{letter.id}"
+                f"{base_url}/odoo/translation-platform?letterId={letter.id}"
             )
 
     def _compute_paragraph_ids(self):
@@ -605,14 +606,6 @@ class Correspondence(models.Model):
                 else "Published to Global Partner",
             }
         )
-        # T2007 : If a TranslationLetterCounting wizard is active,
-        # the letter should be added to it
-        translation_letter_counting_wizards = self.env[
-            "translation.letter.counting.wizard"
-        ].search([])
-        for wizard in translation_letter_counting_wizards:
-            wizard.correspondence_ids = [(4, self.id)]
-
         if is_s2b:
             # Send to GMC
             self.with_user(SUPERUSER_ID).with_delay(
@@ -621,14 +614,6 @@ class Correspondence(models.Model):
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
             ).create_commkit()
-        else:
-            # Recompose the letter image
-            self.with_user(SUPERUSER_ID).with_delay(
-                channel="root.sbc_compassion",
-                priority=50,
-                description="Compose B2S letter image",
-                identity_key=f"sbc.compose_letter.{self.ids}",
-            ).compose_letter_button()
 
     def list_letters(self):
         """API call to fetch letters to translate"""
@@ -637,13 +622,8 @@ class Correspondence(models.Model):
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
         self.ensure_one()
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        if base_url:
-            base_url = base_url.rstrip("/") + "/"
-        else:
-            base_url = (
-                f"https://{self.env.ref('sbc_translation.translation_website').domain}/"
-            )
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        base_url = base_url.rstrip("/") + "/"
         # Gives access to related objects
         child = self.child_id.sudo()
         partner = self.partner_id.sudo()
@@ -677,7 +657,7 @@ class Correspondence(models.Model):
                 "age": partner.age,
                 "ref": partner.ref,
             },
-            "pdfUrl": f"{base_url}b2s_image?id={self.uuid}&disposition=inline",
+            "pdfUrl": f"/b2s_image?letter_uuid={self.uuid}&disposition=inline",
         }
 
     def get_translated_elements(self):
