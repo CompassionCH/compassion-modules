@@ -20,3 +20,24 @@ class AccountMove(models.Model):
             lambda g: not g.gmc_gift_id
         ).unlink()
         return res
+
+    def _post(self, soft=True):
+        """
+        Make sure triggers for gifts
+        are called after posting the move.
+        """
+        posted = super()._post(soft=soft)
+        posted._filter_moves_to_gift().line_ids._trigger_gifts()
+        return posted
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "line_ids" in vals:
+            self._filter_moves_to_gift().line_ids._trigger_gifts()
+        return res
+
+    def _filter_moves_to_gift(self):
+        return self.filtered(
+            lambda m: m.state == "posted"
+            and (m.move_type == "entry" or m.payment_state == "paid")
+        )
