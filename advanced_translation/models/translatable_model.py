@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import date, datetime, time
+from datetime import date, datetime
 
 from odoo import _, fields, models
 from odoo.tools.misc import format_datetime
@@ -112,7 +112,7 @@ class AdvancedTranslatable(models.AbstractModel):
             values = res_string
         return values
 
-    def get_date(self, field, date_type="short"):
+    def get_date(self, field, date_type="dd MMM YY"):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
@@ -125,7 +125,7 @@ class AdvancedTranslatable(models.AbstractModel):
         dates = [
             format_datetime(
                 self.env,
-                datetime.combine(d, time.min)
+                datetime.combine(d, datetime.now().time())
                 if isinstance(d, date) and not isinstance(d, datetime)
                 else d,
                 dt_format=date_type,

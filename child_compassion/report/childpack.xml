@@ -131,7 +131,7 @@
                         <t t-else="">
                             <span>Born</span>
                         </t>
-                        <span t-esc="o.get_date('birthdate', 'short')" />
+                        <span t-esc="o.get_date('birthdate', 'dd MMM YYYY')" />
                         <span t-if="o.age">)</span>
                     </p>
                     <p
