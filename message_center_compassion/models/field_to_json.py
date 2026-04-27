@@ -61,6 +61,7 @@ class FieldToJson(models.Model):
         "for a matching record given the JSON value. If not activated, "
         "the field won't be used in the conversion."
     )
+    allow_null = fields.Boolean(help="Allow empty values when no relation is found.")
     search_key = fields.Char(
         help="Odoo field name that will be used to search for an existing relational "
         "record. If not specified, it will assume a single value is given and "
@@ -210,6 +211,57 @@ class FieldToJson(models.Model):
                 return {}
         return {field_name: converted_value}
 
+    def _search_for_relational_values(self, value, field, relational_model, orm_vals):
+        """
+        Search for existing relational records matching the given value.
+        :return: (orm_vals, to_create) tuple
+        """
+        to_create = []
+        search_field = self.search_key or field.name
+        values = value if isinstance(value, list) else [value]
+        for val in values:
+            # Skip invalid data
+            if isinstance(val, str) and val.lower() in (
+                "null",
+                "false",
+                "none",
+                "other",
+                "unknown",
+            ):
+                continue
+            search_val = val
+            to_update = self.search_key and isinstance(val, dict)
+            if to_update:
+                # In that case we receive several values for the relation record
+                # and use one value in particular to find a matching record.
+                search_val = val.get(search_field)
+            records = (
+                relational_model.search(
+                    [
+                        "|",
+                        (search_field, "=", search_val),
+                        (search_field, "=ilike", str(search_val)),
+                    ]
+                )
+                if search_val
+                else relational_model
+            )
+            if self.relational_field_id.ttype == "many2one":
+                record = records[:1]  # Only take one relation
+                if not record and self.allow_relational_creation:
+                    to_create.append(val)
+                elif to_update:
+                    record.write(val)
+                orm_vals = record.id
+            else:
+                if not records and self.allow_relational_creation:
+                    to_create.append(val)
+                    continue
+                orm_vals.extend([(4, rid) for rid in records.ids])
+                if to_update:
+                    orm_vals.extend([(1, rid, val) for rid in records.ids])
+        return orm_vals, to_create
+
     def _json_to_relational_value(self, value):
         """
         Converts a received JSON value into valid data for a relational record
@@ -230,48 +282,9 @@ class FieldToJson(models.Model):
         search_field = self.search_key or field.name
         if self.search_relational_record:
             # Lookup for records that match the values received
-            values = value if isinstance(value, list) else [value]
-            for val in values:
-                # Skip invalid data
-                if isinstance(val, str) and val.lower() in (
-                    "null",
-                    "false",
-                    "none",
-                    "other",
-                    "unknown",
-                ):
-                    continue
-                search_val = val
-                to_update = self.search_key and isinstance(val, dict)
-                if to_update:
-                    # In that case we receive several values for the relation record
-                    # and use one value in particular to find a matching record.
-                    search_val = val.get(search_field)
-                records = (
-                    relational_model.search(
-                        [
-                            "|",
-                            (search_field, "=", search_val),
-                            (search_field, "=ilike", str(search_val)),
-                        ]
-                    )
-                    if search_val
-                    else relational_model
-                )
-                if self.relational_field_id.ttype == "many2one":
-                    record = records[:1]  # Only take one relation
-                    if not record and self.allow_relational_creation:
-                        to_create.append(val)
-                    elif to_update:
-                        record.write(val)
-                    orm_vals = record.id
-                else:
-                    if not records and self.allow_relational_creation:
-                        to_create.append(val)
-                        continue
-                    orm_vals.extend([(4, rid) for rid in records.ids])
-                    if to_update:
-                        orm_vals.extend([(1, rid, val) for rid in records.ids])
+            orm_vals, to_create = self._search_for_relational_values(
+                value, field, relational_model, orm_vals
+            )
         else:
             to_create = value
 
@@ -314,10 +327,12 @@ class FieldToJson(models.Model):
             return value
 
         # No records found given the values
-        raise UserError(
-            "Associated object not found using mapping %s, "
-            f"JSON Key {self.mapping_id.name}, JSON value {self.json_name}"
-        )
+        if not self.allow_null:
+            raise UserError(
+                "Associated object not found using mapping %s, "
+                f"JSON Key {self.mapping_id.name}, JSON value {self.json_name}"
+            )
+        return False
 
     def _get_relational_creation_values(self, field_values):
         """

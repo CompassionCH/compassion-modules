@@ -34,6 +34,10 @@
             invisible="not search_relational_record and not sub_mapping_id"
           />
                     <field
+            name="allow_null"
+            invisible="not relational_field and not sub_mapping_id"
+          />
+                    <field
             name="allow_relational_creation"
             invisible="not relational_field and not sub_mapping_id"
           />
