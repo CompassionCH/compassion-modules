@@ -128,7 +128,7 @@ class AdvancedTranslatable(models.AbstractModel):
                 datetime.combine(d, time.min)
                 if isinstance(d, date) and not isinstance(d, datetime)
                 else d,
-                date_type,
+                dt_format=date_type,
             )
             for d in dates
         ]
