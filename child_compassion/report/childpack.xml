@@ -223,8 +223,9 @@
                 max-height: 100%;
             }
             .child-ref {
+                position: absolute;
                 font-size: small;
-                margin-top: 40mm;
+                top: 140mm;
             }
             .summary {
                 position: absolute;
