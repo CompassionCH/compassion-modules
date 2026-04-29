@@ -1153,7 +1153,7 @@ class SponsorshipContract(models.Model):
             base_description = f"Automatic {gift_type.name}"
             gift_wizard = (
                 self.env["generate.gift.wizard"]
-                .with_context(invoicer=invoicer.id)
+                .with_context(invoicer=invoicer)
                 .create(
                     {
                         "product_id": product_id,
