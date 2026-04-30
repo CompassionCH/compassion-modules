@@ -184,6 +184,7 @@ class FieldToJson(models.Model):
             "none",
             "other",
             "unknown",
+            "not available",
         ):
             return {}
         converted_value = json_value

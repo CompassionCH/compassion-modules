@@ -9,6 +9,8 @@ access_child_household_duty,Write access on household duty,model_child_household
 access_physical_disability,Write access on child physical disability,model_child_physical_disability,group_sponsorship,1,1,1,0
 access_child_project_activity,Write access on child project activity,model_child_project_activity,group_sponsorship,1,1,1,1
 access_child_school_subject,Write access on child school subject,model_child_school_subject,group_sponsorship,1,1,1,0
+access_child_vocational_training,Write access on child vocational training,model_child_vocational_training,group_sponsorship,1,1,1,0
+access_child_major_course_study,Write access on child major course study,model_child_major_course_study,group_sponsorship,1,1,1,0
 access_compassion_child,Full access on compassion_child,model_compassion_child,group_sponsorship,1,1,1,1
 access_child_lifecycle,Full access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,1,1,1
 access_child_assessement,Access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,1

@@ -122,7 +122,8 @@ class CompassionChild(models.Model):
             ("Highschool", "high school"),
             ("University Graduate", "university"),
         ],
-        readonly=True,
+        compute="_compute_education_level",
+        store=True,
     )
     local_grade_level = fields.Char(readonly=True)
     us_grade_level = fields.Char(readonly=True)
@@ -135,109 +136,34 @@ class CompassionChild(models.Model):
         ],
         readonly=True,
     )
+    vocational_training_id = fields.Many2one("child.vocational.training", readonly=True)
+    vocational_training_status = fields.Selection(
+        [
+            ("In Progress", "In progress"),
+            ("Completed", "Completed"),
+            ("Not Completed", "Not Completed"),
+            ("On Hold", "On hold"),
+        ],
+        readonly=True,
+    )
     vocational_training_type = fields.Selection(
         [
-            ("Agriculture", "Agriculture"),
-            ("Architecture / Drafting", "Architecture"),
-            ("Art / Design", "Art / Design"),
-            ("Automotive", "Automotive"),
-            ("Automotive / Mechanics", "Automotive"),
-            ("Business/Administrative", "Business administration"),
-            ("Business / Administration", "Business administration"),
-            ("Clothing Trades", "Clothing trades"),
-            ("Computer Technology", "Computer technology"),
-            ("Computer / Technology", "Computer technology"),
-            ("Communication Studies", "Communication Studies"),
-            ("Construction/ Tradesman", "Construction"),
-            ("Construction / Tradesman", "Construction"),
-            ("Cooking / Food Service", "Cooking and food service"),
-            ("Cosmetology", "Cosmetology"),
-            ("Electrical/ Electronics", "Electronics"),
-            ("Electrical / Electronics", "Electronics"),
-            ("Graphic Arts", "Graphic arts"),
-            ("Hospitality / Hotel / Tourism", "Hospitality, hotel and tourism"),
-            (
-                "Income-Generating Program at Project",
-                "Income-generating program at project",
-            ),
-            (
-                "Industrial / Manufacturing / Fabrication",
-                "Industrial / Manufacturing / Fabrication",
-            ),
-            ("Manufacturing/ Fabrication", "Manufacturing / Fabrication"),
-            ("Manufacturing / Fabrication", "Manufacturing / Fabrication"),
-            ("Medical/ Health Services", "Medical / Health services"),
-            ("Medical / Health Services", "Medical / Health services"),
-            ("Not Enrolled ", "Not enrolled"),
-            ("Not enrolled", "Not enrolled"),
-            ("Other", "Other"),
-            ("Para-Medical / Medical / Health Services", "Medical / Health services"),
-            ("Telecommunication", "Telecommunication"),
-            ("Transportation", "Transportation"),
-            ("Transportation/ Driver", "Driver"),
-            ("Transportation / Driver", "Driver"),
+            ("formal", "Formal Vocational Training"),
+            ("non-formal", "Non-Formal Vocational Training"),
+        ],
+        readonly=True,
+    )
+    vocational_training_performance = fields.Selection(
+        [
+            ("Above Average", "Above average"),
+            ("Average", "Average"),
+            ("Below Average", "Below average"),
+            ("Not Available", ""),
         ],
         readonly=True,
     )
     university_year = fields.Integer(readonly=True)
-    major_course_study = fields.Selection(
-        [
-            ("Accounting", "Accounting"),
-            ("Accounting / Finance", "Accounting"),
-            ("Agriculture", "Agriculture"),
-            ("Architecture", "Architecture"),
-            ("Art / Design", "Art / Design"),
-            ("Biology", "Biology"),
-            ("Biology / Medicine", "Biology / Medicine"),
-            ("Business", "Business"),
-            ("Business / Management / Commerce", "Business management"),
-            ("Commerce", "Commerce"),
-            ("Communication Studies", "Communication Studies"),
-            ("Community Development", "Community development"),
-            ("Computer Science ", "Computer Science"),
-            ("Computer Science / Information Technology", "Computer science"),
-            ("Criminology", "Criminology"),
-            ("Criminology / Law Enforcement", "Criminology"),
-            ("Economics", "Economics"),
-            ("Education", "Education"),
-            ("Engineering", "Engineering"),
-            ("English", "English"),
-            ("Environmental", "Environmental"),
-            ("Fine Arts", "Fine Arts"),
-            ("Government / Political Science", "Government / Political Science"),
-            ("Graphic Arts", "Graphic Arts"),
-            ("Graphic Arts / Fine Arts", "Graphic arts"),
-            ("History", "History"),
-            ("Hospitality", "Hospitality"),
-            ("Hospitality / Hotel Management", "Hotel management"),
-            ("Hospitality / Hotel Management / Culinary Arts", "Hotel Management"),
-            ("Hotel Management", "Hotel Management"),
-            ("Information Technology", "Information Technology"),
-            ("Information / Technology", "Information Technology"),
-            ("Language", "Language"),
-            ("Law", "Law"),
-            ("Law Enforcement", "Law Enforcement"),
-            ("Management", "Management"),
-            ("Mathematics", "Mathematics"),
-            ("Medical/ Health Services", "Medical / Health services"),
-            ("Medical / Health Services", "Medical / Health services"),
-            ("Medicine", "Medicine"),
-            ("Nursing", "Nursing"),
-            ("Psychology", "Psychology"),
-            ("Sales and Marketing", "Sales and marketing"),
-            ("Science", "Science"),
-            ("Social Science", "Social Science"),
-            ("Sociology", "Sociology"),
-            ("Sociology / Social Science", "Sociology"),
-            ("Theology", "Theology"),
-            ("Theology / Christian Studies", "Theology"),
-            ("Tourism", "Tourism"),
-            ("Transportation", "Transportation"),
-            ("Other", "Other"),
-            ("Undecided", "Undecided"),
-        ],
-        readonly=True,
-    )
+    major_course_study_id = fields.Many2one("child.major.course.study", readonly=True)
     not_enrolled_reason = fields.Char(readonly=True, translate=True)
 
     # Spiritual information
@@ -319,9 +245,9 @@ class CompassionChild(models.Model):
             "physical_disability_ids.value",
             "correspondence_language_id.name",
             "education_level",
-            "vocational_training_type",
+            "vocational_training_id.value",
             "academic_performance",
-            "major_course_study",
+            "major_course_study_id.value",
             "gender",
             "household_id.member_ids.role",
         ]
@@ -488,31 +414,37 @@ class CompassionChild(models.Model):
         children.update_child_pictures()
         return children.ids
 
-    def convert_us_grade_to_education_level(self):
+    @api.depends("us_grade_level")
+    def _compute_education_level(self):
         """
         Takes the US Grade level field and converts to the education level
         which is used in child descriptions.
-        :return: True
         """
-        self.ensure_one()
-        if self.us_grade_level:
-            grade_mapping = {
-                "P": "Preschool",
-                "K": "Preschool",
-                "1": "Primary",
-                "2": "Primary",
-                "3": "Primary",
-                "4": "Primary",
-                "5": "Primary",
-                "6": "Primary",
-                "7": "Secondary",
-                "8": "Secondary",
-                "9": "Secondary",
-                "10": "Highschool",
-                "11": "Highschool",
-                "12": "Highschool",
-            }
-            self.education_level = grade_mapping.get(self.us_grade_level)
+        grade_mapping = {
+            "P": "Preschool",
+            "K": "Preschool",
+            "1": "Primary",
+            "2": "Primary",
+            "3": "Primary",
+            "4": "Primary",
+            "5": "Primary",
+            "6": "Primary",
+            "7": "Secondary",
+            "8": "Secondary",
+            "9": "Secondary",
+            "10": "Highschool",
+            "11": "Highschool",
+            "12": "Highschool",
+            "University Level 1": "University Graduate",
+            "University Level 2": "University Graduate",
+            "University Level 3": "University Graduate",
+            "University Level 4": "University Graduate",
+            "University Level 5": "University Graduate",
+        }
+        for child in self:
+            child.education_level = grade_mapping.get(
+                child.us_grade_level, "Not Enrolled"
+            )
 
     def get_number(self):
         """Returns a string telling how many children are in the recordset."""
@@ -751,3 +683,42 @@ class CompassionChild(models.Model):
         self.write({"revised_value_ids": vals.pop("revised_value_ids")})
         self.write(vals)
         self.get_infos()
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        # We only have one field for Vocational Training and we derive the type.
+        if not isinstance(json, list):
+            json = [json]
+        for vals in json:
+            formal_training = vals.pop("TrainingCourseofStudyFormalVoc", None)
+            non_formal_training = vals.pop("TrainingCourseofStudyNonFormal", None)
+            vals["VocationalTrainingCourse"] = (
+                formal_training
+                or non_formal_training
+                or vals.pop("VocationalTrainingType_Name", None)
+            )
+            if formal_training:
+                vals.update(
+                    {
+                        "VocationalTrainingType": "formal",
+                        "VocationalTrainingStatus": vals.pop(
+                            "StatusFormalVocational", None
+                        ),
+                        "VocationalTrainingPerformance": vals.pop(
+                            "PerformanceFormalVocational", None
+                        ),
+                    }
+                )
+            elif non_formal_training:
+                vals.update(
+                    {
+                        "VocationalTrainingType": "non-formal",
+                        "VocationalTrainingStatus": vals.pop(
+                            "StatusNonFormalVocational", None
+                        ),
+                        "VocationalTrainingPerformance": vals.pop(
+                            "PerformanceNonFormalVocational", None
+                        ),
+                    }
+                )
+        return super().json_to_data(json, mapping_name)

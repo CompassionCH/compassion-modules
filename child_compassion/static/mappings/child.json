@@ -55,7 +55,6 @@
       "search_key": "name"
     },
     "FirstName": "firstname",
-    "FormalEducationLevel": "education_level",
     "FullBodyImageURL": "image_url",
     "FullName": "name",
     "Gender": {
@@ -88,7 +87,11 @@
     "LastPhotoDate": "last_photo_date",
     "LastReviewDate": "last_review_date",
     "LocalNumber": "local_id",
-    "MajorOrCourseOfStudy": "major_course_study",
+    "MajorOrCourseOfStudy": {
+      "field": "major_course_study_id.name",
+      "search_relational_record": true,
+      "allow_relational_creation": true
+    },
     "NameInNonLatinChar": "non_latin_name",
     "NotEnrolledInEducationReason": "not_enrolled_reason",
     "PhysicalDisability": {
@@ -125,9 +128,15 @@
       "search_relational_record": true,
       "search_key": "name"
     },
-    "TypeOfVocationalEducation": "vocational_training_type",
     "USEquivalentGradeLevel": "us_grade_level",
-    "VocationalTrainingType_Name": "vocational_training_type",
+    "VocationalTrainingCourse": {
+      "field": "vocational_training_id.name",
+      "search_relational_record": true,
+      "allow_relational_creation": true
+    },
+    "VocationalTrainingPerformance": "vocational_training_performance",
+    "VocationalTrainingStatus": "vocational_training_status",
+    "VocationalTrainingType": "vocational_training_type",
     "WeightInKg": "weight"
   }
 }

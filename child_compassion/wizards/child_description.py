@@ -196,24 +196,19 @@ class ChildDescription(models.TransientModel):
         ##############
         if child.us_grade_level and child.us_grade_level != "Not Enrolled":
             # Make sure the education level is set
-            child.convert_us_grade_to_education_level()
             desc("#school_attending").remove()
             desc(".school_level")[0].text = _("School level")
             desc(".school_level")[1].text = child.translate("education_level")
-            if child.major_course_study:
+            if child.major_course_study_id.filtered(lambda c: not c.irrelevant):
                 desc(".school_subject")[0].text = _("Best school subject")
-                desc(".school_subject")[1].text = child.translate("major_course_study")
+                desc(".school_subject")[1].text = child.major_course_study_id.value
             else:
                 desc("#school_subject").remove()
-            if (
-                child.vocational_training_type
-                and child.vocational_training_type.lower()
-                not in ("not enrolled", "other")
-            ):
+            if child.vocational_training_id.filtered(lambda v: not v.irrelevant):
                 desc(".vocational_training")[0].text = _("Vocational training")
-                desc(".vocational_training")[1].text = child.translate(
-                    "vocational_training_type"
-                )
+                desc(".vocational_training")[
+                    1
+                ].text = child.vocational_training_id.value
             else:
                 desc("#vocational_training").remove()
         else:

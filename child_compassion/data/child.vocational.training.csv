@@ -1,0 +1,45 @@
+id,name,value,irrelevant
+voc_agriculture,Agriculture/Home Farms,Agriculture,False
+voc_animal_husbandry,Animal Husbandry,Animal husbandry,False
+voc_architecture,Architecture/Drafting,Architecture,False
+voc_army,Army/Police/Security,Army/Police/Security,False
+voc_art,Art/Design,Art / Design,False
+voc_automotive,Automotive/Mechanics,Automotive,False
+voc_aviation,Aviation/Pilot,Aviation/Pilot,False
+voc_barbershop,Barbershop,Barbershop,False
+voc_business,Business/Administration,Business administration,False
+voc_clothing_trades,Clothing Trades,Clothing trades,False
+voc_communication,Communication Studies,Communication Studies,False
+voc_computer,Computer/Technology,Computer technology,False
+voc_construction,Construction/Tradesman/Carpentry,Construction,False
+voc_cooking,Cooking/Food Service,Cooking and food service,False
+voc_cosmetology,Cosmetology/Beauty/Nail Tech,Cosmetology,False
+voc_electrical,Electrical/Electronics,Electronics,False
+voc_engineer,Engineer,Engineer,False
+voc_fishery,Fishery/Marine,Marine,False
+voc_fishing,Fishing,Fishing,False
+voc_forestry,Forestry,Forestry,False
+voc_hospitality,Hospitality/Hotel/Tourism,Hospitality,False
+voc_income_generating,Income-Generating Program at Project,Income-generating program at project,False
+voc_industrial,Industrial/Manufacturing/Fabrication,Industrial / Manufacturing / Fabrication,False
+voc_interior_design,Interior Design,Interior Design,False
+voc_languages,Languages,Languages,False
+voc_lawyer,Lawyer,Lawyer,False
+voc_multimedia,Multi-Media/Digital Content,Multi-Media,False
+voc_music,Music/Worship,Music / Worship,False
+voc_not_enrolled,Not Enrolled,Not Enrolled,True
+voc_other,Other,Other,True
+voc_medical,Para-Medical/Medical/Health Services,Medical / Health services,False
+voc_pastor,Pastor/Missionary/Evangelist,Pastor,False
+voc_politician,Politician/Government,Politician,False
+voc_refused,Refused to Answer,Refused to Answer,True
+voc_silkscreen,Silkscreen Printing,Silkscreen Printing,False
+voc_sports,Sports,Sports,False
+voc_street_vendor,Street Vendor,Street Vendor,False
+voc_teaching,Teaching,Teaching,False
+voc_telecommunication,Telecommunication,Telecommunication,False
+voc_transportation,Transportation/Driver,Driver,False
+voc_unknown,Unknown,Unknown,True
+voc_veterinarian,Veterinarian,Veterinarian,False
+voc_water_fetching,Water Fetching/Distribution,Water Fetching/Distribution,False
+voc_welding,Welding,Welding,False

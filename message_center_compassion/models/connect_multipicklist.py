@@ -17,7 +17,7 @@ class ConnectMultipicklist(models.AbstractModel):
     _description = "Connect Multipicklist"
     _inherit = ["mail.activity.mixin", "mail.thread"]
 
-    name = fields.Char(required=True, translate=False)
+    name = fields.Char(required=True, translate=False, index=True)
     res_model = "connect.multipicklist"
     res_field = "id"
 
@@ -39,34 +39,11 @@ class ConnectMultipicklist(models.AbstractModel):
             vals_list = [vals_list]
         for vals in vals_list:
             name = vals["name"]
-            rec = self.search([("name", "=", name)])
+            rec = self.search([("name", "=ilike", name)])
+            if not rec:
+                rec = self.search([("name", "=ilike", name.replace(" ", ""))])
             if rec:
                 res += rec
             else:
                 res += super().create(vals)
         return res
-
-    def get_res_view(self):
-        """
-        Method to find all children given a property
-        :return: List view of records having that property
-        """
-        res_ids = self.get_res_ids()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Related records",
-            "res_model": self.res_model,
-            "views": [[False, "list"], [False, "form"]],
-            "domain": [["id", "in", res_ids]],
-        }
-
-    def get_res_ids(self):
-        """
-        :return: Recordset of records having a given property
-        """
-        res_ids = list()
-        for prop_id in self.ids:
-            res_ids.extend(
-                self.env[self.res_model].search([(prop_id, "in", self.res_field)]).ids
-            )
-        return res_ids

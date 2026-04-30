@@ -1,0 +1,53 @@
+id,name,value,irrelevant
+course_accounting,Accounting,Accounting,False
+course_accounting_finance,Accounting / Finance,Accounting,False
+course_agriculture,Agriculture,Agriculture,False
+course_architecture,Architecture,Architecture,False
+course_art_design,Art / Design,Art / Design,False
+course_biology,Biology,Biology,False
+course_biology_medicine,Biology / Medicine,Biology / Medicine,False
+course_business,Business,Business,False
+course_business_management,Business / Management / Commerce,Business management,False
+course_commerce,Commerce,Commerce,False
+course_communication,Communication Studies,Communication Studies,False
+course_community_development,Community Development,Community development,False
+course_computer_science,Computer Science ,Computer science,False
+course_computer_science_it,Computer Science / Information Technology,Computer science,False
+course_criminology,Criminology,Criminology,False
+course_criminology_law,Criminology / Law Enforcement,Criminology,False
+course_economics,Economics,Economics,False
+course_education,Education,Education,False
+course_engineering,Engineering,Engineering,False
+course_english,English,English,False
+course_environmental,Environmental,Environmental,False
+course_fine_arts,Fine Arts,Fine Arts,False
+course_government,Government / Political Science,Government / Political Science,False
+course_graphic_arts,Graphic Arts,Graphic Arts,False
+course_graphic_arts_fine,Graphic Arts / Fine Arts,Graphic Arts,False
+course_history,History,History,False
+course_hospitality,Hospitality,Hospitality,False
+course_hospitality_hotel,Hospitality / Hotel Management,Hotel Management,False
+course_hospitality_hotel_culinary,Hospitality / Hotel Management / Culinary Arts,Hotel Management,False
+course_hotel_management,Hotel Management,Hotel Management,False
+course_information_technology,Information Technology,Information Technology,False
+course_information_technology2,Information / Technology,Information Technology,False
+course_language,Language,Language,False
+course_law,Law,Law,False
+course_law_enforcement,Law Enforcement,Law Enforcement,False
+course_management,Management,Management,False
+course_mathematics,Mathematics,Mathematics,False
+course_medical_health2,Medical / Health Services,Medical / Health Services,False
+course_medicine,Medicine,Medicine,False
+course_nursing,Nursing,Nursing,False
+course_psychology,Psychology,Psychology,False
+course_sales_marketing,Sales and Marketing,Sales and Marketing,False
+course_science,Science,Science,False
+course_social_science,Social Science,Social Science,False
+course_sociology,Sociology,Sociology,False
+course_sociology_social,Sociology / Social Science,Sociology,False
+course_theology,Theology,Theology,False
+course_theology_christian,Theology / Christian Studies,Theology,False
+course_tourism,Tourism,Tourism,False
+course_transportation,Transportation,Transportation,False
+course_other,Other,Other,True
+course_undecided,Undecided,Undecided,True

@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Children",
-    "version": "18.0.1.0.5",
+    "version": "18.0.1.1.0",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -74,6 +74,8 @@
         "data/child.chronic.illness.csv",
         "data/child.physical.disability.csv",
         "data/child.future.hope.csv",
+        "data/child.vocational.training.csv",
+        "data/child.major.course.study.csv",
         "data/connect.month.csv",
         "data/compassion_mapping.xml",
         "data/gmc_action.xml",
