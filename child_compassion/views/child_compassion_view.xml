@@ -234,8 +234,7 @@
                   />
                                     <field name="local_grade_level" />
                                     <field name="us_grade_level" />
-                                    <field name="vocational_training_id"
-                                           widget="selection"/>
+                                    <field name="vocational_training_id" />
                                     <field name="vocational_training_type" invisible="not vocational_training_id"/>
                                     <field name="vocational_training_status" invisible="not vocational_training_id"/>
                                     <field name="vocational_training_performance" invisible="not vocational_training_id"/>
@@ -250,7 +249,6 @@
                   />
                                     <field
                     name="major_course_study_id"
-                    widget="selection"
                     invisible="education_level == 'Not Enrolled'"
                   />
                                     <field

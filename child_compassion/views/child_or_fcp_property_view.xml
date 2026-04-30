@@ -105,5 +105,27 @@
             <form />
         </field>
     </record>
+    <record id="view_child_major_study" model="ir.ui.view">
+        <field name="name">child.major.course.study.form</field>
+        <field name="model">child.major.course.study</field>
+        <field name="inherit_id" ref="view_child_property_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="value" position="after">
+                <field name="irrelevant" />
+            </field>
+        </field>
+    </record>
+    <record id="view_child_vocational" model="ir.ui.view">
+        <field name="name">child.vocational.training.form</field>
+        <field name="model">child.vocational.training</field>
+        <field name="inherit_id" ref="view_child_property_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="value" position="after">
+                <field name="irrelevant" />
+            </field>
+        </field>
+    </record>
 
 </odoo>
