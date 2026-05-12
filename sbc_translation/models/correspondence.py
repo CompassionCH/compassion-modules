@@ -122,11 +122,28 @@ class Correspondence(models.Model):
             )
 
     def _compute_translation_url(self):
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
-        base_url = base_url.rstrip("/")
+        """Build the link translators click to open this letter in
+        the webapp.
+
+        The base URL is read from the system parameter
+        `sbc_translation.webapp_base_url`. If unset, the webapp is
+        assumed to be served by Odoo itself at `/translation-platform`
+        (see `controllers/main.py`), and the link falls back to
+        `<web.base.url>/translation-platform`.
+
+        Set the parameter to point at an external host
+        (e.g. `http://localhost:5173` for `npm run dev`) when the
+        webapp is not served by Odoo.
+        """
+        icp = self.env["ir.config_parameter"].sudo()
+        webapp_url = icp.get_param("sbc_translation.webapp_base_url")
+        if not webapp_url:
+            base_url = icp.get_param("web.base.url", "").rstrip("/")
+            webapp_url = f"{base_url}/translation-platform"
+        webapp_url = webapp_url.rstrip("/")
         for letter in self:
             letter.translation_url = (
-                f"{base_url}/odoo/translation-platform?letterId={letter.id}"
+                f"{webapp_url}/letters/letter-edit/{letter.id}"
             )
 
     def _compute_paragraph_ids(self):
@@ -564,6 +581,13 @@ class Correspondence(models.Model):
         return True
 
     def action_approve_translation(self):
+        """Manager-side approval of a letter in `to validate` status.
+
+        Marks the translator's skill for this letter's competence as
+        verified (if not already), clears any reported translation
+        issue, records the current user as supervisor, and runs the
+        post-processing step that ships the letter on.
+        """
         for letter in self:
             skill_to_validate = letter.new_translator_id.translation_skills.filtered(
                 lambda s, _letter=letter: s.competence_id
@@ -618,6 +642,16 @@ class Correspondence(models.Model):
     def list_letters(self):
         """API call to fetch letters to translate"""
         return [letter.get_letter_info() for letter in self.sorted("scanned_date")]
+
+    # Webapp-facing aliases for the action_* methods.
+    # translation-platform-web calls these by their unprefixed names;
+    # the action_* names stay for backend button bindings (Odoo
+    # convention).
+    def remove_local_translate(self):
+        return self.action_remove_local_translate()
+
+    def resubmit_to_translation(self):
+        return self.action_resubmit_to_translation()
 
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
