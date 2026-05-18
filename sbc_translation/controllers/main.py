@@ -28,14 +28,12 @@ class TranslationPlatformController(http.Controller):
 
         `static/tp/` is the destination for the `npm run build`
         output of the external translation-platform-web repo: copy
-        the `dist/` folder there at release time. The webapp itself
+        the `tp/` folder there at release time. The webapp itself
         does client-side routing; this controller only serves
         `index.html` for app routes and redirects asset URLs into
         `/sbc_translation/static/tp/...`.
         """
-        if (
-            "assets" in page or page.endswith(".png") or page.endswith(".jpg")
-        ):
+        if "assets" in page or page.endswith(".png") or page.endswith(".jpg"):
             return redirect(f"/sbc_translation/static/tp/{page}")
         with file_open("sbc_translation/static/tp/index.html") as app:
             return app.read()

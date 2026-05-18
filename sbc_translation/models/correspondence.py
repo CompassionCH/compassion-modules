@@ -142,9 +142,7 @@ class Correspondence(models.Model):
             webapp_url = f"{base_url}/translation-platform"
         webapp_url = webapp_url.rstrip("/")
         for letter in self:
-            letter.translation_url = (
-                f"{webapp_url}/letters/letter-edit/{letter.id}"
-            )
+            letter.translation_url = f"{webapp_url}/letters/letter-edit/{letter.id}"
 
     def _compute_paragraph_ids(self):
         for correspondence in self:
