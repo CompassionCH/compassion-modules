@@ -11,6 +11,7 @@ import re
 from datetime import datetime
 
 from babel.dates import format_date
+from markupsafe import Markup, escape
 
 from odoo import fields, models
 
@@ -36,17 +37,21 @@ class ResPartner(models.Model):
 
     def _compute_address(self):
         # Replace line returns
-        p = re.compile("\\n+")
+        p = re.compile(r"\n+")
         for partner in self:
-            res = ""
             t_partner = partner.with_context(lang=partner.lang)
+            lines = []
             if not partner.is_company and partner.title.shortcut:
-                res = t_partner.title.shortcut + " "
-                if partner.firstname:
-                    res += partner.firstname + " "
-                res += (partner.lastname or "") + "<br/>"
-            res += t_partner.contact_address
-            partner.short_address = p.sub("<br/>", res)
+                title = escape(t_partner.title.shortcut)
+                firstname = escape(partner.firstname or "")
+                lastname = escape(partner.lastname or "")
+                full_name = " ".join(
+                    part for part in [title, firstname, lastname] if part
+                )
+                lines.append(full_name)
+            lines.append(escape(t_partner.contact_address or ""))
+            text = "\n".join(str(line) for line in lines if line)
+            partner.short_address = Markup(p.sub("<br/>", text))
 
     def _compute_date_communication(self):
         """City and date displayed in the top right of a letter"""
