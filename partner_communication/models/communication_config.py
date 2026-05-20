@@ -211,7 +211,8 @@ class CommunicationConfig(models.Model):
             jobs_to_update = self.env["partner.communication.job"].search(
                 [
                     ("config_id", "in", self.ids),
-                    ("state", "not in", ("processing", "done")),
+                    ("state", "=", "pending"),
+                    ("email_template_id", "!=", vals["email_template_id"]),
                 ]
             )
             jobs_to_update.write({"email_template_id": vals["email_template_id"]})
