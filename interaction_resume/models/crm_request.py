@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from odoo import api, models
 from odoo.tools.mail import html2plaintext
 
@@ -19,29 +21,35 @@ class CrmRequest(models.Model):
             | partner.other_contact_ids
         )
         for claim in self:
-            # Contactus form if applicable
-            res.append(
-                {
-                    "partner_id": partner_id,
-                    "res_model": self._name,
-                    "res_id": claim.id,
-                    "direction": "in",
-                    "date": claim.date or claim.create_date,
-                    "email": claim.email_from or claim.partner_id.email,
-                    "communication_type": "Support",
-                    "subject": "CRM Request: " + str(claim.name),
-                    "body": html2plaintext(claim.description).replace("\n\n", "\n"),
-                    "has_attachment": False,
-                    "tracking_status": False,
-                }
+            # All thread discussion messages
+            messages = (
+                claim.message_ids.filtered(
+                    lambda m: (m.partner_ids & partners) or m.author_id in partners
+                )
+                .filtered("subject")
+                .sorted("date")
             )
-
-            # Other messages
-            messages = claim.message_ids.filtered(
-                lambda m: (m.partner_ids & partners) or m.author_id in partners
-            ).filtered("subject")
-            if claim.incoming_message_id in messages:
-                messages -= claim.incoming_message_id
+            first_message = messages[:1]
+            if not (
+                first_message
+                and abs(first_message.date - claim.date) < timedelta(minutes=1)
+            ):
+                # Contactus form if applicable
+                res.append(
+                    {
+                        "partner_id": partner_id,
+                        "res_model": self._name,
+                        "res_id": claim.id,
+                        "direction": "in",
+                        "date": claim.date or claim.create_date,
+                        "email": claim.email_from or claim.partner_id.email,
+                        "communication_type": "Support",
+                        "subject": "CRM Request: " + str(claim.name),
+                        "body": html2plaintext(claim.description).replace("\n\n", "\n"),
+                        "has_attachment": False,
+                        "tracking_status": False,
+                    }
+                )
             res.extend(
                 [
                     {
