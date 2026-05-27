@@ -1,0 +1,18 @@
+<odoo>
+    <record model="ir.ui.view" id="fcp_intervention_reservation_view">
+        <field name="name">Reservation add FCP Interventions</field>
+        <field name="model">compassion.reservation</field>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_reservation_form"
+    />
+        <field name="arch" type="xml">
+            <field name="fcp_id" position="after">
+                <field
+          name="service_level"
+          attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')], 'required': [('reservation_type', '=', 'fcp_intervention')]}"
+        />
+            </field>
+        </field>
+    </record>
+</odoo>

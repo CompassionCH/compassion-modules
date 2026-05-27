@@ -31,6 +31,13 @@ class GenericIntervention(models.AbstractModel):
     intervention_id = fields.Char(
         required=True,
     )
+    lead_id = fields.Char(readonly=True)
+    fcp_type = fields.Selection(
+        [
+            ("New", "New"),
+            ("Existing", "Existing"),
+        ]
+    )
     field_office_id = fields.Many2one(
         "compassion.field.office",
         "National Office",
@@ -100,6 +107,7 @@ class GenericIntervention(models.AbstractModel):
             ("Fully Committed", _("Fully committed")),
             ("Inactive", _("Inactive")),
             ("Ineligible", _("Ineligible")),
+            ("Partner Ready Draft", _("Partner Ready Draft")),
         ]
 
     def get_vals(self):

@@ -37,4 +37,23 @@
         <field name="model_id" ref="model_compassion_intervention" />
         <field name="name">Hold Cancel</field>
     </record>
+    <record id="mapping_fcp_intervetion_reservation" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_reservation" />
+        <field name="name">FCP Intervention Reservation Mapping</field>
+    </record>
+    <record id="mapping_reservation_create" model="compassion.mapping">
+        <field
+      name="model_id"
+      ref="model_compassion_intervention_hold_wizard"
+    />
+    <field name="name">Intervention Reservation Creation</field>
+    </record>
+    <record id="mapping_reservation_update" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention" />
+    <field name="name">Intervention Reservation Update</field>
+    </record>
+    <record id="mapping_reservation_cancel" model="compassion.mapping">
+        <field name="model_id" ref="model_compassion_intervention" />
+    <field name="name">Intervention Reservation Cancel</field>
+    </record>
 </odoo>

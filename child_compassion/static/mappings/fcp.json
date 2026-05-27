@@ -140,6 +140,9 @@
     "NumberOfLatrines": "nb_latrines",
     "NumberOfSponsorshipBeneficiaries": "nb_cdsp_kids",
     "NumberOfSurvivalBeneficiaries": "nb_csp_kids",
+    "LocationFundingType": "funding_type",
+    "DFParticipantExpectedCapacity": "participant_expected_capacity",
+    "DFParticipantMaximumCapacity": "participant_maximum_capacity",
     "PhysicalActivities0To5": {
       "field": "physical_activity_babies_ids.value",
       "search_relational_record": true,

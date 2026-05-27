@@ -127,18 +127,23 @@
         <field name="arch" type="xml">
             <form>
                 <group>
+                    <field name="action_type" invisible="1" />
                     <field name="usd" invisible="1" />
                     <field name="intervention_id" invisible="1" />
                     <field
             name="hold_amount"
             widget="monetary"
             options="{'currency_field': 'usd'}"
+            attrs="{'required': [('action_type', '=', 'hold')], 'invisible': [('action_type', '!=', 'hold')]}"
           />
                     <field name="expiration_date" />
                     <field name="user_id" />
                     <field name="secondary_owner" />
                     <field name="service_level" />
-                    <field name="next_year_opt_in" />
+                    <field
+            name="next_year_opt_in"
+            attrs="{'invisible': [('action_type', '!=', 'hold')]}"
+          />
                 </group>
                 <footer>
                     <button
