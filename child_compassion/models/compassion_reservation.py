@@ -23,7 +23,7 @@ class CompassionReservation(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    reservation_id = fields.Char(readonly=True)
+    reservation_id = fields.Char("Reservation ID", readonly=True)
     reservation_type = fields.Selection(
         [("project", "Project reservation"), ("child", "Child reservation")],
         required=True,
@@ -105,6 +105,7 @@ class CompassionReservation(models.Model):
             "expiration_date",
             "number_of_beneficiaries",
             "primary_owner",
+            "service_level",
         ]
         sync = False
         for field in sync_fields:
@@ -154,14 +155,14 @@ class CompassionReservation(models.Model):
                     action = self.env.ref("child_compassion.cancel_reservation")
                 else:
                     action = self.env.ref("child_compassion.create_reservation")
-            messages += messages.create(
-                {
-                    "action_id": action.id,
-                    "object_id": reservation.id,
-                    "child_id": reservation.child_id.id,
-                }
-            )
-
+            if action:
+                messages += messages.create(
+                    {
+                        "action_id": action.id,
+                        "object_id": reservation.id,
+                        "child_id": reservation.child_id.id,
+                    }
+                )
         messages.process_messages()
         return messages
 

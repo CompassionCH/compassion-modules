@@ -11,6 +11,7 @@
 from . import generic_intervention  # isort:skip
 from . import (
     compassion_intervention,
+    compassion_reservation,
     global_intervention,
     intervention_category,
     intervention_sub_category,

@@ -1,0 +1,24 @@
+{
+  "name": "FCP Intervention Reservation Mapping",
+  "model": "compassion.reservation",
+  "mapping": {
+    "FCP_ID": {
+      "field": "fcp_id.fcp_id",
+      "search_relational_record": true
+    },
+    "ExpirationDate": {
+      "field": "reservation_expiration_date",
+      "to_json_conversion": "fields.Datetime.from_string(odoo_value).strftime('%Y-%m-%dT%H:%M:%SZ')"
+    },
+    "SecondaryOwner": "secondary_owner",
+    "Reservation_ID": {
+      "field": "reservation_id",
+      "to_json_conversion": "int(odoo_value)",
+      "from_json_conversion": "str(json_value)"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    },
+    "ServiceLevel": "service_level"
+  }
+}

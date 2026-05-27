@@ -108,6 +108,8 @@ class CompassionIntervention(models.Model):
     impacted_beneficiaries = fields.Integer(
         help="Actual number of impacted beneficiaries", readonly=True
     )
+    participant_expected_capacity = fields.Integer(compute="_compute_capacity")
+    participant_maximum_capacity = fields.Integer(compute="_compute_capacity")
     local_contribution = fields.Float(readonly=True, help="Actual local contribution")
     commitment_amount = fields.Float(readonly=True, tracking=True)
     commited_percentage = fields.Float(readonly=True, tracking=True, default=100.0)
@@ -186,7 +188,8 @@ class CompassionIntervention(models.Model):
 
     # Hold information
     ##################
-    hold_id = fields.Char(readonly=True)
+    hold_id = fields.Char(readonly=True, tracking=True)
+    reservation_id = fields.Integer("Reservation ID", readonly=True, tracking=True)
     service_level = fields.Selection(
         [
             ("Level 1", _("Level 1")),
@@ -199,6 +202,7 @@ class CompassionIntervention(models.Model):
             "on_hold": [("readonly", False)],
             "sla": [("readonly", False)],
         },
+        tracking=True,
     )
     hold_amount = fields.Float(
         readonly=True,
@@ -215,6 +219,7 @@ class CompassionIntervention(models.Model):
             "sla": [("readonly", False)],
         },
     )
+    hold_expiration_date = fields.Datetime(tracking=True)
     next_year_opt_in = fields.Boolean(
         readonly=True,
         states={
@@ -355,6 +360,15 @@ class CompassionIntervention(models.Model):
             record.total_income = f"{total_inc} CHF"
             record.total_expense = f"{total_exp} CHF"
 
+    def _compute_capacity(self):
+        for intervention in self:
+            intervention.participant_maximum_capacity = sum(
+                intervention.mapped("fcp_ids.participant_maximum_capacity")
+            )
+            intervention.participant_expected_capacity = sum(
+                intervention.mapped("fcp_ids.participant_expected_capacity")
+            )
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -379,6 +393,7 @@ class CompassionIntervention(models.Model):
         hold_fields = [
             "hold_amount",
             "expiration_date",
+            "hold_expiration_date",
             "next_year_opt_in",
             "user_id",
             "secondary_owner",
@@ -504,22 +519,62 @@ class CompassionIntervention(models.Model):
         return intervention_local_ids
 
     def update_hold(self):
-        if not self.hold_id:
-            return True
-        action_id = self.env.ref(
-            "intervention_compassion.intervention_update_hold_action"
-        ).id
-        message = (
-            self.env["gmc.message"]
-            .with_context(queue_job__no_delay=True)
-            .create({"action_id": action_id, "object_id": self.id})
-        )
-        if "failure" in message.state:
-            raise UserError(message.failure_reason)
+        action_id = False
+        if self.hold_id:
+            action_id = self.env.ref(
+                "intervention_compassion.intervention_update_hold_action"
+            ).id
+        if self.reservation_id:
+            action_id = self.env.ref(
+                "intervention_compassion.intervention_update_reservation_action"
+            ).id
+        if action_id:
+            message = (
+                self.env["gmc.message"]
+                .with_context(queue_job__no_delay=True)
+                .create({"action_id": action_id, "object_id": self.id})
+            )
+            if "failure" in message.state:
+                raise UserError(message.failure_reason)
         return True
 
     def hold_sent(self, intervention_vals=None):
         """Do nothing when hold is sent."""
+        return True
+
+    def reservation_to_hold(self, reservation_vals=None):
+        if reservation_vals is None:
+            reservation_vals = {}
+        intervention_vals = self.json_to_data(
+            reservation_vals.get(
+                "InterventionReservationConvertedToHoldNotification", {}
+            ),
+            "Hold Update",
+        )
+        intervention_id = intervention_vals.get("intervention_id")
+        if not intervention_id:
+            raise UserError(_("No intervention id provided"))
+        intervention = self.search([("intervention_id", "=", intervention_id)])
+        intervention_vals.update(
+            {"hold_expiration_date": False, "reservation_id": False}
+        )
+        if intervention:
+            intervention.write(intervention_vals)
+        else:
+            intervention = self.create(intervention_vals)
+        return intervention.ids
+
+    def cancel_reservation(self):
+        action = self.env.ref(
+            "intervention_compassion.intervention_cancel_reservation_action"
+        )
+        message = (
+            self.env["gmc.message"]
+            .with_context(queue_job__no_delay=True)
+            .create({"action_id": action.id, "object_id": self.id})
+        )
+        if "failure" in message.state:
+            raise UserError(message.failure_reason)
         return True
 
     def hold_cancelled(self, intervention_vals=None):
@@ -527,7 +582,10 @@ class CompassionIntervention(models.Model):
         self.write(
             {
                 "hold_id": False,
+                "reservation_id": False,
                 "state": "cancel",
+                "expiration_date": False,
+                "hold_expiration_date": False,
             }
         )
         self.message_post(
@@ -817,18 +875,20 @@ class CompassionIntervention(models.Model):
         """
         # Apparently this message contains a single dictionary, and not a
         # list of dictionaries,
-        ihrn = commkit_data["InterventionHoldRemovalNotification"]
+        ihrn = commkit_data.get(
+            "InterventionHoldRemovalNotification"
+        ) or commkit_data.get("ReservationExpiredNotification", {})
         # Remove problematic type as it is not needed and contains
         # erroneous data
-        del ihrn["InterventionType_Name"]
+        ihrn.pop("InterventionType_Name", None)
+        if not ihrn:
+            return []
 
         vals = self.json_to_data(ihrn)
         intervention_id = vals["intervention_id"]
-
         intervention = self.env["compassion.intervention"].search(
             [
                 ("intervention_id", "=", intervention_id),
-                ("hold_id", "=", vals["hold_id"]),
             ]
         )
         if intervention:

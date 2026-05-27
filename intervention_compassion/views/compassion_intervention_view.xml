@@ -26,6 +26,12 @@
             type="object"
             attrs="{'invisible': [('hold_id', '=', False)]}"
           />
+                    <button
+            name="cancel_reservation"
+            string="Cancel Reservation"
+            type="object"
+            attrs="{'invisible': [('reservation_id', 'in', [False, 0])]}"
+          />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="buttons">
@@ -96,8 +102,13 @@
                     <group>
                         <group>
                             <field name="intervention_id" />
+                            <field
+                name="lead_id"
+                attrs="{'invisible': [('lead_id', '=', False)]}"
+              />
                             <field name="field_office_id" />
                             <field name="fcp_ids" widget="many2many_tags" />
+                            <field name="fcp_type" />
                             <field
                 name="additional_marketing_information"
                 widget="html"
@@ -128,16 +139,27 @@
                             <group>
                                 <group
                   string="Hold Information"
-                  attrs="{'invisible': [('hold_id', '=', False)]}"
+                  attrs="{'invisible': [('hold_id', '=', False), ('reservation_id', '=', False)]}"
                 >
-                                    <field name="hold_id" />
+                                    <field
+                    name="reservation_id"
+                    attrs="{'invisible': [('reservation_id', '=', False)]}"
+                  />
+                                    <field
+                    name="hold_id"
+                    attrs="{'invisible': [('hold_id', '=', False)]}"
+                  />
                                     <field
                     name="hold_amount"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
+                    attrs="{'invisible': [('hold_id', '=', False)]}"
                   />
                                     <field name="expiration_date" />
-                                    <field name="next_year_opt_in" />
+                                    <field
+                    name="next_year_opt_in"
+                    attrs="{'invisible': [('hold_id', '=', False)]}"
+                  />
                                     <field name="user_id" />
                                     <field name="secondary_owner" />
                                 </group>
@@ -155,6 +177,12 @@
                   />
                                     <field
                     name="estimated_impacted_beneficiaries"
+                  />
+                                    <field
+                    name="participant_expected_capacity"
+                  />
+                                    <field
+                    name="participant_maximum_capacity"
                   />
                                     <field
                     name="estimated_local_contribution"

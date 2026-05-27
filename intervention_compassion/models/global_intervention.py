@@ -72,6 +72,21 @@ class GlobalIntervention(models.TransientModel):
             "target": "new",
         }
 
+    def make_reservation(self):
+        return {
+            "name": _("Intervention Hold Request"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "compassion.intervention.hold.wizard",
+            "context": self.with_context(
+                {
+                    "default_intervention_id": self.id,
+                    "default_action_type": "reservation",
+                }
+            ).env.context,
+            "target": "new",
+        }
+
     ##########################################################################
     #                              Mapping METHOD                            #
     ##########################################################################

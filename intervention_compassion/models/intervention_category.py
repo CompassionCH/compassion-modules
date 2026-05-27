@@ -43,4 +43,6 @@ class InterventionCategory(models.Model):
             ("Survival", _("Survival (CSP)")),
             ("Survival FY Details", _("Survival FY Details")),
             ("Sponsorship Launch", _("Sponsorship Launch")),
+            ("Expansion", _("Expansion")),
+            ("Donor-funded FCP", _("Donor-funded FCP")),
         ]

@@ -50,8 +50,8 @@
               />
                             <field
                 name="fcp_id"
-                attrs="{'invisible': [('reservation_type', '!=', 'project')],
-                                                         'required': [('reservation_type', '=', 'project')],
+                attrs="{'invisible': [('reservation_type', 'in', ['child', False])],
+                                                         'required': [('reservation_type', '!=', 'child')],
                                                          'readonly': [('state', '!=', 'draft')]}"
               />
                             <field
