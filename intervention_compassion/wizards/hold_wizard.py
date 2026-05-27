@@ -26,11 +26,21 @@ class HoldWizard(models.TransientModel):
     intervention_id = fields.Many2one(
         "compassion.global.intervention", "Intervention", readonly=False
     )
+    action_type = fields.Selection(
+        [
+            ("hold", "Hold"),
+            ("reservation", "Reservation"),
+        ],
+        required=True,
+        default="hold",
+    )
     created_intervention_id = fields.Many2one("compassion.intervention", readonly=False)
-    hold_amount = fields.Float(required=True)
+    hold_amount = fields.Float()
     hold_id = fields.Char()
     usd = fields.Many2one(related="intervention_id.currency_usd", readonly=False)
     expiration_date = fields.Date(required=True)
+    hold_expiration_date = fields.Datetime()
+    reservation_id = fields.Char()
     next_year_opt_in = fields.Boolean()
     user_id = fields.Many2one(
         "res.users",
@@ -64,6 +74,7 @@ class HoldWizard(models.TransientModel):
                 "secondary_owner": self.secondary_owner,
                 "service_level": self.service_level,
                 "state": "on_hold",
+                "hold_expiration_date": self.hold_expiration_date,
             }
         )
         intervention = self.env["compassion.intervention"].search(
@@ -87,8 +98,12 @@ class HoldWizard(models.TransientModel):
 
     def make_hold(self):
         self.ensure_one()
-        create_hold = self.env.ref(
-            "intervention_compassion.intervention_create_hold_action"
+        create_hold = (
+            self.env.ref("intervention_compassion.intervention_create_hold_action")
+            if self.action_type == "hold"
+            else self.env.ref(
+                "intervention_compassion.intervention_create_reservation_action"
+            )
         )
         message = (
             self.env["gmc.message"]

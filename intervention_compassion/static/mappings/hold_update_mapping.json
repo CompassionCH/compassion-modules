@@ -11,6 +11,7 @@
     "ExpirationDate": {
       "field": "expiration_date"
     },
+    "HoldExpirationDate": "expiration_date",
     "HoldAmount": {
       "field": "hold_amount",
       "to_json_conversion": "str(odoo_value)"
@@ -22,11 +23,16 @@
       "field": "user_id.name",
       "search_relational_record": true
     },
+    "Reservation_ID": "reservation_id",
     "SecondaryOwner": {
       "field": "secondary_owner"
     },
     "ServiceLevelAgreement": {
       "field": "service_level"
+    },
+    "SLALevel": {
+      "field": "service_level",
+      "from_json_conversion": "'Level ' + str(json_value)"
     },
     "GlobalPartner_ID": {
       "to_json_conversion": "gpid"

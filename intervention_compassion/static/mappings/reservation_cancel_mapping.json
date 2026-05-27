@@ -1,0 +1,11 @@
+{
+  "name": "Intervention Reservation Cancel",
+  "model": "compassion.intervention",
+  "mapping": {
+    "Intervention_ID": "intervention_id",
+    "Reservation_ID": {
+      "field": "reservation_id",
+      "from_json_conversion": "str(json_value)"
+    }
+  }
+}

@@ -53,6 +53,8 @@
       "search_relational_record": true,
       "from_json_conversion": "json_value and json_value.split(',')"
     },
+    "LeadID": "lead_id",
+    "FCPType": "fcp_type",
     "FieldOffice_ID": {
       "field": "field_office_id.field_office_id",
       "search_relational_record": true,

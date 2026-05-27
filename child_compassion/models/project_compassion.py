@@ -356,6 +356,17 @@ class CompassionProject(models.Model):
     partnership_start_date = fields.Date(readonly=True)
     program_start_date = fields.Date(readonly=True)
     program_end_date = fields.Date(readonly=True)
+    funding_type = fields.Selection(
+        [
+            ("Sponsorship", "Sponsorship"),
+            ("Donor-Funded", "Donor Funded"),
+        ],
+        readonly=True,
+        default="Sponsorship",
+        required=True,
+    )
+    participant_expected_capacity = fields.Integer(readonly=True)
+    participant_maximum_capacity = fields.Integer(readonly=True)
 
     # Program Settings
     ##################
