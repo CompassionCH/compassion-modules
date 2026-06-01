@@ -875,16 +875,17 @@ class CompassionIntervention(models.Model):
         """
         # Apparently this message contains a single dictionary, and not a
         # list of dictionaries,
-        ihrn = commkit_data.get(
-            "InterventionHoldRemovalNotification"
-        ) or commkit_data.get("ReservationExpiredNotification", {})
+        mapping_name = "Intervention Compassion"
+        ihrn = commkit_data.get("InterventionHoldRemovalNotification", {})
+        if not ihrn:
+            ihrn = commkit_data.get("ReservationExpiredNotification", {})
+            if not ihrn:
+                return []
+            mapping_name = "Intervention Reservation Cancel"
         # Remove problematic type as it is not needed and contains
         # erroneous data
         ihrn.pop("InterventionType_Name", None)
-        if not ihrn:
-            return []
-
-        vals = self.json_to_data(ihrn)
+        vals = self.json_to_data(ihrn, mapping_name)
         intervention_id = vals["intervention_id"]
         intervention = self.env["compassion.intervention"].search(
             [
