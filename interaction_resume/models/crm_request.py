@@ -119,7 +119,7 @@ class CrmRequest(models.Model):
         # If no partner_id, try to find a partner using email
         if not partner_to_update:
             partner_to_update = self.env["res.partner"].search(
-                "email", "=", self.email_from, limit=1
+                [("email", "=", self.email_from)], limit=1, order="customer_rank desc"
             )
 
         if partner_to_update:
