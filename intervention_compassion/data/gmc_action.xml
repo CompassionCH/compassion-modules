@@ -478,7 +478,7 @@ Available in a given FCP.</field>
         <record id="intervention_reservation_expired" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionReservationExpired</field>
-            <field name="mapping_id" ref="mapping_intervention" />
+            <field name="mapping_id" ref="mapping_reservation_cancel" />
             <field name="model">compassion.intervention</field>
             <field
         name="incoming_method"
