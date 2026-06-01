@@ -103,6 +103,7 @@ class RestController(http.Controller):
             "X-Cim-Fromaddress"
         )
         if from_address not in AUTHORIZED_SENDERS:
+            _logger.error("Unauthorized sender: " + str(from_address))
             raise exceptions.AccessDenied()
         company_obj = request.env["res.company"].with_user(request.uid)
         param_obj = request.env["res.config.settings"]
@@ -112,4 +113,5 @@ class RestController(http.Controller):
         ]
         to_address = headers.get("x-cim-ToAddress") or headers.get("X-Cim-ToAddress")
         if to_address not in country_codes:
+            _logger.error("Unauthorized recipient: " + str(to_address))
             raise AttributeError("This message is not for me.")
