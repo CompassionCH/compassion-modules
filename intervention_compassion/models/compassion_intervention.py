@@ -570,7 +570,7 @@ class CompassionIntervention(models.Model):
         intervention = self.search([("intervention_id", "=", intervention_id)])
         intervention_vals.update({"hold_expiration_date": False})
         if intervention:
-            intervention.write(intervention_vals)
+            intervention.with_context(hold_update=False).write(intervention_vals)
         else:
             intervention = self.create(intervention_vals)
         return intervention.ids
