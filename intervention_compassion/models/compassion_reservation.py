@@ -12,6 +12,10 @@ class CompassionReservation(models.Model):
         ondelete={"fcp_intervention": "cascade"},
     )
     service_level = fields.Integer("Service Level")
+    intervention_ids = fields.One2many(
+        "compassion.intervention", "compassion_reservation_id", "Interventions"
+    )
+    number_intervention_reserved = fields.Integer(compute="_compute_nb_interventions")
 
     @api.constrains("service_level")
     def _check_service_level(self):
@@ -26,6 +30,10 @@ class CompassionReservation(models.Model):
                         "FCP Intervention reservations."
                     )
                 )
+
+    def _compute_nb_interventions(self):
+        for reservation in self:
+            reservation.number_intervention_reserved = len(reservation.intervention_ids)
 
     def handle_reservation(self, cancel=False):
         messages = super().handle_reservation(cancel=cancel)
@@ -54,3 +62,13 @@ class CompassionReservation(models.Model):
                     }
                 )
         return messages
+
+    def show_reserved_interventions(self):
+        self.ensure_one()
+        return {
+            "name": _("Reserved Interventions"),
+            "type": "ir.actions.act_window",
+            "res_model": "compassion.intervention",
+            "view_mode": "tree,form",
+            "domain": [("compassion_reservation_id", "=", self.id)],
+        }

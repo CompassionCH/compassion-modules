@@ -23,7 +23,10 @@
       "field": "user_id.name",
       "search_relational_record": true
     },
-    "Reservation_ID": "reservation_id",
+    "Reservation_ID": {
+      "field": "reservation_id",
+      "from_json_conversion": "int(json_value)"
+    },
     "SecondaryOwner": {
       "field": "secondary_owner"
     },

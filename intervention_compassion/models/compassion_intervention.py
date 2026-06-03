@@ -190,6 +190,12 @@ class CompassionIntervention(models.Model):
     ##################
     hold_id = fields.Char(readonly=True, tracking=True)
     reservation_id = fields.Integer("Reservation ID", readonly=True, tracking=True)
+    compassion_reservation_id = fields.Many2one(
+        "compassion.reservation",
+        "Reservation",
+        compute="_compute_reservation",
+        store=True,
+    )
     service_level = fields.Selection(
         [
             ("Level 1", _("Level 1")),
@@ -368,6 +374,13 @@ class CompassionIntervention(models.Model):
             intervention.participant_expected_capacity = sum(
                 intervention.mapped("fcp_ids.participant_expected_capacity")
             )
+
+    @api.depends("reservation_id")
+    def _compute_reservation(self):
+        for intervention in self:
+            intervention.compassion_reservation_id = self.env[
+                "compassion.reservation"
+            ].search([("reservation_id", "=", str(intervention.reservation_id))])
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -555,9 +568,7 @@ class CompassionIntervention(models.Model):
         if not intervention_id:
             raise UserError(_("No intervention id provided"))
         intervention = self.search([("intervention_id", "=", intervention_id)])
-        intervention_vals.update(
-            {"hold_expiration_date": False, "reservation_id": False}
-        )
+        intervention_vals.update({"hold_expiration_date": False})
         if intervention:
             intervention.write(intervention_vals)
         else:
