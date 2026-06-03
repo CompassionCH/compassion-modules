@@ -13,8 +13,8 @@
     },
     "Reservation_ID": {
       "field": "reservation_id",
-      "from_json_conversion": "str(json_value)",
-      "to_json_conversion": "int(odoo_value)"
+      "from_json_conversion": "int(json_value)",
+      "to_json_conversion": "str(odoo_value)"
     },
     "SecondaryOwner": {
       "field": "secondary_owner"

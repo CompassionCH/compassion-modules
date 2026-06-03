@@ -17,7 +17,7 @@
                 <button
           name="show_reserved_interventions"
           type="object"
-          icon="fa-child"
+          icon="fa-home"
           class="oe_stat_button"
           attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')]}"
         >

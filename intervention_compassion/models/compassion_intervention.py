@@ -110,8 +110,6 @@ class CompassionIntervention(models.Model):
     local_contribution = fields.Float(help="Actual local contribution")
     commitment_amount = fields.Float(tracking=True)
     commited_percentage = fields.Float(tracking=True, default=100.0)
-    total_expense = fields.Char("Total expense", compute="_compute_move_line")
-    total_income = fields.Char("Total income", compute="_compute_move_line")
     total_amendment = fields.Float()
     total_actual_cost_local = fields.Float("Total cost (local currency)")
     total_estimated_cost_local = fields.Float("Estimated costs (local currency)")
@@ -489,7 +487,7 @@ class CompassionIntervention(models.Model):
             action_id = self.env.ref(
                 "intervention_compassion.intervention_update_hold_action"
             ).id
-        if self.reservation_id:
+        elif self.reservation_id:
             action_id = self.env.ref(
                 "intervention_compassion.intervention_update_reservation_action"
             ).id
@@ -622,40 +620,14 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    def show_expenses(self):
+    def open_fcps(self):
         return {
-            "name": _("Expenses"),
+            "name": _("Intervention FCPs"),
             "type": "ir.actions.act_window",
             "view_mode": "list,form",
-            "res_model": "account.move.line",
+            "res_model": "compassion.project",
             "context": self.env.context,
-            "domain": [
-                ("product_id.product_tmpl_id", "=", self.product_template_id.id),
-                ("debit", ">", 0),
-                (
-                    "account_id",
-                    "=",
-                    self.product_template_id.property_account_expense_id.id,
-                ),
-            ],
-        }
-
-    def show_income(self):
-        return {
-            "name": _("Income"),
-            "type": "ir.actions.act_window",
-            "view_mode": "list,form",
-            "res_model": "account.move.line",
-            "context": self.env.context,
-            "domain": [
-                ("product_id.product_tmpl_id", "=", self.product_template_id.id),
-                ("credit", ">", 0),
-                (
-                    "account_id",
-                    "=",
-                    self.product_template_id.property_account_income_id.id,
-                ),
-            ],
+            "domain": [("id", "in", self.fcp_ids.ids)],
         }
 
     def show_contract(self):
