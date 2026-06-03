@@ -13,6 +13,21 @@
           attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')], 'required': [('reservation_type', '=', 'fcp_intervention')]}"
         />
             </field>
+            <button name="show_reserved_children" position="after">
+                <button
+          name="show_reserved_interventions"
+          type="object"
+          icon="fa-child"
+          class="oe_stat_button"
+          attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')]}"
+        >
+                    <field
+            name="number_intervention_reserved"
+            widget="statinfo"
+            string="Allocated interventions"
+          />
+                </button>
+            </button>
         </field>
     </record>
 </odoo>

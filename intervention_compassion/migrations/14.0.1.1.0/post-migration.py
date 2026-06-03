@@ -6,6 +6,7 @@ def migrate(cr, version):
     path = "intervention_compassion/static/mappings/"
     files = [
         "global_intervention_mapping.json",
+        "global_intervention_search_mapping.json",
         "hold_create_mapping.json",
         "hold_update_mapping.json",
         "intervention_fcp_reservation.json",
