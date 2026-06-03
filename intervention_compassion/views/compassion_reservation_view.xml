@@ -24,7 +24,7 @@
                     <field
             name="number_intervention_reserved"
             widget="statinfo"
-            string="Allocated interventions"
+            string="Interventions"
           />
                 </button>
             </button>

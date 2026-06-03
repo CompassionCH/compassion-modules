@@ -143,6 +143,10 @@
                 >
                                     <field
                     name="reservation_id"
+                    attrs="{'invisible': ['|', ('reservation_id', '=', False), ('compassion_reservation_id', '!=', False)]}"
+                  />
+                                    <field
+                    name="compassion_reservation_id"
                     attrs="{'invisible': [('reservation_id', '=', False)]}"
                   />
                                     <field
