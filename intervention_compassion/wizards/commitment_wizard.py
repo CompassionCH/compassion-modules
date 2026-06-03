@@ -35,7 +35,9 @@ class HoldWizard(models.TransientModel):
 
     def commitment_created(self, intervention_vals):
         """Called when commitment is created"""
-        total_cost = self.intervention_id.total_cost
+        total_cost = (
+            self.intervention_id.total_cost or self.intervention_id.estimated_costs
+        )
         self.intervention_id.write(
             {
                 "state": "committed",

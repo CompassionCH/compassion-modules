@@ -51,33 +51,13 @@
               string="Create analytic account"
               attrs="{'invisible': [('analytic_account_id', '!=', False)]}"
             />
-
                         <button
-              name="show_expenses"
+              name="open_fcps"
               type="object"
               class="oe_stat_button"
-              icon="fa-credit-card"
-            >
-                            <field
-                name="total_expense"
-                string="Expenses"
-                widget="statinfo"
-              />
-                        </button>
-
-                        <button
-              name="show_income"
-              type="object"
-              class="oe_stat_button"
-              icon="fa-money"
-            >
-                            <field
-                name="total_income"
-                string="Income"
-                widget="statinfo"
-              />
-                        </button>
-
+              icon="fa-home"
+              string="FCPs"
+            />
                         <button
               name="show_contract"
               type="object"
