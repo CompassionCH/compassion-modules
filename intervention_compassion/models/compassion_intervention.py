@@ -184,6 +184,7 @@ class CompassionIntervention(models.Model):
         "Reservation",
         compute="_compute_reservation",
         store=True,
+        readonly=True,
     )
     service_level = fields.Selection(
         [

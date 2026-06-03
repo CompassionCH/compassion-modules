@@ -33,7 +33,7 @@
                             <field
                 name="number_reserved"
                 widget="statinfo"
-                string="Allocated children"
+                string="Children"
               />
                         </button>
                     </div>

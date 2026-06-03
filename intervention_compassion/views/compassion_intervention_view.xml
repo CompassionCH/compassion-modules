@@ -161,7 +161,8 @@
                   string="Hold Information"
                   invisible="not hold_id and not reservation_id"
                 >
-                                    <field name="reservation_id" readonly="1" invisible="not reservation_id"/>
+                                    <field name="reservation_id" readonly="1" invisible="not reservation_id or compassion_reservation_id"/>
+                                    <field name="compassion_reservation_id" invisible="not reservation_id" />
                                     <field name="hold_id" readonly="1" invisible="not hold_id" />
                                     <field
                     name="hold_amount"
