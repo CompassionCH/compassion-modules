@@ -41,9 +41,7 @@ class GenericIntervention(models.AbstractModel):
     )
     description = fields.Text(readonly=True)
     additional_marketing_information = fields.Text(readonly=True)
-    category_id = fields.Many2one(
-        "compassion.intervention.category", "Category", readonly=True
-    )
+    category_id = fields.Many2one("compassion.intervention.category", "Category")
 
     type = fields.Selection(related="category_id.type")
     funding_status = fields.Selection("get_funding_statuses", readonly=True)
