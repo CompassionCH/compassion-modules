@@ -40,6 +40,7 @@ class ResPartner(models.Model):
         required=True,
     )
     global_id = fields.Char("Global ID", copy=False)
+    legal_agreement_date = fields.Datetime("Date of legal agreement", tracking=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
@@ -464,6 +465,7 @@ class ResPartner(models.Model):
                 "title": False,
                 "country_id": False,
                 "uuid": False,
+                "legal_agreement_date": False,
             }
         )
         partner.env["mail.mail"].search([("recipient_ids", "=", partner.id)]).unlink()
