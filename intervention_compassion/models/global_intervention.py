@@ -96,6 +96,9 @@ class GlobalIntervention(models.TransientModel):
         country_codes = (
             self.env["compassion.field.office"].search([]).mapped("country_code")
         )
+        if mapping_name is None:
+            # Make sure this is the default mapping used (avoids search mapping)
+            mapping_name = "Compassion Global Intervention"
         data_array = list()
         for json_data in json:
             if (
