@@ -53,28 +53,36 @@ class TranslationUser(models.Model):
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
 
-    @api.depends("translated_letter_ids")
+    @api.depends("translated_letter_ids.translation_status")
     def _compute_nb_translated_letters(self):
         for translator in self:
-            translator.nb_translated_letters = len(translator.translated_letter_ids)
-
-    @api.depends("translated_letter_ids")
-    def _compute_nb_translated_letters_this_year(self):
-        for translator in self:
-            translator.nb_translated_letters_this_year = len(
+            translator.nb_translated_letters = len(
                 translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date
-                    and it.translate_date.year == fields.Datetime.now().year
+                    lambda it: it.translation_status == "done"
                 )
             )
 
-    @api.depends("translated_letter_ids")
+    @api.depends("translated_letter_ids.translation_status", "translated_letter_ids.translate_done")
+    def _compute_nb_translated_letters_this_year(self):
+        current_year = fields.Datetime.now().year
+        for translator in self:
+            translator.nb_translated_letters_this_year = len(
+                translator.translated_letter_ids.filtered(
+                    lambda it: it.translation_status == "done" and
+                               it.translate_done and
+                               it.translate_done.year == current_year
+                )
+            )
+
+    @api.depends("translated_letter_ids.translation_status", "translated_letter_ids.translate_done")
     def _compute_nb_translated_letters_last_year(self):
+        last_year = fields.Datetime.now().year - 1
         for translator in self:
             translator.nb_translated_letters_last_year = len(
                 translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date
-                    and it.translate_date.year == fields.Datetime.now().year - 1
+                    lambda it: it.translation_status == "done" and
+                               it.translate_done and
+                               it.translate_done.year == last_year
                 )
             )
 
