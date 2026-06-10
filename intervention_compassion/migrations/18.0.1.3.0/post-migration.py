@@ -16,3 +16,4 @@ def migrate(cr, version):
         "reservation_update_mapping.json",
     ]
     load_mapping_files(cr, path, files)
+    load_mapping_files(cr, "child_compassion/static/mappings", ["fcp.json"])

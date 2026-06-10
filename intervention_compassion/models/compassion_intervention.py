@@ -177,6 +177,7 @@ class CompassionIntervention(models.Model):
     # Hold information
     ##################
     hold_id = fields.Char(tracking=True)
+    reservation_id = fields.Integer("Reservation ID", tracking=True)
     compassion_reservation_id = fields.Many2one(
         "compassion.reservation",
         "Reservation",
@@ -316,6 +317,9 @@ class CompassionIntervention(models.Model):
             record.total_income = f"{total_inc} {currency_name}"
             record.total_expense = f"{total_exp} {currency_name}"
 
+    @api.depends(
+        "fcp_ids.participant_expected_capacity", "fcp_ids.participant_maximum_capacity"
+    )
     def _compute_capacity(self):
         for intervention in self:
             intervention.participant_maximum_capacity = sum(
@@ -328,9 +332,12 @@ class CompassionIntervention(models.Model):
     @api.depends("reservation_id")
     def _compute_reservation(self):
         for intervention in self:
-            intervention.compassion_reservation_id = self.env[
-                "compassion.reservation"
-            ].search([("reservation_id", "=", str(intervention.reservation_id))])
+            if intervention.reservation_id:
+                intervention.compassion_reservation_id = self.env[
+                    "compassion.reservation"
+                ].search([("reservation_id", "=", str(intervention.reservation_id))])
+            else:
+                intervention.compassion_reservation_id = False
 
     ##########################################################################
     #                              ORM METHODS                               #

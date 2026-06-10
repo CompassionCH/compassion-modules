@@ -10,7 +10,8 @@
             <field name="fcp_id" position="after">
                 <field
           name="service_level"
-          attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')], 'required': [('reservation_type', '=', 'fcp_intervention')]}"
+          invisible="reservation_type != 'fcp_intervention'"
+          required="reservation_type == 'fcp_intervention'"
         />
             </field>
             <button name="show_reserved_children" position="after">
@@ -19,7 +20,7 @@
           type="object"
           icon="fa-home"
           class="oe_stat_button"
-          attrs="{'invisible': [('reservation_type', '!=', 'fcp_intervention')]}"
+          invisible="reservation_type != 'fcp_intervention'"
         >
                     <field
             name="number_intervention_reserved"

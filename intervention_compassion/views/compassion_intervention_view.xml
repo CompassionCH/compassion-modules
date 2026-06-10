@@ -84,7 +84,7 @@
                             <field name="intervention_id" readonly="1" />
                             <field
                 name="lead_id"
-                attrs="{'invisible': [('lead_id', '=', False)]}"
+                invisible="not lead_id"
               />
                             <field name="field_office_id" readonly="1" />
                             <field
@@ -148,7 +148,6 @@
                     options="{'currency_field': 'currency_usd'}"
                     readonly="state not in ('on_hold', 'sla')"
                     invisible="not hold_id"
-                  />
                   />
                                     <field
                     name="expiration_date"

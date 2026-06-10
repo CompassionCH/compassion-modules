@@ -134,7 +134,8 @@
             name="hold_amount"
             widget="monetary"
             options="{'currency_field': 'usd'}"
-            attrs="{'required': [('action_type', '=', 'hold')], 'invisible': [('action_type', '!=', 'hold')]}"
+            required="action_type == 'hold'"
+            invisible="action_type != 'hold'"
           />
                     <field name="expiration_date" />
                     <field name="user_id" />
@@ -142,7 +143,7 @@
                     <field name="service_level" />
                     <field
             name="next_year_opt_in"
-            attrs="{'invisible': [('action_type', '!=', 'hold')]}"
+            invisible="action_type != 'hold'"
           />
                 </group>
                 <footer>

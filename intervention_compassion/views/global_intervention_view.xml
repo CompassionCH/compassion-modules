@@ -38,7 +38,7 @@
             type="object"
             string="Make a reservation"
             class="oe_highlight"
-            attrs="{'invisible': ['|', ('funding_status', '!=', 'Partner Ready Draft'), '&amp;', ('type', '!=', 'Sponsorship Launch'), ('category_id', '!=', 'Church Plant Initiative')]}"
+            invisible="funding_status != 'Partner Ready Draft' or (type != 'Sponsorship Launch' and category_id != 'Church Plant Initiative')"
           />
 
                 </header>
