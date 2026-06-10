@@ -323,4 +323,194 @@
         ref="commitment_percent_change_notification"
       />
         </record>
+
+        <!-- Intervention Reservation -->
+        <record id="intervention_create_reservation_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionCreateReservation</field>
+            <field name="model">compassion.intervention.hold.wizard</field>
+            <field name="mapping_id" ref="mapping_reservation_create" />
+            <field
+        name="description"
+      >Create a reservation to hold an intervention when the intervention becomes
+Available.</field>
+            <field name="connect_service">interventions/reservation</field>
+            <field name="connect_answer_wrapper">ReservationResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="priority">50</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record id="intervention_update_reservation_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionUpdateReservation</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_id" ref="mapping_reservation_update" />
+            <field
+        name="description"
+      >Update a reservation to hold an intervention when the intervention becomes
+Available.</field>
+            <field
+        name="connect_service"
+      >interventions/reservation-update</field>
+            <field name="connect_answer_wrapper">ReservationResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="priority">50</field>
+            <field name="request_type">PUT</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record id="intervention_cancel_reservation_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionCancelReservation</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_id" ref="mapping_reservation_cancel" />
+            <field
+        name="description"
+      >Cancel a reservation of an intervention.</field>
+            <field
+        name="connect_service"
+      >interventions/reservation-cancel</field>
+            <field name="connect_answer_wrapper">ReservationResponse</field>
+            <field name="success_method">hold_cancelled</field>
+            <field name="priority">50</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+
+
+        <!-- Intervention FCP Reservation -->
+        <record
+      id="intervention_create_fcp_reservation_action"
+      model="gmc.action"
+    >
+            <field name="direction">out</field>
+            <field name="name">InterventionCreateFCPReservation</field>
+            <field name="model">compassion.reservation</field>
+            <field
+        name="mapping_id"
+        ref="mapping_fcp_intervetion_reservation"
+      />
+            <field
+        name="description"
+      >Create a FCP Reservation to hold an intervention when the intervention becomes
+Available in a given FCP.</field>
+            <field
+        name="connect_service"
+      >interventions/fcp-reservation-create</field>
+            <field
+        name="connect_outgoing_wrapper"
+      >FcpReservationCreateRequestList</field>
+            <field
+        name="connect_answer_wrapper"
+      >FcpReservationCreateResponseList</field>
+            <field name="success_method">reservation_create_answer</field>
+            <field name="failure_method">reservation_create_answer_fail</field>
+            <field name="priority">50</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record
+      id="intervention_update_fcp_reservation_action"
+      model="gmc.action"
+    >
+            <field name="direction">out</field>
+            <field name="name">InterventionUpdateFCPReservation</field>
+            <field name="model">compassion.reservation</field>
+            <field
+        name="mapping_id"
+        ref="mapping_fcp_intervetion_reservation"
+      />
+            <field
+        name="description"
+      >Update a FCP Reservation to hold an intervention when the intervention becomes
+Available in a given FCP.</field>
+            <field
+        name="connect_service"
+      >interventions/fcp-reservation-update</field>
+            <field
+        name="connect_outgoing_wrapper"
+      >FcpReservationUpdateRequestList</field>
+            <field
+        name="connect_answer_wrapper"
+      >FcpReservationUpdateResponseList</field>
+            <field name="success_method">reservation_create_answer</field>
+            <field name="failure_method">reservation_create_answer_fail</field>
+            <field name="priority">50</field>
+            <field name="request_type">PUT</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record
+      id="intervention_cancel_fcp_reservation_action"
+      model="gmc.action"
+    >
+            <field name="direction">out</field>
+            <field name="name">InterventionCancelFCPReservation</field>
+            <field name="model">compassion.reservation</field>
+            <field
+        name="mapping_id"
+        ref="mapping_fcp_intervetion_reservation"
+      />
+            <field
+        name="description"
+      >Cancel an Intervention FCP Reservation.</field>
+            <field
+        name="connect_service"
+      >interventions/fcp-reservation-cancel</field>
+            <field
+        name="connect_outgoing_wrapper"
+      >FcpReservationCancelRequestList</field>
+            <field
+        name="connect_answer_wrapper"
+      >FcpReservationCancelResponseList</field>
+            <field name="success_method">reservation_cancel_answer</field>
+            <field name="priority">50</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+
+        <!--  Intervention reservation notifications   -->
+        <record id="intervention_reservation_expired" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionReservationExpired</field>
+            <field name="mapping_id" ref="mapping_reservation_cancel" />
+            <field name="model">compassion.intervention</field>
+            <field
+        name="incoming_method"
+      >intervention_hold_removal_notification</field>
+            <field name="description">Intervention Reservation Expired</field>
+            <field name="auto_process">1</field>
+            <field name="no_outgoing_data" eval="True" />
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record id="intervention_reservation_to_hold" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionReservationToHold</field>
+            <field name="mapping_id" ref="mapping_hold_update" />
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">reservation_to_hold</field>
+            <field
+        name="description"
+      >Convert an Intervention reservation to hold</field>
+            <field name="auto_process">1</field>
+            <field name="no_outgoing_data" eval="True" />
+            <field name="job_channel">root.intervention_compassion</field>
+        </record>
+        <record model="gmc.action.connect" id="expiration_reservation_connect">
+            <field name="action_id" ref="intervention_reservation_expired" />
+            <field
+        name="connect_schema"
+      >http://schemas.ci.org/ci/messaging/availability/2025/02/ReservationExpiredNotification</field>
+        </record>
+        <record model="gmc.action.connect" id="intervetion_to_hold_connect">
+            <field name="action_id" ref="intervention_reservation_to_hold" />
+            <field
+        name="connect_schema"
+      >http://schemas.ci.org/ci/messaging/availability/2025/06/InterventionReservationConvertedToHoldNotification</field>
+        </record>
 </odoo>

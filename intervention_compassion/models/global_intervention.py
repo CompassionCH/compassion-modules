@@ -69,6 +69,19 @@ class GlobalIntervention(models.TransientModel):
             "target": "new",
         }
 
+    def make_reservation(self):
+        return {
+            "name": _("Intervention Hold Request"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "compassion.intervention.hold.wizard",
+            "context": {
+                "default_intervention_id": self.id,
+                "default_action_type": "reservation",
+            },
+            "target": "new",
+        }
+
     ##########################################################################
     #                              Mapping METHOD                            #
     ##########################################################################
@@ -78,6 +91,9 @@ class GlobalIntervention(models.TransientModel):
         country_codes = (
             self.env["compassion.field.office"].search([]).mapped("country_code")
         )
+        if mapping_name is None:
+            # Make sure this is the default mapping used (avoids search mapping)
+            mapping_name = "Compassion Global Intervention"
         data_array = list()
         for json_data in json:
             if (

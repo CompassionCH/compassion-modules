@@ -82,6 +82,8 @@
       "field": "fcp_ids.fcp_id",
       "search_relational_record": true
     },
+    "LeadID": "lead_id",
+    "FCPType": "fcp_type",
     "Intervention_ID": {
       "field": "intervention_id"
     },

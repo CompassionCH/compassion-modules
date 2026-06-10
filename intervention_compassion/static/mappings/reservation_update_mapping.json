@@ -1,0 +1,30 @@
+{
+  "name": "Intervention Reservation Update",
+  "model": "compassion.intervention",
+  "mapping": {
+    "Intervention_ID": "intervention_id",
+    "ExpirationDate": {
+      "field": "expiration_date",
+      "to_json_conversion": "fields.Datetime.from_string(odoo_value).strftime('%Y-%m-%dT%H:%M:%SZ')"
+    },
+    "PrimaryOwner": {
+      "field": "user_id.name",
+      "search_relational_record": true
+    },
+    "Reservation_ID": {
+      "field": "reservation_id",
+      "from_json_conversion": "int(json_value)",
+      "to_json_conversion": "str(odoo_value)"
+    },
+    "SecondaryOwner": {
+      "field": "secondary_owner"
+    },
+    "ServiceLevel": {
+      "field": "service_level",
+      "to_json_conversion": "odoo_value and int(odoo_value[-1]) or 1"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "gpid"
+    }
+  }
+}

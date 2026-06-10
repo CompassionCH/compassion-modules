@@ -51,6 +51,7 @@
                             <field name="suspension" />
                             <field name="last_reviewed_date" />
                             <field name="status_comment" />
+                            <field name="funding_type" />
                         </group>
                         <group>
                             <field name="program_start_date" />
@@ -75,8 +76,22 @@
                                     <field name="website" />
                                     <field name="social_media_site" />
                                     <field name="available_for_visits" />
-                                    <field name="nb_csp_kids" />
-                                    <field name="nb_cdsp_kids" />
+                                    <field
+                    name="nb_csp_kids"
+                    invisible="funding_type == 'Donor-Funded'"
+                  />
+                                    <field
+                    name="nb_cdsp_kids"
+                    invisible="funding_type == 'Donor-Funded'"
+                  />
+                                    <field
+                    name="participant_expected_capacity"
+                    invisible="funding_type != 'Donor-Funded'"
+                  />
+                                    <field
+                    name="participant_maximum_capacity"
+                    invisible="funding_type != 'Donor-Funded'"
+                  />
                                 </group>
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">

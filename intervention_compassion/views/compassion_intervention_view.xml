@@ -26,6 +26,12 @@
             type="object"
             invisible="not hold_id"
           />
+                    <button
+            name="cancel_reservation"
+            string="Cancel Reservation"
+            type="object"
+            invisible="not reservation_id"
+          />
                 </header>
                 <sheet>
                     <div name="button_box">
@@ -45,35 +51,13 @@
               string="Create analytic account"
               invisible="analytic_account_id"
             />
-
                         <button
-              name="show_expenses"
+              name="open_fcps"
               type="object"
               class="oe_stat_button"
-              icon="fa-credit-card"
-            >
-                            <field
-                name="total_expense"
-                string="Expenses"
-                widget="statinfo"
-                readonly="1"
-              />
-                        </button>
-
-                        <button
-              name="show_income"
-              type="object"
-              class="oe_stat_button"
-              icon="fa-money"
-            >
-                            <field
-                name="total_income"
-                string="Income"
-                widget="statinfo"
-                readonly="1"
-              />
-                        </button>
-
+              icon="fa-home"
+              string="FCPs"
+            />
                         <button
               name="show_contract"
               type="object"
@@ -98,11 +82,16 @@
                     <group>
                         <group>
                             <field name="intervention_id" readonly="1" />
+                            <field
+                name="lead_id"
+                invisible="not lead_id"
+              />
                             <field name="field_office_id" readonly="1" />
                             <field
                 name="fcp_ids"
                 widget="many2many_tags"
                 readonly="1" />
+                            <field name="fcp_type" />
                             <field
                 name="additional_marketing_information"
                 widget="html"
@@ -148,15 +137,17 @@
                             <group>
                                 <group
                   string="Hold Information"
-                  invisible="not hold_id"
+                  invisible="not hold_id and not reservation_id"
                 >
-                                    <field name="hold_id" readonly="1" />
+                                    <field name="reservation_id" readonly="1" invisible="not reservation_id or compassion_reservation_id"/>
+                                    <field name="compassion_reservation_id" invisible="not reservation_id" />
+                                    <field name="hold_id" readonly="1" invisible="not hold_id" />
                                     <field
                     name="hold_amount"
                     widget="monetary"
                     options="{'currency_field': 'currency_usd'}"
                     readonly="state not in ('on_hold', 'sla')"
-                  />
+                    invisible="not hold_id"
                   />
                                     <field
                     name="expiration_date"
@@ -165,6 +156,7 @@
                                     <field
                     name="next_year_opt_in"
                     readonly="state not in ('on_hold', 'sla')"
+                    invisible="not hold_id"
                   />
                                     <field
                     name="user_id"
@@ -191,6 +183,12 @@
                                     <field
                     name="estimated_impacted_beneficiaries"
                     readonly="1"
+                  />
+                                    <field
+                    name="participant_expected_capacity"
+                  />
+                                    <field
+                    name="participant_maximum_capacity"
                   />
                                     <field
                     name="estimated_local_contribution"

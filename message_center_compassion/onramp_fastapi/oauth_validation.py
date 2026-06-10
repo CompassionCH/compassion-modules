@@ -29,6 +29,7 @@ AUTHORIZED_SENDERS = [
     "SFCI",
     "SponsorshipPool",
     "AMInterventions",
+    "event-handlers-get-expired-reservations",
 ]
 
 

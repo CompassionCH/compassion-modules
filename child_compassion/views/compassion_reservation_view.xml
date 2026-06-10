@@ -33,7 +33,7 @@
                             <field
                 name="number_reserved"
                 widget="statinfo"
-                string="Allocated children"
+                string="Children"
               />
                         </button>
                     </div>
@@ -50,8 +50,8 @@
               />
                             <field
                 name="fcp_id"
-                invisible="reservation_type != 'project'"
-                required="reservation_type == 'project'"
+                invisible="not reservation_type or reservation_type == 'child'"
+                required="reservation_type != 'child'"
                 readonly="state!='draft'"
               />
                             <field
