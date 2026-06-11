@@ -11,6 +11,7 @@
         <field name="inherit_id" ref="account.partner_view_buttons" />
         <field eval="18" name="priority" />
         <field name="arch" type="xml">
+            <field name="total_invoiced" position="replace" />
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button
           name="open_events"
