@@ -1,3 +1,4 @@
+from odoo import SUPERUSER_ID, api
 from odoo.addons.message_center_compassion.tools.load_mappings import load_mapping_files
 
 
@@ -15,5 +16,6 @@ def migrate(cr, version):
         "reservation_create_mapping.json",
         "reservation_update_mapping.json",
     ]
-    load_mapping_files(cr, path, files)
-    load_mapping_files(cr, "child_compassion/static/mappings", ["fcp.json"])
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    load_mapping_files(env, path, files)
+    load_mapping_files(env, "child_compassion/static/mappings/", ["fcp.json"])
