@@ -55,42 +55,68 @@ class TranslationUser(models.Model):
 
     @api.depends("translated_letter_ids.translation_status")
     def _compute_nb_translated_letters(self):
+        groups = self.env["correspondence"].read_group(
+            [("new_translator_id", "in", self.ids), ("translation_status", "=", "done")],
+            ["new_translator_id"],
+            ["new_translator_id"]
+        )
+        mapped_data = {
+            g["new_translator_id"][0]: g["new_translator_id_count"]
+            for g in groups
+            if g["new_translator_id"]
+        }
         for translator in self:
-            translator.nb_translated_letters = len(
-                translator.translated_letter_ids.filtered(
-                    lambda it: it.translation_status == "done"
-                )
-            )
+            translator.nb_translated_letters = mapped_data.get(translator.id, 0)
 
     @api.depends(
         "translated_letter_ids.translation_status",
         "translated_letter_ids.translate_done",
     )
+    @api.depends("translated_letter_ids.translation_status", "translated_letter_ids.translate_done")
     def _compute_nb_translated_letters_this_year(self):
         current_year = fields.Datetime.now().year
+        groups = self.env["correspondence"].read_group(
+            [
+                ("new_translator_id", "in", self.ids),
+                ("translation_status", "=", "done"),
+                ("translate_done", ">=", f"{current_year}-01-01 00:00:00"),
+                ("translate_done", "<=", f"{current_year}-12-31 23:59:59"),
+            ],
+            ["new_translator_id"],
+            ["new_translator_id"]
+        )
+        mapped_data = {
+            g["new_translator_id"][0]: g["new_translator_id_count"]
+            for g in groups
+            if g["new_translator_id"]
+        }
         for translator in self:
-            translator.nb_translated_letters_this_year = len(
-                translator.translated_letter_ids.filtered(
-                    lambda it: it.translation_status == "done"
-                    and it.translate_done
-                    and it.translate_done.year == current_year
-                )
-            )
+            translator.nb_translated_letters_this_year = mapped_data.get(translator.id, 0)
 
     @api.depends(
         "translated_letter_ids.translation_status",
         "translated_letter_ids.translate_done",
     )
+    @api.depends("translated_letter_ids.translation_status", "translated_letter_ids.translate_done")
     def _compute_nb_translated_letters_last_year(self):
         last_year = fields.Datetime.now().year - 1
+        groups = self.env["correspondence"].read_group(
+            [
+                ("new_translator_id", "in", self.ids),
+                ("translation_status", "=", "done"),
+                ("translate_done", ">=", f"{last_year}-01-01 00:00:00"),
+                ("translate_done", "<=", f"{last_year}-12-31 23:59:59"),
+            ],
+            ["new_translator_id"],
+            ["new_translator_id"]
+        )
+        mapped_data = {
+            g["new_translator_id"][0]: g["new_translator_id_count"]
+            for g in groups
+            if g["new_translator_id"]
+        }
         for translator in self:
-            translator.nb_translated_letters_last_year = len(
-                translator.translated_letter_ids.filtered(
-                    lambda it: it.translation_status == "done"
-                    and it.translate_done
-                    and it.translate_done.year == last_year
-                )
-            )
+            translator.nb_translated_letters_last_year = mapped_data.get(translator.id, 0)
 
     @api.model_create_multi
     def create(self, vals_list):
