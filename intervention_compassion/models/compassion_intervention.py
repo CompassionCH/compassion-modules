@@ -561,7 +561,10 @@ class CompassionIntervention(models.Model):
                 "The hold of %(intervention_name)s (%(intervention_id)s) "
                 "was just cancelled."
             )
-            % (self.name, self.intervention_id),
+            % {
+                "intervention_name": self.name,
+                "intervention_ids": self.intervention_id,
+            },
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             subtype_xmlid="mail.mt_comment",
