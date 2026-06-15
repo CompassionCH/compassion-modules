@@ -563,7 +563,7 @@ class CompassionIntervention(models.Model):
             )
             % {
                 "intervention_name": self.name,
-                "intervention_ids": self.intervention_id,
+                "intervention_id": self.intervention_id,
             },
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
