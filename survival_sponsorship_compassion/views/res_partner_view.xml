@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_res_partner_survival_button_form" model="ir.ui.view">
+        <field name="name">res.partner.survival.sponsorships.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_res_partner_invoice_line_button_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='open_sponsored_children']" position="after">
+                <button
+                  class="oe_stat_button"
+                  type="object"
+                  name="open_survival_sponsorships"
+                  icon="fa-child"
+                  groups="child_compassion.group_sponsorship"
+                >
+                    <field
+                      string="Survival sponsorships"
+                      name="survival_sponsorship_count"
+                      widget="statinfo"
+                    />
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
