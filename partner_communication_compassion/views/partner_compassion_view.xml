@@ -19,7 +19,7 @@
     </record>
 
     <!-- Highlight terminated sponsorships whose exit communication has not yet
-         been sent to the sponsor (departure pending communication). -->
+         been sent to the sponsor -->
     <record id="view_res_partner_sponsorships_exit_pending" model="ir.ui.view">
         <field name="name">res.partner.sponsorships.exit.pending</field>
         <field name="model">res.partner</field>

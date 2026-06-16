@@ -56,7 +56,9 @@ class RecurringContract(models.Model):
 
     @api.depends("state", "end_reason_id", "exit_communication_sent")
     def _compute_exit_communication_pending(self):
-        depart = self.env.ref("sponsorship_compassion.end_reason_depart")
+        depart = self.env.ref(
+            "sponsorship_compassion.end_reason_depart", raise_if_not_found=False
+        )
         for contract in self:
             contract.exit_communication_pending = (
                 contract.state == "terminated"
@@ -77,9 +79,10 @@ class RecurringContract(models.Model):
         is triggered later from ``partner.communication.job.send`` once the
         exit communication has been sent to the sponsor.
         """
-        immediate = self.filtered(lambda c: not c.exit_communication_pending)
-        if immediate:
-            super(RecurringContract, immediate).cancel_contract_invoices()
+        deferred = self.filtered("exit_communication_pending")
+        to_clean = self - deferred
+        if to_clean:
+            super(RecurringContract, to_clean).cancel_contract_invoices()
         return True
 
     def send_communication(self, communication, correspondent=True, both=False):
