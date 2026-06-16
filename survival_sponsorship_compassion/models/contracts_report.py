@@ -114,12 +114,14 @@ class PartnerSponsorshipReport(models.Model):
             # each record against its own start_period and end_period in a single sweep
             # See the sponsorship_compassion.contracts_reports file for similar behavior
             donation_query = """
-                            SELECT am.partner_id, COALESCE(SUM(am.amount_total), 0) AS total_amount
+                            SELECT am.partner_id, COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
                             FROM account_move am
+                            JOIN account_move_line aml ON aml.move_id = am.id
+                            JOIN recurring_contract rc ON aml.contract_id = rc.id
                             WHERE am.partner_id IN %s
                               AND am.move_type = 'out_invoice'
                               AND am.payment_state = 'paid'
-                              AND am.invoice_category IN ('gift', 'sponsorship', 'fund')
+                              AND rc.type = 'CSP'
                               AND am.last_payment < %s
                               AND am.last_payment > %s
                             GROUP BY am.partner_id
