@@ -17,4 +17,68 @@
             </field>
         </field>
     </record>
+
+    <!-- Highlight terminated sponsorships whose exit communication has not yet
+         been sent to the sponsor (departure pending communication). -->
+    <record id="view_res_partner_sponsorships_exit_pending" model="ir.ui.view">
+        <field name="name">res.partner.sponsorships.exit.pending</field>
+        <field name="model">res.partner</field>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_res_partner_invoice_line_button_form"
+    />
+        <field name="arch" type="xml">
+            <xpath
+        expr="//field[@name='contracts_paid']/tree"
+        position="attributes"
+      >
+                <attribute
+          name="decoration-muted"
+        >state in ('terminated','cancelled') and not exit_communication_pending</attribute>
+                <attribute
+          name="decoration-warning"
+        >exit_communication_pending</attribute>
+            </xpath>
+            <xpath
+        expr="//field[@name='contracts_paid']/tree/field[@name='state']"
+        position="after"
+      >
+                <field name="exit_communication_pending" invisible="1" />
+            </xpath>
+            <xpath
+        expr="//field[@name='contracts_correspondant']/tree"
+        position="attributes"
+      >
+                <attribute
+          name="decoration-muted"
+        >state in ('terminated','cancelled') and not exit_communication_pending</attribute>
+                <attribute
+          name="decoration-warning"
+        >exit_communication_pending</attribute>
+            </xpath>
+            <xpath
+        expr="//field[@name='contracts_correspondant']/tree/field[@name='state']"
+        position="after"
+      >
+                <field name="exit_communication_pending" invisible="1" />
+            </xpath>
+            <xpath
+        expr="//field[@name='contracts_fully_managed']/tree"
+        position="attributes"
+      >
+                <attribute
+          name="decoration-muted"
+        >state in ('terminated','cancelled') and not exit_communication_pending</attribute>
+                <attribute
+          name="decoration-warning"
+        >exit_communication_pending</attribute>
+            </xpath>
+            <xpath
+        expr="//field[@name='contracts_fully_managed']/tree/field[@name='state']"
+        position="after"
+      >
+                <field name="exit_communication_pending" invisible="1" />
+            </xpath>
+        </field>
+    </record>
 </odoo>

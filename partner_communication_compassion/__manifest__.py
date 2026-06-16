@@ -39,6 +39,7 @@
         "partner_salutation",
         "sbc_compassion",
         "report_wkhtmltopdf_param",  # OCA/reporting-engine
+        "sponsorship_sub_management",
     ],
     "data": [
         "data/major_revision_emails.xml",

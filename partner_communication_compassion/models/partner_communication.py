@@ -164,15 +164,17 @@ class PartnerCommunication(models.Model):
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
         exit_confs = self.env.ref(
-            "partner_communication_compassion.lifecycle_child_planned_exit"
+            "partner_communication_compassion.planned_exit_notification"
         ) + self.env.ref(
             "partner_communication_compassion.lifecycle_child_unplanned_exit"
         )
         exits = self.filtered(lambda j: j.state == "done" and j.config_id in exit_confs)
         if exits:
-            exits.get_objects().write(
-                {"exit_communication_sent": fields.Datetime.now()}
-            )
+            contracts = exits.get_objects()
+            contracts.write({"exit_communication_sent": fields.Datetime.now()})
+            # The sponsor has now been informed: run the invoice cleanup that
+            # was deferred when the departure was registered.
+            contracts.cancel_contract_invoices()
         return res
 
     def cancel(self):
