@@ -12,32 +12,55 @@ class ResPartner(models.Model):
     )
 
     def _compute_active_csp_count(self):
-        # Guard clause in case self is empty
         if not self:
             return
 
-        # Optimized batch SQL query using 'IN %s' to handle multiple IDs at once
-        query = """
-                SELECT rp.id  AS partner_id,
-                       COUNT(rc.id) AS active_csp_contracts_count
-                FROM res_partner rp 
-                         LEFT JOIN 
-                     res_partner p ON (p.id = rp.id OR p.church_id = rp.id) 
-                         LEFT JOIN 
-                     recurring_contract rc ON rc.partner_id = p.id 
-                         AND rc.type = 'CSP' 
-                         AND rc.state = 'active'
-                WHERE rp.id IN %s
-                GROUP BY rp.id 
-                """
+        # 1. Extract just the churches from the batch
+        churches = self.filtered("is_church")
 
-        # Execute the query passing the IDs of the current recordset as a tuple
-        self.env.cr.execute(query, (tuple(self.ids),))
+        # 2. Branch the queries safely based on whether churches are present in the batch
+        if churches:
+            query = """
+                    SELECT rp.id AS partner_id, COUNT(rc.id) AS active_csp_contracts_count
+                    FROM res_partner rp
+                             LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id
+                        AND rc.type = 'CSP' AND rc.state = 'active'
+                    WHERE rp.id IN %s
+                    GROUP BY rp.id
 
-        # Transform the SQL result into a quick-lookup dictionary: {partner_id: count}
-        res_dict = {row['partner_id']: row['active_csp_contracts_count'] for row in self.env.cr.dictfetchall()}
+                    UNION ALL
 
-        # Assign the values back to each record in the recordset
+                    SELECT p.church_id AS partner_id, COUNT(rc.id) AS active_csp_contracts_count
+                    FROM res_partner p
+                             JOIN recurring_contract rc ON rc.partner_id = p.id
+                        AND rc.type = 'CSP' AND rc.state = 'active'
+                    WHERE p.church_id IN %s
+                    GROUP BY p.church_id \
+                    """
+            self.env.cr.execute(query, (tuple(self.ids), tuple(churches.ids)))
+
+            # Since UNION ALL can return two rows for a church, aggregate them here
+            res_dict = {}
+            for row in self.env.cr.dictfetchall():
+                pid = row["partner_id"]
+                res_dict[pid] = res_dict.get(pid, 0) + row["active_csp_contracts_count"]
+
+        else:
+            # 3. Ultra-optimized query for regular partners (like standard form views)
+            # We completely cut out the middleman join on res_partner 'p'
+            query = """
+                    SELECT rp.id AS partner_id, COUNT(rc.id) AS active_csp_contracts_count
+                    FROM res_partner rp
+                    LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id
+                        AND rc.type = 'CSP'
+                        AND rc.state = 'active'
+                    WHERE rp.id IN %s
+                    GROUP BY rp.id \
+                    """
+            self.env.cr.execute(query, (tuple(self.ids),))
+            res_dict = {row["partner_id"]: row["active_csp_contracts_count"] for row in self.env.cr.dictfetchall()}
+
+        # 4. Assign the values back safely
         for partner in self:
             partner.survival_sponsorship_count = res_dict.get(partner.id, 0)
 

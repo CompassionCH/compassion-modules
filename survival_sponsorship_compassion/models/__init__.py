@@ -6,3 +6,4 @@ from . import res_config_settings
 from . import recurring_contract_line
 from . import wordpress_configuration
 from . import res_partner
+from . import contracts_report

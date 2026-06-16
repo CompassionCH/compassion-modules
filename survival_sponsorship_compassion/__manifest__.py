@@ -47,6 +47,7 @@
         "views/recurring_contract.xml",
         "views/res_config_settings_view.xml",
         "views/res_partner_view.xml",
+        "views/contracts_report_view.xml",
         "data/product_warning_automation.xml",
         "data/survival_product_template.xml",
     ],
