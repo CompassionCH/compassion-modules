@@ -164,7 +164,7 @@ class PartnerCommunication(models.Model):
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
         exit_confs = self.env.ref(
-            "partner_communication_compassion.planned_exit_notification"
+            "partner_communication_compassion.lifecycle_child_planned_exit"
         ) + self.env.ref(
             "partner_communication_compassion.lifecycle_child_unplanned_exit"
         )

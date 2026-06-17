@@ -60,10 +60,12 @@ class RecurringContract(models.Model):
             "sponsorship_compassion.end_reason_depart", raise_if_not_found=False
         )
         for contract in self:
-            contract.exit_communication_pending = (
+            contract.exit_communication_pending = bool(
                 contract.state == "terminated"
                 and contract.end_reason_id == depart
                 and not contract.exit_communication_sent
+                and contract.child_id
+                and contract.type.startswith("S")
             )
 
     ##########################################################################
