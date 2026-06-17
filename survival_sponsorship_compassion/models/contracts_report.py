@@ -44,6 +44,13 @@ class PartnerSponsorshipReport(models.Model):
         if not self:
             return
 
+        # DYNAMIC PRICING LOOKUP: Fetch the base monthly value from the template config
+        # If the template or price isn't initialized yet, safe-fallback to 62.0
+        survival_tmpl = self.env.ref("survival_sponsorship_compassion.survival_product_template",
+                                     raise_if_not_found=False)
+        monthly_cost = (survival_tmpl.list_price or 62.0) if survival_tmpl else 62.0
+        annual_cost_baseline = monthly_cost * 12
+
         churches = self.filtered("is_church")
         partner_ids = tuple(self.ids)
 
@@ -150,4 +157,4 @@ class PartnerSponsorshipReport(models.Model):
 
             # Divide total calculation by 744
             # (62 is the amount for a mom for 1 month, so we multiple by 12) and cast to Integer
-            partner.sr_nb_moms_supported_for_a_year = int(total_donation / 744)
+            partner.sr_nb_moms_supported_for_a_year = int(total_donation / annual_cost_baseline)
