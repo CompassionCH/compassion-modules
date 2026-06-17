@@ -1,12 +1,3 @@
-##############################################################################
-#
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Daniel Palumbo <dpalumbo@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
-
 from odoo import fields, models
 
 from dateutil.relativedelta import relativedelta
@@ -43,9 +34,6 @@ class PartnerSponsorshipReport(models.Model):
     )
 
     def _compute_sponsorship_metrics(self):
-        if not self:
-            return
-
         # 1. Default initialization for all batch records
         for partner in self:
             partner.sr_survival_sponsorship_count = 0

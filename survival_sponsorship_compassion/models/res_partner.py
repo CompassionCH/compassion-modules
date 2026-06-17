@@ -1,12 +1,3 @@
-##############################################################################
-#
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Daniel Palumbo <dpalumbo@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
-
 from odoo import _, models, fields
 
 class ResPartner(models.Model):
@@ -15,34 +6,35 @@ class ResPartner(models.Model):
     survival_sponsorship_count = fields.Integer(
         string="Survival sponsorship(s)",
         compute="_compute_active_csp_count",
-        store=False,  # Not stored in the database, computed on the fly
-        copy=False,
     )
 
     def _compute_active_csp_count(self):
-        if not self:
-            return
-
         churches = self.filtered("is_church")
-        partner_ids = self.ids
+        all_partner_ids = set(self.ids)
         if churches:
-            partner_ids = list(set(partner_ids + churches.member_ids.ids))
+            all_partner_ids.update(churches.mapped("member_ids.id"))
 
-        contracts = self.env["recurring.contract"].search([
-            ("partner_id", "in", partner_ids),
-            ("type", "=", "CSP"),
-            ("state", "=", "active"),
-        ])
+        group_data = self.env["recurring.contract"].read_group(
+            domain=[
+                ("partner_id", "in", list(all_partner_ids)),
+                ("type", "=", "CSP"),
+                ("state", "=", "active"),
+            ],
+            fields=["partner_id"],
+            groupby=["partner_id"],
+        )
 
-        contract_counts = {}
-        for contract in contracts:
-            pid = contract.partner_id.id
-            contract_counts[pid] = contract_counts.get(pid, 0) + 1
+        contract_counts = {
+            item["partner_id"][0]: item["partner_id_count"]
+            for item in group_data
+        }
 
+        # Assign counts to each partner
         for partner in self:
             count = contract_counts.get(partner.id, 0)
             if partner.is_church:
-                count += sum(contract_counts.get(mid, 0) for mid in partner.member_ids.ids)
+                # Add counts for all associated members
+                count += sum(contract_counts.get(m.id, 0) for m in partner.member_ids)
             partner.survival_sponsorship_count = count
 
     def _compute_related_contracts(self):
@@ -93,8 +85,8 @@ class ResPartner(models.Model):
                 ("partner_id.church_id", "=", self.id),
             ],
             "context": {
+                "create": False,
                 "default_type": "CSP",
-                "default_state": "active",
                 "default_partner_id": self.id,
             },
             "target": "current",
