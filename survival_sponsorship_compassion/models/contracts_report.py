@@ -1,3 +1,12 @@
+##############################################################################
+#
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Daniel Palumbo <dpalumbo@compassion.ch>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+
 from odoo import fields, models
 
 from dateutil.relativedelta import relativedelta

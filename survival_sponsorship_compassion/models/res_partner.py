@@ -1,5 +1,13 @@
-from odoo import _, models, fields
+##############################################################################
+#
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Daniel Palumbo <dpalumbo@compassion.ch>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
 
+from odoo import _, models, fields
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
