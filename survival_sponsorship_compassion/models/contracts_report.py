@@ -24,13 +24,15 @@ class PartnerSponsorshipReport(models.Model):
     sr_countries_current = fields.Char(
         "Countries currently impacted",
         compute="_compute_sponsorship_metrics",
-        help="List of current countries impacted by the church and its members by the CSP program.",
+        help="List of current countries impacted "
+        "by the church and its members by the CSP program.",
     )
 
     sr_countries_previous = fields.Char(
         "Countries previously impacted",
         compute="_compute_sponsorship_metrics",
-        help="List of previously impacted countries by the church and its members by the CSP program.",
+        help="List of previously impacted countries "
+        "by the church and its members by the CSP program.",
     )
 
     def _compute_sponsorship_metrics(self):
@@ -56,24 +58,34 @@ class PartnerSponsorshipReport(models.Model):
         # 2. Unified Query Execution Path
         if churches:
             query = """
-                    SELECT rp.id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                    SELECT rp.id AS partner_id,
+                           rc.id AS contract_id,
+                           rc.state, rc.csp_country
                     FROM res_partner rp
-                             LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id AND rc.type = 'CSP'
+                             LEFT JOIN recurring_contract rc
+                                       ON rc.partner_id = rp.id AND rc.type = 'CSP'
                     WHERE rp.id IN %s
 
                     UNION ALL
 
-                    SELECT p.church_id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                    SELECT p.church_id AS partner_id,
+                           rc.id AS contract_id,
+                           rc.state, rc.csp_country
                     FROM res_partner p
-                             JOIN recurring_contract rc ON rc.partner_id = p.id AND rc.type = 'CSP'
+                             JOIN recurring_contract rc
+                                  ON rc.partner_id = p.id AND rc.type = 'CSP'
                     WHERE p.church_id IN %s
                     """
             self.env.cr.execute(query, (partner_ids, tuple(churches.ids)))
         else:
             query = """
-                    SELECT rp.id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                    SELECT rp.id AS partner_id,
+                           rc.id AS contract_id,
+                           rc.state,
+                           rc.csp_country
                     FROM res_partner rp
-                             LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id AND rc.type = 'CSP'
+                             LEFT JOIN recurring_contract rc
+                                       ON rc.partner_id = rp.id AND rc.type = 'CSP'
                     WHERE rp.id IN %s \
                     """
             self.env.cr.execute(query, (partner_ids,))
@@ -98,7 +110,8 @@ class PartnerSponsorshipReport(models.Model):
                     if country:
                         stats["current_countries"].add(country)
 
-                # Condition B: Collect the country regardless of what the contract state is
+                # Condition B: Collect the country
+                # regardless of what the contract state is
                 else:
                     if country:
                         stats["previous_countries"].add(country)
@@ -119,7 +132,8 @@ class PartnerSponsorshipReport(models.Model):
             # each record against its own start_period and end_period in a single sweep
             # See the sponsorship_compassion.contracts_reports file for similar behavior
             donation_query = """
-                            SELECT am.partner_id, COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
+                            SELECT am.partner_id, 
+                                   COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
                             FROM account_move am
                             JOIN account_move_line aml ON aml.move_id = am.id
                             JOIN recurring_contract rc ON aml.contract_id = rc.id
@@ -160,7 +174,8 @@ class PartnerSponsorshipReport(models.Model):
                 )
 
             # Divide total by annual_cost_baseline
-            # (monthly_cost * 12, where monthly_cost is read from the product template, defaulting to 62.0)
+            # (monthly_cost * 12, where monthly_cost is read from
+            # the product template, defaulting to 62.0)
             partner.sr_nb_moms_supported_for_a_year = int(
                 total_donation / annual_cost_baseline
             )
