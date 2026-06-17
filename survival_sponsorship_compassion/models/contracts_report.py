@@ -1,6 +1,7 @@
+from dateutil.relativedelta import relativedelta
+
 from odoo import fields, models
 
-from dateutil.relativedelta import relativedelta
 
 # For more readability we have split "res.partner" by functionality
 # pylint: disable=R7980
@@ -11,8 +12,7 @@ class PartnerSponsorshipReport(models.Model):
     sr_survival_sponsorship_count = fields.Integer(
         "Number of survival sponsorships",
         compute="_compute_sponsorship_metrics",
-        help="Number of survival sponsorships "
-             "for a church AND its members.",
+        help="Number of survival sponsorships " "for a church AND its members.",
     )
 
     sr_nb_moms_supported_for_a_year = fields.Integer(
@@ -43,8 +43,10 @@ class PartnerSponsorshipReport(models.Model):
 
         # DYNAMIC PRICING LOOKUP: Fetch the base monthly value from the template config
         # If the template or price isn't initialized yet, safe-fallback to 62.0
-        survival_tmpl = self.env.ref("survival_sponsorship_compassion.survival_product_template",
-                                     raise_if_not_found=False)
+        survival_tmpl = self.env.ref(
+            "survival_sponsorship_compassion.survival_product_template",
+            raise_if_not_found=False,
+        )
         monthly_cost = (survival_tmpl.list_price or 62.0) if survival_tmpl else 62.0
         annual_cost_baseline = monthly_cost * 12
 
@@ -84,11 +86,10 @@ class PartnerSponsorshipReport(models.Model):
             state = row["state"]
             country = row["csp_country"]
 
-            stats = partner_data.setdefault(pid, {
-                "count": 0,
-                "current_countries": set(),
-                "previous_countries": set()
-            })
+            stats = partner_data.setdefault(
+                pid,
+                {"count": 0, "current_countries": set(), "previous_countries": set()},
+            )
 
             if cid:
                 # Condition A: Only increment the counter if the contract is active
@@ -130,8 +131,13 @@ class PartnerSponsorshipReport(models.Model):
                               AND am.last_payment > %s
                             GROUP BY am.partner_id
                              """
-            self.env.cr.execute(donation_query, (tuple(all_donation_partner_ids), today, start_date))
-            donation_data = {row["partner_id"]: row["total_amount"] for row in self.env.cr.dictfetchall()}
+            self.env.cr.execute(
+                donation_query, (tuple(all_donation_partner_ids), today, start_date)
+            )
+            donation_data = {
+                row["partner_id"]: row["total_amount"]
+                for row in self.env.cr.dictfetchall()
+            }
 
         # 5. Write back values to the Odoo recordset cache cleanly
         for partner in self:
@@ -149,8 +155,12 @@ class PartnerSponsorshipReport(models.Model):
             # Accumulate and write donation metrics
             total_donation = donation_data.get(partner.id, 0.0)
             if partner.is_church:
-                total_donation += sum(donation_data.get(mid, 0.0) for mid in partner.member_ids.ids)
+                total_donation += sum(
+                    donation_data.get(mid, 0.0) for mid in partner.member_ids.ids
+                )
 
             # Divide total by annual_cost_baseline
             # (monthly_cost * 12, where monthly_cost is read from the product template, defaulting to 62.0)
-            partner.sr_nb_moms_supported_for_a_year = int(total_donation / annual_cost_baseline)
+            partner.sr_nb_moms_supported_for_a_year = int(
+                total_donation / annual_cost_baseline
+            )

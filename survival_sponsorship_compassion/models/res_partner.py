@@ -1,4 +1,5 @@
-from odoo import _, models, fields
+from odoo import _, fields, models
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -25,8 +26,7 @@ class ResPartner(models.Model):
         )
 
         contract_counts = {
-            item["partner_id"][0]: item["partner_id_count"]
-            for item in group_data
+            item["partner_id"][0]: item["partner_id_count"] for item in group_data
         }
 
         # Assign counts to each partner
