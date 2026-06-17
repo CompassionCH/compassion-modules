@@ -170,9 +170,14 @@ class PartnerCommunication(models.Model):
         )
         exits = self.filtered(lambda j: j.state == "done" and j.config_id in exit_confs)
         if exits:
-            exits.get_objects().write(
-                {"exit_communication_sent": fields.Datetime.now()}
-            )
+            contracts = exits.get_objects()
+            # Capture the departures still pending cleanup BEFORE the stamp below
+            # flips exit_communication_pending to False; only those need the
+            # deferred invoice cleanup (avoids re-triggering it on re-sends or
+            # contracts already cleaned by the old flow).
+            to_clean = contracts.filtered("exit_communication_pending")
+            contracts.write({"exit_communication_sent": fields.Datetime.now()})
+            to_clean.cancel_contract_invoices()
         return res
 
     def cancel(self):

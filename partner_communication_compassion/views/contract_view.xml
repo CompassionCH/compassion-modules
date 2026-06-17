@@ -32,4 +32,29 @@
             </filter>
         </field>
     </record>
+
+    <!-- Flag SDS sub-management cards whose exit communication is still pending. -->
+    <record id="view_follow_contract_kanban_exit_pending" model="ir.ui.view">
+        <field name="name">follow.contract.kanban.exit.pending</field>
+        <field name="model">recurring.contract</field>
+        <field
+      name="inherit_id"
+      ref="sponsorship_sub_management.view_follow_contract_kanban_compassion"
+    />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="exit_communication_pending" />
+            </field>
+            <xpath expr="//div[hasclass('o_kanban_footer')]" position="before">
+                <div
+          t-if="record.exit_communication_pending.raw_value"
+          class="text-warning"
+        >
+                    <i
+            class="fa fa-exclamation-triangle"
+          /> Awaiting exit communication
+                </div>
+            </xpath>
+        </field>
+    </record>
 </odoo>
