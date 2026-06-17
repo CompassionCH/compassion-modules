@@ -132,7 +132,7 @@ class PartnerSponsorshipReport(models.Model):
             # each record against its own start_period and end_period in a single sweep
             # See the sponsorship_compassion.contracts_reports file for similar behavior
             donation_query = """
-                            SELECT am.partner_id, 
+                            SELECT am.partner_id,
                                    COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
                             FROM account_move am
                             JOIN account_move_line aml ON aml.move_id = am.id
