@@ -34,15 +34,15 @@ class PartnerSponsorshipReport(models.Model):
     )
 
     def _compute_sponsorship_metrics(self):
+        if not self:
+            return
+
         # 1. Default initialization for all batch records
         for partner in self:
             partner.sr_survival_sponsorship_count = 0
             partner.sr_countries_current = ""
             partner.sr_countries_previous = ""
             partner.sr_nb_moms_supported_for_a_year = 0
-
-        if not self:
-            return
 
         # DYNAMIC PRICING LOOKUP: Fetch the base monthly value from the template config
         # If the template or price isn't initialized yet, safe-fallback to 62.0
@@ -136,7 +136,7 @@ class PartnerSponsorshipReport(models.Model):
             self.env.cr.execute(donation_query, (tuple(all_donation_partner_ids), today, start_date))
             donation_data = {row["partner_id"]: row["total_amount"] for row in self.env.cr.dictfetchall()}
 
-        # 4. Write back values to the Odoo recordset cache cleanly
+        # 5. Write back values to the Odoo recordset cache cleanly
         for partner in self:
             data = partner_data.get(partner.id)
             if data:
@@ -152,9 +152,8 @@ class PartnerSponsorshipReport(models.Model):
             # Accumulate and write donation metrics
             total_donation = donation_data.get(partner.id, 0.0)
             if partner.is_church:
-                for member in partner.member_ids:
-                    total_donation += donation_data.get(member.id, 0.0)
+                total_donation += sum(donation_data.get(mid, 0.0) for mid in partner.member_ids.ids)
 
-            # Divide total calculation by 744
-            # (62 is the amount for a mom for 1 month, so we multiple by 12) and cast to Integer
+            # Divide total by annual_cost_baseline
+            # (monthly_cost * 12, where monthly_cost is read from the product template, defaulting to 62.0)
             partner.sr_nb_moms_supported_for_a_year = int(total_donation / annual_cost_baseline)
