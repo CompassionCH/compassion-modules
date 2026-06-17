@@ -1234,10 +1234,7 @@ class SponsorshipContract(models.Model):
     @api.constrains("group_id")
     def _is_a_valid_group(self):
         for contract in self.filtered(lambda c: "S" in c.type):
-            if (
-                not contract.group_id.contains_sponsorship
-                or contract.group_id.recurring_value != 1
-            ):
+            if contract.group_id.recurring_value != 1:
                 raise ValidationError(
                     _(
                         "You should select payment option with "

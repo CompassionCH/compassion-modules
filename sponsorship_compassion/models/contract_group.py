@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ContractGroup(models.Model):
@@ -25,6 +25,7 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.depends("contract_ids", "contract_ids.type", "contract_ids.state")
     def _compute_contains_sponsorship(self):
         for group in self:
             group.contains_sponsorship = group.mapped("contract_ids").filtered(
