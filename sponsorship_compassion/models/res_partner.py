@@ -502,7 +502,7 @@ class ResPartner(models.Model):
             [("res_model", "=", self._name), ("res_id", "=", partner.id)]
         ).unlink()
         partner.message_follower_ids.unlink()
-        partner.clear_message_history()
+        partner.with_delay().clear_message_history()
         return True
 
     def clear_message_history(self):
