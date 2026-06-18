@@ -57,11 +57,12 @@ class ResPartner(models.Model):
     def _compute_active_csp_count(self):
         data, member_map = self._get_survival_sponsorship_data()
         for partner in self:
-            count = data.get(partner.id, {}).get('active_count', 0)
+            count = data.get(partner.id, {}).get("active_count", 0)
             if partner.is_church:
-                count += sum(data.get(mid, {})
-                             .get('active_count', 0)
-                             for mid in member_map.get(partner.id, []))
+                count += sum(
+                    data.get(mid, {}).get("active_count", 0)
+                    for mid in member_map.get(partner.id, [])
+                )
             partner.survival_sponsorship_count = count
 
     def _compute_related_contracts(self):

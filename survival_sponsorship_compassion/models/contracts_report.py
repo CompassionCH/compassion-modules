@@ -1,5 +1,3 @@
-from dateutil.relativedelta import relativedelta
-
 from odoo import fields, models
 
 
@@ -93,14 +91,22 @@ class PartnerSponsorshipReport(models.Model):
         """Execute raw SQL for contract counts and country sets."""
         churches = self.filtered("is_church")
         query = """
-                SELECT rp.id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                SELECT rp.id AS partner_id,
+                       rc.id AS contract_id,
+                       rc.state,
+                       rc.csp_country
                 FROM res_partner rp
-                         LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id AND rc.type = 'CSP'
+                         LEFT JOIN recurring_contract rc
+                                   ON rc.partner_id = rp.id AND rc.type = 'CSP'
                 WHERE rp.id IN %s
                 UNION ALL
-                SELECT p.church_id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                SELECT p.church_id AS partner_id,
+                       rc.id AS contract_id,
+                       rc.state,
+                       rc.csp_country
                 FROM res_partner p
-                         JOIN recurring_contract rc ON rc.partner_id = p.id AND rc.type = 'CSP'
+                         JOIN recurring_contract rc
+                              ON rc.partner_id = p.id AND rc.type = 'CSP'
                 WHERE p.church_id IN %s \
                 """
         self.env.cr.execute(
@@ -134,7 +140,8 @@ class PartnerSponsorshipReport(models.Model):
             all_ids.update(church.member_ids.ids)
 
         query = """
-                SELECT am.partner_id, COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
+                SELECT am.partner_id,
+                       COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
                 FROM account_move am
                          JOIN account_move_line aml ON aml.move_id = am.id
                          JOIN recurring_contract rc ON aml.contract_id = rc.id
