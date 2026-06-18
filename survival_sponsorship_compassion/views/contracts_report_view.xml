@@ -20,6 +20,7 @@
 
             <xpath expr="//group[@name='last12months']" position="after">
                 <group string="Supported moms and babies">
+                    <field name="sr_total_donation_for_csp" />
                     <field name="sr_nb_moms_supported_for_a_year" />
                     <field name="sr_countries_current" />
                     <field name="sr_countries_previous" />

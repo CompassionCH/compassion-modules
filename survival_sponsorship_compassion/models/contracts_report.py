@@ -13,6 +13,12 @@ class PartnerSponsorshipReport(models.Model):
         help="Number of survival sponsorships " "for a church AND its members.",
     )
 
+    sr_total_donation_for_csp = fields.Float(
+        "Total donation given",
+        compute="_compute_sponsorship_metrics",
+        help="Total donation given for CSP.",
+    )
+
     sr_nb_moms_supported_for_a_year = fields.Float(
         "Number of moms and babies supported for 1 year (all-in-all)",
         compute="_compute_sponsorship_metrics",
@@ -68,6 +74,8 @@ class PartnerSponsorshipReport(models.Model):
                 total_donation += sum(
                     donation_stats.get(mid, 0.0) for mid in partner.member_ids.ids
                 )
+
+            partner.sr_total_donation_for_csp = total_donation
 
             if annual_cost_baseline > 0:
                 partner.sr_nb_moms_supported_for_a_year = round(
