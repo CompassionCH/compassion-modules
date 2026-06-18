@@ -15,7 +15,7 @@ class PartnerSponsorshipReport(models.Model):
         help="Number of survival sponsorships " "for a church AND its members.",
     )
 
-    sr_nb_moms_supported_for_a_year = fields.Integer(
+    sr_nb_moms_supported_for_a_year = fields.Float(
         "Number of moms and babies supported for 1 year (all-in-all)",
         compute="_compute_sponsorship_metrics",
         help="Number of moms and babies supported for a year.",
@@ -36,146 +36,115 @@ class PartnerSponsorshipReport(models.Model):
     )
 
     def _compute_sponsorship_metrics(self):
-        # 1. Default initialization for all batch records
+        """Orchestrator method to calculate and apply all report metrics."""
+        # 1. Initialize Default Values
         for partner in self:
             partner.sr_survival_sponsorship_count = 0
             partner.sr_countries_current = ""
             partner.sr_countries_previous = ""
             partner.sr_nb_moms_supported_for_a_year = 0
 
-        # DYNAMIC PRICING LOOKUP: Fetch the base monthly value from the template config
-        # If the template or price isn't initialized yet, safe-fallback to 62.0
+        # 2. Fetch Data
+        annual_cost_baseline = self._get_annual_cost_baseline()
+        partner_stats = self._fetch_sponsorship_stats()
+        donation_stats = self._fetch_donation_stats()
+
+        # 3. Apply calculated data to records
+        for partner in self:
+            # Apply Contract/Country Stats
+            stats = partner_stats.get(partner.id, {})
+            if stats:
+                partner.sr_survival_sponsorship_count = stats["count"]
+                if stats["current_countries"]:
+                    partner.sr_countries_current = ", ".join(
+                        sorted(stats["current_countries"])
+                    )
+                if stats["previous_countries"]:
+                    partner.sr_countries_previous = ", ".join(
+                        sorted(stats["previous_countries"])
+                    )
+
+            # Apply Donation Stats (aggregating members for churches)
+            total_donation = donation_stats.get(partner.id, 0.0)
+            if partner.is_church:
+                total_donation += sum(
+                    donation_stats.get(mid, 0.0) for mid in partner.member_ids.ids
+                )
+
+            if annual_cost_baseline > 0:
+                partner.sr_nb_moms_supported_for_a_year = round(
+                    total_donation / annual_cost_baseline, 2
+                )
+
+    def _get_annual_cost_baseline(self):
+        """Fetch base annual cost (for CSP only) from product template."""
         survival_tmpl = self.env.ref(
             "survival_sponsorship_compassion.survival_product_template",
             raise_if_not_found=False,
         )
-        monthly_cost = (survival_tmpl.list_price or 62.0) if survival_tmpl else 62.0
-        annual_cost_baseline = monthly_cost * 12
+        monthly_cost = survival_tmpl.list_price
+        return monthly_cost * 12
 
+    # This function is using raw sql and union all
+    # It might seem weird to not use the ORM,
+    # but for optimization purposes, raw SQL is better
+    # and lighter for the database
+    def _fetch_sponsorship_stats(self):
+        """Execute raw SQL for contract counts and country sets."""
         churches = self.filtered("is_church")
-        partner_ids = tuple(self.ids)
+        query = """
+                SELECT rp.id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                FROM res_partner rp
+                         LEFT JOIN recurring_contract rc ON rc.partner_id = rp.id AND rc.type = 'CSP'
+                WHERE rp.id IN %s
+                UNION ALL
+                SELECT p.church_id AS partner_id, rc.id AS contract_id, rc.state, rc.csp_country
+                FROM res_partner p
+                         JOIN recurring_contract rc ON rc.partner_id = p.id AND rc.type = 'CSP'
+                WHERE p.church_id IN %s \
+                """
+        self.env.cr.execute(
+            query, (tuple(self.ids), tuple(churches.ids) if churches else (0,))
+        )
 
-        # 2. Unified Query Execution Path
-        if churches:
-            query = """
-                    SELECT rp.id AS partner_id,
-                           rc.id AS contract_id,
-                           rc.state, rc.csp_country
-                    FROM res_partner rp
-                             LEFT JOIN recurring_contract rc
-                                       ON rc.partner_id = rp.id AND rc.type = 'CSP'
-                    WHERE rp.id IN %s
-
-                    UNION ALL
-
-                    SELECT p.church_id AS partner_id,
-                           rc.id AS contract_id,
-                           rc.state, rc.csp_country
-                    FROM res_partner p
-                             JOIN recurring_contract rc
-                                  ON rc.partner_id = p.id AND rc.type = 'CSP'
-                    WHERE p.church_id IN %s
-                    """
-            self.env.cr.execute(query, (partner_ids, tuple(churches.ids)))
-        else:
-            query = """
-                    SELECT rp.id AS partner_id,
-                           rc.id AS contract_id,
-                           rc.state,
-                           rc.csp_country
-                    FROM res_partner rp
-                             LEFT JOIN recurring_contract rc
-                                       ON rc.partner_id = rp.id AND rc.type = 'CSP'
-                    WHERE rp.id IN %s \
-                    """
-            self.env.cr.execute(query, (partner_ids,))
-
-        # 3. Aggregate both datasets simultaneously with conditional logic
-        partner_data = {}
+        stats = {}
         for row in self.env.cr.dictfetchall():
             pid = row["partner_id"]
-            cid = row["contract_id"]
-            state = row["state"]
-            country = row["csp_country"]
-
-            stats = partner_data.setdefault(
+            data = stats.setdefault(
                 pid,
                 {"count": 0, "current_countries": set(), "previous_countries": set()},
             )
+            if row["contract_id"]:
+                if row["state"] == "active":
+                    data["count"] += 1
+                    if row["csp_country"]:
+                        data["current_countries"].add(row["csp_country"])
+                elif row["csp_country"]:
+                    data["previous_countries"].add(row["csp_country"])
 
-            if cid:
-                # Condition A: Only increment the counter if the contract is active
-                if state == "active":
-                    stats["count"] += 1
-                    if country:
-                        stats["current_countries"].add(country)
+        # Cleanup: Ensure countries are only in one set
+        for data in stats.values():
+            data["previous_countries"] -= data["current_countries"]
+        return stats
 
-                # Condition B: Collect the country
-                # regardless of what the contract state is
-                else:
-                    if country:
-                        stats["previous_countries"].add(country)
+    def _fetch_donation_stats(self):
+        """Execute raw SQL for total donation amounts per partner."""
+        all_ids = set(self.ids)
+        for church in self.filtered("is_church"):
+            all_ids.update(church.member_ids.ids)
 
-        # 4. Batched & Optimized Query for Donations (Moms Supported)
-        # Collect all unique target IDs (partners + their church members)
-        today = fields.Date.today()
-        start_date = today - relativedelta(months=12)
-
-        all_donation_partner_ids = set(self.ids)
-        for church in churches:
-            if church.member_ids:
-                all_donation_partner_ids.update(church.member_ids.ids)
-
-        donation_data = {}
-        if all_donation_partner_ids:
-            # We join account_move with res_partner to dynamically validate
-            # each record against its own start_period and end_period in a single sweep
-            # See the sponsorship_compassion.contracts_reports file for similar behavior
-            donation_query = """
-                            SELECT am.partner_id,
-                                   COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
-                            FROM account_move am
-                            JOIN account_move_line aml ON aml.move_id = am.id
-                            JOIN recurring_contract rc ON aml.contract_id = rc.id
-                            WHERE am.partner_id IN %s
-                              AND am.move_type = 'out_invoice'
-                              AND am.payment_state = 'paid'
-                              AND rc.type = 'CSP'
-                              AND am.last_payment < %s
-                              AND am.last_payment > %s
-                            GROUP BY am.partner_id
-                             """
-            self.env.cr.execute(
-                donation_query, (tuple(all_donation_partner_ids), today, start_date)
-            )
-            donation_data = {
-                row["partner_id"]: row["total_amount"]
-                for row in self.env.cr.dictfetchall()
-            }
-
-        # 5. Write back values to the Odoo recordset cache cleanly
-        for partner in self:
-            data = partner_data.get(partner.id)
-            if data:
-                partner.sr_survival_sponsorship_count = data["count"]
-
-                current_set = data["current_countries"]
-                previous_set = data["previous_countries"] - current_set
-                if current_set:
-                    partner.sr_countries_current = ", ".join(sorted(current_set))
-                if previous_set:
-                    partner.sr_countries_previous = ", ".join(sorted(previous_set))
-
-            # Accumulate and write donation metrics
-            total_donation = donation_data.get(partner.id, 0.0)
-            if partner.is_church:
-                total_donation += sum(
-                    donation_data.get(mid, 0.0) for mid in partner.member_ids.ids
-                )
-
-            # Divide total by annual_cost_baseline
-            # (monthly_cost * 12, where monthly_cost is read from
-            # the product template, defaulting to 62.0)
-            partner.sr_nb_moms_supported_for_a_year = int(
-                total_donation / annual_cost_baseline
-            )
+        query = """
+                SELECT am.partner_id, COALESCE(SUM(aml.price_subtotal), 0) AS total_amount
+                FROM account_move am
+                         JOIN account_move_line aml ON aml.move_id = am.id
+                         JOIN recurring_contract rc ON aml.contract_id = rc.id
+                WHERE am.partner_id IN %s
+                  AND am.move_type = 'out_invoice'
+                  AND am.payment_state = 'paid'
+                  AND rc.type = 'CSP'
+                GROUP BY am.partner_id \
+                """
+        self.env.cr.execute(query, (tuple(all_ids),))
+        return {
+            row["partner_id"]: row["total_amount"] for row in self.env.cr.dictfetchall()
+        }

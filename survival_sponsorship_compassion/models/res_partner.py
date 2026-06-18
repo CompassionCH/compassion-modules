@@ -9,32 +9,59 @@ class ResPartner(models.Model):
         compute="_compute_active_csp_count",
     )
 
-    def _compute_active_csp_count(self):
+    def _get_survival_sponsorship_data(self):
+        """
+        Returns a dictionary mapping partner_id to their survival sponsorship metrics.
+        This is the single source of truth for sponsorship calculations.
+        """
         churches = self.filtered("is_church")
-        all_partner_ids = set(self.ids)
-        if churches:
-            all_partner_ids.update(churches.mapped("member_ids.id"))
+        all_ids = set(self.ids)
+        # Pre-fetch member IDs to avoid ORM overhead in loops
+        church_member_map = {c.id: c.member_ids.ids for c in churches}
+        for members in church_member_map.values():
+            all_ids.update(members)
 
+        # Using your proven read_group logic
         group_data = self.env["recurring.contract"].read_group(
-            domain=[
-                ("partner_id", "in", list(all_partner_ids)),
-                ("type", "=", "CSP"),
-                ("state", "=", "active"),
-            ],
-            fields=["partner_id"],
-            groupby=["partner_id"],
+            domain=[("partner_id", "in", list(all_ids)), ("type", "=", "CSP")],
+            fields=["partner_id", "state", "csp_country"],
+            groupby=["partner_id", "state", "csp_country"],
+            lazy=False,
         )
 
-        contract_counts = {
-            item["partner_id"][0]: item["partner_id_count"] for item in group_data
+        # Structure: {
+        #     partner_id: {
+        #        'active_count': X,
+        #        'current_countries': set(),
+        #        'previous_countries': set()
+        #     }
+        # }
+        results = {
+            pid: {"active_count": 0, "curr": set(), "prev": set()} for pid in all_ids
         }
 
-        # Assign counts to each partner
+        for row in group_data:
+            pid = row["partner_id"][0]
+            if pid not in results:
+                continue
+
+            if row["state"] == "active":
+                results[pid]["active_count"] += row["__count"]
+                if row["csp_country"]:
+                    results[pid]["curr"].add(row["csp_country"])
+            elif row["csp_country"]:
+                results[pid]["prev"].add(row["csp_country"])
+
+        return results, church_member_map
+
+    def _compute_active_csp_count(self):
+        data, member_map = self._get_survival_sponsorship_data()
         for partner in self:
-            count = contract_counts.get(partner.id, 0)
+            count = data.get(partner.id, {}).get('active_count', 0)
             if partner.is_church:
-                # Add counts for all associated members
-                count += sum(contract_counts.get(m.id, 0) for m in partner.member_ids)
+                count += sum(data.get(mid, {})
+                             .get('active_count', 0)
+                             for mid in member_map.get(partner.id, []))
             partner.survival_sponsorship_count = count
 
     def _compute_related_contracts(self):
