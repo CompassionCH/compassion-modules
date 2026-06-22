@@ -48,6 +48,7 @@ class PartnerSponsorshipReport(models.Model):
         # 1. Initialize Default Values
         for partner in self:
             partner.sr_survival_sponsorship_count = 0
+            partner.sr_total_donation_for_csp = 0.0
             partner.sr_countries_current = ""
             partner.sr_countries_previous = ""
             partner.sr_nb_moms_supported_for_a_year = 0
