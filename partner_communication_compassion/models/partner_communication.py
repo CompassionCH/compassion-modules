@@ -163,7 +163,6 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
-        self._stamp_exit_communications()
         return res
 
     def cancel(self):
@@ -173,29 +172,42 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
-        self._stamp_exit_communications()
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._stamp_exit_communications()
         return res
 
-    def _stamp_exit_communications(self):
-        """Mark exit communications as handled: stamp exit_communication_sent
-        and run the deferred invoice cleanup. A cancelled exit communication
-        counts the same as a sent one, because SDS sometimes informs the sponsor
-        by phone and simply cancels the auto-generated exit communication.
-        """
-        exit_confs = self.env.ref(
+    def _exit_communication_configs(self):
+        """Communication configs that notify the sponsor of a child's exit."""
+        return self.env.ref(
             "partner_communication_compassion.lifecycle_child_planned_exit"
         ) + self.env.ref(
             "partner_communication_compassion.lifecycle_child_unplanned_exit"
         )
-        exits = self.filtered(
-            lambda j: j.state in ("done", "cancel") and j.config_id in exit_confs
-        )
+
+    def _stamp_exit_communications(self):
+        """For the exit communications in self that are now sent or cancelled,
+        stamp exit_communication_sent on their contracts and run the deferred
+        invoice cleanup. A cancelled exit communication counts the same as a
+        sent one (SDS sometimes informs the sponsor by phone and cancels the
+        auto-generated exit communication).
+        """
+        exits = self.filtered(lambda j: j.state in ("done", "cancel"))
         if exits:
             contracts = exits.get_objects()
-            # Capture the departures still pending cleanup BEFORE the stamp below
-            # flips exit_communication_pending to False; only those need the
-            # deferred invoice cleanup (avoids re-triggering it on re-sends or
-            # contracts already cleaned by the old flow).
+            # Run the deferred invoice cleanup only on contracts still pending
+            # (captured before the stamp clears it) so a second exit comm for the
+            # same contract doesn't clean twice.
             to_clean = contracts.filtered("exit_communication_pending")
             contracts.write({"exit_communication_sent": fields.Datetime.now()})
             to_clean.cancel_contract_invoices()
+
+    def _job_sent(self, send_mode):
+        res = super()._job_sent(send_mode)
+        # Set exit communications (only) to completed
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._stamp_exit_communications()
+        return res
