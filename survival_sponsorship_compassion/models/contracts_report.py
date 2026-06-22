@@ -92,6 +92,13 @@ class PartnerSponsorshipReport(models.Model):
             "survival_sponsorship_compassion.survival_product_template",
             raise_if_not_found=False,
         )
+        if not survival_tmpl:
+            raise ValueError(
+                "Missing required external ID: "
+                "'survival_sponsorship_compassion.survival_product_template'. "
+                "Ensure the survival product template is installed."
+            )
+
         monthly_cost = survival_tmpl.list_price
         return monthly_cost * 12
 
