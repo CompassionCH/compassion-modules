@@ -40,11 +40,11 @@ class PartnerSponsorshipReport(models.Model):
     )
 
     def _compute_sponsorship_metrics(self):
+        """Orchestrator method to calculate and apply all report metrics."""
         # Early exit for empty recordsets
         if not self:
             return
 
-        """Orchestrator method to calculate and apply all report metrics."""
         # 1. Initialize Default Values
         for partner in self:
             partner.sr_survival_sponsorship_count = 0
