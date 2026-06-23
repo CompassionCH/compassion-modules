@@ -173,7 +173,9 @@ class PartnerCommunication(models.Model):
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
         exit_confs = self._exit_communication_configs()
-        self.filtered(lambda j: j.config_id in exit_confs)._stamp_exit_communications()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
         return res
 
     def _exit_communication_configs(self):
@@ -184,22 +186,26 @@ class PartnerCommunication(models.Model):
             "partner_communication_compassion.lifecycle_child_unplanned_exit"
         )
 
-    def _stamp_exit_communications(self):
-        """Stamp the still-pending contracts of these (sent or cancelled) exit
-        communications and run their deferred invoice cleanup.
+    def _finalize_exit_communications(self):
+        """Finalize these resolved (sent or canceled) exit communications:
+        record them as sent on their contracts, and run the deferred invoice
+        cleanup on the ones already terminated.
         """
         if not self:
             return
-        # Only pending contracts: skips ones already handled (re-send, duplicate
-        # job, or the second leg of a "both" communication).
-        pending = self.get_objects().filtered("exit_communication_pending")
-        if pending:
-            pending.write({"exit_communication_sent": fields.Datetime.now()})
-            pending.cancel_contract_invoices()
+        contracts = self.get_objects()
+        # Cleanup only the terminated departures still waiting for it.
+        to_clean = contracts.filtered("exit_communication_pending")
+        # Stamp all, incl. still-active contracts, so a later termination does
+        # not re-flag the sponsorship as awaiting the communication.
+        contracts.write({"exit_communication_sent": fields.Datetime.now()})
+        to_clean.cancel_contract_invoices()
 
     def _job_sent(self, send_mode):
         res = super()._job_sent(send_mode)
-        # Set exit communications (only) to completed
+        # Finalize (only) exit communications now that they have actually been sent.
         exit_confs = self._exit_communication_configs()
-        self.filtered(lambda j: j.config_id in exit_confs)._stamp_exit_communications()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
         return res
