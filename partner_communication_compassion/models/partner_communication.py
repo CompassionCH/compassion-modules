@@ -163,7 +163,6 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
-        self._stamp_exit_communications()
         return res
 
     def cancel(self):
@@ -173,29 +172,43 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
-        self._stamp_exit_communications()
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
         return res
 
-    def _stamp_exit_communications(self):
-        """Mark exit communications as handled: stamp exit_communication_sent
-        and run the deferred invoice cleanup. A cancelled exit communication
-        counts the same as a sent one, because SDS sometimes informs the sponsor
-        by phone and simply cancels the auto-generated exit communication.
-        """
-        exit_confs = self.env.ref(
+    def _exit_communication_configs(self):
+        """Communication configs that notify the sponsor of a child's exit."""
+        return self.env.ref(
             "partner_communication_compassion.lifecycle_child_planned_exit"
         ) + self.env.ref(
             "partner_communication_compassion.lifecycle_child_unplanned_exit"
         )
-        exits = self.filtered(
-            lambda j: j.state in ("done", "cancel") and j.config_id in exit_confs
+
+    def _finalize_exit_communications(self):
+        """Finalize these resolved (sent or canceled) exit communications:
+        record them as sent on their contracts, and run the deferred invoice
+        cleanup on the ones already terminated.
+        """
+        if not self:
+            return
+        contracts = self.get_objects()
+        # Cleanup only the terminated departures still waiting for it.
+        to_clean = contracts.filtered("exit_communication_pending")
+        # Record contracts not yet stamped (incl. ones still active, so a later
+        # termination does not re-flag them); skip already-recorded ones to keep
+        # the original communication date on a re-send.
+        contracts.filtered(lambda c: not c.exit_communication_sent).write(
+            {"exit_communication_sent": fields.Datetime.now()}
         )
-        if exits:
-            contracts = exits.get_objects()
-            # Capture the departures still pending cleanup BEFORE the stamp below
-            # flips exit_communication_pending to False; only those need the
-            # deferred invoice cleanup (avoids re-triggering it on re-sends or
-            # contracts already cleaned by the old flow).
-            to_clean = contracts.filtered("exit_communication_pending")
-            contracts.write({"exit_communication_sent": fields.Datetime.now()})
-            to_clean.cancel_contract_invoices()
+        to_clean.cancel_contract_invoices()
+
+    def _job_sent(self, send_mode):
+        res = super()._job_sent(send_mode)
+        # Finalize (only) exit communications now that they have actually been sent.
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
+        return res
