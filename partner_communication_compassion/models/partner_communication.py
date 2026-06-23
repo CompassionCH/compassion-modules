@@ -173,9 +173,7 @@ class PartnerCommunication(models.Model):
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
         exit_confs = self._exit_communication_configs()
-        self.filtered(
-            lambda j: j.config_id in exit_confs
-        )._stamp_exit_communications()
+        self.filtered(lambda j: j.config_id in exit_confs)._stamp_exit_communications()
         return res
 
     def _exit_communication_configs(self):
@@ -203,7 +201,5 @@ class PartnerCommunication(models.Model):
         res = super()._job_sent(send_mode)
         # Set exit communications (only) to completed
         exit_confs = self._exit_communication_configs()
-        self.filtered(
-            lambda j: j.config_id in exit_confs
-        )._stamp_exit_communications()
+        self.filtered(lambda j: j.config_id in exit_confs)._stamp_exit_communications()
         return res
