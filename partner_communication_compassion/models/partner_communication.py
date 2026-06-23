@@ -196,9 +196,12 @@ class PartnerCommunication(models.Model):
         contracts = self.get_objects()
         # Cleanup only the terminated departures still waiting for it.
         to_clean = contracts.filtered("exit_communication_pending")
-        # Stamp all, incl. still-active contracts, so a later termination does
-        # not re-flag the sponsorship as awaiting the communication.
-        contracts.write({"exit_communication_sent": fields.Datetime.now()})
+        # Record contracts not yet stamped (incl. ones still active, so a later
+        # termination does not re-flag them); skip already-recorded ones to keep
+        # the original communication date on a re-send.
+        contracts.filtered(lambda c: not c.exit_communication_sent).write(
+            {"exit_communication_sent": fields.Datetime.now()}
+        )
         to_clean.cancel_contract_invoices()
 
     def _job_sent(self, send_mode):
