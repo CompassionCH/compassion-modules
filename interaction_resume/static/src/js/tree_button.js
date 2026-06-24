@@ -61,7 +61,9 @@ odoo.define("interaction_resume.tree_button", function (require) {
 
     _onLogInteraction: function () {
       var self = this;
-      var context = this.model.get(this.handle).data[0].context;
+      var state = this.model.get(this.handle);
+      var context =
+        (state.data[0] && state.data[0].context) || state.getContext();
 
       if (!context) {
         console.log("No context to log interaction");
