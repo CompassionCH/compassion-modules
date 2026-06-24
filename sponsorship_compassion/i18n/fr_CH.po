@@ -1004,8 +1004,8 @@ msgstr "Nombre de repas servis"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_sponsorship
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_sponsorship
-msgid "Number of sponsorship"
-msgstr "Nombre de parrainages"
+msgid "Number of child sponsorships"
+msgstr "Nombre de parrainages d'enfants"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_sponsorships

@@ -28,7 +28,10 @@
                             <field name="sr_nb_bible" />
                             <field name="sr_nb_medic_check" />
                         </group>
-                        <group string="During the last 12 months">
+                        <group
+              name="last12months"
+              string="During the last 12 months"
+            >
                             <field
                 name="sr_total_donation"
                 widget="monetary"

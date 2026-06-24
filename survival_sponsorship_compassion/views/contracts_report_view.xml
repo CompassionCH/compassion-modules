@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record
+    id="view_sponsorship_report_survival_form_inherit"
+    model="ir.ui.view"
+  >
+        <field
+      name="name"
+    >res.partner.sponsorship.report.survival.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.sponsorship_report_form"
+    />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='sr_nb_girl']" position="after">
+                <field name="sr_survival_sponsorship_count" />
+            </xpath>
+
+            <xpath expr="//group[@name='last12months']" position="after">
+                <group string="Supported moms and babies">
+                    <field name="sr_total_donation_for_csp" />
+                    <field name="sr_nb_moms_supported_for_a_year" />
+                    <field name="sr_countries_current" />
+                    <field name="sr_countries_previous" />
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
