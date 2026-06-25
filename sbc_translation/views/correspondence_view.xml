@@ -4,7 +4,7 @@
         <field name="model">correspondence</field>
         <field name="inherit_id" ref="sbc_compassion.view_correspondence_form" />
         <field name="arch" type="xml">
-            <button name="compose_letter_button" position="before">
+            <button name="validate" position="before">
                 <button name="action_remove_local_translate" type="object" string="Remove from translation"
                         class="oe_highlight" invisible="state != 'Global Partner translation queue'"/>
                 <button name="action_send_local_translate" type="object" string="To Translate" class="oe_highlight"
