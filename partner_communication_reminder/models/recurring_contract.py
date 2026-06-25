@@ -128,10 +128,13 @@ class RecurringContract(models.Model):
         ):
             sponsorships = eligible_reminders[key]
             if sponsorships:
-                sponsorships.with_delay(
+                sponsorships.with_delay_sh(
+                    "send_communication",
+                    config.id,
+                    False,
                     channel="root.partner_communication",
                     priority=500,
                     identity_key=f"create_reminder_communication.{sponsorships.ids}",
-                ).send_communication(config, correspondent=False)
+                )
         _logger.info("Sponsorship Reminders created!")
         return True

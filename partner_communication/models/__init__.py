@@ -17,6 +17,5 @@ from . import (
     ir_actions,
     ir_attachment,
     mail_mail,
-    queue_job,
     res_partner,
 )

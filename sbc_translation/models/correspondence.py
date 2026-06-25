@@ -630,12 +630,13 @@ class Correspondence(models.Model):
         )
         if is_s2b:
             # Send to GMC
-            self.with_user(SUPERUSER_ID).with_delay(
+            self.with_user(SUPERUSER_ID).with_delay_sh(
+                "create_commkit",
                 channel="root.sbc_compassion",
                 priority=100,
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
-            ).create_commkit()
+            )
 
     def list_letters(self):
         """API call to fetch letters to translate"""

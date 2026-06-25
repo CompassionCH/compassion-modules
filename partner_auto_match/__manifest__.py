@@ -39,7 +39,7 @@
     "installable": True,
     "depends": [
         "mail",
-        "queue_job",  # OCA/queue
+        "queue_job_optional",  # OCA/queue
         "advanced_translation",
     ],
     "data": [

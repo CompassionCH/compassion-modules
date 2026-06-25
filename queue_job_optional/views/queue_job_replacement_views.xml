@@ -1,0 +1,124 @@
+<odoo>
+        <!-- Form View -->
+        <record id="queue_job_replacement_view_form" model="ir.ui.view">
+            <field name="name">queue.job.replacement.view.form</field>
+            <field name="model">queue.job.replacement</field>
+            <field name="arch" type="xml">
+                <form string="Queue Job Replacement">
+                    <header>
+                        <button
+                            name="requeue"
+                            type="object"
+                            string="Requeue"
+                            class="oe_highlight"
+                            invisible="state == 'pending'"
+                        />
+                        <button
+                            name="set_done"
+                            type="object"
+                            string="Set Done"
+                            invisible="state == 'done'"
+                        />
+                        <button
+                            name="open_related"
+                            type="object"
+                            string="Open Related"
+                            invisible="not res_model or not res_ids"
+                        />
+                        <field name="state" widget="statusbar" statusbar_visible="pending,processing,done,failed"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="parent_job_id" invisible="not parent_job_id" />
+                                <field name="description"/>
+                                <field name="eta"/>
+                                <field name="start_date" readonly="1" />
+                                <field name="priority"/>
+                                <field name="channel"/>
+                            </group>
+                            <group>
+                                <field name="res_model" readonly="1" />
+                                <field name="res_ids" readonly="1" />
+                                <field name="job_function" readonly="1" />
+                                <field name="job_args" readonly="1" />
+                                <field name="identity_key"/>
+                            </group>
+                        </group>
+                                <group>
+                                    <field name="job_result" readonly="1"/>
+                                </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="queue_job_replacement_view_search" model="ir.ui.view">
+            <field name="name">queue.job.replacement.view.search</field>
+            <field name="model">queue.job.replacement</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="description"/>
+                    <field name="res_model"/>
+                    <field name="job_function"/>
+                    <field name="state"/>
+                    <field name="channel"/>
+                    <filter name="pending" string="Pending" domain="[('state', '=', 'pending')]"/>
+                    <filter name="processing" string="Processing" domain="[('state', '=', 'processing')]"/>
+                    <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                    <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                    <separator/>
+                    <filter name="eta_today" string="ETA Today" domain="[('eta', '&lt;=', context_today())]"/>
+                    <separator/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_model" string="Model" context="{'group_by': 'res_model'}"/>
+                    <filter name="group_channel" string="Channel" context="{'group_by': 'channel'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="queue_job_replacement_view_tree" model="ir.ui.view">
+            <field name="name">queue.job.replacement.view.tree</field>
+            <field name="model">queue.job.replacement</field>
+            <field name="arch" type="xml">
+                <list create="false">
+                    <field name="description"/>
+                    <field name="res_model"/>
+                    <field name="job_function"/>
+                    <field name="priority"/>
+                    <field name="eta"/>
+                    <field name="start_date"/>
+                    <field name="channel"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Action Window -->
+        <record id="queue_job_replacement_action" model="ir.actions.act_window">
+            <field name="name">Queue Job Replacements</field>
+            <field name="res_model">queue.job.replacement</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="queue_job_replacement_view_search"/>
+        </record>
+
+        <!-- Top-level Menu -->
+        <menuitem
+            id="queue_job_replacement_menu_root"
+            name="Queue Jobs"
+            groups="queue_job_optional.group_queue_job_replacement_user"
+            sequence="10"
+            web_icon="queue_job_optional,static/description/icon.png"
+        />
+
+        <!-- Submenu -->
+        <menuitem
+            id="queue_job_replacement_menu_list"
+            name="Queue Job Replacements"
+            parent="queue_job_replacement_menu_root"
+            action="queue_job_replacement_action"
+            sequence="10"
+        />
+</odoo>

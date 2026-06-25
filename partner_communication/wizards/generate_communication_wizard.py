@@ -89,7 +89,9 @@ class GenerateCommunicationWizard(models.TransientModel):
     def generate(self):
         self.state = "generation"
         if len(self.partner_ids) > 5:
-            self.with_delay().generate_communications()
+            self.with_delay_sh(
+                "generate_communications", channel="root.partner_communication"
+            )
             return self.reload()
         else:
             self.generate_communications(async_mode=False)
@@ -142,11 +144,14 @@ class GenerateCommunicationWizard(models.TransientModel):
                 "force_language": self.force_language,
             }
             if async_mode or self.scheduled_date:
-                self.with_delay(
+                self.with_delay_sh(
+                    "create_communication",
+                    vals,
+                    options,
                     eta=self.scheduled_date,
                     priority=500,
                     identity_key=self._name + ".create_comm.partner." + str(partner.id),
-                ).create_communication(vals, options)
+                )
             else:
                 self.create_communication(vals, options)
         return True

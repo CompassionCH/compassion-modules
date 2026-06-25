@@ -131,9 +131,9 @@ class CorrespondenceS2bGenerator(models.Model):
         Launch S2B Creation job
         :return: True
         """
-        self.with_delay(
-            identity_key="s2b_generator." + str(self.ids)
-        ).generate_letters_job()
+        self.with_delay_sh(
+            "generate_letters_job", identity_key="s2b_generator." + str(self.ids)
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

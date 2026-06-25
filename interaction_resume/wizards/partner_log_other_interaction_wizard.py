@@ -72,11 +72,12 @@ class LogOtherInteractionWizard(models.TransientModel):
         )
         message = self.partner_id.message_post(body=formatted_message)
         # Only keep the note within one minute
-        message.with_delay(
+        message.with_delay_sh(
+            "unlink",
             channel="root.partner_communication",
             eta=60,
             priority=500,
             description="Delete new interaction log after 1 minute",
-        ).unlink()
+        )
         self.partner_id.fetch_interactions()
         return True

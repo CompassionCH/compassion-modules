@@ -160,7 +160,7 @@
         <field name="binding_model_id" ref="model_compassion_hold" />
         <field
       name="code"
-    >records.delayable().release_hold().set(channel="root.gmc_pool.child_compassion").split(5).delay()</field>
+    >records.with_delay_sh("release_hold", channel="root.gmc_pool.child_compassion", split=5)</field>
     </record>
 
     <menuitem

@@ -349,7 +349,7 @@ class FieldOfficeDisasterAlert(models.Model):
                 "action_id": action_id,
                 "object_id": fo_disaster.id,
             }
-            message_obj.with_delay(eta=600).create(message_vals)
+            message_obj.with_delay_sh("create", message_vals, eta=600)
             fo_ids.append(fo_disaster.id)
 
         return fo_ids

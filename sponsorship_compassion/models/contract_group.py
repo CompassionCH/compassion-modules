@@ -33,11 +33,11 @@ class ContractGroup(models.Model):
                 and s.state not in ("terminated", "cancelled")
             )
 
-    def _generate_invoices(self, invoicer):
+    def _generate_invoices(self, invoicer_id=False):
         # Exclude gifts from regular generation
-        super(
+        invoicer = super(
             ContractGroup, self.with_context(open_invoices_sponsorship_only=True)
-        )._generate_invoices(invoicer)
+        )._generate_invoices(invoicer_id)
         contracts = self.active_contract_ids
         if contracts:
             contracts._generate_gifts(
@@ -46,7 +46,7 @@ class ContractGroup(models.Model):
             contracts._generate_gifts(
                 invoicer, self.env.ref("sponsorship_compassion.gift_type_christmas")
             )
-        return True
+        return invoicer
 
     def build_inv_line_data(
         self, invoicing_date=False, gift_wizard=False, contract_line=False
