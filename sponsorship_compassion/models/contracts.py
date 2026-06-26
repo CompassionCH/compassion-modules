@@ -504,7 +504,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.is_direct_debit = contract.payment_mode_id in dd_modes
 
-    @api.depends("payment_mode_id")
+    @api.depends("payment_mode_id", "child_id", "birthday_invoice", "christmas_invoice")
     def _compute_is_gift_auth(self):
         for contract in self:
             contract.is_gift_authorized = contract.child_id
