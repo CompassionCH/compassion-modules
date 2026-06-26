@@ -27,9 +27,11 @@ class ResUsers(models.Model):
         AccessError for non-officer employees.
         """
         super().__init__(pool, cr)
-        type(self).SELF_READABLE_FIELDS = type(self).SELF_READABLE_FIELDS + [
-            "do_reminder_support_req"
-        ]
-        type(self).SELF_WRITEABLE_FIELDS = type(self).SELF_WRITEABLE_FIELDS + [
-            "do_reminder_support_req"
-        ]
+        if "do_reminder_support_req" not in type(self).SELF_READABLE_FIELDS:
+            type(self).SELF_READABLE_FIELDS = type(self).SELF_READABLE_FIELDS + [
+                "do_reminder_support_req"
+            ]
+        if "do_reminder_support_req" not in type(self).SELF_WRITEABLE_FIELDS:
+            type(self).SELF_WRITEABLE_FIELDS = type(self).SELF_WRITEABLE_FIELDS + [
+                "do_reminder_support_req"
+            ]
