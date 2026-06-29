@@ -1,6 +1,6 @@
 # sbc_translation/migrations/18.0.1.1.0/post-migration.py
 
-from odoo import api, SUPERUSER_ID
+from odoo import SUPERUSER_ID, api
 
 
 def migrate(cr, version):
@@ -15,12 +15,20 @@ def migrate(cr, version):
     if not translators:
         return
 
-    env.add_to_compute(env["translation.user"]._fields["nb_translated_letters"], translators)
-    env.add_to_compute(env["translation.user"]._fields["nb_translated_letters_this_year"], translators)
-    env.add_to_compute(env["translation.user"]._fields["nb_translated_letters_last_year"], translators)
+    env.add_to_compute(
+        env["translation.user"]._fields["nb_translated_letters"], translators
+    )
+    env.add_to_compute(
+        env["translation.user"]._fields["nb_translated_letters_this_year"], translators
+    )
+    env.add_to_compute(
+        env["translation.user"]._fields["nb_translated_letters_last_year"], translators
+    )
 
-    translators.flush_model([
-        "nb_translated_letters",
-        "nb_translated_letters_this_year",
-        "nb_translated_letters_last_year"
-    ])
+    translators.flush_model(
+        [
+            "nb_translated_letters",
+            "nb_translated_letters_this_year",
+            "nb_translated_letters_last_year",
+        ]
+    )
