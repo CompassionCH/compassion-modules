@@ -31,7 +31,7 @@ class PartnerSponsorshipReport(models.Model):
 
     # sr -> Sponsorship Report
     sr_sponsorship = fields.Integer(
-        "Number of sponsorship",
+        "Number of child sponsorships",
         compute="_compute_sr_sponsorship",
         help="Count only the sponsorships who "
         "are fully managed or those who are "
