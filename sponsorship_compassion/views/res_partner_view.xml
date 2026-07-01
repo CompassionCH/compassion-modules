@@ -61,7 +61,7 @@
           class="oe_stat_button"
           type="object"
           name="open_sponsorship_report"
-          icon="fa-file-text-o"
+          icon="fa-file-alt"
           string="Sponsorship impact"
           groups="child_compassion.group_sponsorship"
         />
