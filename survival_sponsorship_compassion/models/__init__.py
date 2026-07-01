@@ -5,3 +5,4 @@ from . import recurring_contract_group
 from . import res_config_settings
 from . import recurring_contract_line
 from . import res_partner
+from . import contracts_report

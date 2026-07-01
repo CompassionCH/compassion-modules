@@ -47,6 +47,8 @@
         "views/res_config_settings_view.xml",
         "data/product_warning_automation.xml",
         "data/survival_product_template.xml",
+        "views/contracts_report_view.xml",
+        "views/res_partner_view.xml",
     ],
     "demo": [],
     "installable": True,
