@@ -1162,7 +1162,7 @@ class SponsorshipContract(models.Model):
             # Generate invoices
             count = 1
             for contract in contracts:
-                logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
+                logger.debug(f"{gift_type.name} Gift Generation: {count}/{total} ")
                 description = base_description
                 if gift_type == self.env.ref(
                     "sponsorship_compassion.gift_type_birthday"
@@ -1180,7 +1180,7 @@ class SponsorshipContract(models.Model):
                 gift_wizard.generate_invoice(due_date=due_dates[contract])
                 count += 1
 
-        logger.debug(f"Automatic {gift_type} Generation Finished !!")
+        logger.debug(f"Automatic {gift_type.name} Generation Finished !!")
         return True
 
     def invoice_paid(self, invoice):
