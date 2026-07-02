@@ -22,3 +22,8 @@ class ResPartnerTitle(models.Model):
 
     plural = fields.Boolean()
     order_index = fields.Integer()
+    is_shown_on_public_forms = fields.Boolean(
+        help="If set, this salutation is offered in the public-facing forms "
+        "(sponsorship wizard, donation, project creation). When unset, the "
+        "salutation stays usable in the backend but is hidden from those forms.",
+    )

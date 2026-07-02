@@ -9,12 +9,12 @@
 import logging
 import time
 
-from odoo.tests import SavepointCase
+from odoo.tests import TransactionCase
 
 logger = logging.getLogger(__name__)
 
 
-class TestThankYouLetters(SavepointCase):
+class TestThankYouLetters(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
