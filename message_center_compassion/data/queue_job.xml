@@ -1,7 +1,0 @@
-<odoo>
-    <!-- Channels -->
-    <record id="channel_gmc_pool" model="queue.job.channel">
-        <field name="name">gmc_pool</field>
-        <field name="parent_id" ref="queue_job.channel_root" />
-    </record>
-</odoo>

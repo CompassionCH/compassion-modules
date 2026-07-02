@@ -70,9 +70,11 @@ class AccountInvoice(models.Model):
                 and new_payment_states[i] != "paid"
                 and invoice.communication_id.state == "pending"
             ):
-                invoice.with_delay(
-                    channel="root.thankyou_letters", priority=50
-                ).cancel_thankyou_letter()
+                invoice.with_delay_sh(
+                    "cancel_thankyou_letter",
+                    channel="root.thankyou_letters",
+                    priority=50,
+                )
         return res
 
     def group_by_partner(self):
@@ -101,11 +103,12 @@ class AccountInvoice(models.Model):
                 and line.product_id.requires_thankyou
             )
             if move_lines:
-                move_lines.with_delay(
+                move_lines.with_delay_sh(
+                    "generate_thank_you",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{move_lines.ids}",
-                ).generate_thank_you()
+                )
 
     def cancel_thankyou_letter(self):
         for move in self:
@@ -124,11 +127,12 @@ class AccountInvoice(models.Model):
                 remaining_lines = self.env["account.move.line"].browse(
                     [int(i) for i in object_ids.split(",")]
                 )
-                remaining_lines.with_delay(
+                remaining_lines.with_delay_sh(
+                    "generate_thank_you",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{remaining_lines.ids}",
-                ).generate_thank_you()
+                )
 
     def _filter_move_to_thank(self, move_type=None):
         """

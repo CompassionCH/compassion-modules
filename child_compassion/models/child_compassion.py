@@ -562,20 +562,6 @@ class CompassionChild(models.Model):
     def child_consigned(self, hold_id):
         """Called on child allocation."""
         self.write({"state": "N", "hold_id": hold_id, "date": fields.Datetime.now()})
-        # Cancel planned deletion
-        jobs = (
-            self.env["queue.job"]
-            .sudo()
-            .search(
-                [
-                    ("name", "=", "Job for deleting released children."),
-                    ("func_string", "like", self.ids),
-                    ("state", "=", "enqueued"),
-                ]
-            )
-        )
-        jobs.button_done()
-        jobs.unlink()
         self.get_infos()
         return True
 

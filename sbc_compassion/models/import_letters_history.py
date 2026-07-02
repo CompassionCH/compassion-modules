@@ -100,9 +100,17 @@ class ImportLettersHistory(models.Model):
     def button_import(self):
         self.ensure_one()
         self.state = "pending"
-        job = self.delayable().run_analyze()
-        after_job = self.delayable().write({"state": "open"})
-        job.on_done(after_job).delay()
+        job = self.with_delay_sh(
+            "run_analyze",
+            channel="root.sbc_compassion.letter_import",
+            wait_for_children=True,
+        )
+        self.with_delay_sh(
+            "write",
+            {"state": "open"},
+            channel="root.sbc_compassion.letter_import",
+            parent_job_id=job,
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

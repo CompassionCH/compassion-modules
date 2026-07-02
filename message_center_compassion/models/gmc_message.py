@@ -110,9 +110,13 @@ class GmcMessage(models.Model):
         new_messages.write({"state": "pending", "failure_reason": False})
         priority = min(new_messages.mapped("action_id.priority"))
         channel = new_messages[0].action_id.job_channel
-        new_messages.delayable()._process_messages().set(
-            priority=priority, channel=channel
-        ).split(10, chain=True).delay()
+        new_messages.with_delay_sh(
+            "_process_messages",
+            priority=priority,
+            channel=channel,
+            split=10,
+            chain=True,
+        )
         return True
 
     def get_answer_dict(self, index=0):

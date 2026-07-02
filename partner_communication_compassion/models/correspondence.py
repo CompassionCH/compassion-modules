@@ -105,12 +105,13 @@ class Correspondence(models.Model):
     def publish_b2s_letter(self):
         # Prepare the communication when a letter is published
         res = super().publish_b2s_letter()
-        self.with_delay(
+        self.with_delay_sh(
+            "send_communication",
             channel="root.partner_communication",
             priority=100,
             description="Send B2S letter communication",
             identity_key=f"sbc.send_communication.{self.ids}",
-        ).send_communication()
+        )
         return res
 
     def send_communication(self):

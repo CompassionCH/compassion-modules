@@ -72,7 +72,6 @@
         "data/partner_category_data.xml",
         "data/utm_data.xml",
         "data/res_partner_sequence.xml",
-        "data/queue_job.xml",
         "data/sync_projects_from_gmc_cron.xml",
         "views/product_views.xml",
         "views/res_config_settings_view.xml",

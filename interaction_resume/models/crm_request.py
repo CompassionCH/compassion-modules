@@ -82,9 +82,10 @@ class CrmRequest(models.Model):
         res = super().message_post(**kwargs)
         for claim in self:
             if claim.partner_id:
-                claim.partner_id.with_delay(
+                claim.partner_id.with_delay_sh(
+                    "fetch_interactions",
                     channel="root.partner_communication",
                     priority=100,
                     identity_key=f"{claim.partner_id._name}.fetch_interactions.{claim.partner_id.id}",
-                ).fetch_interactions()
+                )
         return res

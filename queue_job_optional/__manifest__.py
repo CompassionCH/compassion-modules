@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016-2020 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2026 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -27,35 +27,22 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    "name": "Thank You Letters",
-    "version": "18.0.1.0.0",
-    "category": "Other",
+    "name": "Queue Job abstraction for Compassion",
+    "version": "18.0.1.0.1",
+    "category": "Compassion",
+    "summary": "Queue Job abstraction for Compassion",
+    "sequence": 150,
     "author": "Compassion CH",
-    "development_status": "Production/Stable",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "depends": [
-        "partner_communication_compassion",
-        "partner_salutation",
-        "account",
-    ],
-    "external_dependencies": {
-        "python": [
-            "babel",
-        ]
-    },
+    "depends": [],
+    "external_dependencies": {},
     "data": [
+        "security/res_group.xml",
         "security/ir.model.access.csv",
-        "data/email_template.xml",
-        "data/communication_config.xml",
-        "views/success_story_view.xml",
-        "views/communication_job_view.xml",
-        "views/account_invoice_view.xml",
-        "views/product_view.xml",
-        "views/thankyou_config_view.xml",
-        "views/generate_communication_wizard_view.xml",
+        "data/ir_cron.xml",
+        "views/queue_job_replacement_views.xml",
     ],
-    "demo": ["demo/demo_data.xml"],
+    "demo": [],
     "installable": True,
-    "auto_install": False,
 }

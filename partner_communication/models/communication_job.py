@@ -204,8 +204,10 @@ class CommunicationJob(models.Model):
                 except QWebException as e:
                     _logger.error("Error during template rendering for job %s", job.id)
                     if job.state == "pending":
-                        job.with_delay(channel="root.partner_communication").write(
-                            {"state": "failure", "body_html": str(e)}
+                        job.with_delay_sh(
+                            "write",
+                            {"state": "failure", "body_html": str(e)},
+                            channel="root.partner_communication",
                         )
             if job.id in template_vals:
                 job.body_html = template_vals[job.id]["body_html"]
@@ -412,13 +414,14 @@ class CommunicationJob(models.Model):
                 job.schedule_call()
             if job.auto_send:
                 # T2221 Using a job avoids multiple sends in case of rollbacks
-                job.with_delay(
+                job.with_delay_sh(
+                    "send",
                     eta=10,
                     max_retries=1,
                     description="Autosend communication",
                     channel="root.partner_communication",
                     identity_key=f"{self._name}.send.{job.config_id.id}+{job.partner_id.id}",
-                ).send()
+                )
 
         return updated + created
 
@@ -595,11 +598,12 @@ class CommunicationJob(models.Model):
         # Process email jobs (digital or both) asynchronously
         email_jobs = todo.filtered(lambda j: j.send_mode in digital_modes)
         for job in email_jobs:
-            job.with_delay(
+            job.with_delay_sh(
+                "_send_mail_asynchronous",
                 channel=_JOB_CHANNEL,
                 priority=50,
                 identity_key=self._name + "._send_mail." + str(job.id),
-            )._send_mail_asynchronous()
+            )
 
         return self.download_data()
 
@@ -636,11 +640,12 @@ class CommunicationJob(models.Model):
         :return: list of sms_texts
         """
         for job in self.filtered("partner_id.mobile"):
-            job.with_delay(
+            job.with_delay_sh(
+                "_send_by_sms_asynchronous",
                 channel=_JOB_CHANNEL,
                 priority=40,
                 identity_key=self._name + "._send_sms." + str(job.id),
-            )._send_by_sms_asynchronous()
+            )
 
     def _convert_html_for_sms(self):
         """
@@ -905,10 +910,12 @@ class CommunicationJob(models.Model):
         for job in self:
             if job.attachment_ids:
                 print_name = name[:3] + " " + (job.subject or "")
-                job.with_company(job.company_id).with_delay(
+                job.with_company(job.company_id).with_delay_sh(
+                    "_print_job_asynchronous",
+                    print_name,
                     channel=_JOB_CHANNEL + ".print_individual",
                     identity_key=self._name + "._print." + str(job.ids),
-                )._print_job_asynchronous(print_name)
+                )
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += (
                     job.with_company(job.company_id)
@@ -917,10 +924,12 @@ class CommunicationJob(models.Model):
         for configs in batch_print.values():
             for config, jobs in configs.items():
                 print_name = name[:3] + " " + config
-                jobs.with_delay(
+                jobs.with_delay_sh(
+                    "_print_job_asynchronous",
+                    print_name,
                     channel=_JOB_CHANNEL,
                     identity_key=self._name + "._print." + str(jobs.ids),
-                )._print_job_asynchronous(print_name)
+                )
         return self.download_data()
 
     def _print_job_asynchronous(self, print_name):

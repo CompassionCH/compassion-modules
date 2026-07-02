@@ -65,7 +65,6 @@
         "data/child_layouts.xml",
         "data/correspondence_mappings.xml",
         "data/gmc_action.xml",
-        "data/queue_job.xml",
         "reports/correspondence_report.xml",
         "data/correspondence_cron.xml",
     ],

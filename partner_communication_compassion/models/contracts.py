@@ -63,6 +63,10 @@ class RecurringContract(models.Model):
         partner_field = "correspondent_id" if correspondent else "partner_id"
         partners = self.mapped(partner_field)
         communications = self.env["partner.communication.job"]
+        if isinstance(communication, int):
+            communication = self.env["partner.communication.config"].browse(
+                communication
+            )
         if not communication.active:
             return communications
         if both:
