@@ -104,6 +104,16 @@
             <field name="search_view_id" ref="queue_job_replacement_view_search"/>
         </record>
 
+        <!-- List Action -->
+        <record id="queue_job_replacement_action_requeue_selected" model="ir.actions.server">
+            <field name="name">Requeue Jobs</field>
+            <field name="model_id" ref="model_queue_job_replacement"/>
+            <field name="binding_model_id" ref="model_queue_job_replacement"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">records.requeue()</field>
+        </record>
+
         <!-- Top-level Menu -->
         <menuitem
             id="queue_job_replacement_menu_root"
