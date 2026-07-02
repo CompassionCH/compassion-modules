@@ -1,11 +1,15 @@
 import logging
 from contextlib import closing, contextmanager
 
+from psycopg2.errors import SerializationFailure
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.safe_eval import safe_eval
+from odoo.tools.safe_eval import safe_eval, wrap_module
 
 _logger = logging.getLogger(__name__)
+
+_LOCALS_DICT = {"datetime": wrap_module(__import__("datetime"), ["date", "datetime"])}
 
 
 class QueueJobReplacement(models.Model):
@@ -53,7 +57,7 @@ class QueueJobReplacement(models.Model):
     def _parse_payload(value, default):
         if not value:
             return default
-        return safe_eval(value)
+        return safe_eval(value, locals_dict=_LOCALS_DICT)
 
     def _search_is_predecessor_complete(self, operator, value):
         if operator not in ["=", "!="]:
@@ -146,6 +150,18 @@ class QueueJobReplacement(models.Model):
         for job in jobs:
             try:
                 with self._do_in_new_env(new_cr=True) as new_env:
+                    new_env.cr.execute(
+                        f"""
+                        SELECT id
+                        FROM {self._table}
+                        WHERE id = %s
+                          AND state = %s
+                        FOR UPDATE SKIP LOCKED
+                        """,
+                        (job.id, "pending"),
+                    )
+                    if not new_env.cr.fetchone():
+                        continue
                     job_new_env = new_env[self._name].browse(job.id)
                     job_new_env.write(
                         {"state": "processing", "start_date": fields.Datetime.now()}
@@ -172,9 +188,20 @@ class QueueJobReplacement(models.Model):
                             "job_result": str(job_result),
                         }
                     )
+            except SerializationFailure:
+                _logger.info(
+                    "Skipping job %s due to concurrent update in another worker.",
+                    job.id,
+                )
             except Exception as e:
                 _logger.error("Error processing job", exc_info=True)
-                job.write({"state": "failed", "job_result": str(e)})
+                with self._do_in_new_env(new_cr=True) as failed_env:
+                    failed_env["queue.job.replacement"].browse(job.id).write(
+                        {
+                            "state": "failed",
+                            "job_result": str(e),
+                        }
+                    )
         if jobs and total_jobs > len(jobs):
             self.env.ref(
                 "queue_job_optional.ir_cron_queue_job_replacement_process"

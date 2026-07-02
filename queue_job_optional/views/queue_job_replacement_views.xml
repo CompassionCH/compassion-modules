@@ -42,6 +42,7 @@
                                 <field name="res_ids" readonly="1" />
                                 <field name="job_function" readonly="1" />
                                 <field name="job_args" readonly="1" />
+                                <field name="context" readonly="1" />
                                 <field name="identity_key"/>
                             </group>
                         </group>
