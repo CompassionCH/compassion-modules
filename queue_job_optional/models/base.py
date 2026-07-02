@@ -52,14 +52,14 @@ class Base(models.AbstractModel):
         if queue_job_installed:
             parent_job = delay_args.pop("parent_job_id", None)
             wait_for_children = delay_args.pop("wait_for_children", False)
-            if not no_delay and (split or parent_job is not None):
+            if not no_delay and (split or parent_job is not None or wait_for_children):
                 job = getattr(self.delayable(), job_function)(*job_args).set(
                     **delay_args
                 )
+                if split:
+                    job = job.split(split, chain=chain)
                 if parent_job is not None:
                     parent_job.on_done(job)
-                if split:
-                    job.split(split, chain=chain)
                 if not wait_for_children:
                     job.delay()
                 return job
@@ -94,7 +94,9 @@ class Base(models.AbstractModel):
                     job = job.create(vals)
             else:
                 job = self.env["queue.job.replacement"].sudo().create(create_vals)
-            self.env.ref(
-                "queue_job_optional.ir_cron_queue_job_replacement_process"
-            ).sudo()._trigger()
+            if delay_args.get("priority", 100) < 100:
+                # Immediate trigger for jobs with high priority
+                self.env.ref(
+                    "queue_job_optional.ir_cron_queue_job_replacement_process"
+                ).sudo()._trigger()
             return job

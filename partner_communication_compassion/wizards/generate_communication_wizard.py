@@ -132,6 +132,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                         vals,
                         options,
                         eta=self.scheduled_date,
+                        channel="root.partner_communication",
                         priority=50,
                         identity_key=self._name
                         + ".create_comm.sponsorship."

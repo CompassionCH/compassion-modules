@@ -149,6 +149,7 @@ class GenerateCommunicationWizard(models.TransientModel):
                     vals,
                     options,
                     eta=self.scheduled_date,
+                    channel="root.partner_communication",
                     priority=500,
                     identity_key=self._name + ".create_comm.partner." + str(partner.id),
                 )

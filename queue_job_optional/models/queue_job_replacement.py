@@ -15,6 +15,7 @@ _LOCALS_DICT = {"datetime": wrap_module(__import__("datetime"), ["date", "dateti
 class QueueJobReplacement(models.Model):
     _name = "queue.job.replacement"
     _description = "Queued Job for later execution"
+    _order = "end_date desc,create_date desc"
 
     res_model = fields.Char(required=True)
     res_ids = fields.Char(required=True)
@@ -23,10 +24,13 @@ class QueueJobReplacement(models.Model):
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     context = fields.Char()
     job_args = fields.Char()
-    eta = fields.Datetime(default=fields.Datetime.now, required=True, index=True)
-    start_date = fields.Datetime()
+    eta = fields.Datetime(
+        "Execute only after", default=fields.Datetime.now, required=True, index=True
+    )
+    start_date = fields.Datetime(index=True)
+    end_date = fields.Datetime(index=True)
     description = fields.Char()
-    priority = fields.Integer(default=10, required=True, index=True)
+    priority = fields.Integer(default=100, required=True, index=True)
     channel = fields.Char()
     identity_key = fields.Char()
     job_result = fields.Text()
@@ -141,7 +145,6 @@ class QueueJobReplacement(models.Model):
             ("state", "=", "pending"),
             ("eta", "<=", fields.Datetime.now()),
         ]
-        total_jobs = self.search_count(search_domain)
         jobs = self.search(
             search_domain + [("is_predecessor_complete", "=", True)],
             order="priority,eta",
@@ -185,6 +188,7 @@ class QueueJobReplacement(models.Model):
                     job_new_env.write(
                         {
                             "state": "done",
+                            "end_date": fields.Datetime.now(),
                             "job_result": str(job_result),
                         }
                     )
@@ -202,7 +206,10 @@ class QueueJobReplacement(models.Model):
                             "job_result": str(e),
                         }
                     )
-        if jobs and total_jobs > len(jobs):
+        remaining_critical_jobs = self.search_count(
+            search_domain + [("priority", "<", 100)]
+        )
+        if jobs and remaining_critical_jobs:
             self.env.ref(
                 "queue_job_optional.ir_cron_queue_job_replacement_process"
             ).sudo()._trigger()
