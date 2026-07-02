@@ -216,9 +216,9 @@ class CommunicationConfig(models.Model):
                 ]
             )
             jobs_to_update.write({"email_template_id": vals["email_template_id"]})
-            jobs_to_update.with_delay(
-                priority=500, channel="root.partner_communication"
-            ).refresh_text()
+            jobs_to_update.with_delay_sh(
+                "refresh_text", priority=500, channel="root.partner_communication"
+            )
 
         return res
 

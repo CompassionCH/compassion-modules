@@ -35,7 +35,7 @@
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
     "development_status": "Production/Stable",
-    "depends": ["base", "queue_job", "fastapi"],
+    "depends": ["mail", "queue_job_optional", "fastapi"],
     "external_dependencies": {
         "python": ["pyjwt"],
     },
@@ -49,7 +49,6 @@
         "views/compassion_mapping_view.xml",
         "views/import_json_mapping_view.xml",
         "views/compassion_settings_view.xml",
-        "data/queue_job.xml",
     ],
     "demo": ["demo/res_users.xml"],
     "installable": True,

@@ -6,9 +6,10 @@ child_compassion
 import random
 from unittest.mock import patch
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import fields
 from odoo.tests import TransactionCase
-from odoo.tools import relativedelta
 
 PROJECT_COMPASSION_ADDON = (
     "odoo.addons.child_compassion.models.project_compassion.CompassionProject"

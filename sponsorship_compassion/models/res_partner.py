@@ -40,6 +40,7 @@ class ResPartner(models.Model):
         required=True,
     )
     global_id = fields.Char("Global ID", copy=False)
+    legal_agreement_date = fields.Datetime("Date of legal agreement", tracking=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
@@ -464,6 +465,7 @@ class ResPartner(models.Model):
                 "title": False,
                 "country_id": False,
                 "uuid": False,
+                "legal_agreement_date": False,
             }
         )
         partner.env["mail.mail"].search([("recipient_ids", "=", partner.id)]).unlink()
@@ -502,7 +504,7 @@ class ResPartner(models.Model):
             [("res_model", "=", self._name), ("res_id", "=", partner.id)]
         ).unlink()
         partner.message_follower_ids.unlink()
-        partner.with_delay().clear_message_history()
+        partner.with_delay_sh("clear_message_history")
         return True
 
     def clear_message_history(self):

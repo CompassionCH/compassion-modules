@@ -108,12 +108,13 @@ class ProjectCompassion(models.Model):
         for i, p in enumerate(projects_to_sync):
             # Only synchronise projects for which we have sponsorships to speedup
             # execution and decrease remote server load
-            p.with_delay(
+            p.with_delay_sh(
+                "_sync_from_gmc",
                 eta=requests_throttle_seconds * i,
                 priority=500,
                 channel="root.gmc_pool.fcp_compassion",
                 description="Sync project from GMC",
-            )._sync_from_gmc()
+            )
 
     def _sync_from_gmc(self):
         self.ensure_one()

@@ -14,6 +14,7 @@
             <field name="uuid" position="after">
                 <field name="is_church" invisible="1" />
                 <field name="church_id" invisible="is_company or is_church" />
+                <field name="legal_agreement_date" />
             </field>
 
             <!-- Replace parent position of reference and global numbers -->
@@ -57,6 +58,14 @@
             widget="statinfo"
           />
                 </button>
+                <button
+          class="oe_stat_button"
+          type="object"
+          name="open_sponsorship_report"
+          icon="fa-file-alt"
+          string="Sponsorship impact"
+          groups="child_compassion.group_sponsorship"
+        />
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page

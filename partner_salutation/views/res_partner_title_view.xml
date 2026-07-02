@@ -8,6 +8,7 @@
                 <field name="gender" />
                 <field name="plural" />
                 <field name="order_index" widget="handle" />
+                <field name="is_shown_on_public_forms" />
             </field>
         </field>
     </record>

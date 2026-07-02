@@ -90,11 +90,15 @@ class GenerateCommunicationWizard(models.TransientModel):
                 options = {"force_language": self.force_language}
 
                 if async_mode or self.scheduled_date:
-                    self.with_delay(
+                    self.with_delay_sh(
+                        "create_communication",
+                        vals,
+                        options,
+                        channel="root.partner_communication",
                         eta=self.scheduled_date,
                         priority=50,
                         identity_key=f"{self._name}.create_comm.invoice.{move_line.id}",
-                    ).create_communication(vals, options)
+                    )
                 else:
                     self.create_communication(vals, options)
 

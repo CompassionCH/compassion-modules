@@ -40,44 +40,34 @@ class IrActionsServer(models.Model):
             return False
 
         model_name = self.model_name
-        if "records" in eval_context:
-            for raw_record in eval_context["records"]:
-                is_self = self.partner_field == "self"
-                partner = raw_record if is_self else raw_record[self.partner_field]
-                children = eval_context["records"]
-                records = self.env[model_name].search(
-                    [
-                        (self.partner_field, "=", partner.id),
-                        ("id", "in", children.ids),
-                    ]
-                )
-                # Use same job if possible to group communications for one partner
-                identity_key = f"create_communication.{self.config_id.id}.{partner.id}"
-                existing_job = self.env["queue.job"].search(
-                    [
-                        ("state", "=", "pending"),
-                        ("identity_key", "=", identity_key),
-                    ],
-                    limit=1,
-                )
-                if existing_job:
-                    vals = existing_job.args[0]
-                    vals["object_ids"].extend(records.ids)
-                    existing_job.unlink()
-                else:
-                    vals = {
-                        "partner_id": partner.id,
-                        "object_ids": records.ids,
-                        "config_id": self.config_id.id,
-                    }
+        records_to_process = eval_context.get("records")
+        if records_to_process:
+            is_self = self.partner_field == "self"
+            # Group records by partner to avoid redundant processing and duplicate jobs
+            partner_map = {}
+            for rec in records_to_process:
+                partner = rec if is_self else rec[self.partner_field]
+                partner_map.setdefault(partner, self.env[model_name])
+                partner_map[partner] |= rec
+
+            for partner, records in partner_map.items():
+                vals = {
+                    "partner_id": partner.id,
+                    "object_ids": records.ids,
+                    "config_id": self.config_id.id,
+                }
                 if self.send_mode:
                     vals["send_mode"] = self.send_mode
                 if self.auto_send:
                     vals["auto_send"] = self.auto_send
                 delay = datetime.now() + timedelta(minutes=3)
-                self.with_delay(
-                    identity_key=identity_key, eta=delay
-                ).create_communication_job(vals)
+                identity_key = f"create_communication.{self.config_id.id}.{partner.id}"
+                self.with_delay_sh(
+                    "create_communication_job",
+                    vals,
+                    identity_key=identity_key,
+                    eta=delay,
+                )
         return {}
 
     def create_communication_job(self, vals):

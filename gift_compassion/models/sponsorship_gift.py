@@ -330,12 +330,13 @@ class SponsorshipGift(models.Model):
         return json_data
 
     @api.model
-    def create_from_invoice_line(self, invoice_line):
+    def create_from_invoice_line(self, invoice_line_id):
         """Creates a sponsorship.gift record from an invoice_line
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """
         gifts = self.env[self._name]
+        invoice_line = self.env["account.move.line"].browse(invoice_line_id)
         product = invoice_line.product_id
         sponsorship = invoice_line.contract_id
         if not product.sponsorship_gift_type_id:

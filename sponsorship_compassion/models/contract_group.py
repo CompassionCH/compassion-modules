@@ -46,7 +46,6 @@ class ContractGroup(models.Model):
             contracts._generate_gifts(
                 self.env.ref("sponsorship_compassion.gift_type_christmas")
             )
-        return True
 
     def build_inv_line_data(
         self, invoicing_date=False, gift_wizard=False, contract_line=False

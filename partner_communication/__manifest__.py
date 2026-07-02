@@ -38,7 +38,7 @@
     "depends": [
         "base_report_to_printer",  # OCA/report-print-send
         "contacts",
-        "queue_job",  # OCA/queue
+        "queue_job_optional",  # OCA/queue
         "mass_mailing_sms",
         "utm",
         "mail",
@@ -60,7 +60,6 @@
         "views/settings_view.xml",
         "views/communication_snippet_view.xml",
         "data/default_communication.xml",
-        "data/queue_job.xml",
     ],
     "qweb": [],
     "demo": ["demo/demo_data.xml"],

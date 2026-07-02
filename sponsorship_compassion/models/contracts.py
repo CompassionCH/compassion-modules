@@ -811,11 +811,13 @@ class SponsorshipContract(models.Model):
 
         # Cancel the old invoices if a contract is activated
         delay = datetime.now() + relativedelta(seconds=30)
-        self.with_delay(
+        self.with_delay_sh(
+            "cancel_old_invoices",
+            channel="root.accounting",
             eta=delay,
             priority=500,
             identity_key=self._name + ".cancel_old_invoices." + str(self.ids),
-        ).cancel_old_invoices()
+        )
 
         con_line_obj = self.env["recurring.contract.line"]
         for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST):

@@ -7,10 +7,10 @@
 #
 ##############################################################################
 
-from odoo.tests import SavepointCase
+from odoo.tests import TransactionCase
 
 
-class TestThankYouLetters(SavepointCase):
+class TestThankYouLetters(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

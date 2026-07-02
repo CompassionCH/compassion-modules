@@ -11,11 +11,6 @@
         name="model_id"
         ref="child_compassion.model_demand_planning"
       />
-            <!-- Invoke on Wednesday 8pm -->
-            <field
-        name="nextcall"
-        eval="(datetime.today().replace(hour=20, minute=00) + timedelta(days=(2-datetime.today().weekday())%7)).strftime('%Y-%m-%d %H:%M:%S')"
-      />
         </record>
         <record model="ir.cron" id="refresh_worldbank_data">
             <field name="name">Refresh World Bank Data</field>
@@ -25,9 +20,9 @@
             <field name="state">code</field>
             <field name="code">
                 for record in model.search([]):
-                    record.with_delay(channel="root.child_compassion").refresh_worldbank_data()
-                    record.with_delay(channel="root.child_compassion").refresh_capital_city()
-                    record.with_delay(channel="root.child_compassion").refresh_factbook_data()
+                    record.with_delay_sh("refresh_worldbank_data", channel="root.child_compassion")
+                    record.with_delay_sh("refresh_capital_city", channel="root.child_compassion")
+                    record.with_delay_sh("refresh_factbook_data", channel="root.child_compassion")
             </field>
             <field
         name="model_id"

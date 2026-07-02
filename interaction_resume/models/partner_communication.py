@@ -45,9 +45,10 @@ class PartnerCommunication(models.Model):
         # Refresh the interactions after sending the communication
         if not self.env.context.get("skip_interaction_fetch"):
             for partner in self.mapped("partner_id"):
-                partner.with_delay(
+                partner.with_delay_sh(
+                    "fetch_interactions",
                     channel="root.partner_communication",
                     priority=100,
                     identity_key=f"{partner._name}.fetch_interactions.{partner.id}",
-                ).fetch_interactions()
+                )
         return res
