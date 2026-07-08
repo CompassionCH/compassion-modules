@@ -67,6 +67,7 @@ class IrActionsServer(models.Model):
                     vals,
                     identity_key=identity_key,
                     eta=delay,
+                    fresh_context=True,
                 )
         return {}
 

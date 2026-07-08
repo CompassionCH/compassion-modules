@@ -44,11 +44,13 @@ class Base(models.AbstractModel):
                 The child job will be executed when the parent job is done.
             * **wait_for_children** (boolean): Don't run the job to add children jobs
                 to the queue, but wait for all children jobs to be created.
+            * **fresh_context** Don't push the context in the job
         """
         queue_job_installed = "queue.job" in self.env
         split = delay_args.pop("split", 0)
         chain = delay_args.pop("chain", False)
         no_delay = self.env.context.get("queue_job__no_delay")
+        fresh_context = delay_args.pop("fresh_context", False)
         if queue_job_installed:
             parent_job = delay_args.pop("parent_job_id", None)
             wait_for_children = delay_args.pop("wait_for_children", False)
@@ -81,7 +83,7 @@ class Base(models.AbstractModel):
                     "job_args": str(job_args),
                     "user_id": self.env.user.id,
                     "company_id": self.env.company.id,
-                    "context": str(self.env.context),
+                    "context": str(self.env.context) if not fresh_context else None,
                     "eta": eta,
                     **delay_args,
                 }
