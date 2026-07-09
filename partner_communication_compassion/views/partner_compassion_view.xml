@@ -39,12 +39,9 @@
           name="decoration-warning"
         >exit_communication_pending</attribute>
             </xpath>
-<!--            <xpath-->
-<!--        expr="//field[@name='contracts_paid']/tree/field[@name='state']"-->
-<!--        position="after"-->
-<!--      >-->
-<!--                <field name="exit_communication_pending" invisible="1" />-->
-<!--            </xpath>-->
+            <field name="child_id" position="after">
+                <field name="exit_communication_pending" column_invisible="1" />
+            </field>
         </field>
     </record>
 </odoo>

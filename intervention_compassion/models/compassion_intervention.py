@@ -423,9 +423,11 @@ class CompassionIntervention(models.Model):
 
             if intervention_name.find("FY") != -1:
                 split_name = intervention_name.split("FY")
-                # Extract only the numeric part of the year
-                year_str = re.search(r"\d+", split_name[1]).group()
-                search_value = split_name[0] + "FY" + str(int(year_str) - 1)
+                match = re.search(r"\\d+", split_name[1])
+                year_str = match.group() if match else None
+                search_value = (
+                    split_name[0] + "FY" + str(int(year_str) - 1) if year_str else ""
+                )
                 last_intervention = self.search([("name", "=", search_value)])
                 if last_intervention:
                     vals["product_template_id"] = (
