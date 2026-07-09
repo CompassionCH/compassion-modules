@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Partner Communications",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Other",
     "author": "Compassion CH",
     "development_status": "Production/Stable",
@@ -39,6 +39,7 @@
         "partner_communication",
         "partner_salutation",
         "sbc_compassion",
+        "sponsorship_sub_management",
     ],
     "data": [
         "data/major_revision_emails.xml",
