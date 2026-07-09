@@ -9,6 +9,7 @@
 ##############################################################################
 
 import logging
+import re
 import time
 
 from odoo import _, api, fields, models
@@ -422,7 +423,9 @@ class CompassionIntervention(models.Model):
 
             if intervention_name.find("FY") != -1:
                 split_name = intervention_name.split("FY")
-                search_value = split_name[0] + "FY" + str(int(split_name[1]) - 1)
+                # Extract only the numeric part of the year
+                year_str = re.search(r"\d+", split_name[1]).group()
+                search_value = split_name[0] + "FY" + str(int(year_str) - 1)
                 last_intervention = self.search([("name", "=", search_value)])
                 if last_intervention:
                     vals["product_template_id"] = (

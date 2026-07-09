@@ -264,7 +264,7 @@ class ImportLettersHistory(models.Model):
             failed_files = self.failed_file_name or ""
             if failed_files:
                 failed_files += "\n"
-            failed_files += file_name
+            failed_files += str(file_name)
             self.write(
                 {
                     "failed_file_name": failed_files,

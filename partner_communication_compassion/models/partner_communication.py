@@ -165,16 +165,6 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
-        exit_confs = self.env.ref(
-            "partner_communication_compassion.lifecycle_child_planned_exit"
-        ) + self.env.ref(
-            "partner_communication_compassion.lifecycle_child_unplanned_exit"
-        )
-        exits = self.filtered(lambda j: j.state == "done" and j.config_id in exit_confs)
-        if exits:
-            exits.get_objects().write(
-                {"exit_communication_sent": fields.Datetime.now()}
-            )
         return res
 
     def cancel(self):
@@ -184,4 +174,43 @@ class PartnerCommunication(models.Model):
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
+        return res
+
+    def _exit_communication_configs(self):
+        """Communication configs that notify the sponsor of a child's exit."""
+        return self.env.ref(
+            "partner_communication_compassion.lifecycle_child_planned_exit"
+        ) + self.env.ref(
+            "partner_communication_compassion.lifecycle_child_unplanned_exit"
+        )
+
+    def _finalize_exit_communications(self):
+        """Finalize these resolved (sent or canceled) exit communications:
+        record them as sent on their contracts, and run the deferred invoice
+        cleanup on the ones already terminated.
+        """
+        if not self:
+            return
+        contracts = self.get_objects()
+        # Cleanup only the terminated departures still waiting for it.
+        to_clean = contracts.filtered("exit_communication_pending")
+        # Record contracts not yet stamped (incl. ones still active, so a later
+        # termination does not re-flag them); skip already-recorded ones to keep
+        # the original communication date on a re-send.
+        contracts.filtered(lambda c: not c.exit_communication_sent).write(
+            {"exit_communication_sent": fields.Datetime.now()}
+        )
+        to_clean.cancel_contract_invoices()
+
+    def _job_sent(self, send_mode):
+        res = super()._job_sent(send_mode)
+        # Finalize (only) exit communications now that they have actually been sent.
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
         return res
