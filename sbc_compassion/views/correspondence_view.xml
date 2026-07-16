@@ -56,7 +56,7 @@
 # records.quality_check_failed()
 for record in records:
     if record.state in ('Printed and sent to ICP', 'Quality check unsuccessful') or record.direction == 'Beneficiary To Supporter':
-        raise odoo.exceptions.UserError("You cannot fail the quality check for this letter in its current state or direction.")
+        raise UserError("You cannot fail the quality check for this letter in its current state or direction.")
     record.quality_check_failed()
         </field>
         <field name="binding_model_id" ref="sbc_compassion.model_correspondence" />
