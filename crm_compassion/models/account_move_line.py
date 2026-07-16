@@ -26,9 +26,17 @@ class MoveLine(models.Model):
 
     @api.depends("analytic_line_ids")
     def _compute_event(self):
+        """Event analytic accounts live in the ``crm_compassion.plan_events``
+        analytic plan, whose column on account.analytic.line is not the
+        generic ``account_id`` (reserved for the root/project plan)."""
+        events_column = self.env.ref("crm_compassion.plan_events")._column_name()
         for line in self:
-            if not line.event_id and line.analytic_line_ids.account_id.event_id:
-                line.event_id = line.analytic_line_ids.account_id.event_id
+            analytic_accounts = line.analytic_line_ids.account_id | (
+                line.analytic_line_ids.mapped(events_column)
+            )
+            event = analytic_accounts.mapped("event_id")[:1]
+            if not line.event_id and event:
+                line.event_id = event
             else:
                 line.event_id = line.event_id
 
