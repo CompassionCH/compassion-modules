@@ -40,10 +40,47 @@ def _sanitize_varname(name):
     return re.sub(r"[^0-9A-Za-z_]", "_", name)
 
 
+# fr_CH accesses products[0].thanks_name (a Char field, False when unset)
+# directly and unguarded, unlike de_DE/it_IT which already define a safe
+# "thanks_name" variable ("products[0].thanks_name if ... else ''"). This
+# crashes with "'bool' object is not subscriptable"/AttributeError for any
+# product without a thanks_name (e.g. "undesignated donation") - previously
+# masked because the surrounding "% set" line never actually executed.
+_FR_UNSAFE_THANKS_NAME_TERNARY = (
+    "(products[0].thanks_name if products[0].thanks_name[:1] in "
+    "(&#x27;.&#x27;,&#x27;!&#x27;,&#x27;?&#x27;) else &#x27; &#x27;"
+    "+products[0].thanks_name)"
+)
+_FR_SAFE_THANKS_NAME_TERNARY = (
+    "(thanks_name if thanks_name[:1] in "
+    "(&#x27;.&#x27;,&#x27;!&#x27;,&#x27;?&#x27;) else &#x27; &#x27;+thanks_name)"
+)
+_FR_UNSAFE_LINE_THANKS_NAME = "line.product_id.thanks_name.replace("
+_FR_SAFE_LINE_THANKS_NAME = "(line.product_id.thanks_name or &#x27;&#x27;).replace("
+_FR_PRODUCTS_TSET = (
+    '<t t-set="products" t-value="invoice_lines.mapped(&#x27;product_id&#x27;)"/>'
+)
+
+
+def _fix_unguarded_thanks_name(body):
+    if _FR_UNSAFE_THANKS_NAME_TERNARY not in body:
+        return body
+    body = body.replace(_FR_UNSAFE_THANKS_NAME_TERNARY, _FR_SAFE_THANKS_NAME_TERNARY)
+    body = body.replace(_FR_UNSAFE_LINE_THANKS_NAME, _FR_SAFE_LINE_THANKS_NAME)
+    body = body.replace(
+        _FR_PRODUCTS_TSET,
+        _FR_PRODUCTS_TSET
+        + '\n    <t t-set="thanks_name" t-value="products[0].thanks_name if '
+        'products[0].thanks_name else &#x27;&#x27;"/>',
+    )
+    return body
+
+
 def _fix_body(body):
     if not body:
         return body
     body = body.replace("&amp;gt;", "&gt;").replace("&amp;lt;", "&lt;")
+    body = _fix_unguarded_thanks_name(body)
 
     # Rename any variable whose name QWeb would reject, everywhere it's used
     # (not just where it's declared) - existing t-out/t-if/t-value
