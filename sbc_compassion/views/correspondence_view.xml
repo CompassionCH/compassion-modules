@@ -48,15 +48,15 @@
         <field name="binding_type">action</field>
     </record>
 
+<!-- Server action to fail quality check -->
     <record id="action_quality_check_failed_menu" model="ir.actions.server">
         <field name="name">Quality Check Failed</field>
         <field name="model_id" ref="sbc_compassion.model_correspondence" />
         <field name="state">code</field>
         <field name="code">
-# records.quality_check_failed()
 for record in records:
     if record.state in ('Printed and sent to ICP', 'Quality check unsuccessful') or record.direction == 'Beneficiary To Supporter':
-        raise UserError("You cannot fail the quality check for this letter in its current state or direction.")
+        raise UserError("Failed quality check action cannot be performed for this letter.")
     record.quality_check_failed()
         </field>
         <field name="binding_model_id" ref="sbc_compassion.model_correspondence" />
