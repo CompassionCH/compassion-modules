@@ -18,7 +18,10 @@ PRAGMA_SET_RE = re.compile(
 )
 
 # Single stray leftover with no matching "% if" anywhere in the template.
-STRAY_PRAGMA_RE = re.compile(r"^\s*%\s*endif\s*$")
+# Not always alone on its own line (e.g. "% endif</body>") - matched and
+# stripped as a substring, not a whole-line match, so whatever follows on
+# the same line is preserved.
+STRAY_PRAGMA_RE = re.compile(r"(?m)^[ \t]*%\s*endif[ \t]*")
 
 # Matches a variable name already converted to a real <t t-set> tag - needed
 # so this migration stays idempotent/safe to re-run on a database where an
@@ -87,8 +90,6 @@ def _fix_body(body):
     if not body:
         return body
     body = body.replace("&amp;gt;", "&gt;").replace("&amp;lt;", "&lt;")
-    body = _fix_unguarded_thanks_name(body)
-    body = body.replace(_UNSAFE_DEFAULT_CODE_STARTSWITH, _SAFE_DEFAULT_CODE_STARTSWITH)
 
     # Rename any variable whose name QWeb would reject, everywhere it's used
     # (not just where it's declared) - existing t-out/t-if/t-value
@@ -106,16 +107,25 @@ def _fix_body(body):
         if safe_name != name:
             body = re.sub(rf"\b{re.escape(name)}\b", safe_name, body)
 
+    body = STRAY_PRAGMA_RE.sub("", body)
+
     lines = []
     for line in body.split("\n"):
-        if STRAY_PRAGMA_RE.match(line):
-            continue
         match = PRAGMA_SET_RE.match(line)
         if match:
             expr = html.escape(match["expr"].strip(), quote=True)
             line = f'{match["indent"]}<t t-set="{match["name"]}" t-value="{expr}"/>'
         lines.append(line)
-    return "\n".join(lines)
+    body = "\n".join(lines)
+
+    # Must run after the pragma-to-<t t-set> conversion above: on a
+    # genuinely raw (never-migrated) template, the thanks_name ternary is
+    # still plain, unescaped "% set" text at this point (literal quotes,
+    # not yet &#x27;) - matching here first would silently no-op, leaving
+    # the crash-prone code completely unfixed on a fresh run.
+    body = _fix_unguarded_thanks_name(body)
+    body = body.replace(_UNSAFE_DEFAULT_CODE_STARTSWITH, _SAFE_DEFAULT_CODE_STARTSWITH)
+    return body
 
 
 @openupgrade.migrate()
