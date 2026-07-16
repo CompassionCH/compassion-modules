@@ -62,6 +62,13 @@ _FR_PRODUCTS_TSET = (
 )
 
 
+# Shared by fr_CH and de_DE, both inside a previously-dead "% set" line:
+# default_code is a Char field, False for any product without one, and
+# .startswith() raises AttributeError on a bool.
+_UNSAFE_DEFAULT_CODE_STARTSWITH = "products[0].default_code.startswith("
+_SAFE_DEFAULT_CODE_STARTSWITH = "(products[0].default_code or &#x27;&#x27;).startswith("
+
+
 def _fix_unguarded_thanks_name(body):
     if _FR_UNSAFE_THANKS_NAME_TERNARY not in body:
         return body
@@ -81,6 +88,7 @@ def _fix_body(body):
         return body
     body = body.replace("&amp;gt;", "&gt;").replace("&amp;lt;", "&lt;")
     body = _fix_unguarded_thanks_name(body)
+    body = body.replace(_UNSAFE_DEFAULT_CODE_STARTSWITH, _SAFE_DEFAULT_CODE_STARTSWITH)
 
     # Rename any variable whose name QWeb would reject, everywhere it's used
     # (not just where it's declared) - existing t-out/t-if/t-value
