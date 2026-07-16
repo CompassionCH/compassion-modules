@@ -54,10 +54,10 @@
         <field name="model_id" ref="sbc_compassion.model_correspondence" />
         <field name="state">code</field>
         <field name="code">
-for record in records:
-    if record.state in ('Printed and sent to ICP', 'Quality check unsuccessful') or record.direction == 'Beneficiary To Supporter':
-        raise UserError("Failed quality check action cannot be performed for this letter.")
-    record.quality_check_failed()
+invalid_records = records.filtered(lambda r: r.state in ('Printed and sent to ICP', 'Quality check unsuccessful') or r.direction == 'Beneficiary To Supporter')
+if invalid_records:
+    raise UserError(_("Failed quality check action cannot be performed for this letter."))
+records.quality_check_failed()
         </field>
         <field name="binding_model_id" ref="sbc_compassion.model_correspondence" />
         <field name="binding_type">action</field>
