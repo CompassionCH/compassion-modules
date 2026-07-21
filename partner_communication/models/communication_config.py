@@ -291,10 +291,13 @@ class CommunicationConfig(models.Model):
         """
         send_priority = self._get_send_priority(partner, print_if_not_email)
         if communication_send_mode != "partner_preference":
-            partner_mode = getattr(
-                partner,
-                send_mode_pref_field or "global_communication_delivery_preference",
-                partner.global_communication_delivery_preference,
+            partner_mode = (
+                getattr(
+                    partner,
+                    send_mode_pref_field or "global_communication_delivery_preference",
+                    partner.global_communication_delivery_preference,
+                )
+                or "none"
             )
             auto_mode = self._get_auto_mode(partner_mode, communication_send_mode)
             if communication_send_mode == partner_mode:
@@ -395,6 +398,7 @@ class CommunicationConfig(models.Model):
         """Gets the computed auto_mode
         :param partner_mode: auto_mode from the partner preference
         :param communication_mode: auto_mode from the communication config."""
+
         return (
             ("auto" in partner_mode and "auto" in communication_mode)
             or ("auto" in partner_mode and communication_mode == "both")
