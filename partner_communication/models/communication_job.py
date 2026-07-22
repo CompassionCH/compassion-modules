@@ -341,13 +341,69 @@ class CommunicationJob(models.Model):
             "physical": "partner_communication.utm_medium_post",
             "sms": "mass_mailing_sms.utm_medium_sms",
         }.get(send_mode)
-        return xmlid and self.env.ref(xmlid, raise_if_not_found=False).id
+        medium = xmlid and self.env.ref(xmlid, raise_if_not_found=False)
+        return medium.id if medium else False
 
     def _compute_print_pdfname(self):
         for job in self:
             job.printed_pdf_name = (
                 f"{fields.Date.to_string(job.sent_date)}_"
                 f"{job.partner_id.ref}_{job.subject}.pdf"
+            )
+
+    def _merge_into_existing_job(self, job, vals):
+        """Merge new vals (object_ids, UTM tracking) into a pending/failure job
+        found for the same partner+config, instead of creating a new one."""
+        job.object_ids = job.object_ids + "," + vals["object_ids"]
+        for utm_field in ("utm_source_id", "utm_medium_id", "utm_campaign_id"):
+            if not job[utm_field] and vals.get(utm_field):
+                job[utm_field] = vals[utm_field]
+        job.refresh_text()
+        if job.auto_send:
+            job.send()
+
+    def _setup_created_job(self, vals, job):
+        """Finalize a newly created job: send_mode/auto_send/UTM medium
+        derivation, attachments, scheduled call and auto-send delay."""
+        # Determine send mode
+        send_mode = job.config_id.get_inform_mode(job.partner_id)
+
+        if "send_mode" not in vals and "default_send_mode" not in self.env.context:
+            job.send_mode = send_mode[0]
+        if (
+            "auto_send" not in vals
+            and "default_auto_send" not in self.env.context
+            and send_mode[1]
+        ):
+            job.auto_send = send_mode[1]
+
+        job.set_attachments()
+        if job.send_mode in ("both", "physical"):
+            job.count_pdf_page()
+
+        # Difference between send_mode of partner and send_mode of job
+        if (
+            send_mode[0] != job.send_mode
+            and "only" in job.partner_id.global_communication_delivery_preference
+        ):
+            # Send_mode chosen by the employee is not compatible
+            # So we remove it and an employee must set it manually afterward
+            job.send_mode = ""
+
+        if "utm_medium_id" not in vals:
+            job.utm_medium_id = job._get_utm_medium_id(job.send_mode)
+
+        if job.need_call == "before_sending":
+            job.schedule_call()
+        if job.auto_send:
+            # T2221 Using a job avoids multiple sends in case of rollbacks
+            job.with_delay_sh(
+                "send",
+                eta=10,
+                max_retries=1,
+                description="Autosend communication",
+                channel="root.partner_communication",
+                identity_key=f"{self._name}.send.{job.config_id.id}+{job.partner_id.id}",
             )
 
     ##########################################################################
@@ -383,18 +439,15 @@ class CommunicationJob(models.Model):
             ] + self.env.context.get("same_job_search", [])
             job = self.search(same_job_search, limit=1)
 
+            self._get_default_vals(vals)
+
             if job and not job.config_id.forbid_merging:
-                job.object_ids = job.object_ids + "," + vals["object_ids"]
-                for utm_field in ("utm_source_id", "utm_medium_id", "utm_campaign_id"):
-                    if not job[utm_field] and vals.get(utm_field):
-                        job[utm_field] = vals[utm_field]
-                job.refresh_text()
-                if job.auto_send:
-                    job.send()
+                if not vals.get("utm_medium_id"):
+                    send_mode = job.config_id.get_inform_mode(job.partner_id)
+                    vals["utm_medium_id"] = self._get_utm_medium_id(send_mode[0])
+                self._merge_into_existing_job(job, vals)
                 updated += job
                 vals_list.remove(vals)
-
-            self._get_default_vals(vals)
 
         created = super().create(vals_list)
 
@@ -405,44 +458,7 @@ class CommunicationJob(models.Model):
                 job.unlink()
                 continue
 
-            # Determine send mode
-            send_mode = job.config_id.get_inform_mode(job.partner_id)
-
-            if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-                job.send_mode = send_mode[0]
-            if (
-                "auto_send" not in vals
-                and "default_auto_send" not in self.env.context
-                and send_mode[1]
-            ):
-                job.auto_send = send_mode[1]
-
-            job.set_attachments()
-            if job.send_mode in ("both", "physical"):
-                job.count_pdf_page()
-
-            # Difference between send_mode of partner and send_mode of job
-            if send_mode[0] != job.send_mode:
-                if "only" in job.partner_id.global_communication_delivery_preference:
-                    # Send_mode chosen by the employee is not compatible
-                    # So we remove it and an employee must set it manually afterward
-                    job.send_mode = ""
-
-            if "utm_medium_id" not in vals:
-                job.utm_medium_id = job._get_utm_medium_id(job.send_mode)
-
-            if job.need_call == "before_sending":
-                job.schedule_call()
-            if job.auto_send:
-                # T2221 Using a job avoids multiple sends in case of rollbacks
-                job.with_delay_sh(
-                    "send",
-                    eta=10,
-                    max_retries=1,
-                    description="Autosend communication",
-                    channel="root.partner_communication",
-                    identity_key=f"{self._name}.send.{job.config_id.id}+{job.partner_id.id}",
-                )
+            self._setup_created_job(vals, job)
 
         return updated + created
 
