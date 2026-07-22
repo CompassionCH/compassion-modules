@@ -185,6 +185,10 @@ class CommunicationJob(models.Model):
 
     sms_cost = fields.Float()
 
+    utm_source_id = fields.Many2one("utm.source", ondelete="restrict")
+    utm_medium_id = fields.Many2one("utm.medium", ondelete="restrict")
+    utm_campaign_id = fields.Many2one("utm.campaign", ondelete="set null")
+
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped("attachment_ids.attachment_id")
@@ -328,6 +332,17 @@ class CommunicationJob(models.Model):
             ("sms", _("SMS")),
         ]
 
+    @api.model
+    def _get_utm_medium_id(self, send_mode):
+        """Map a job send_mode to a utm.medium. "both" is left empty since a
+        single medium can't represent two distinct delivery channels."""
+        xmlid = {
+            "digital": "utm.utm_medium_email",
+            "physical": "partner_communication.utm_medium_post",
+            "sms": "mass_mailing_sms.utm_medium_sms",
+        }.get(send_mode)
+        return xmlid and self.env.ref(xmlid, raise_if_not_found=False).id
+
     def _compute_print_pdfname(self):
         for job in self:
             job.printed_pdf_name = (
@@ -370,6 +385,9 @@ class CommunicationJob(models.Model):
 
             if job and not job.config_id.forbid_merging:
                 job.object_ids = job.object_ids + "," + vals["object_ids"]
+                for utm_field in ("utm_source_id", "utm_medium_id", "utm_campaign_id"):
+                    if not job[utm_field] and vals.get(utm_field):
+                        job[utm_field] = vals[utm_field]
                 job.refresh_text()
                 if job.auto_send:
                     job.send()
@@ -409,6 +427,9 @@ class CommunicationJob(models.Model):
                     # Send_mode chosen by the employee is not compatible
                     # So we remove it and an employee must set it manually afterward
                     job.send_mode = ""
+
+            if "utm_medium_id" not in vals:
+                job.utm_medium_id = job._get_utm_medium_id(job.send_mode)
 
             if job.need_call == "before_sending":
                 job.schedule_call()
@@ -527,6 +548,9 @@ class CommunicationJob(models.Model):
                 if default_val.endswith("_id"):
                     value = value.id
                 vals[default_val] = value
+
+        if not vals.get("utm_source_id"):
+            vals["utm_source_id"] = config.source_id.id
 
         return config
 
@@ -732,6 +756,11 @@ class CommunicationJob(models.Model):
             if key.endswith("_id"):
                 val = getattr(self, key).browse(val)
             setattr(self, key, val)
+        self.utm_medium_id = self._get_utm_medium_id(self.send_mode)
+
+    @api.onchange("send_mode")
+    def _onchange_send_mode_utm_medium(self):
+        self.utm_medium_id = self._get_utm_medium_id(self.send_mode)
 
     def open_related(self):
         object_strings = ",".join(self.mapped("object_ids"))

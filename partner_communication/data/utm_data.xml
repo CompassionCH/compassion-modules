@@ -1,0 +1,5 @@
+<odoo>
+    <record id="utm_medium_post" model="utm.medium">
+        <field name="name">Post</field>
+    </record>
+</odoo>

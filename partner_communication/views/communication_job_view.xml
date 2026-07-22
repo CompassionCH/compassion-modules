@@ -189,6 +189,20 @@
                     readonly="state in ('processing', 'done')"
                   />
                                 </group>
+                                <group string="UTM Tracking">
+                                    <field
+                    name="utm_source_id"
+                    readonly="state in ('processing', 'done')"
+                  />
+                                    <field
+                    name="utm_medium_id"
+                    readonly="state in ('processing', 'done')"
+                  />
+                                    <field
+                    name="utm_campaign_id"
+                    readonly="state in ('processing', 'done')"
+                  />
+                                </group>
                             </group>
                         </page>
                     </notebook>
@@ -216,6 +230,9 @@
                 <field name="user_id" />
                 <field name="state" />
                 <field name="need_call" optional="hide" />
+                <field name="utm_campaign_id" optional="show" />
+                <field name="utm_source_id" optional="hide" />
+                <field name="utm_medium_id" optional="hide" />
                 <field name="sent_date" />
                 <field name="activity_ids" column_invisible="1" />
                 <button
@@ -257,6 +274,9 @@
                 <field name="config_id" />
                 <field name="partner_id" />
                 <field name="user_id" />
+                <field name="utm_source_id" />
+                <field name="utm_medium_id" />
+                <field name="utm_campaign_id" />
                 <filter
           string="Pending"
           name="pending"
@@ -300,6 +320,24 @@
             name="config"
             domain="[]"
             context="{'group_by':'config_id'}"
+          />
+                    <filter
+            string="UTM Source"
+            name="utm_source"
+            domain="[]"
+            context="{'group_by':'utm_source_id'}"
+          />
+                    <filter
+            string="UTM Medium"
+            name="utm_medium"
+            domain="[]"
+            context="{'group_by':'utm_medium_id'}"
+          />
+                    <filter
+            string="UTM Campaign"
+            name="utm_campaign"
+            domain="[]"
+            context="{'group_by':'utm_campaign_id'}"
           />
                 </group>
             </search>
