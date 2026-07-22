@@ -145,12 +145,12 @@
         <t t-set="sponsor" t-value="letter.sponsorship_id.partner_id" />
         <div class="d-flex flex-row-reverse">
             <span
-        t-out="f'{sponsor.global_id} - {sponsor.preferred_name or sponsor.firstname}'"
+        t-out="'%s - %s' % (sponsor.global_id, sponsor.preferred_name or sponsor.firstname)"
       />
         </div>
         <div class="d-flex flex-row-reverse">
             <span
-        t-out="f'{child.global_id} - {child.preferred_name} - {child.gender} - {child.age}'"
+        t-out="'%s - %s - %s - %s' % (child.global_id, child.preferred_name, child.gender, child.age)"
       />
         </div>
     </template>
