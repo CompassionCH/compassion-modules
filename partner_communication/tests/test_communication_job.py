@@ -166,6 +166,65 @@ class TestCommunicationJob(TransactionCase):
         # until now.
         self.assertEqual(self.partner.communication_count, 2)
 
+    def test_utm_source_and_medium_on_create(self):
+        # utm_source_id is copied from the config, utm_medium_id derived
+        # from the resulting send_mode ("digital" here, partner is
+        # auto_digital by default)
+        job = self.env["partner.communication.job"].create(
+            {"partner_id": self.partner.id, "config_id": self.config.id}
+        )
+        self.assertEqual(job.utm_source_id, self.config.source_id)
+        self.assertEqual(job.send_mode, "digital")
+        self.assertEqual(job.utm_medium_id, self.env.ref("utm.utm_medium_email"))
+
+    def test_utm_medium_physical(self):
+        self.config.send_mode = "physical"
+        job = self.env["partner.communication.job"].create(
+            {"partner_id": self.partner.id, "config_id": self.config.id}
+        )
+        self.assertEqual(job.send_mode, "physical")
+        self.assertEqual(
+            job.utm_medium_id,
+            self.env.ref("partner_communication.utm_medium_post"),
+        )
+
+    def test_utm_medium_left_empty_for_both(self):
+        # "both" can't be represented by a single utm.medium, so the field
+        # must stay empty (and manually editable) in that case
+        self.config.send_mode = "both"
+        job = self.env["partner.communication.job"].create(
+            {"partner_id": self.partner.id, "config_id": self.config.id}
+        )
+        self.assertEqual(job.send_mode, "both")
+        self.assertFalse(job.utm_medium_id)
+
+    def test_utm_campaign_manual_and_merge_backfill(self):
+        # utm_campaign_id is never auto-derived, but it must survive the
+        # job-merging logic in create() when a second row for the same
+        # partner+config comes in (e.g. a second CSV import batch)
+        non_default_config = self.env["partner.communication.config"].browse(
+            self.ref("partner_communication.test_communication")
+        )
+        campaign = self.env["utm.campaign"].create({"name": "T3305 test campaign"})
+
+        job = self.env["partner.communication.job"].create(
+            {"partner_id": self.partner.id, "config_id": non_default_config.id}
+        )
+        self.assertFalse(job.utm_campaign_id)
+        self.assertEqual(job.utm_source_id, non_default_config.source_id)
+
+        self.env["partner.communication.job"].create(
+            {
+                "partner_id": self.partner.id,
+                "config_id": non_default_config.id,
+                "utm_campaign_id": campaign.id,
+            }
+        )
+
+        self.assertEqual(self.partner.communication_count, 1)
+        self.assertEqual(job.utm_campaign_id, campaign)
+        self.assertEqual(job.utm_source_id, non_default_config.source_id)
+
     def test_omr_generation(self):
         job = self.env["partner.communication.job"].create(
             {"partner_id": self.partner.id, "config_id": self.config.id}
