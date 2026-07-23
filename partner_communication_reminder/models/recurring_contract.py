@@ -58,6 +58,13 @@ class RecurringContract(models.Model):
             ("gmc_commitment_id", "!=", False),
             ("type", "like", "S"),
         ]
+        if "payment_provider_id" in self.env["account.payment.mode"]._fields:
+            # digital contracts are handled by the charge-failure pipeline instead.
+            # Unpaid fees count as charge failures, so we don't send
+            # sponsors double notifications.
+            search_domain.append(
+                ("payment_mode_id.payment_provider_id", "=", False)
+            )
         if not include_suspended:
             search_domain += [
                 "|",
