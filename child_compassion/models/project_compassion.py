@@ -692,6 +692,12 @@ class CompassionProject(models.Model):
         last hour.
         :return:
         """
+        api_key = tools.config.get("openweathermap_api_key", "")
+        if not api_key:
+            logger.warning(
+                "Missing openweathermap_api_key, skipping weather info update."
+            )
+            return
         for project in self:
             if not project.last_weather_refresh_date or (
                 datetime.now() - project.last_weather_refresh_date > timedelta(hours=1)
@@ -703,11 +709,11 @@ class CompassionProject(models.Model):
                     + "&lon="
                     + str(project.gps_longitude)
                     + "&appid="
-                    + tools.config.get("openweathermap_api_key", ""),
+                    + api_key,
                     timeout=3,
                 ).json()
                 if json["cod"] != 200:
-                    logging.error("Could not retrieve weather info.")
+                    logger.warning("Could not retrieve weather info.")
                     continue
                 project.current_weather = json["weather"][0]["main"]
                 project.current_temperature = json["main"]["temp"]
