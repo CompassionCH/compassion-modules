@@ -190,14 +190,8 @@
                   />
                                 </group>
                                 <group string="UTM Tracking">
-                                    <field
-                    name="utm_source_id"
-                    readonly="state in ('processing', 'done')"
-                  />
-                                    <field
-                    name="utm_medium_id"
-                    readonly="state in ('processing', 'done')"
-                  />
+                                    <field name="utm_source_id" readonly="1" />
+                                    <field name="utm_medium_id" readonly="1" />
                                     <field
                     name="utm_campaign_id"
                     readonly="state in ('processing', 'done')"

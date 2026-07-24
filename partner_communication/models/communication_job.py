@@ -425,7 +425,7 @@ class CommunicationJob(models.Model):
             elif object_ids:
                 vals["object_ids"] = str(object_ids)
             else:
-                vals["object_ids"] = str(vals["partner_id"])
+                vals["object_ids"] = str(vals.get("partner_id"))
 
             same_job_search = [
                 ("partner_id", "=", vals.get("partner_id")),
