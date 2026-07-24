@@ -62,9 +62,7 @@ class RecurringContract(models.Model):
             # digital contracts are handled by the charge-failure pipeline instead.
             # Unpaid fees count as charge failures, so we don't send
             # sponsors double notifications.
-            search_domain.append(
-                ("payment_mode_id.payment_provider_id", "=", False)
-            )
+            search_domain.append(("payment_mode_id.payment_provider_id", "=", False))
         if not include_suspended:
             search_domain += [
                 "|",
