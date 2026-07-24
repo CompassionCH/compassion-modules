@@ -206,7 +206,7 @@
             <list
         decoration-primary="state == 'pending'"
         decoration-muted="state in ('done', 'cancel')"
-        decoration-danger="need_call!=False and len(activity_ids) or state == 'failure'"
+        decoration-danger="need_call and activity_ids or state == 'failure'"
       >
                 <field name="date" />
                 <field name="config_id" />
