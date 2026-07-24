@@ -459,6 +459,7 @@ class Correspondence(models.Model):
             {
                 "state": "Received in the system",
                 "translator": False,
+                "new_translator_id": False,
                 "translation_status": False,
             }
         )
