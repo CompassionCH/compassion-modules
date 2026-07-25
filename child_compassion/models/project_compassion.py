@@ -694,7 +694,7 @@ class CompassionProject(models.Model):
         """
         api_key = tools.config.get("openweathermap_api_key", "")
         if not api_key:
-            logger.warning(
+            logger.debug(
                 "Missing openweathermap_api_key, skipping weather info update."
             )
             return

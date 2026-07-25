@@ -62,7 +62,14 @@ class RecurringContract(models.Model):
             # digital contracts are handled by the charge-failure pipeline instead.
             # Unpaid fees count as charge failures, so we don't send
             # sponsors double notifications.
-            search_domain.append(("payment_mode_id.payment_provider_id", "=", False))
+            # A NULL payment mode does not match a dotted leaf, so it needs
+            # its own term. Without it a contract with no mode gets no
+            # reminder and no charge failure either.
+            search_domain += [
+                "|",
+                ("payment_mode_id", "=", False),
+                ("payment_mode_id.payment_provider_id", "=", False),
+            ]
         if not include_suspended:
             search_domain += [
                 "|",
