@@ -42,7 +42,9 @@
     ],
     "external_dependencies": {
         "python": [
+            "pyqrcode",
             "pyquery",
+            "pypng",
             "pytz",
             "timezonefinder",
             "wbgapi",

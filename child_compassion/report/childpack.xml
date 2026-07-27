@@ -110,6 +110,12 @@
                         <t t-raw="o.project_id.description_right" />
                     </div>
                 </div>
+                <img
+        t-if="small"
+        class="qrcode"
+        t-attf-src="data:image/png;base64,{{ o.qr_code_data }}"
+        alt="QR code to sponsor this child"
+      />
                 <div class="photo">
                     <img
           t-if="o.fullshot"
