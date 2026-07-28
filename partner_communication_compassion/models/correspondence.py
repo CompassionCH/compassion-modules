@@ -243,14 +243,19 @@ class Correspondence(models.Model):
         require manual validation before.
         """
         self.ensure_one()
-        partner_langs = self.supporter_languages_ids
         types = self.communication_type_ids.mapped("name")
         valid = (
             self.sponsorship_id.state == "active"
             and "Final Letter" not in types
             and "auto" in self.partner_id.letter_delivery_preference
         )
-        if not (partner_langs & self.beneficiary_language_ids):
-            valid &= self.translation_language_id in partner_langs
+        # Only auto-send if the letter's actual content language is one the
+        # sponsor reads (detected from content, not the field-office stamp).
+        detected_lang = self._detect_letter_language()
+        valid = (
+            valid
+            and bool(detected_lang)
+            and detected_lang in self.supporter_languages_ids
+        )
 
         return valid
