@@ -13,8 +13,11 @@ import re
 import traceback
 from datetime import datetime
 
+from psycopg2 import OperationalError
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.service.model import PG_CONCURRENCY_ERRORS_TO_RETRY
 
 from ..tools.onramp_connector import OnrampConnector
 
@@ -209,7 +212,14 @@ class GmcMessage(models.Model):
         if action.direction == "in":
             try:
                 message_update.update(self._perform_incoming_action())
-            except Exception:
+            except Exception as e:
+                if (
+                    isinstance(e, OperationalError)
+                    and e.pgcode in PG_CONCURRENCY_ERRORS_TO_RETRY
+                ):
+                    # Retryable concurrency error: propagate so the queue job
+                    # is retried instead of writing in the failed transaction.
+                    raise
                 # Abort pending operations
                 logger.error("Failure when processing message", exc_info=True)
                 self.env.cr.rollback()
@@ -423,6 +433,13 @@ class GmcMessage(models.Model):
                 f(answer_data)
                 self.state = "success"
         except Exception as e:
+            if (
+                isinstance(e, OperationalError)
+                and e.pgcode in PG_CONCURRENCY_ERRORS_TO_RETRY
+            ):
+                # Retryable concurrency error: the transaction is aborted and
+                # cannot be written to; propagate so the queue job is retried.
+                raise
             logger.error(traceback.format_exc())
             try:
                 if action.failure_method:
