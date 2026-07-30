@@ -77,7 +77,10 @@
                   type="object"
                   class="oe_highlight"
                   style="margin-left: 5px"
-                  confirm="This search can take 20 to 30 seconds. Please be patient."
+                  confirm="This search takes about 20 to 30 seconds. Feel free to grab a coffee while you wait!"
+                  confirm-title="Just a heads up"
+                  confirm-label="Let's go"
+                  cancel-label="Not now"
                 />
                                 <button
                   name="filter"
