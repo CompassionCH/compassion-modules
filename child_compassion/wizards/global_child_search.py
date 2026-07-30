@@ -358,7 +358,10 @@ class GlobalChildSearch(models.TransientModel):
                 # No more children available in the pool: stop batching.
                 break
             for child in self.global_child_ids - before:
-                key = (child.birthdate.month, child.birthdate.day)
+                birthdate = child.birthdate
+                if not birthdate:
+                    continue
+                key = (birthdate.month, birthdate.day)
                 found_by_date.setdefault(key, child)
             if len(found_by_date) >= len(all_dates):
                 break
