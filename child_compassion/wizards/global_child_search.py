@@ -310,25 +310,71 @@ class GlobalChildSearch(models.TransientModel):
 
     def do_365_mix(self):
         """Try to find one child per day of the year having his birthdate
-        on that date."""
+        on that date.
+
+        Each day used to require its own GMC search (365 sequential HTTP
+        calls), which was very slow. Instead, we first fetch a few broad
+        batches of children (same active filters, but no birthday filter)
+        via the existing do_search/add_search pagination (as if the user
+        clicked "Search" then "Add children" repeatedly), and bucket them
+        locally by birth day/month. Only the days still missing after that
+        fall back to the original one-request-per-day search.
+        """
+        self.ensure_one()
         today = date.today()
         first_day = today.replace(day=1, month=1)
         last_day = today.replace(day=31, month=12)
+        all_dates = []
         current_date = first_day
-        # First step as regular search
+        while current_date <= last_day:
+            all_dates.append(current_date)
+            current_date += relativedelta(days=1)
+
+        batch_size = 80
+        max_batches = 10
+
+        # Phase A: broad batch searches (no birthday filter), reusing the
+        # standard search pagination.
         self.write(
             {
-                "birthday_day": 1,
-                "birthday_month": 1,
-                "take": 1,
+                "birthday_day": 0,
+                "birthday_month": 0,
                 "missing_dates": "",
                 "skip": 0,
+                "take": batch_size,
             }
         )
-        self.do_search()
-        while current_date < last_day:
-            # Next steps: add child to the search result
-            current_date += relativedelta(days=1)
+        self.global_child_ids.unlink()
+
+        found_by_date = {}
+        for batch_index in range(max_batches):
+            before = self.global_child_ids
+            try:
+                if batch_index == 0:
+                    self.do_search()
+                else:
+                    self.add_search()
+            except UserError:
+                # No more children available in the pool: stop batching.
+                break
+            for child in self.global_child_ids - before:
+                key = (child.birthdate.month, child.birthdate.day)
+                found_by_date.setdefault(key, child)
+            if len(found_by_date) >= len(all_dates):
+                break
+
+        # Keep only one child per day found so far, remove the rest.
+        kept = self.env["compassion.global.child"]
+        if found_by_date:
+            kept = kept.union(*found_by_date.values())
+        (self.global_child_ids - kept).unlink()
+
+        # Phase B: fall back to an individual search for the days still
+        # missing, exactly as the original implementation did.
+        self.write({"take": 1})
+        for current_date in all_dates:
+            if (current_date.month, current_date.day) in found_by_date:
+                continue
             self.write(
                 {
                     "birthday_day": current_date.day,
