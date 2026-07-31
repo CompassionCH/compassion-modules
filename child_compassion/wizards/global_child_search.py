@@ -186,6 +186,7 @@ class GlobalChildSearch(models.TransientModel):
         self.ensure_one()
         # Remove previous search results
         self.global_child_ids.unlink()
+        self.missing_dates = False
         # Skip value must be set before the search (with_context)
         self.skip = self.env.context.get("skip_value", 0)
         if not self.advanced_criteria_used:
@@ -207,6 +208,7 @@ class GlobalChildSearch(models.TransientModel):
 
     def add_search(self):
         self.ensure_one()
+        self.missing_dates = False
         self.skip += self.take
         if not self.advanced_criteria_used:
             self._call_search_service(
@@ -436,6 +438,7 @@ class GlobalChildSearch(models.TransientModel):
 
     def filter(self):
         self.ensure_one()
+        self.missing_dates = False
         matching = self.global_child_ids.filtered(lambda child: self._does_match(child))
         (self.global_child_ids - matching).unlink()
         # Specify filter is applied
@@ -444,6 +447,7 @@ class GlobalChildSearch(models.TransientModel):
 
     def take_more(self):
         self.ensure_one()
+        self.missing_dates = False
         # Use rich mix
         self._call_search_service(
             "rich_mix", "beneficiaries/richmix", "BeneficiaryRichMixResponseList"
