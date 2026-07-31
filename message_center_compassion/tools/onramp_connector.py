@@ -124,9 +124,16 @@ class OnrampConnector:
                     return {"code": 404, "Error": "No valid HTTP verb used"}
             except ConnError as e:
                 _logger.warning(e)
-                session_params = self._session.params
-                self._session = requests.Session()
-                self._session.params = session_params
+                # Rebuild the session, but carry over the state of the broken
+                # one: its params (api_key, gpid) and above all its headers,
+                # which hold the OAuth bearer token set by _retrieve_token.
+                # Without them the retry - and every later call, since the
+                # session is shared by the singleton - would be unauthenticated.
+                old_session = self._session
+                new_session = requests.Session()
+                new_session.params = old_session.params
+                new_session.headers.update(old_session.headers)
+                OnrampConnector._session = new_session
             count += 1
         if message_type == "GET_RAW":
             # Simply return the result
