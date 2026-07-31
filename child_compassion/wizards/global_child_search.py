@@ -8,14 +8,17 @@
 #
 ##############################################################################
 import concurrent.futures
+import logging
 import sys
 from datetime import date, datetime, timedelta
 from math import ceil
-import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-_logger = logging.getLogger(__name__)
+
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
+
+_logger = logging.getLogger(__name__)
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -360,8 +363,9 @@ class GlobalChildSearch(models.TransientModel):
                     res = thread_onramp.send_message(service_name, method, None, params)
                 return c_date, res
             except Exception as exc:
-                _logger.warning("365 search HTTP request failed for %s: %s", c_date,
-                                exc)
+                _logger.warning(
+                    "365 search HTTP request failed for %s: %s", c_date, exc
+                )
                 return c_date, None
 
         results = []
@@ -378,7 +382,8 @@ class GlobalChildSearch(models.TransientModel):
         for c_date, result in results:
             if not result or result.get("code") != 200:
                 error_msg = _("Search service error for date %s") % c_date.strftime(
-                    "%d.%m")
+                    "%d.%m"
+                )
                 if result and isinstance(result.get("content"), dict):
                     error_obj = result["content"].get("Error")
                     if isinstance(error_obj, dict) and error_obj.get("ErrorMessage"):
