@@ -77,7 +77,7 @@
                   type="object"
                   class="oe_highlight"
                   style="margin-left: 5px"
-                  confirm="This search takes about 10 seconds !"
+                  confirm="This search may take around 10 seconds."
                   confirm-title="Just a heads up"
                   confirm-label="Let's go"
                   cancel-label="Not now"

@@ -11,10 +11,10 @@ import concurrent.futures
 import sys
 from datetime import date, datetime, timedelta
 from math import ceil
-
+import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-
+_logger = logging.getLogger(__name__)
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
@@ -309,9 +309,8 @@ class GlobalChildSearch(models.TransientModel):
 
     def do_365_mix(self):
         """Try to find one child per day of the year having his birthdate
-        on that date. The 365 requests are sent to GMC in parallel instead
-        of sequentially, since each one is a slow, independent HTTP call
-        (this used to take ~1m30 done one day at a time)."""
+        on that date. Requests for all days of the year (365 or 366 in leap years)
+        are sent to GMC in parallel instead of sequentially."""
         self.ensure_one()
 
         self.global_child_ids.unlink()
@@ -351,15 +350,19 @@ class GlobalChildSearch(models.TransientModel):
 
         # Fire all HTTP requests concurrently: this is the actual fix for
         # the reported "infinite loading", which was 365 sequential calls.
-        onramp = OnrampConnector(self.env)
-
         def fetch_http(item):
             c_date, params = item
-            if method == "POST":
-                res = onramp.send_message(service_name, method, params)
-            else:
-                res = onramp.send_message(service_name, method, None, params)
-            return c_date, res
+            thread_onramp = OnrampConnector(self.env)
+            try:
+                if method == "POST":
+                    res = thread_onramp.send_message(service_name, method, params)
+                else:
+                    res = thread_onramp.send_message(service_name, method, None, params)
+                return c_date, res
+            except Exception as exc:
+                _logger.warning("365 search HTTP request failed for %s: %s", c_date,
+                                exc)
+                return c_date, None
 
         results = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=15) as executor:
@@ -370,13 +373,25 @@ class GlobalChildSearch(models.TransientModel):
         results.sort(key=lambda x: x[0])
         missing_dates_list = []
         total_matching_found = 0
+
         all_new_children = self.env["compassion.global.child"]
         for c_date, result in results:
-            if result.get("code") == 200 and result.get("content", {}).get(result_name):
-                total_matching_found += result["content"].get(
-                    "NumberOfBeneficiaries", 0
-                )
-                children_data = result["content"][result_name]
+            if not result or result.get("code") != 200:
+                error_msg = _("Search service error for date %s") % c_date.strftime(
+                    "%d.%m")
+                if result and isinstance(result.get("content"), dict):
+                    error_obj = result["content"].get("Error")
+                    if isinstance(error_obj, dict) and error_obj.get("ErrorMessage"):
+                        error_msg = error_obj.get("ErrorMessage")
+                    elif isinstance(error_obj, str):
+                        error_msg = error_obj
+                raise UserError(error_msg)
+
+            content = result.get("content", {})
+            children_data = content.get(result_name)
+
+            if children_data:
+                total_matching_found += content.get("NumberOfBeneficiaries", 0)
                 for child_data in children_data:
                     child_vals = all_new_children.json_to_data(
                         child_data, "Childpool Search Response"
