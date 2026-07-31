@@ -7,11 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import concurrent.futures
 import sys
 from datetime import date, datetime, timedelta
 from math import ceil
-
-from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -310,37 +309,94 @@ class GlobalChildSearch(models.TransientModel):
 
     def do_365_mix(self):
         """Try to find one child per day of the year having his birthdate
-        on that date."""
-        today = date.today()
-        first_day = today.replace(day=1, month=1)
-        last_day = today.replace(day=31, month=12)
-        current_date = first_day
-        # First step as regular search
-        self.write(
-            {
-                "birthday_day": 1,
-                "birthday_month": 1,
-                "take": 1,
-                "missing_dates": "",
-                "skip": 0,
-            }
+        on that date. The 365 requests are sent to GMC in parallel instead
+        of sequentially, since each one is a slow, independent HTTP call
+        (this used to take ~1m30 done one day at a time)."""
+        self.ensure_one()
+
+        self.global_child_ids.unlink()
+        year = date.today().year
+        first_day = date(year, 1, 1)
+        is_leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+        nb_days = 366 if is_leap else 365
+        all_dates = [first_day + timedelta(days=i) for i in range(nb_days)]
+
+        if self.advanced_criteria_used:
+            mapping_name = "advanced_search"
+            service_name = "beneficiaries/availabilityquery"
+            method = "POST"
+        else:
+            mapping_name = "profile_search"
+            service_name = "beneficiaries/availabilitysearch"
+            method = "GET"
+        result_name = "BeneficiarySearchResponseList"
+
+        # Build the 365 request payloads upfront (one child per day, best
+        # match first) while still running sequentially, since each one
+        # depends on the wizard's current field values.
+        self.take = 1
+        self.skip = 0
+        prepared_requests = []
+        for current_date in all_dates:
+            self.birthday_day = current_date.day
+            self.birthday_month = current_date.month
+            if self.advanced_criteria_used:
+                # Rebuilds search_filter_ids from the current field values,
+                # including birthday_day/month set just above.
+                self.compute_advanced_search()
+
+            params = self.data_to_json(mapping_name)
+            params["sortBy"] = "PriorityScore"
+            prepared_requests.append((current_date, params))
+
+        # Fire all HTTP requests concurrently: this is the actual fix for
+        # the reported "infinite loading", which was 365 sequential calls.
+        onramp = OnrampConnector(self.env)
+
+        def fetch_http(item):
+            c_date, params = item
+            if method == "POST":
+                res = onramp.send_message(service_name, method, params)
+            else:
+                res = onramp.send_message(service_name, method, None, params)
+            return c_date, res
+
+        results = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=15) as executor:
+            futures = [executor.submit(fetch_http, req) for req in prepared_requests]
+            for future in concurrent.futures.as_completed(futures):
+                results.append(future.result())
+        # Requests complete out of order: restore Jan 1st -> Dec 31st order.
+        results.sort(key=lambda x: x[0])
+        missing_dates_list = []
+        total_matching_found = 0
+        all_new_children = self.env["compassion.global.child"]
+        for c_date, result in results:
+            if result.get("code") == 200 and result.get("content", {}).get(result_name):
+                total_matching_found += result["content"].get(
+                    "NumberOfBeneficiaries", 0
+                )
+                children_data = result["content"][result_name]
+                for child_data in children_data:
+                    child_vals = all_new_children.json_to_data(
+                        child_data, "Childpool Search Response"
+                    )
+                    child_vals["search_view_id"] = self.id
+                    all_new_children += self.env["compassion.global.child"].create(
+                        child_vals
+                    )
+            else:
+                missing_dates_list.append(c_date.strftime("%d.%m\n"))
+
+        restricted_children = all_new_children - all_new_children.filtered(
+            "field_office_id.available_on_childpool"
         )
-        self.do_search()
-        while current_date < last_day:
-            # Next steps: add child to the search result
-            current_date += relativedelta(days=1)
-            self.write(
-                {
-                    "birthday_day": current_date.day,
-                    "birthday_month": current_date.month,
-                    "skip": 0,
-                }
-            )
-            try:
-                self.add_search()
-            except UserError:
-                # No children found on that date: displays it.
-                self.missing_dates += current_date.strftime("%d.%m\n")
+        all_new_children -= restricted_children
+        self.nb_restricted_children = len(restricted_children)
+        restricted_children.unlink()
+
+        self.global_child_ids += all_new_children
+        self.nb_found = total_matching_found
 
         # Reset search criteria
         self.write(
@@ -348,6 +404,7 @@ class GlobalChildSearch(models.TransientModel):
                 "birthday_day": 0,
                 "birthday_month": 0,
                 "take": 80,
+                "missing_dates": "".join(missing_dates_list),
             }
         )
 
