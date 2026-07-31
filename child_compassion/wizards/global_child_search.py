@@ -351,16 +351,22 @@ class GlobalChildSearch(models.TransientModel):
             params["sortBy"] = "PriorityScore"
             prepared_requests.append((current_date, params))
 
+        # OnrampConnector is a process-wide singleton whose construction and
+        # token refresh both hit the ORM (res.config.settings). It must
+        # therefore be instantiated on the request thread, before spawning the
+        # workers: self.env's cursor cannot be used concurrently. The workers
+        # only call send_message(), which never touches the ORM.
+        onramp = OnrampConnector(self.env)
+
         # Fire all HTTP requests concurrently: this is the actual fix for
         # the reported "infinite loading", which was 365 sequential calls.
         def fetch_http(item):
             c_date, params = item
-            thread_onramp = OnrampConnector(self.env)
             try:
                 if method == "POST":
-                    res = thread_onramp.send_message(service_name, method, params)
+                    res = onramp.send_message(service_name, method, params)
                 else:
-                    res = thread_onramp.send_message(service_name, method, None, params)
+                    res = onramp.send_message(service_name, method, None, params)
                 return c_date, res
             except Exception as exc:
                 _logger.warning(
