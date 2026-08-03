@@ -72,17 +72,6 @@
                   style="margin-left: 5px"
                 />
                                 <button
-                  name="do_365_mix"
-                  string="365 children"
-                  type="object"
-                  class="oe_highlight"
-                  style="margin-left: 5px"
-                  confirm="This search may take around 10 seconds."
-                  confirm-title="Just a heads up"
-                  confirm-label="Let's go"
-                  cancel-label="Not now"
-                />
-                                <button
                   name="filter"
                   string="Apply Filter"
                   type="object"
@@ -184,14 +173,6 @@
                     </group>
                     <div invisible="not nb_found">
                         <p style="color:red">A filter is active</p>
-                    </div>
-                    <div invisible="not missing_dates">
-                        <p style="color:red">Missing birthdates</p>
-                        <field
-              name="missing_dates"
-              style="color: red"
-              readonly="1"
-            />
                     </div>
                     <separator />
                     <field name="global_child_ids" invisible="True" />
