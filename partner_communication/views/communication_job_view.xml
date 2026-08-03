@@ -84,6 +84,14 @@
               invisible="state != 'pending'"
             />
                         <button
+              name="preview_pdf_report"
+              string="Preview PDF"
+              type="object"
+              icon="fa-file-pdf-o"
+              class="oe_stat_button"
+              invisible="state != 'pending' or not report_id"
+            />
+                        <button
               name="open_related"
               string="Go to records"
               type="object"
