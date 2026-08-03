@@ -30,6 +30,7 @@ class PrintChildpack(models.TransientModel):
     lang = fields.Selection("_lang_selection", default=lambda s: s._default_lang())
     state = fields.Selection([("new", "new"), ("pdf", "pdf")], default="new")
     pdf = fields.Boolean("Print background")
+    print_qr = fields.Boolean("Print QR code", default=True)
     pdf_name = fields.Char(default="childpack.pdf")
     pdf_download = fields.Binary(readonly=True)
     module_name = fields.Char(compute="_compute_module_name")
@@ -87,6 +88,7 @@ class PrintChildpack(models.TransientModel):
             "doc_ids": children.ids,
             "is_pdf": self.pdf,
             "type": self.type,
+            "print_qr": self.print_qr,
         }
         report_name = self.module_name + ".report_" + self.type.split(".")[1]
         report_ref = self.env.ref(report_name).with_context(lang=self.lang)

@@ -10,7 +10,9 @@
 import logging
 import traceback
 from datetime import date
+from urllib.parse import urlencode
 
+import pyqrcode
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
@@ -223,6 +225,10 @@ class CompassionChild(models.Model):
     # Just for migration
     delegated_comment = fields.Text()
 
+    qr_code_data = fields.Binary(
+        compute="_compute_qr_code", help="QR code for sponsoring the child"
+    )
+
     _sql_constraints = [
         ("compass_id", "unique(compass_id)", "The child already exists in database."),
         ("global_id", "unique(global_id)", "The child already exists in database."),
@@ -283,6 +289,27 @@ class CompassionChild(models.Model):
         for child in self:
             if child.pictures_ids:
                 child.fullshot = child.pictures_ids.sorted()[:1].fullshot
+
+    @api.depends_context("qr_utm_medium", "qr_utm_source", "qr_utm_campaign")
+    def _compute_qr_code(self):
+        """QR code linking to the child's online sponsorship page.
+
+        UTMs can be overridden through the context keys ``qr_utm_medium``,
+        ``qr_utm_source`` and ``qr_utm_campaign``.
+        """
+        base_url = self.get_base_url().rstrip("/")
+        utm_params = {
+            "utm_medium": self.env.context.get("qr_utm_medium") or "childpack_qr",
+            "utm_source": self.env.context.get("qr_utm_source") or "hold_campaign",
+        }
+        utm_campaign = self.env.context.get("qr_utm_campaign")
+        if utm_campaign:
+            utm_params["utm_campaign"] = utm_campaign
+        query = urlencode(utm_params)
+        for child in self:
+            url = f"{base_url}/my2/new-sponsorship/{child.id}?{query}"
+            qr = pyqrcode.create(url)
+            child.qr_code_data = qr.png_as_base64_str(15, (0, 84, 166))
 
     @api.model
     def _available_states(self):
