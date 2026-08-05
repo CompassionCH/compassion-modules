@@ -78,6 +78,7 @@ class CommunicationAttachment(models.Model):
                         "datas": vals["data"],
                         "name": name,
                         "report_id": vals["report_id"],
+                        "type": "binary",
                     }
                 )
                 vals["attachment_id"] = attachment.id

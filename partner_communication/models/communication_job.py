@@ -228,8 +228,10 @@ class CommunicationJob(models.Model):
                     try:
                         report = record.report_id.with_context(
                             lang=record.partner_id.lang, must_skip_send_to_printer=True
+                        ).sudo()
+                        pdf_str = report._render_qweb_pdf(
+                            report.report_name, record.ids
                         )
-                        pdf_str = report.sudo()._render_qweb_pdf(record.ids)
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
                     except Exception:
