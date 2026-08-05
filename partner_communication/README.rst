@@ -106,7 +106,10 @@ Without the ``state`` column, the lines are imported as regular pending
 communications, ready to be sent by Odoo. As a safety net, an import
 never sends anything on its own, whatever the state — importing a
 recipient list is meant to record mailings, and a communication type set
-to send automatically would otherwise dispatch the whole file.
+to send automatically would otherwise dispatch the whole file. For the
+same reason an imported line is never merged into an existing
+communication, which may already be waiting to be sent: every line keeps
+its own record.
 
 Once imported, the communication list groups by Campaign, Medium and
 Source.

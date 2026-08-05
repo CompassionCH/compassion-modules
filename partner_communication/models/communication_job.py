@@ -362,8 +362,8 @@ class CommunicationJob(models.Model):
         # A CSV import (`import_file` is set by base_import) never sends anything, even
         # for pending communications: importing a recipient list is meant to record
         # mailings, and a communication type set to send automatically would otherwise
-        # dispatch the whole file. This also rules out merging into a job that is
-        # already queued for sending.
+        # dispatch the whole file. It never merges either, so that it cannot touch a
+        # communication that already has a send task queued.
         no_send = bool(self.env.context.get("import_file"))
         for vals in vals_list.copy():
             job = self._prepare_create_vals(vals, no_send=no_send)
@@ -429,7 +429,9 @@ class CommunicationJob(models.Model):
         """Normalise the values of a communication about to be created, and merge them
         into an existing pending communication when possible.
         :param vals: dict: record values, updated in place
-        :param no_send: never send anything while creating the communication.
+        :param no_send: nothing may be sent because of this creation, so never merge:
+                        an existing communication may already have a send task queued,
+                        which would then deliver these values along with it.
         :return: the job the values were merged into, empty recordset if none.
         """
         # Object ids accept lists, integer or string values. It should contain
@@ -459,15 +461,15 @@ class CommunicationJob(models.Model):
             vals["auto_send"] = False
             return self.browse()
 
-        return self._merge_into_pending_job(vals, no_send=no_send)
+        if no_send:
+            return self.browse()
 
-    def _merge_into_pending_job(self, vals, no_send=False):
+        return self._merge_into_pending_job(vals)
+
+    def _merge_into_pending_job(self, vals):
         """Look for a pending communication of the same partner and type in which the
         values being created can be merged, and merge them into it.
         :param vals: dict: record values
-        :param no_send: refuse to merge into a job that is sent automatically. Such a
-                        job already has a send task queued, which would deliver the
-                        values being created along with it.
         :return: the job the values were merged into, empty recordset if none was found.
         """
         same_job_search = [
@@ -482,10 +484,6 @@ class CommunicationJob(models.Model):
         ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search, limit=1)
         if not job or job.config_id.forbid_merging:
-            return self.browse()
-        if no_send and job.auto_send:
-            # Keep the values in their own job: this one is already queued for
-            # sending, and merging would make it deliver them too.
             return self.browse()
 
         job.object_ids = job.object_ids + "," + vals["object_ids"]
