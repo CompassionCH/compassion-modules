@@ -500,6 +500,18 @@ class Correspondence(models.Model):
                 ):
                     letter.original_language_id = detected_lang
 
+    def _detect_letter_language(self):
+        """Language the letter is actually written in. Detected from its text."""
+        self.ensure_one()
+        text = self.translated_text or self.english_text or self.original_text or ""
+        clean = (
+            text.strip(" \t\n\r.")
+            .replace(BOX_SEPARATOR, "")
+            .replace(PAGE_SEPARATOR, "")
+            .strip()
+        )
+        return self.env["langdetect"].detect_language(clean)
+
     @api.depends("uuid")
     def _compute_read_url(self):
         for letter in self:
