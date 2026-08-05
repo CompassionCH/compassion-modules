@@ -114,6 +114,7 @@ def auth_user(env: odoo_env = Depends(odoo_env), authorization: str = Header(...
         .search([("login", "=", client_id)])
     )
     if not user:
+        _logger.error("Unauthorized user: %s", client_id)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized user.",
@@ -126,15 +127,16 @@ def validate_headers(request: Request, env: odoo_env = Depends(odoo_env)):
     x_cim_toaddress = request.headers.get("x-cim-ToAddress")
     x_cim_messagetype = request.headers.get("x-cim-MessageType")
     if not x_cim_messagetype:
+        _logger.error("Unauthorized messagetype: %s", x_cim_messagetype)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing header: x-cim-MessageType",
+            detail="Missing message type header",
         )
     if x_cim_from_address not in AUTHORIZED_SENDERS:
         _logger.error("Unauthorized sender: %s", x_cim_from_address)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Wrong value for: x-cim-FromAddress",
+            detail="Wrong value for 'from' header",
         )
     company_obj = env["res.company"]
     param_obj = env["res.config.settings"]
@@ -146,5 +148,5 @@ def validate_headers(request: Request, env: odoo_env = Depends(odoo_env)):
         _logger.error("Unauthorized toaddress: %s", x_cim_toaddress)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Wrong value for: x-cim-ToAddress",
+            detail="Wrong value for 'to' header",
         )
