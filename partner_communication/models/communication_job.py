@@ -185,6 +185,14 @@ class CommunicationJob(models.Model):
 
     sms_cost = fields.Float()
 
+    # Campaign tracking. Defaults to the values of the communication type, and can then
+    # be changed on the communication itself.
+    utm_source_id = fields.Many2one("utm.source", "Source", index="btree_not_null")
+    utm_medium_id = fields.Many2one("utm.medium", "Medium", index="btree_not_null")
+    utm_campaign_id = fields.Many2one(
+        "utm.campaign", "Campaign", index="btree_not_null"
+    )
+
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped("attachment_ids.attachment_id")
@@ -345,36 +353,20 @@ class CommunicationJob(models.Model):
         """If a pending communication for same partner exists,
         add the object_ids to it. Otherwise, create a new communication.
         opt-out partners won't create any communication.
+
+        A communication created as done only records a mailing that was already
+        dispatched, outside of Odoo for instance: it is never merged, and nothing is
+        generated nor sent for it.
         """
         updated = self.browse()
+        # A CSV import (`import_file` is set by base_import) never sends anything, even
+        # for pending communications: importing a recipient list is meant to record
+        # mailings, and a communication type set to send automatically would otherwise
+        # dispatch the whole file.
+        no_send = bool(self.env.context.get("import_file"))
         for vals in vals_list.copy():
-            # Object ids accept lists, integer or string values. It should contain
-            # a comma separated list of integers
-            object_ids = vals.get("object_ids")
-            if isinstance(object_ids, list):
-                vals["object_ids"] = ",".join(map(str, object_ids))
-            elif object_ids:
-                vals["object_ids"] = str(object_ids)
-            else:
-                vals["object_ids"] = str(vals["partner_id"])
-
-            same_job_search = [
-                ("partner_id", "=", vals.get("partner_id")),
-                ("config_id", "=", vals.get("config_id")),
-                (
-                    "config_id",
-                    "!=",
-                    self.env.ref("partner_communication.default_communication").id,
-                ),
-                ("state", "in", ["pending", "failure"]),
-            ] + self.env.context.get("same_job_search", [])
-            job = self.search(same_job_search, limit=1)
-
-            if job and not job.config_id.forbid_merging:
-                job.object_ids = job.object_ids + "," + vals["object_ids"]
-                job.refresh_text()
-                if job.auto_send:
-                    job.send()
+            job = self._prepare_create_vals(vals, no_send=no_send)
+            if job:
                 updated += job
                 vals_list.remove(vals)
 
@@ -401,6 +393,11 @@ class CommunicationJob(models.Model):
             ):
                 job.auto_send = send_mode[1]
 
+            if job.state == "done":
+                # The communication is only recorded for tracking purposes: skip
+                # attachments and PDF rendering, and never call nor send anything.
+                continue
+
             job.set_attachments()
             if job.send_mode in ("both", "physical"):
                 job.count_pdf_page()
@@ -426,6 +423,69 @@ class CommunicationJob(models.Model):
                 )
 
         return updated + created
+
+    def _prepare_create_vals(self, vals, no_send=False):
+        """Normalise the values of a communication about to be created, and merge them
+        into an existing pending communication when possible.
+        :param vals: dict: record values, updated in place
+        :param no_send: never send anything while creating the communication.
+        :return: the job the values were merged into, empty recordset if none.
+        """
+        # Object ids accept lists, integer or string values. It should contain
+        # a comma separated list of integers
+        object_ids = vals.get("object_ids")
+        if isinstance(object_ids, list):
+            vals["object_ids"] = ",".join(map(str, object_ids))
+        elif object_ids:
+            vals["object_ids"] = str(object_ids)
+        else:
+            vals["object_ids"] = str(vals["partner_id"])
+
+        if no_send:
+            vals["auto_send"] = False
+
+        if "state" in vals and not vals["state"]:
+            # An empty cell in a CSV sets the field to False instead of leaving it out:
+            # fall back on the default state rather than create a stateless job.
+            del vals["state"]
+
+        if vals.get("state") == "done":
+            # The communication only records a mailing that was already dispatched,
+            # outside of Odoo for instance: it is never merged, and nothing may be
+            # generated nor sent for it.
+            if not vals.get("sent_date"):
+                vals["sent_date"] = fields.Datetime.now()
+            vals["auto_send"] = False
+            return self.browse()
+
+        return self._merge_into_pending_job(vals, no_send=no_send)
+
+    def _merge_into_pending_job(self, vals, no_send=False):
+        """Look for a pending communication of the same partner and type in which the
+        values being created can be merged, and merge them into it.
+        :param vals: dict: record values
+        :param no_send: don't send the job even if it is set to be sent automatically.
+        :return: the job the values were merged into, empty recordset if none was found.
+        """
+        same_job_search = [
+            ("partner_id", "=", vals.get("partner_id")),
+            ("config_id", "=", vals.get("config_id")),
+            (
+                "config_id",
+                "!=",
+                self.env.ref("partner_communication.default_communication").id,
+            ),
+            ("state", "in", ["pending", "failure"]),
+        ] + self.env.context.get("same_job_search", [])
+        job = self.search(same_job_search, limit=1)
+        if not job or job.config_id.forbid_merging:
+            return self.browse()
+
+        job.object_ids = job.object_ids + "," + vals["object_ids"]
+        job.refresh_text()
+        if job.auto_send and not no_send:
+            job.send()
+        return job
 
     @api.model
     def _get_dynamic_user(self, config, object_ids_str):
@@ -486,6 +546,9 @@ class CommunicationJob(models.Model):
                 "report_id",
                 "need_call",
                 "print_if_not_email",
+                "utm_source_id",
+                "utm_medium_id",
+                "utm_campaign_id",
             ]
         )
 

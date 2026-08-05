@@ -377,16 +377,112 @@ efficient.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-1">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-2">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-3">Authors</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-4">Maintainers</a></li>
+<li><a class="reference internal" href="#usage" id="toc-entry-1">Usage</a><ul>
+<li><a class="reference internal" href="#tracking-mailings-sent-outside-of-odoo" id="toc-entry-2">Tracking mailings sent outside of Odoo</a><ul>
+<li><a class="reference internal" href="#importing-a-recipient-list" id="toc-entry-3">Importing a recipient list</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-4">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-5">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-6">Authors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-7">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
+<div class="section" id="usage">
+<h1><a class="toc-backref" href="#toc-entry-1">Usage</a></h1>
+<div class="section" id="tracking-mailings-sent-outside-of-odoo">
+<h2><a class="toc-backref" href="#toc-entry-2">Tracking mailings sent outside of Odoo</a></h2>
+<p>Communications carry three UTM fields (Source, Medium, Campaign) so that
+mailings sent outside of Odoo — through a printing house, for instance —
+can be analysed together with the digital ones.</p>
+<p>Each communication type carries its own <strong>Campaign Tracking</strong> defaults,
+in the <em>General configuration</em> of its form. A communication starts with
+the values of its type, and they can then be changed on the
+communication itself.</p>
+<p>A communication <strong>created directly in the Done state</strong> records a mailing
+that was already dispatched: Odoo generates nothing and sends nothing
+for it, and it is not merged into a pending communication. Its sending
+date is filled in automatically when it is not given. Such a
+communication keeps no content, since what was printed did not come from
+Odoo.</p>
+<div class="section" id="importing-a-recipient-list">
+<h3><a class="toc-backref" href="#toc-entry-3">Importing a recipient list</a></h3>
+<p>To record a mailing that has already been dispatched, import the
+recipient list sent to the printer from <em>Contacts → Partner
+Communication → Communication Jobs</em>, with the standard <strong>Import
+records</strong> button. Useful columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Column</th>
+<th class="head">Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal">partner_id</tt></td>
+<td>Partner reference (the <tt class="docutils literal">ref</tt> field), or the
+partner name</td>
+</tr>
+<tr><td><tt class="docutils literal">config_id</tt></td>
+<td>Name of the communication type</td>
+</tr>
+<tr><td><tt class="docutils literal">state</tt></td>
+<td><tt class="docutils literal">Done</tt> for a mailing that was already
+dispatched</td>
+</tr>
+<tr><td><tt class="docutils literal">send_mode</tt></td>
+<td><tt class="docutils literal">Print report</tt> for a letter (or the
+technical value <tt class="docutils literal">physical</tt>)</td>
+</tr>
+<tr><td><tt class="docutils literal">subject</tt></td>
+<td>Optional — a readable label, otherwise the
+lines show no subject</td>
+</tr>
+<tr><td><tt class="docutils literal">utm_source_id</tt></td>
+<td>Optional — defaults to the source of the
+communication type</td>
+</tr>
+<tr><td><tt class="docutils literal">utm_medium_id</tt></td>
+<td>Optional — defaults to the medium of the
+communication type</td>
+</tr>
+<tr><td><tt class="docutils literal">utm_campaign_id</tt></td>
+<td>Optional — defaults to the campaign of the
+communication type</td>
+</tr>
+<tr><td><tt class="docutils literal">sent_date</tt></td>
+<td>Optional — dispatch date, defaults to the
+date of the import</td>
+</tr>
+</tbody>
+</table>
+<p>An <strong>empty cell is not the same as a missing column</strong>: it sets the field
+to empty instead of falling back on the default of the communication
+type. To rely on the defaults, leave the column out of the file
+entirely.</p>
+<p>Prefer the partner <strong>reference</strong> over the name: a name is matched
+through <tt class="docutils literal">name_search</tt>, which silently picks the first record when
+several partners share it. UTM records given by name must exist
+beforehand, and their names must be unique for the same reason.</p>
+<p>Without the <tt class="docutils literal">state</tt> column, the lines are imported as regular pending
+communications, ready to be sent by Odoo. As a safety net, an import
+never sends anything on its own, whatever the state — importing a
+recipient list is meant to record mailings, and a communication type set
+to send automatically would otherwise dispatch the whole file.</p>
+<p>Once imported, the communication list groups by Campaign, Medium and
+Source.</p>
+</div>
+</div>
+</div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-1">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-4">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/CompassionCH/compassion-modules/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
@@ -394,15 +490,15 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-2">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-5">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-3">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-6">Authors</a></h2>
 <ul class="simple">
 <li>Compassion Switzerland</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-4">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-7">Maintainers</a></h2>
 <p>This module is part of the <a class="reference external" href="https://github.com/CompassionCH/compassion-modules/tree/18.0/partner_communication">CompassionCH/compassion-modules</a> project on GitHub.</p>
 <p>You are welcome to contribute.</p>
 </div>

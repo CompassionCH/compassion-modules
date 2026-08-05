@@ -41,6 +41,11 @@
                             <field name="report_id" />
                             <field name="attachments_function" />
                         </group>
+                        <group string="Campaign Tracking">
+                            <field name="utm_source_id" />
+                            <field name="utm_medium_id" />
+                            <field name="utm_campaign_id" />
+                        </group>
                     </group>
                     <separator string="Custom configuration" />
                     <field

@@ -136,6 +136,11 @@ class CommunicationConfig(models.Model):
     forbid_merging = fields.Boolean(
         help="If selected, disable the automatic merging of communications",
     )
+    # Values the communications of this type start with. They are only defaults: they
+    # are copied on the job at creation and can be changed on it afterwards.
+    utm_source_id = fields.Many2one("utm.source", "Default Source")
+    utm_medium_id = fields.Many2one("utm.medium", "Default Medium")
+    utm_campaign_id = fields.Many2one("utm.campaign", "Default Campaign")
     active = fields.Boolean(default=True)
     send_from = fields.Selection(
         [
@@ -291,10 +296,15 @@ class CommunicationConfig(models.Model):
         """
         send_priority = self._get_send_priority(partner, print_if_not_email)
         if communication_send_mode != "partner_preference":
-            partner_mode = getattr(
-                partner,
-                send_mode_pref_field or "global_communication_delivery_preference",
-                partner.global_communication_delivery_preference,
+            partner_mode = (
+                getattr(
+                    partner,
+                    send_mode_pref_field or "global_communication_delivery_preference",
+                    partner.global_communication_delivery_preference,
+                )
+                # An empty partner recordset (in the creation form, the config has a
+                # default value but no partner is selected yet) has no preference.
+                or "none"
             )
             auto_mode = self._get_auto_mode(partner_mode, communication_send_mode)
             if communication_send_mode == partner_mode:
