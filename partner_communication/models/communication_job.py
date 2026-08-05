@@ -818,6 +818,12 @@ class CommunicationJob(models.Model):
             "target": "new",
         }
 
+    def preview_pdf_report(self):
+        self.ensure_one()
+        return self.report_id.with_context(
+            lang=self.partner_id.lang, must_skip_send_to_printer=True
+        ).report_action(self.ids, config=False)
+
     def download_data(self):
         action = {
             "type": "ir.actions.act_window",
