@@ -9,8 +9,9 @@
 ##############################################################################
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.osv import expression
 from odoo.tools.safe_eval import safe_eval, wrap_module
 
 _logger = logging.getLogger(__name__)
@@ -66,6 +67,35 @@ class FieldToJson(models.Model):
         help="Odoo field name that will be used to search for an existing relational "
         "record. If not specified, it will assume a single value is given and "
         "will search according the relational_field set."
+    )
+    relational_domain_restrict = fields.Char(
+        help="Optional domain (Odoo domain syntax) added to the search "
+        "performed for an existing relational record. Use it to disambiguate "
+        "between several records that could otherwise match the same "
+        "search value."
+    )
+    relational_comodel_name = fields.Char(
+        related="relational_field_id.relation",
+        help="Technical field holding the model name of the relational field, "
+        "used to know which model relational_domain_restrict applies to.",
+    )
+    relational_ttype = fields.Selection(
+        related="relational_field_id.ttype",
+        help="Technical field holding the type (many2one, many2many, ...) "
+        "of the relational field, used to show Many2one-specific options "
+        "in the view.",
+    )
+    many2one_multiple_match_policy = fields.Selection(
+        [
+            ("first_match", "Take First Match"),
+            ("raise", "Raise an Error"),
+        ],
+        default="first_match",
+        help="When the search for an existing record on a Many2one field "
+        "returns several matches, decide whether to silently take the "
+        "first one found (legacy behavior) or raise an error so the "
+        "ambiguity can be resolved manually, e.g. with a domain "
+        "restriction.",
     )
     allow_relational_creation = fields.Boolean(
         help="If set to true, new records will be created if no matching "
@@ -236,18 +266,38 @@ class FieldToJson(models.Model):
                 # In that case we receive several values for the relation record
                 # and use one value in particular to find a matching record.
                 search_val = val.get(search_field)
-            records = (
-                relational_model.search(
-                    [
-                        "|",
-                        (search_field, "=", search_val),
-                        (search_field, "=ilike", str(search_val)),
-                    ]
-                )
-                if search_val
-                else relational_model
-            )
+            if search_val:
+                domain = [
+                    "|",
+                    (search_field, "=", search_val),
+                    (search_field, "=ilike", str(search_val)),
+                ]
+                if self.relational_domain_restrict:
+                    domain = expression.AND(
+                        [domain, safe_eval(self.relational_domain_restrict)]
+                    )
+                records = relational_model.search(domain)
+            else:
+                records = relational_model
             if self.relational_field_id.ttype == "many2one":
+                if len(records) > 1 and self.many2one_multiple_match_policy == "raise":
+                    raise UserError(
+                        _(
+                            "Found %(count)s records matching value %(value)r "
+                            "for field %(field)s (mapping %(mapping)s), but "
+                            "expected at most one. Restrict the search with a "
+                            "domain or allow taking the first match on the "
+                            "field mapping configuration. Matching records: "
+                            "%(records)s"
+                        )
+                        % {
+                            "count": len(records),
+                            "value": search_val,
+                            "field": self.odoo_field,
+                            "mapping": self.mapping_id.name,
+                            "records": records,
+                        }
+                    )
                 record = records[:1]  # Only take one relation
                 if not record and self.allow_relational_creation:
                     to_create.append(val)
@@ -364,3 +414,68 @@ class FieldToJson(models.Model):
                         }
                     )
         return [(0, 0, values) for values in record_values]
+
+    def action_check_duplicate_matches(self):
+        """
+        Diagnostic action for the "Check for duplicates" button: scans the
+        actual current data of the relational model targeted by this field
+        mapping, and reports which search values currently match more than
+        one record - i.e. the exact ambiguity a Many2one lookup could hit
+        when converting an incoming GMC message (see T3276).
+
+        This lets a non-technical user self-serve the same check a
+        developer would otherwise have to run manually against the
+        database.
+        """
+        self.ensure_one()
+        if (
+            self.relational_field_id.ttype != "many2one"
+            or not self.search_relational_record
+        ):
+            raise UserError(
+                _(
+                    "This check only applies to a Many2one field configured "
+                    "with 'Search Relational Record' enabled."
+                )
+            )
+        target_model = self.relational_comodel_name
+        search_field = self.search_key or self.field_id.name
+        if not target_model or not search_field:
+            raise UserError(_("Cannot determine the target model/field to check."))
+
+        duplicate_groups = self.env[target_model]._read_group(
+            domain=[(search_field, "!=", False)],
+            groupby=[search_field],
+            aggregates=["__count"],
+            having=[("__count", ">", 1)],
+        )
+        if not duplicate_groups:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("No ambiguity found"),
+                    "message": _(
+                        "No duplicate values currently exist on %(model)s.%(field)s. "
+                        "This lookup is safe for now, but new data could still "
+                        "introduce a duplicate later."
+                    )
+                    % {"model": target_model, "field": search_field},
+                    "type": "success",
+                    "sticky": False,
+                },
+            }
+        raw_values = [group[0] for group in duplicate_groups]
+        if raw_values and isinstance(raw_values[0], models.BaseModel):
+            domain_values = [value.id for value in raw_values]
+        else:
+            domain_values = raw_values
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("%(count)s value(s) of %(field)s match several records")
+            % {"count": len(domain_values), "field": search_field},
+            "res_model": target_model,
+            "view_mode": "list,form",
+            "domain": [(search_field, "in", domain_values)],
+            "context": {"group_by": [search_field]},
+        }
