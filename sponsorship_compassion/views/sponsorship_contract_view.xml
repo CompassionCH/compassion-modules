@@ -358,13 +358,6 @@
     sequence="12"
     action="recurring_contract.action_invoice_automatic_generation"
   />
-    <menuitem
-    id="menu_recurring_invoicer_form"
-    name="Generated invoices"
-    parent="account.menu_finance_receivables"
-    sequence="13"
-    action="recurring_contract.action_recurring_invoicer_form"
-  />
 
     <!-- Move the Sponsorships Menu to the Sponsorship Section -->
     <menuitem
