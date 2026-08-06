@@ -31,11 +31,6 @@ msgstr "365 barn"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>(</span>"
-msgstr "<span>(</span>"
-
-#. module: child_compassion
-#: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
 msgid "<span>About the child development center</span>"
 msgstr "<span>Compassion-centret</span>"
 

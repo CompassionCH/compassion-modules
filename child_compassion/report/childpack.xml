@@ -125,20 +125,22 @@
                 <div class="summary">
                     <p t-field="o.preferred_name" class="summary_field name" />
                     <p class="summary_field birthday">
-                        <t t-if="o.age">
-                            <span t-esc="o.age" />
-                            <span>(</span>
-                        </t>
-                        <t
-            t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')"
+                        <span t-if="o.age" t-esc="o.age" />
+                        <span
+            t-attf-class="birth#{' parenthesis' if o.age else ''}"
           >
-                            <span>Born (F)</span>
-                        </t>
-                        <t t-else="">
-                            <span>Born</span>
-                        </t>
-                        <span t-esc="o.get_date('birthdate', 'dd MMM YYYY')" />
-                        <span t-if="o.age">)</span>
+                            <t
+              t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')"
+            >
+                                <span>Born (F)</span>
+                            </t>
+                            <t t-else="">
+                                <span>Born</span>
+                            </t>
+                            <span
+              t-esc="o.get_date('birthdate', 'dd MMM YYYY')"
+            />
+                        </span>
                     </p>
                     <p
           t-field="o.project_id.country_id.name"
@@ -256,6 +258,14 @@
             }
             .summary_field.country {
                 font-size: 9pt;
+            }
+            /* Drawn in CSS so that the parentheses are neither exposed as
+               translatable terms nor spaced out by the HTML whitespace collapsing */
+            .summary_field.birthday .parenthesis:before {
+                content: "(";
+            }
+            .summary_field.birthday .parenthesis:after {
+                content: ")";
             }
             .activities {
                 display: none;
