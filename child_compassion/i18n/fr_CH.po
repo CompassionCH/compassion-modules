@@ -41,12 +41,12 @@ msgstr "<span>Disponible jusqu'au : </span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born (F)</span>"
+msgid "<span>Born on (F)</span>"
 msgstr "<span>Née le</span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born</span>"
+msgid "<span>Born on</span>"
 msgstr "<span>Né le</span>"
 
 #. module: child_compassion

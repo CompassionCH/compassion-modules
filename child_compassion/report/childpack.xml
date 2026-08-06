@@ -132,10 +132,10 @@
                             <t
               t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')"
             >
-                                <span>Born (F)</span>
+                                <span>Born on (F)</span>
                             </t>
                             <t t-else="">
-                                <span>Born</span>
+                                <span>Born on</span>
                             </t>
                             <span
               t-esc="o.get_date('birthdate', 'dd MMM YYYY')"
