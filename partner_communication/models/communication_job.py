@@ -968,8 +968,8 @@ class CommunicationJob(models.Model):
     def _notify_get_reply_to(
         self, default=None, records=None, company=None, doc_names=None
     ):
-        res = dict.fromkeys(self.ids)
-        for job in self:
+        res = dict.fromkeys(self.ids, default)
+        for job in self.filtered("email_template_id"):
             res.update(job.email_template_id._render_field("reply_to", job.ids))
         return res
 
