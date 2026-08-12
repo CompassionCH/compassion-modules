@@ -22,6 +22,11 @@ from odoo.tools.config import config
 
 _logger = logging.getLogger(__name__)
 
+# requests has no default timeout: without this a non-responding GMC blocks the
+# worker until the Odoo time limit kills it (up to 8h), holding its queue channel.
+# (connect, read) seconds.
+GMC_TIMEOUT = (10, 60)
+
 
 class OnrampConnector:
     """Singleton class to connect to U.S. Onramp in order to send
@@ -113,14 +118,26 @@ class OnrampConnector:
         while not isinstance(r, requests.Response) and count < 5:
             try:
                 if message_type in ("GET", "GET_RAW"):
-                    r = self._session.get(url, headers=headers, params=params)
+                    r = self._session.get(
+                        url, headers=headers, params=params, timeout=GMC_TIMEOUT
+                    )
                 elif message_type == "POST":
                     r = self._session.post(
-                        url, headers=headers, json=body, params=params, data=data
+                        url,
+                        headers=headers,
+                        json=body,
+                        params=params,
+                        data=data,
+                        timeout=GMC_TIMEOUT,
                     )
                 elif message_type == "PUT":
                     r = self._session.put(
-                        url, headers=headers, json=body, params=params, data=data
+                        url,
+                        headers=headers,
+                        json=body,
+                        params=params,
+                        data=data,
+                        timeout=GMC_TIMEOUT,
                     )
                 else:
                     return {"code": 404, "Error": "No valid HTTP verb used"}
@@ -181,7 +198,11 @@ class OnrampConnector:
             "Content-type": "application/x-www-form-urlencoded",
         }
         response = requests.post(
-            provider, data=params_post, auth=(client, secret), headers=header_post
+            provider,
+            data=params_post,
+            auth=(client, secret),
+            headers=header_post,
+            timeout=GMC_TIMEOUT,
         )
         try:
             token = response.json()
