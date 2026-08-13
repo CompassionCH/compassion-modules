@@ -114,10 +114,14 @@ class DemandPlanning(models.Model):
 
     @api.model
     def process_weekly_demand(self):
-        """Weekly CRON for Demand Planning.
-        1. Submit previsions
-        2. Create Demand Planning for the next weeks
-        """
+        """Weekly CRON for Demand Planning."""
+        # Push to job queue instead of synchronous
+        # API request. No blocking in cas of an error
+        self.with_delay()._process_weekly_demand()
+        return True
+
+    def _process_weekly_demand(self):
+        """Submit previsions and create Demand Planning for the next weeks."""
         next_week = datetime.today() + timedelta(days=7)
         previsions = self.search([("state", "=", "draft"), ("date", "<=", next_week)])
         previsions.send_planning()
