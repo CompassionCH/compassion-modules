@@ -443,13 +443,36 @@ class FieldToJson(models.Model):
         if not target_model or not search_field:
             raise UserError(_("Cannot determine the target model/field to check."))
 
-        duplicate_groups = self.env[target_model]._read_group(
-            domain=[(search_field, "!=", False)],
+        domain = [(search_field, "!=", False)]
+        if self.relational_domain_restrict:
+            domain = expression.AND(
+                [domain, safe_eval(self.relational_domain_restrict)]
+            )
+
+        groups = self.env[target_model]._read_group(
+            domain=domain,
             groupby=[search_field],
             aggregates=["__count"],
-            having=[("__count", ">", 1)],
         )
-        if not duplicate_groups:
+
+        field_type = self.env[target_model]._fields[search_field].type
+        if field_type in ("char", "text", "selection"):
+            buckets = {}
+            for value, count in groups:
+                key = value.lower() if value else value
+                bucket = buckets.setdefault(key, {"count": 0, "values": []})
+                bucket["count"] += count
+                bucket["values"].append(value)
+            ambiguous_values = [
+                value
+                for bucket in buckets.values()
+                if bucket["count"] > 1
+                for value in bucket["values"]
+            ]
+        else:
+            ambiguous_values = [value for value, count in groups if count > 1]
+
+        if not ambiguous_values:
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
@@ -465,11 +488,10 @@ class FieldToJson(models.Model):
                     "sticky": False,
                 },
             }
-        raw_values = [group[0] for group in duplicate_groups]
-        if raw_values and isinstance(raw_values[0], models.BaseModel):
-            domain_values = [value.id for value in raw_values]
+        if isinstance(ambiguous_values[0], models.BaseModel):
+            domain_values = [value.id for value in ambiguous_values]
         else:
-            domain_values = raw_values
+            domain_values = ambiguous_values
         return {
             "type": "ir.actions.act_window",
             "name": _("%(count)s value(s) of %(field)s match several records")
