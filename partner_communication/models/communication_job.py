@@ -24,6 +24,10 @@ from odoo.exceptions import MissingError, QWebException, UserError
 from odoo.addons.phone_validation.tools import phone_validation
 
 _logger = logging.getLogger(__name__)
+
+# Cursor for vacuum_old_attachments, so each run resumes where the last stopped.
+_VACUUM_CURSOR_DATE = "partner_communication.vacuum_last_date"
+_VACUUM_CURSOR_ID = "partner_communication.vacuum_last_id"
 testing = tools.config.get("test_enable")
 
 try:
@@ -1068,27 +1072,43 @@ class CommunicationJob(models.Model):
         timeout keeps what was already deleted.
         """
         cutoff = fields.Datetime.subtract(fields.Datetime.now(), years=years)
+        attachment_obj = self.env["ir.attachment"]
+        params = self.env["ir.config_parameter"].sudo()
         removed = 0
         freed = 0
+        last_date = params.get_param(_VACUUM_CURSOR_DATE)
+        last_id = int(params.get_param(_VACUUM_CURSOR_ID, 0))
         deadline = time.time() + max_seconds
         while time.time() < deadline:
-            jobs = self.search(
-                [("date", "<", cutoff), ("attachment_ids", "!=", False)],
-                order="date asc",
-                limit=batch,
-            )
+            domain = [("date", "<", cutoff)]
+            if last_date:
+                domain += [
+                    "|",
+                    ("date", ">", last_date),
+                    "&",
+                    ("date", "=", last_date),
+                    ("id", ">", last_id),
+                ]
+            jobs = self.search(domain, order="date asc, id asc", limit=batch)
             if not jobs:
                 break
-            job_attachments = jobs.mapped("attachment_ids")
-            orphans = self.env["ir.attachment"].search(
+            last_date = fields.Datetime.to_string(jobs[-1].date)
+            last_id = jobs[-1].id
+            params.set_param(_VACUUM_CURSOR_DATE, last_date)
+            params.set_param(_VACUUM_CURSOR_ID, last_id)
+            wrappers = jobs.mapped("attachment_ids")
+            # Direct ir.attachment rows on those jobs, including jobs with no
+            # wrapper at all - those were never reached before.
+            direct = attachment_obj.search(
                 [("res_model", "=", self._name), ("res_id", "in", jobs.ids)]
-            ) - job_attachments.mapped("attachment_id")
-            removed += len(orphans) + len(job_attachments)
-            freed += sum(orphans.mapped("file_size")) + sum(
-                job_attachments.mapped("attachment_id.file_size")
-            )
-            orphans.unlink()
-            job_attachments.unlink()
+            ) - wrappers.mapped("attachment_id")
+            if direct or wrappers:
+                removed += len(direct) + len(wrappers)
+                freed += sum(direct.mapped("file_size")) + sum(
+                    wrappers.mapped("attachment_id.file_size")
+                )
+                direct.unlink()
+                wrappers.unlink()
             self.env.cr.commit()  # pylint: disable=invalid-commit
         _logger.info(
             "Vacuum old attachments: removed %s attachments, freed %.1f MB",
