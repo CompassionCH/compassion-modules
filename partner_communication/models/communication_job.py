@@ -11,6 +11,7 @@ import base64
 import logging
 import re
 import threading
+import time
 from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
@@ -1055,3 +1056,43 @@ class CommunicationJob(models.Model):
             self[:1].printed_pdf_data = base64.b64encode(to_print[0])
 
         return print_options
+
+    @api.model
+    def vacuum_old_attachments(self, years=2, batch=500, max_seconds=120):
+        """Delete the attachments of communication jobs older than `years`.
+
+        T3374: the previous DB-only cron deleted every match in a single
+        transaction. Once a busy week crossed the rolling cutoff it could no
+        longer finish within the 300s cron limit, and each kill discarded the
+        work and retried the same slice forever. Committing per batch means a
+        timeout keeps what was already deleted.
+        """
+        cutoff = fields.Datetime.subtract(fields.Datetime.now(), years=years)
+        removed = 0
+        freed = 0
+        deadline = time.time() + max_seconds
+        while time.time() < deadline:
+            jobs = self.search(
+                [("date", "<", cutoff), ("attachment_ids", "!=", False)],
+                order="date asc",
+                limit=batch,
+            )
+            if not jobs:
+                break
+            job_attachments = jobs.mapped("attachment_ids")
+            orphans = self.env["ir.attachment"].search(
+                [("res_model", "=", self._name), ("res_id", "in", jobs.ids)]
+            ) - job_attachments.mapped("attachment_id")
+            removed += len(orphans) + len(job_attachments)
+            freed += sum(orphans.mapped("file_size")) + sum(
+                job_attachments.mapped("attachment_id.file_size")
+            )
+            orphans.unlink()
+            job_attachments.unlink()
+            self.env.cr.commit()  # pylint: disable=invalid-commit
+        _logger.info(
+            "Vacuum old attachments: removed %s attachments, freed %.1f MB",
+            removed,
+            freed / 1e6,
+        )
+        return True
