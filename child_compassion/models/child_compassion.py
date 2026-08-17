@@ -297,7 +297,6 @@ class CompassionChild(models.Model):
         UTMs can be overridden through the context keys ``qr_utm_medium``,
         ``qr_utm_source`` and ``qr_utm_campaign``.
         """
-        base_url = self.get_base_url().rstrip("/")
         utm_params = {
             "utm_medium": self.env.context.get("qr_utm_medium") or "childpack_qr",
             "utm_source": self.env.context.get("qr_utm_source") or "hold_campaign",
@@ -307,6 +306,7 @@ class CompassionChild(models.Model):
             utm_params["utm_campaign"] = utm_campaign
         query = urlencode(utm_params)
         for child in self:
+            base_url = child.get_base_url().rstrip("/")
             url = f"{base_url}/my2/new-sponsorship/{child.id}?{query}"
             qr = pyqrcode.create(url)
             child.qr_code_data = qr.png_as_base64_str(15, (0, 84, 166))

@@ -20,5 +20,6 @@ from . import (
     major_revision,
     project_compassion,
     project_lifecycle_event,
+    report_childpack,
     weekly_demand,
 )
