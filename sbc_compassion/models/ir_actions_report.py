@@ -11,7 +11,13 @@ class IrActionsReport(models.Model):
         # For correspondence reports, if a letter has a pre-scanned PDF, use that PDF
         # directly instead of rendering the QWeb template.
         # Merge it with other rendered letters.
-        if report_ref != "sbc_compassion.correspondence_report_qweb" or not res_ids:
+        # report_ref can be an id, a record, an xmlid or a report_name (see
+        # _get_report()'s docstring) - normalize before comparing.
+        report = self._get_report(report_ref)
+        if (
+            report.report_name != "sbc_compassion.correspondence_report_qweb"
+            or not res_ids
+        ):
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
         attachments = self.env["ir.attachment"].search(
