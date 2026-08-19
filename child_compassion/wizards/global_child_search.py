@@ -19,6 +19,13 @@ from odoo.exceptions import UserError
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
+class ChildpoolNoResultsError(UserError):
+    """Raised when the childpool answers correctly but returns no children.
+
+    Callers can catch this to tell an empty pool from a real service failure.
+    """
+
+
 class GlobalChildSearch(models.TransientModel):
     """
     Class used for searching children in the global childpool.
@@ -402,25 +409,29 @@ class GlobalChildSearch(models.TransientModel):
         self.write({"search_filter_ids": [(5, False, False)]})
         new_filters = list()
 
+        # Utility to add a filter whatever the value of the related field
+        def add_filter(field_name, operator_id, value):
+            ir_field = self.env["ir.model.fields"].search(
+                [("model", "=", self._name), ("name", "=", field_name)], limit=1
+            )
+            new_filters.append(
+                (
+                    0,
+                    0,
+                    {
+                        "field_id": ir_field.id,
+                        "operator_id": operator_id,
+                        "value": value,
+                    },
+                )
+            )
+
         # Utility to get write values for a selected filter
         def create_filter(field_name, operator_id, value=None):
             if self[field_name]:
-                ir_field = self.env["ir.model.fields"].search(
-                    [("model", "=", self._name), ("name", "=", field_name)], limit=1
-                )
                 if value is None:
                     value = self[field_name]
-                new_filters.append(
-                    (
-                        0,
-                        0,
-                        {
-                            "field_id": ir_field.id,
-                            "operator_id": operator_id,
-                            "value": value,
-                        },
-                    )
-                )
+                add_filter(field_name, operator_id, value)
 
         # Construct filter values
         anyof_id = self.env.ref("message_center_compassion.anyof").id
@@ -432,7 +443,8 @@ class GlobalChildSearch(models.TransientModel):
             min_age = self.min_age or 0
             max_age = self.max_age or 120
             age_range = str(min_age) + ";" + str(max_age)
-            create_filter("min_age", between_id, age_range)
+            # A minimum age of 0 is a valid bound, so the filter is always added
+            add_filter("min_age", between_id, age_range)
         create_filter("local_id", is_id)
         create_filter("child_name", is_id, self.child_name)
         create_filter("state_selected", anyof_id, self.state_selected)
@@ -445,7 +457,7 @@ class GlobalChildSearch(models.TransientModel):
                 is_id,
                 "T" if self.chronic_illness == "Yes" else "F",
             )
-        values = ";".join(self.field_office_ids.mapped("country_code"))
+        values = ";".join(self.field_office_ids.mapped("field_office_id"))
         create_filter("field_office_ids", anyof_id, values)
         if self.gender:
             create_filter("gender", anyof_id, self.gender[0])
@@ -540,7 +552,7 @@ class GlobalChildSearch(models.TransientModel):
             self.nb_found = result["content"].get("NumberOfBeneficiaries", 0)
 
             if not result["content"][result_name]:
-                raise UserError(_("No children found meeting criterias"))
+                raise ChildpoolNoResultsError(_("No children found meeting criterias"))
             new_children = self.env["compassion.global.child"]
             for child_data in result["content"][result_name]:
                 child_vals = new_children.json_to_data(
