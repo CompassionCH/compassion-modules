@@ -142,7 +142,7 @@
     </template>
     <template id="correspondence_header">
         <t t-set="child" t-value="letter.sponsorship_id.child_id" />
-        <t t-set="sponsor" t-value="letter.sponsorship_id.partner_id" />
+        <t t-set="sponsor" t-value="letter.sponsorship_id.correspondent_id" />
         <div class="d-flex flex-row-reverse">
             <span
         t-out="'%s - %s' % (sponsor.global_id, sponsor.preferred_name or sponsor.firstname)"
