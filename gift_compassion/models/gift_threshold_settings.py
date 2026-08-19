@@ -9,7 +9,7 @@
 ##############################################################################
 import math
 
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class GiftThresholdSettings(models.Model):
@@ -57,6 +57,13 @@ class GiftThresholdSettings(models.Model):
             round=False,
         )
         return f"{company.currency_id.name} {int(math.ceil(raw_amount))}"
+
+    def get_gift_frequency_label(self):
+        if not self.gift_frequency:
+            return _("Unlimited")
+        if self.yearly_threshold:
+            return _("%s / year") % self.gift_frequency
+        return _("%s total") % self.gift_frequency
 
     def get_gift_frequency_indicator(self):
         if self.yearly_threshold and self.gift_frequency == 2:
