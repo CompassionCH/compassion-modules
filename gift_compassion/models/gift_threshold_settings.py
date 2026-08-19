@@ -48,15 +48,20 @@ class GiftThresholdSettings(models.Model):
     def get_gift_type_label(self):
         return self._get_selection_label(self.get_gift_types(), self.gift_type)
 
-    def get_ceiling_converted_amount(self, amount, company, date):
-        raw_amount = self.currency_id._convert(
-            from_amount=amount,
-            to_currency=company.currency_id,
-            company=company,
-            date=date,
-            round=False,
-        )
-        return f"{company.currency_id.name} {int(math.ceil(raw_amount))}"
+    def get_amount_range_label(self, company, date):
+        def ceiling(amount):
+            converted = self.currency_id._convert(
+                from_amount=amount,
+                to_currency=company.currency_id,
+                company=company,
+                date=date,
+                round=False,
+            )
+            return int(math.ceil(converted))
+
+        min_amount = ceiling(self.min_amount)
+        max_amount = ceiling(self.max_amount)
+        return f"{min_amount} - {max_amount} {company.currency_id.name}"
 
     def get_gift_frequency_label(self):
         if not self.gift_frequency:
