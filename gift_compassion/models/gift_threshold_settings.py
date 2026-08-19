@@ -72,5 +72,5 @@ class GiftThresholdSettings(models.Model):
 
     def get_gift_frequency_indicator(self):
         if not self.yearly_threshold and self.gift_frequency == 1:
-            return "**"
+            return "*"
         return ""
