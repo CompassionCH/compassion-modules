@@ -868,3 +868,21 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_collect
 msgid "_Add to gift"
 msgstr ""
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "Unlimited"
+msgstr "Illimitato"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "%s / year"
+msgstr "%s / anno"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "%s total"
+msgstr "%s in totale"
