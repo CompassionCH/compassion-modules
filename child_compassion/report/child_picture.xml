@@ -48,10 +48,22 @@ img {
   border-radius: 2mm;
   text-align: center;
 }
+.no-picture {
+  position: absolute;
+  top: 70mm;
+  left: 10mm;
+  right: 10mm;
+  text-align: center;
+}
           </style>
                             <img
-            t-attf-src="data:image/jpeg;base64,#{ o.fullshot }"
+            t-if="o.fullshot"
+            t-att-src="image_data_uri(o.fullshot)"
+            alt=""
           />
+                            <div t-else="" class="no-picture">
+                                <span>No picture available</span>
+                            </div>
                             <div id="child-ref">
                                 <span t-field="o.preferred_name" />
                                 <span> </span>
