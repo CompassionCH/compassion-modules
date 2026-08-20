@@ -289,6 +289,8 @@ class CompassionChild(models.Model):
         for child in self:
             if child.pictures_ids:
                 child.fullshot = child.pictures_ids.sorted()[:1].fullshot
+            else:
+                child.fullshot = False
 
     @api.depends_context("qr_utm_medium", "qr_utm_source", "qr_utm_campaign")
     def _compute_qr_code(self):
