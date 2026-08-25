@@ -209,7 +209,10 @@ class CommunicationRevision(models.Model):
 
     def _compute_display_name(self):
         for rev in self:
-            rev.display_name = rev.config_id.name + " - " + rev.lang.upper()[:2]
+            name = rev.config_id.name or _("New")
+            if rev.lang:
+                name += " - " + rev.lang.upper()[:2]
+            rev.display_name = name
 
     def _compute_raw_subject(self):
         for revision in self:

@@ -31,11 +31,6 @@ msgstr "365 barn"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>(</span>"
-msgstr "<span>(</span>"
-
-#. module: child_compassion
-#: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
 msgid "<span>About the child development center</span>"
 msgstr "<span>Compassion-senteret</span>"
 
@@ -46,12 +41,12 @@ msgstr "<span>Tilgjengelig til: </span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born (F)</span>"
+msgid "<span>Born on (F)</span>"
 msgstr "<span>født</span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born</span>"
+msgid "<span>Born on</span>"
 msgstr "<span>født</span>"
 
 #. module: child_compassion

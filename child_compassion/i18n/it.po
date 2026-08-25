@@ -31,11 +31,6 @@ msgstr "365 bambini"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>(</span>"
-msgstr "<span>Nato</span>"
-
-#. module: child_compassion
-#: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
 msgid "<span>About the child development center</span>"
 msgstr "<span>Informazioni sul centro Compassion</span>"
 
@@ -46,13 +41,13 @@ msgstr "<span>Disponibile fino a: </span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born (F)</span>"
-msgstr "<span>Nata</span>"
+msgid "<span>Born on (F)</span>"
+msgstr "<span>Nata il</span>"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
-msgid "<span>Born</span>"
-msgstr "<span>Nato</span>"
+msgid "<span>Born on</span>"
+msgstr "<span>Nato il</span>"
 
 #. module: child_compassion
 #: model:ir.model.constraint,message:child_compassion.constraint_compassion_household_household_uniq

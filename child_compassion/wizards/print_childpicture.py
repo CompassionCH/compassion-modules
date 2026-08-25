@@ -67,4 +67,5 @@ class PrintChildPicture(models.TransientModel):
                 "target": "new",
                 "context": self.env.context,
             }
-        return report_ref.report_action(children.ids, data=data, config=False)
+
+        return report_ref.report_action(children.ids, config=False)
