@@ -140,18 +140,18 @@
             </t>
         </t>
     </template>
-    <template id="correspondence_header">
-        <t t-set="child" t-value="letter.sponsorship_id.child_id" />
-        <t t-set="sponsor" t-value="letter.sponsorship_id.correspondent_id" />
-        <div class="d-flex flex-row-reverse">
-            <span
-        t-out="'%s - %s' % (sponsor.global_id, sponsor.preferred_name or sponsor.firstname)"
-      />
-        </div>
-        <div class="d-flex flex-row-reverse">
-            <span
-        t-out="'%s - %s - %s - %s' % (child.global_id, child.preferred_name, child.gender, child.age)"
-      />
-        </div>
-    </template>
+   <template id="correspondence_header">
+    <t t-set="child" t-value="letter.sponsorship_id.child_id" />
+    <t t-set="sponsor" t-value="letter.sponsorship_id.correspondent_id" />
+    <div style="text-align: right; margin-right: 30mm;">
+        <span
+    t-out="'%s - %s' % (sponsor.global_id, sponsor.preferred_name or sponsor.firstname)"
+  />
+    </div>
+    <div style="text-align: right; margin-right: 30mm;">
+        <span
+    t-out="'%s - %s - %s - %s' % (child.global_id, child.preferred_name, child.gender, child.age)"
+  />
+    </div>
+</template>
 </odoo>
