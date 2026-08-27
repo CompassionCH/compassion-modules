@@ -339,7 +339,7 @@ class CompassionChild(models.Model):
             )
             child.birthday_dm = child.get_date("birthdate", "MM-dd")
 
-    @api.constrains("state", "hold_type")
+    @api.constrains("state")
     def check_state(self):
         # child state vs hold type validity mapping
         consignment_holds = [
