@@ -74,6 +74,20 @@ class SponsorshipContract(models.Model):
 
         return res
 
+    def _filter_open_invoices_to_cancel(self):
+        return self._filter_out_gifts(super()._filter_open_invoices_to_cancel())
+
+    def _filter_paid_invoices_to_cancel(self):
+        return self._filter_out_gifts(super()._filter_paid_invoices_to_cancel())
+
+    def _filter_out_gifts(self, invoice_lines):
+        """A gift is never cancelled when a sponsorship ends: the money was
+        given for a purpose of its own and the gift may already be sent to GMC.
+        """
+        return invoice_lines.filtered(
+            lambda invl: invl.product_id.categ_name != GIFT_CATEGORY
+        )
+
     def open_gifts(self):
         sponsorship_ids = self.ids
         if self.type == "G":
