@@ -267,20 +267,24 @@ class SponsorshipContract(models.Model):
 
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
-        if self.company_id:
-            pricelist = self.pricelist_id
-            sponsorship_product.with_context(
-                {"pricelist": pricelist.id, "partner": self.partner_id.id}
-            )._compute_product_price()
-            gen_product.with_context(
-                {"pricelist": pricelist.id, "partner": self.partner_id.id}
-            )._compute_product_price()
+        # Read the prices from the pricelist. Never call _compute_product_price()
+        # here: it triggers the inverse of the product `price` field, which writes
+        # the pricelist price back into the product's global list_price.
+        pricelist = self.pricelist_id
+        if pricelist:
+            sponsorship_price = pricelist.get_product_price(
+                sponsorship_product, 1, self.partner_id
+            )
+            gen_price = pricelist.get_product_price(gen_product, 1, self.partner_id)
+        else:
+            sponsorship_price = sponsorship_product.list_price
+            gen_price = gen_product.list_price
 
         sponsorship_vals = {
             "product_id": sponsorship_product.id,
             "quantity": 0 if correspondence else 1,
-            "amount": 0 if correspondence else sponsorship_product.list_price,
-            "subtotal": 0 if correspondence else sponsorship_product.list_price,
+            "amount": 0 if correspondence else sponsorship_price,
+            "subtotal": 0 if correspondence else sponsorship_price,
         }
         res.append((0, 0, sponsorship_vals))
         # Avoid appending the GEN fund when one line already exists
@@ -289,8 +293,8 @@ class SponsorshipContract(models.Model):
             gen_vals = {
                 "product_id": gen_product.id,
                 "quantity": 0 if correspondence else 1,
-                "amount": 0 if correspondence else gen_product.list_price,
-                "subtotal": 0 if correspondence else gen_product.list_price,
+                "amount": 0 if correspondence else gen_price,
+                "subtotal": 0 if correspondence else gen_price,
             }
             res.append((0, 0, gen_vals))
         return res
