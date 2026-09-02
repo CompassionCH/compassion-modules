@@ -108,14 +108,6 @@
                         <t t-if="attachments_page_index % 2 == 0">
                             <t t-call="sbc_compassion.correspondence_header" />
                         </t>
-                        <h1 class="text-center text-uppercase">
-                            <span>Additional pictures</span>
-                            <t t-if="attachments_page_size &gt; 1">
-                                <t
-                  t-out="'(' + str(attachments_page_index+1) + '/' + str(attachments_page_size) +  ')'"
-                />
-                            </t>
-                        </h1>
                         <t
               t-foreach="attachments_page_value"
               t-as="attachments_row"
