@@ -204,48 +204,44 @@ class Correspondence(models.Model):
         """Create a message for sending the CommKit after be translated on
         the local translate platform.
         """
-        b2s_vals = []
-        s2b_vals = []
-        for vals in vals_list:
-            if vals.get("direction") == "Beneficiary To Supporter":
-                b2s_vals.append(vals)
-            else:
-                s2b_vals.append(vals)
-
-        res = self.env["correspondence"]
-
-        if b2s_vals:
-            res += super().create(b2s_vals)
-
-        if s2b_vals:
-            # create letter first and let super.create()
-            # run the language detection first
-            s2b_records = super(
-                Correspondence, self.with_context(no_comm_kit=True)
-            ).create(s2b_vals)
-            res += s2b_records
-
-            for correspondence in s2b_records:
-                sponsorship = correspondence.sponsorship_id
-                original_lang = correspondence.original_language_id
-
-                # Languages the office/region understand
-                office = sponsorship.child_id.project_id.field_office_id
-                language_ids = (
-                    office.spoken_language_ids + office.translated_language_ids
-                )
-
-                if original_lang.translatable and original_lang not in language_ids:
-                    correspondence.action_send_local_translate()
-                else:
-                    # if no translation is needed, resume GMC dispatch
-                    correspondence.create_commkit()
-
-        return res
+        letters = super(Correspondence, self.with_context(no_comm_kit=True)).create(
+            vals_list
+        )
+        letters.dispatch_s2b_letters()
+        return letters
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def dispatch_s2b_letters(self):
+        """Dispatch S2B letters to translation platform if needed,
+        or to GMC if no translation is needed."""
+        for correspondence in self.filtered(
+            lambda c: c.direction == "Supporter To Beneficiary"
+        ):
+            sponsorship = correspondence.sponsorship_id
+            original_lang = correspondence.original_language_id
+
+            # Languages the office/region understand
+            office = sponsorship.child_id.project_id.field_office_id
+            language_ids = office.spoken_language_ids + office.translated_language_ids
+
+            # Draft letters (preview) are not ready to be dispatched yet
+            if correspondence.state == "Draft":
+                continue
+
+            if original_lang.translatable and original_lang not in language_ids:
+                correspondence.action_send_local_translate()
+            else:
+                # if no translation is needed, resume GMC dispatch
+                correspondence.create_commkit()
+
+    def validate(self):
+        """Validate a letter and send it to the translation platform if needed."""
+        res = super(Correspondence, self.with_context(no_comm_kit=True)).validate()
+        self.dispatch_s2b_letters()
+        return res
+
     def action_open_full_view(self):
         return {
             "type": "ir.actions.act_window",
