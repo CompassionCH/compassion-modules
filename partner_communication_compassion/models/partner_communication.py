@@ -202,7 +202,10 @@ class PartnerCommunication(models.Model):
         contracts.filtered(lambda c: not c.exit_communication_sent).write(
             {"exit_communication_sent": fields.Datetime.now()}
         )
-        to_clean.cancel_contract_invoices()
+        if to_clean:
+            # Never inside the send transaction: a failing cleanup would roll
+            # back a mail that has already left.
+            to_clean.with_context(queue_job__no_delay=False).cancel_contract_invoices()
 
     def _job_sent(self, send_mode):
         res = super()._job_sent(send_mode)
