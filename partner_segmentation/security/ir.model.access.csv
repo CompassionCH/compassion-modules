@@ -4,3 +4,5 @@ full_access_partner_segmentation, Full access on partner segmentation,model_res_
 read_access_partner_segmentation_affinity, Read access on partner segmentation affinity,model_res_partner_segment_affinity,base.group_user,1,0,0,0
 read_access_partner_segmentation_affinity_portal, Read access on partner segmentation affinity,model_res_partner_segment_affinity,base.group_portal,1,0,0,0
 full_access_partner_segmentation_affinity, Full access on partner segmentation affinity,model_res_partner_segment_affinity,base.group_system,1,1,1,1
+read_access_res_partner_segmentation_link, Read access on partner segmentation link,model_res_partner_segment_link,base.group_user,1,0,0,0
+full_access_partner_segmentation_link, Full access on partner segmentation link,model_res_partner_segment_link,base.group_system,1,1,1,1

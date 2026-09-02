@@ -44,6 +44,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "data/partner_segmentation_links.xml",
         "data/partner_segmentation_data.xml",
         "data/partner_segmentation_survey.xml",
         "views/survey_view.xml",

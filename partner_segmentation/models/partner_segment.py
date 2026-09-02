@@ -32,7 +32,14 @@ class ResPartnerSegment(models.Model):
     )
 
     survey_result = fields.Html(translate=True, sanitize=False)
-    personalized_links = fields.Html(translate=True, sanitize=False)
+
+    link_ids = fields.One2many(
+        "res.partner.segment.link",
+        "category_id",
+        string="Personalized Links",
+        help="Useful resources for partners in this segment",
+    )
+
     image = fields.Binary(help="segment illustration")
 
     primary_partners_ids = fields.One2many(
