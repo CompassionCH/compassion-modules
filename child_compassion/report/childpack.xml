@@ -121,7 +121,7 @@
           t-if="o.fullshot"
           t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"
         />
-                    <p t-if="full and not o.fullshot" class="no-photo">
+                    <p t-if="not o.fullshot" class="no-photo">
                         <span>No photo registered for this child</span>
                     </p>
                 </div>
