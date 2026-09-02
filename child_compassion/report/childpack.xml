@@ -121,6 +121,9 @@
           t-if="o.fullshot"
           t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"
         />
+                    <p t-if="full and not o.fullshot" class="no-photo">
+                        <span>No photo registered for this child</span>
+                    </p>
                 </div>
                 <div class="summary">
                     <p t-field="o.preferred_name" class="summary_field name" />
@@ -229,6 +232,13 @@
             .photo img {
                 max-width: 100%;
                 max-height: 100%;
+            }
+            .photo .no-photo {
+                margin-top: 55mm;
+                text-align: center;
+                font-style: italic;
+                font-size: 11pt;
+                color: #666666;
             }
             .child-ref {
                 position: absolute;
