@@ -185,13 +185,11 @@ class CommunicationJob(models.Model):
 
     sms_cost = fields.Float()
 
-    # Campaign tracking. Defaults to the values of the communication type, and can then
-    # be changed on the communication itself.
-    utm_source_id = fields.Many2one("utm.source", "Source", index="btree_not_null")
-    utm_medium_id = fields.Many2one("utm.medium", "Medium", index="btree_not_null")
-    utm_campaign_id = fields.Many2one(
-        "utm.campaign", "Campaign", index="btree_not_null"
-    )
+    # Campaign tracking, from utm.mixin through partner.communication.defaults.
+    # Indexed here only: communications are filtered and grouped by campaign.
+    source_id = fields.Many2one(index="btree_not_null")
+    medium_id = fields.Many2one(index="btree_not_null")
+    campaign_id = fields.Many2one(index="btree_not_null")
 
     def _compute_ir_attachments(self):
         for job in self:
@@ -551,9 +549,9 @@ class CommunicationJob(models.Model):
                 "report_id",
                 "need_call",
                 "print_if_not_email",
-                "utm_source_id",
-                "utm_medium_id",
-                "utm_campaign_id",
+                "source_id",
+                "medium_id",
+                "campaign_id",
             ]
         )
 

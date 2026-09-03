@@ -4,9 +4,11 @@ Communications carry three UTM fields (Source, Medium, Campaign) so that mailing
 outside of Odoo — through a printing house, for instance — can be analysed together with
 the digital ones.
 
-Each communication type carries its own **Campaign Tracking** defaults, in the *General
-configuration* of its form. A communication starts with the values of its type, and they
-can then be changed on the communication itself.
+A communication type is itself the UTM **source** of its communications. Its default
+**medium** and **campaign** are set under *Campaign Tracking* in the *General configuration*
+of its form, and can be refined per language or per user in its *Custom configuration*. A
+communication starts with the values of its type, and they can then be changed on the
+communication itself.
 
 A communication **created directly in the Done state** records a mailing that was already
 dispatched: Odoo generates nothing and sends nothing for it, and it is not merged into a
@@ -19,17 +21,17 @@ To record a mailing that has already been dispatched, import the recipient list 
 printer from *Contacts → Partner Communication → Communication Jobs*, with the standard
 **Import records** button. Useful columns:
 
-| Column            | Content                                                            |
-| ----------------- | ------------------------------------------------------------------ |
-| `partner_id`      | Partner reference (the `ref` field), or the partner name           |
-| `config_id`       | Name of the communication type                                     |
-| `state`           | `Done` for a mailing that was already dispatched                   |
-| `send_mode`       | `Print report` for a letter (or the technical value `physical`)    |
-| `subject`         | Optional — a readable label, otherwise the lines show no subject   |
-| `utm_source_id`   | Optional — defaults to the source of the communication type        |
-| `utm_medium_id`   | Optional — defaults to the medium of the communication type        |
-| `utm_campaign_id` | Optional — defaults to the campaign of the communication type      |
-| `sent_date`       | Optional — dispatch date, defaults to the date of the import       |
+| Column        | Content                                                            |
+| ------------- | ------------------------------------------------------------------ |
+| `partner_id`  | Partner reference (the `ref` field), or the partner name           |
+| `config_id`   | Name of the communication type                                     |
+| `state`       | `Done` for a mailing that was already dispatched                   |
+| `send_mode`   | `Print report` for a letter (or the technical value `physical`)    |
+| `subject`     | Optional — a readable label, otherwise the lines show no subject   |
+| `source_id`   | Optional — defaults to the communication type, which is a source   |
+| `medium_id`   | Optional — defaults to the medium of the communication type        |
+| `campaign_id` | Optional — defaults to the campaign of the communication type      |
+| `sent_date`   | Optional — dispatch date, defaults to the date of the import       |
 
 An **empty cell is not the same as a missing column**: it sets the field to empty instead
 of falling back on the default of the communication type. To rely on the defaults, leave

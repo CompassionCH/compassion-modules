@@ -198,9 +198,9 @@
                   />
                                 </group>
                                 <group string="Campaign Tracking">
-                                    <field name="utm_source_id" />
-                                    <field name="utm_medium_id" />
-                                    <field name="utm_campaign_id" />
+                                    <field name="source_id" />
+                                    <field name="medium_id" />
+                                    <field name="campaign_id" />
                                 </group>
                             </group>
                         </page>
@@ -230,9 +230,9 @@
                 <field name="state" />
                 <field name="need_call" optional="hide" />
                 <field name="sent_date" />
-                <field name="utm_source_id" optional="hide" />
-                <field name="utm_medium_id" optional="hide" />
-                <field name="utm_campaign_id" optional="hide" />
+                <field name="source_id" optional="hide" />
+                <field name="medium_id" optional="hide" />
+                <field name="campaign_id" optional="hide" />
                 <field name="activity_ids" column_invisible="1" />
                 <button
           name="send"
@@ -273,9 +273,9 @@
                 <field name="config_id" />
                 <field name="partner_id" />
                 <field name="user_id" />
-                <field name="utm_source_id" />
-                <field name="utm_medium_id" />
-                <field name="utm_campaign_id" />
+                <field name="source_id" />
+                <field name="medium_id" />
+                <field name="campaign_id" />
                 <filter
           string="Pending"
           name="pending"
@@ -323,21 +323,21 @@
                     <separator />
                     <filter
             string="Campaign"
-            name="utm_campaign"
+            name="campaign"
             domain="[]"
-            context="{'group_by':'utm_campaign_id'}"
+            context="{'group_by':'campaign_id'}"
           />
                     <filter
             string="Medium"
-            name="utm_medium"
+            name="medium"
             domain="[]"
-            context="{'group_by':'utm_medium_id'}"
+            context="{'group_by':'medium_id'}"
           />
                     <filter
             string="Source"
-            name="utm_source"
+            name="source"
             domain="[]"
-            context="{'group_by':'utm_source_id'}"
+            context="{'group_by':'source_id'}"
           />
                 </group>
             </search>

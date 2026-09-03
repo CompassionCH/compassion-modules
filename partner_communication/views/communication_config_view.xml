@@ -42,9 +42,9 @@
                             <field name="attachments_function" />
                         </group>
                         <group string="Campaign Tracking">
-                            <field name="utm_source_id" />
-                            <field name="utm_medium_id" />
-                            <field name="utm_campaign_id" />
+                            <field name="source_id" readonly="1" />
+                            <field name="medium_id" />
+                            <field name="campaign_id" />
                         </group>
                     </group>
                     <separator string="Custom configuration" />
@@ -109,6 +109,8 @@
                 <field name="need_call" />
                 <field name="print_if_not_email" />
                 <field name="report_id" />
+                <field name="medium_id" optional="hide" />
+                <field name="campaign_id" optional="hide" />
             </list>
         </field>
     </record>
@@ -127,6 +129,10 @@
                         <field name="print_if_not_email" />
                         <field name="need_call" />
                         <field name="report_id" />
+                    </group>
+                    <group string="Campaign Tracking">
+                        <field name="medium_id" />
+                        <field name="campaign_id" />
                     </group>
                 </group>
             </form>

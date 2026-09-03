@@ -17,9 +17,15 @@ logger = logging.getLogger(__name__)
 
 class CommunicationDefaults(models.AbstractModel):
     """Abstract class to share config settings between communication config
-    and communication job."""
+    and communication job.
+
+    It carries the UTM fields (source_id, medium_id, campaign_id) of utm.mixin: a
+    communication starts with the values of its type, or of the default config that
+    applies, and they can then be changed on the communication itself.
+    """
 
     _name = "partner.communication.defaults"
+    _inherit = "utm.mixin"
     _description = "Communication Defaults"
 
     user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)])
@@ -90,11 +96,14 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    # Also the source_id of utm.mixin: the communication type is itself the UTM
+    # source of its communications.
     source_id = fields.Many2one(
         "utm.source",
         "UTM Source",
         required=True,
         ondelete="restrict",
+        help="The communications of this type are tracked with this source.",
     )
     model_id = fields.Many2one(
         "ir.model",
@@ -136,11 +145,6 @@ class CommunicationConfig(models.Model):
     forbid_merging = fields.Boolean(
         help="If selected, disable the automatic merging of communications",
     )
-    # Values the communications of this type start with. They are only defaults: they
-    # are copied on the job at creation and can be changed on it afterwards.
-    utm_source_id = fields.Many2one("utm.source", "Default Source")
-    utm_medium_id = fields.Many2one("utm.medium", "Default Medium")
-    utm_campaign_id = fields.Many2one("utm.campaign", "Default Campaign")
     active = fields.Boolean(default=True)
     send_from = fields.Selection(
         [
