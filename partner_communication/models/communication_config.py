@@ -209,6 +209,45 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model
+    def name_create(self, name):
+        """Create a communication type from its name alone.
+
+        This is what the import of communications calls when the file names a type
+        that does not exist yet and the "Create new values" option is set on the
+        column. Such a type only records a mailing dispatched outside of Odoo: it
+        applies to partners and is printed. The default implementation cannot be
+        used, since the display name of a type is its UTM source.
+
+        During an import, the type is created archived: a one-off mailing must not
+        pile up in the list of types offered when creating a communication. It stays
+        usable for the following lines and imports of the same name, which find it
+        here, and in the history and groupings of communications.
+        """
+        name = (name or "").strip()
+        config = self.with_context(active_test=False).search(
+            [("name", "=", name)], limit=1
+        )
+        if config:
+            return config.id, config.display_name
+
+        # A UTM source of that name may already exist without a type. Reuse it:
+        # creating a source with the same name would number it "name [2]".
+        source = self.env["utm.source"].search([("name", "=", name)], limit=1)
+        vals = {"source_id": source.id} if source else {"name": name}
+        vals.update(
+            {
+                "model_id": self.env.ref("base.model_res_partner").id,
+                "send_mode": "physical",
+                "report_id": self.env.ref(
+                    "partner_communication.report_a4_communication"
+                ).id,
+                "active": not self.env.context.get("import_file"),
+            }
+        )
+        config = self.create(vals)
+        return config.id, config.display_name
+
     def write(self, vals):
         """
         Override write to handle email_template_id changes efficiently and

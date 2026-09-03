@@ -25,7 +25,7 @@ printer from *Contacts → Partner Communication → Communication Jobs*, with t
 | Column        | Content                                                            |
 | ------------- | ------------------------------------------------------------------ |
 | `partner_id`  | Partner reference (the `ref` field), or the partner name           |
-| `config_id`   | Name of the communication type                                     |
+| `config_id`   | Name of the communication type, see below for a new one            |
 | `state`       | `Done` for a mailing that was already dispatched                   |
 | `send_mode`   | `Print report` for a letter (or the technical value `physical`)    |
 | `subject`     | Optional — a readable label, otherwise the lines show no subject   |
@@ -38,8 +38,16 @@ of falling back on the default of the communication type. To rely on the default
 the column out of the file entirely.
 
 Prefer the partner **reference** over the name: a name is matched through `name_search`,
-which silently picks the first record when several partners share it. UTM records given by
-name must exist beforehand, and their names must be unique for the same reason.
+which silently picks the first record when several partners share it. Medium and campaign
+given by name must exist beforehand, and their names must be unique for the same reason.
+
+A mailing may deserve a **type of its own**, for instance a magazine issue. Give its name in
+the `config_id` column and set the *Create new values* option on that column in the import
+dialog: the type is created for partners, printed, and **archived right away**, so that a
+one-off mailing does not pile up in the types offered when creating a communication. It
+remains visible in the history and groupings of communications, and further imports with
+the same name reuse it. Reactivate it from the archived types if it turns out to be
+recurring. Without that option, a type that does not exist stops the import.
 
 Without the `state` column, the lines are imported as regular pending communications, ready
 to be sent by Odoo. As a safety net, an import never sends anything on its own, whatever
