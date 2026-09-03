@@ -21,14 +21,6 @@ class IrActionsReport(models.Model):
         # user's own language when the report is sent to the printer. Align the
         # environment language with the requested one for all childpack reports
         # (their rendering models inherit ``report.child_compassion.childpack_full``).
-        lang = data and data.get("lang")
-        if lang:
-            report_model = self._get_rendering_context_model(
-                self._get_report(report_ref)
-            )
-            childpack_class = self.env.registry[
-                "report.child_compassion.childpack_full"
-            ]
-            if report_model is not None and isinstance(report_model, childpack_class):
-                self = self.with_context(lang=lang)
-        return super()._render_qweb_html(report_ref, docids, data=data)
+        lang = data and data.get("lang") or self.env.lang
+        return super(IrActionsReport, self.with_context(lang=lang)._render_qweb_html(
+            report_ref, docids, data=data)
