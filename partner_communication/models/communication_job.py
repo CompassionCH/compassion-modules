@@ -185,12 +185,6 @@ class CommunicationJob(models.Model):
 
     sms_cost = fields.Float()
 
-    # Campaign tracking, from utm.mixin through partner.communication.defaults.
-    # Indexed here only: communications are filtered and grouped by campaign.
-    source_id = fields.Many2one(index="btree_not_null")
-    medium_id = fields.Many2one(index="btree_not_null")
-    campaign_id = fields.Many2one(index="btree_not_null")
-
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped("attachment_ids.attachment_id")

@@ -42,7 +42,6 @@
                             <field name="attachments_function" />
                         </group>
                         <group string="Campaign Tracking">
-                            <field name="source_id" readonly="1" />
                             <field name="medium_id" />
                             <field name="campaign_id" />
                         </group>

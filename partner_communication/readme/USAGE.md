@@ -1,8 +1,9 @@
 ## Tracking mailings sent outside of Odoo
 
-Communications carry three UTM fields (Source, Medium, Campaign) so that mailings sent
-outside of Odoo — through a printing house, for instance — can be analysed together with
-the digital ones.
+Communications carry the UTM fields of Odoo (Source, Medium, Campaign) so that mailings
+sent outside of Odoo — through a printing house, for instance — can be analysed together
+with the digital ones. The source of a communication is its type, so only Medium and
+Campaign are shown and configured.
 
 A communication type is itself the UTM **source** of its communications. Its default
 **medium** and **campaign** are set under *Campaign Tracking* in the *General configuration*
@@ -28,7 +29,6 @@ printer from *Contacts → Partner Communication → Communication Jobs*, with t
 | `state`       | `Done` for a mailing that was already dispatched                   |
 | `send_mode`   | `Print report` for a letter (or the technical value `physical`)    |
 | `subject`     | Optional — a readable label, otherwise the lines show no subject   |
-| `source_id`   | Optional — defaults to the communication type, which is a source   |
 | `medium_id`   | Optional — defaults to the medium of the communication type        |
 | `campaign_id` | Optional — defaults to the campaign of the communication type      |
 | `sent_date`   | Optional — dispatch date, defaults to the date of the import       |
@@ -48,4 +48,5 @@ set to send automatically would otherwise dispatch the whole file. For the same 
 imported line is never merged into an existing communication, which may already be waiting
 to be sent: every line keeps its own record.
 
-Once imported, the communication list groups by Campaign, Medium and Source.
+Once imported, the communication list groups by Campaign and Medium, on top of the
+existing grouping by communication type.
