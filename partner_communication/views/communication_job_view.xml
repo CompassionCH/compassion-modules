@@ -197,6 +197,10 @@
                     readonly="state in ('processing', 'done')"
                   />
                                 </group>
+                                <group string="Campaign Tracking">
+                                    <field name="medium_id" />
+                                    <field name="campaign_id" />
+                                </group>
                             </group>
                         </page>
                     </notebook>
@@ -225,6 +229,8 @@
                 <field name="state" />
                 <field name="need_call" optional="hide" />
                 <field name="sent_date" />
+                <field name="medium_id" optional="hide" />
+                <field name="campaign_id" optional="hide" />
                 <field name="activity_ids" column_invisible="1" />
                 <button
           name="send"
@@ -265,6 +271,8 @@
                 <field name="config_id" />
                 <field name="partner_id" />
                 <field name="user_id" />
+                <field name="medium_id" />
+                <field name="campaign_id" />
                 <filter
           string="Pending"
           name="pending"
@@ -308,6 +316,19 @@
             name="config"
             domain="[]"
             context="{'group_by':'config_id'}"
+          />
+                    <separator />
+                    <filter
+            string="Campaign"
+            name="campaign"
+            domain="[]"
+            context="{'group_by':'campaign_id'}"
+          />
+                    <filter
+            string="Medium"
+            name="medium"
+            domain="[]"
+            context="{'group_by':'medium_id'}"
           />
                 </group>
             </search>

@@ -17,9 +17,15 @@ logger = logging.getLogger(__name__)
 
 class CommunicationDefaults(models.AbstractModel):
     """Abstract class to share config settings between communication config
-    and communication job."""
+    and communication job.
+
+    It carries the UTM fields (source_id, medium_id, campaign_id) of utm.mixin: a
+    communication starts with the values of its type, or of the default config that
+    applies, and they can then be changed on the communication itself.
+    """
 
     _name = "partner.communication.defaults"
+    _inherit = "utm.mixin"
     _description = "Communication Defaults"
 
     user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)])
@@ -90,11 +96,14 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    # Also the source_id of utm.mixin: the communication type is itself the UTM
+    # source of its communications.
     source_id = fields.Many2one(
         "utm.source",
         "UTM Source",
         required=True,
         ondelete="restrict",
+        help="The communications of this type are tracked with this source.",
     )
     model_id = fields.Many2one(
         "ir.model",
@@ -200,6 +209,45 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model
+    def name_create(self, name):
+        """Create a communication type from its name alone.
+
+        This is what the import of communications calls when the file names a type
+        that does not exist yet and the "Create new values" option is set on the
+        column. Such a type only records a mailing dispatched outside of Odoo: it
+        applies to partners and is printed. The default implementation cannot be
+        used, since the display name of a type is its UTM source.
+
+        During an import, the type is created archived: a one-off mailing must not
+        pile up in the list of types offered when creating a communication. It stays
+        usable for the following lines and imports of the same name, which find it
+        here, and in the history and groupings of communications.
+        """
+        name = (name or "").strip()
+        config = self.with_context(active_test=False).search(
+            [("name", "=", name)], limit=1
+        )
+        if config:
+            return config.id, config.display_name
+
+        # A UTM source of that name may already exist without a type. Reuse it:
+        # creating a source with the same name would number it "name [2]".
+        source = self.env["utm.source"].search([("name", "=", name)], limit=1)
+        vals = {"source_id": source.id} if source else {"name": name}
+        vals.update(
+            {
+                "model_id": self.env.ref("base.model_res_partner").id,
+                "send_mode": "physical",
+                "report_id": self.env.ref(
+                    "partner_communication.report_a4_communication"
+                ).id,
+                "active": not self.env.context.get("import_file"),
+            }
+        )
+        config = self.create(vals)
+        return config.id, config.display_name
+
     def write(self, vals):
         """
         Override write to handle email_template_id changes efficiently and
@@ -291,10 +339,15 @@ class CommunicationConfig(models.Model):
         """
         send_priority = self._get_send_priority(partner, print_if_not_email)
         if communication_send_mode != "partner_preference":
-            partner_mode = getattr(
-                partner,
-                send_mode_pref_field or "global_communication_delivery_preference",
-                partner.global_communication_delivery_preference,
+            partner_mode = (
+                getattr(
+                    partner,
+                    send_mode_pref_field or "global_communication_delivery_preference",
+                    partner.global_communication_delivery_preference,
+                )
+                # An empty partner recordset (in the creation form, the config has a
+                # default value but no partner is selected yet) has no preference.
+                or "none"
             )
             auto_mode = self._get_auto_mode(partner_mode, communication_send_mode)
             if communication_send_mode == partner_mode:
