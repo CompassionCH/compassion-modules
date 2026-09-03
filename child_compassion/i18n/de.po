@@ -50,6 +50,11 @@ msgid "<span>Born on</span>"
 msgstr "<span>Geb.</span>"
 
 #. module: child_compassion
+#: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
+msgid "<span>No photo registered for this child</span>"
+msgstr "<span>Kein Foto für dieses Kind vorhanden</span>"
+
+#. module: child_compassion
 #: model:ir.model.constraint,message:child_compassion.constraint_compassion_household_household_uniq
 msgid "A Household with the same ID already exists."
 msgstr "Es gibt bereits einen Haushalt mit der gleichen ID."
