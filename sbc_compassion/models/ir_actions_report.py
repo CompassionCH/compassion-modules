@@ -1,7 +1,10 @@
+import logging
 from io import BytesIO
 
 from odoo import models
 from odoo.tools.pdf import to_pdf_stream
+
+_logger = logging.getLogger(__name__)
 
 
 class IrActionsReport(models.Model):
@@ -30,7 +33,28 @@ class IrActionsReport(models.Model):
         if not attachments:
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
-        streams = [to_pdf_stream(attachment) for attachment in attachments]
+        streams = []
+        for attachment in attachments:
+            try:
+                stream = to_pdf_stream(attachment)
+            except Exception:
+                _logger.warning(
+                    "Skipping unreadable correspondence letter scan "
+                    "(attachment %s) while generating the PDF",
+                    attachment.id,
+                    exc_info=True,
+                )
+                continue
+            if stream is None:
+                _logger.warning(
+                    "Skipping correspondence letter scan (attachment %s) "
+                    "with unrecognized mimetype %s",
+                    attachment.id,
+                    attachment.mimetype,
+                )
+                continue
+            streams.append(stream)
+
         without_scan_ids = set(res_ids) - {att.res_id for att in attachments}
         if without_scan_ids:
             pdf_bytes, _ = super()._render_qweb_pdf(
@@ -38,5 +62,14 @@ class IrActionsReport(models.Model):
             )
             streams.append(BytesIO(pdf_bytes))
 
-        with self._merge_pdfs(streams) as pdf_merged_stream:
+        def _skip_corrupted_letter(error, error_stream):
+            _logger.warning(
+                "Skipping a corrupted correspondence letter scan while "
+                "merging PDFs: %s",
+                error,
+            )
+
+        with self._merge_pdfs(
+            streams, handle_error=_skip_corrupted_letter
+        ) as pdf_merged_stream:
             return pdf_merged_stream.getvalue(), "pdf"
