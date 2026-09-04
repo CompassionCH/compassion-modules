@@ -30,6 +30,8 @@ from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
+ROWS_PER_ATTACHMENT_PAGE = 2
+
 
 class CorrespondenceType(models.Model):
     _name = "correspondence.type"
@@ -1124,8 +1126,9 @@ class Correspondence(models.Model):
     def get_attachments_per_page(self, flatten=False):
         """
         Used for the S2B report generation
-        We group 4 attachements per page, 2 per row.
-        We also convert them on the fly to jpg small size image.
+        We group 2 attachments per page, 1 per row, so that each picture takes
+        about half a page like it did with the previous FPDF layout (T3442).
+        We also convert them on the fly to jpg.
         :param flatten: If True, we return a flat list of images
         """
         self.ensure_one()
@@ -1133,21 +1136,13 @@ class Correspondence(models.Model):
             lambda a: a.mimetype.startswith("image")
         )
         images = {0: {0: []}}
-        page, row = 0, 0
 
-        for attachment in attachments:
+        for index, attachment in enumerate(attachments):
             img_data = image_process(
-                base64.b64decode(attachment.datas), size=(400, 400), quality=75
+                base64.b64decode(attachment.datas), size=(1600, 1600), quality=85
             )
-            images[page][row].append(base64.b64encode(img_data))
-            if len(images[page][row]) == 2:
-                row += 1
-                images[page][row] = []
-
-            if row == 2:
-                page += 1
-                row = 0
-                images[page] = {row: []}
+            page, row = divmod(index, ROWS_PER_ATTACHMENT_PAGE)
+            images.setdefault(page, {})[row] = [base64.b64encode(img_data)]
 
         if flatten:
             flat_images = []
