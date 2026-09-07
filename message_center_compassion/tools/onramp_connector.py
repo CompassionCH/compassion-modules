@@ -20,6 +20,8 @@ from odoo import _
 from odoo.exceptions import UserError
 from odoo.tools.config import config
 
+from . import onramp_fake
+
 _logger = logging.getLogger(__name__)
 
 
@@ -64,6 +66,8 @@ class OnrampConnector:
 
     def __init__(self, env):
         """Get a fresh token if needed."""
+        if onramp_fake.is_enabled():
+            return
         now = datetime.now()
         if self._connect_url and (
             not self._token_time or self._token_time + timedelta(hours=1) <= now
@@ -97,6 +101,8 @@ class OnrampConnector:
                           {'code': http_status_code, 'content': response,
                            'Error': error_message, 'request_id': request id header}
         """
+        if onramp_fake.is_enabled():
+            return onramp_fake.fake_send_message(service_name, message_type, body=body)
         if headers is None:
             headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name if not full_url else service_name
