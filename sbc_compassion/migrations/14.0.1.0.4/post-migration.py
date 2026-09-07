@@ -34,3 +34,7 @@ def migrate(env, version):
             )
 
         letters.write({"on_hold": True})
+        # is_published (my_compassion, if installed) is backfilled in that
+        # module's own migration instead of here: my_compassion loads after
+        # sbc_compassion in the dependency graph, so its fields are not yet
+        # registered on this model at this point.
