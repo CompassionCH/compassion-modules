@@ -1066,13 +1066,17 @@ class Correspondence(models.Model):
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.get("partner_id")
             child = odoo_data.pop("child_id")
-            sponsorship = self.env["recurring.contract"].search(
+            sponsorships = self.env["recurring.contract"].search(
                 [
                     ("correspondent_id", "=", partner),
                     ("child_id", "=", child),
-                ],
-                limit=1,
+                ]
             )
+            # Prefer the live sponsorship: bound to a cancelled/draft duplicate,
+            # send_communication drops the letter and it never gets published.
+            sponsorship = sponsorships.sorted(
+                lambda s: s.state in ("cancelled", "draft")
+            )[:1]
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
 
