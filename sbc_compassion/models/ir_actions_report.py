@@ -34,6 +34,7 @@ class IrActionsReport(models.Model):
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
         streams = []
+        failed_scan_res_ids = set()
         for attachment in attachments:
             try:
                 stream = to_pdf_stream(attachment)
@@ -44,6 +45,7 @@ class IrActionsReport(models.Model):
                     attachment.id,
                     exc_info=True,
                 )
+                failed_scan_res_ids.add(attachment.res_id)
                 continue
             if stream is None:
                 _logger.warning(
@@ -52,10 +54,17 @@ class IrActionsReport(models.Model):
                     attachment.id,
                     attachment.mimetype,
                 )
+                failed_scan_res_ids.add(attachment.res_id)
                 continue
             streams.append(stream)
 
-        without_scan_ids = set(res_ids) - {att.res_id for att in attachments}
+        # A letter whose scan attachment exists but failed to convert is
+        # treated the same as one with no scan at all: render it from the
+        # QWeb template instead of just dropping it, so a batch where every
+        # scan fails still produces the letters, not a silent empty PDF.
+        without_scan_ids = (
+            set(res_ids) - {att.res_id for att in attachments}
+        ) | failed_scan_res_ids
         if without_scan_ids:
             pdf_bytes, _ = super()._render_qweb_pdf(
                 report_ref, res_ids=list(without_scan_ids), data=data
