@@ -102,7 +102,18 @@ class OnrampConnector:
                            'Error': error_message, 'request_id': request id header}
         """
         if onramp_fake.is_enabled():
-            return onramp_fake.fake_send_message(service_name, message_type, body=body)
+            if onramp_fake.handles(service_name, message_type):
+                return onramp_fake.fake_send_message(
+                    service_name, message_type, body=body
+                )
+            raise UserError(
+                _(
+                    "connect_fake is enabled but the %(message_type)s "
+                    "%(service_name)s request is not supported by the fake "
+                    "Compassion Connect service."
+                )
+                % {"message_type": message_type, "service_name": service_name}
+            )
         if headers is None:
             headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name if not full_url else service_name

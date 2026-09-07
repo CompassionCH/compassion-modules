@@ -40,20 +40,15 @@ def is_enabled():
     return str2bool(config.get("connect_fake") or False, False)
 
 
+def handles(service_name, message_type):
+    return (
+        message_type != "GET_RAW" and service_name.removeprefix("/") in FAKE_ENDPOINTS
+    )
+
+
 def fake_send_message(service_name, message_type, body=None, **kwargs):
     endpoint = service_name.removeprefix("/")
-    if message_type == "GET_RAW":
-        _logger.warning("No fake content for the %s GMC file", endpoint)
-        return b""
-    answer = FAKE_ENDPOINTS.get(endpoint)
-    if answer is None:
-        _logger.warning("No fake answer for the %s GMC endpoint", endpoint)
-        return {
-            "code": 404,
-            "request_id": uuid4().hex,
-            "Error": f"No fake answer for the {endpoint} GMC endpoint",
-        }
-    outgoing_wrapper, answer_wrapper, id_field = answer
+    outgoing_wrapper, answer_wrapper, id_field = FAKE_ENDPOINTS[endpoint]
     sent = (body or {}).get(outgoing_wrapper, body or {})
     if not isinstance(sent, list):
         sent = [sent]
