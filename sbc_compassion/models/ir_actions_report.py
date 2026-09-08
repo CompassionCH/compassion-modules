@@ -34,6 +34,7 @@ class IrActionsReport(models.Model):
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
         streams = []
+        stream_res_ids = {}
         failed_scan_res_ids = set()
         for attachment in attachments:
             try:
@@ -57,6 +58,7 @@ class IrActionsReport(models.Model):
                 failed_scan_res_ids.add(attachment.res_id)
                 continue
             streams.append(stream)
+            stream_res_ids[id(stream)] = attachment.res_id
 
         # A letter whose scan attachment exists but failed to convert is
         # treated the same as one with no scan at all: render it from the
@@ -71,14 +73,34 @@ class IrActionsReport(models.Model):
             )
             streams.append(BytesIO(pdf_bytes))
 
+        # A scan whose mimetype is application/pdf can still hold malformed
+        # content - to_pdf_stream() doesn't validate that, so such a stream
+        # reaches here and only fails once _merge_pdfs() actually tries to
+        # parse it. Map it back to its correspondence so it can still be
+        # rendered from QWeb instead of just vanishing from the batch.
+        merge_rejected_res_ids = set()
+
         def _skip_corrupted_letter(error, error_stream):
+            res_id = stream_res_ids.get(id(error_stream))
             _logger.warning(
-                "Skipping a corrupted correspondence letter scan while "
-                "merging PDFs: %s",
+                "Skipping a corrupted correspondence letter scan "
+                "(correspondence %s) while merging PDFs: %s",
+                res_id,
                 error,
             )
+            if res_id is not None:
+                merge_rejected_res_ids.add(res_id)
 
         with self._merge_pdfs(
             streams, handle_error=_skip_corrupted_letter
         ) as pdf_merged_stream:
-            return pdf_merged_stream.getvalue(), "pdf"
+            if not merge_rejected_res_ids:
+                return pdf_merged_stream.getvalue(), "pdf"
+            pdf_merged_stream.seek(0)
+            fallback_bytes, _ = super()._render_qweb_pdf(
+                report_ref, res_ids=list(merge_rejected_res_ids), data=data
+            )
+            with self._merge_pdfs(
+                [pdf_merged_stream, BytesIO(fallback_bytes)]
+            ) as final_stream:
+                return final_stream.getvalue(), "pdf"
