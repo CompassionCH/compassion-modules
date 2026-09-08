@@ -50,7 +50,6 @@ class GenerateGiftWizard(models.TransientModel):
             and c.state in ["active", "waiting"]
             and c.is_gift_authorized
         )
-        invoicer = self.env.context.get("invoicer", self.env["recurring.invoicer"])
         invoice_obj = self.env["account.move"]
         for contract in contracts:
             # Logs an error if the birthdate is missing and skip iteration
@@ -78,7 +77,6 @@ class GenerateGiftWizard(models.TransientModel):
                 continue
             inv_data = contract.group_id._build_invoice_gen_data(
                 invoicing_date=invoice_date,
-                invoicer=invoicer,
                 gift_wizard=self,
             )
             # This makes sure all move lines have the correct contract

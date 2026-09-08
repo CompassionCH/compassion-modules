@@ -1036,11 +1036,9 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    def _generate_gifts(self, invoicer, gift_type):
+    def _generate_gifts(self, gift_type):
         """Creates the annual gifts for sponsorships that
         have set the option for automatic birthday or Christmas gifts creation.
-        :param invoicer: record of the recurring.invoicer that will create the
-        invoices
         :param gift_type: sponsorship.gift.type record
         """
         logger.debug(f"Automatic {gift_type.name} Generation Started.")
@@ -1153,22 +1151,18 @@ class SponsorshipContract(models.Model):
             total = str(len(contracts))
             logger.debug(f"Found {total} {gift_type.name} to generate.")
             base_description = f"Automatic {gift_type.name}"
-            gift_wizard = (
-                self.env["generate.gift.wizard"]
-                .with_context(invoicer=invoicer)
-                .create(
-                    {
-                        "product_id": product_id,
-                        "amount": 0.0,
-                        "contract_ids": [(6, 0, contracts.ids)],
-                    }
-                )
+            gift_wizard = self.env["generate.gift.wizard"].create(
+                {
+                    "product_id": product_id,
+                    "amount": 0.0,
+                    "contract_ids": [(6, 0, contracts.ids)],
+                }
             )
 
             # Generate invoices
             count = 1
             for contract in contracts:
-                logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
+                logger.debug(f"{gift_type.name} Gift Generation: {count}/{total} ")
                 description = base_description
                 if gift_type == self.env.ref(
                     "sponsorship_compassion.gift_type_birthday"
@@ -1183,12 +1177,10 @@ class SponsorshipContract(models.Model):
                         "description": description,
                     }
                 )
-                gift_wizard.with_context(invoicer=invoicer).generate_invoice(
-                    due_date=due_dates[contract]
-                )
+                gift_wizard.generate_invoice(due_date=due_dates[contract])
                 count += 1
 
-        logger.debug(f"Automatic {gift_type} Generation Finished !!")
+        logger.debug(f"Automatic {gift_type.name} Generation Finished !!")
         return True
 
     def invoice_paid(self, invoice):
