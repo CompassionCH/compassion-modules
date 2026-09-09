@@ -5,6 +5,7 @@ To configure this module, follow these steps:
      - `connect_url`: URL to the entry point of GMC Onramp
      - `connect_token_server`: Base URL of the token server
      - `connect_token_cert`: Comma-separated list of full URLs of the public keys of the token server
+     - `connect_fake`: set to `True` on a development database to use a fake connect service
 
 2. **Odoo Settings**:
    - Navigate to `Settings -> General Settings -> Compassion -> Message Center` and set the following:
