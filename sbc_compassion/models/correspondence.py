@@ -80,7 +80,7 @@ class Correspondence(models.Model):
         "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
     child_id = fields.Many2one(
-        related="sponsorship_id.child_id", store=True, readonly=False
+        related="sponsorship_id.child_id", store=True, readonly=False, index=True
     )
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, readonly=True, tracking=True)
