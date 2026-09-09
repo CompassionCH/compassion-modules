@@ -139,6 +139,12 @@ class Correspondence(models.Model):
         compute="_compute_states",
     )
     state = fields.Selection("get_states", default="Draft", tracking=True)
+    on_hold = fields.Boolean(
+        readonly=True,
+        help="Letter is in the 'Exception' state only because it was deliberately "
+        "queued (e.g. project suspended, Christmas period), not because of an "
+        "actual error. Held letters remain visible to the sponsor.",
+    )
     email_read = fields.Datetime()
 
     # 2. Attachments and scans
@@ -726,7 +732,7 @@ class Correspondence(models.Model):
             ):
                 message_vals["state"] = "postponed"
                 if letter.child_id.project_id.hold_s2b_letters:
-                    letter.state = "Exception"
+                    letter.write({"state": "Exception", "on_hold": True})
                     letter.message_post(
                         body=_(
                             "Letter was put on hold because the project is suspended"
@@ -735,7 +741,7 @@ class Correspondence(models.Model):
                     )
             if letter.template_id.is_christmas_letter and not valid_christmas_period:
                 message_vals["state"] = "postponed"
-                letter.state = "Exception"
+                letter.write({"state": "Exception", "on_hold": True})
                 letter.message_post(
                     body=_("Christmas Letter put on hold outside of Christmas Period."),
                     subject=_("Christmas Hold"),
@@ -832,7 +838,7 @@ class Correspondence(models.Model):
 
     def hold_letters(self, message="Project suspended"):
         """Prevents to send S2B letters to GMC."""
-        self.write({"state": "Exception"})
+        self.write({"state": "Exception", "on_hold": True})
         for letter in self:
             letter.message_post(body=_("Letter was put on hold"), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
@@ -847,7 +853,7 @@ class Correspondence(models.Model):
 
     def reactivate_letters(self, message="Project reactivated"):
         """Release the hold on S2B letters."""
-        self.write({"state": "Received in the system"})
+        self.write({"state": "Received in the system", "on_hold": False})
         for letter in self:
             letter.message_post(body=_("The letter can now be sent."), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
