@@ -671,6 +671,12 @@ msgid "Baker"
 msgstr "Panettiere"
 
 #. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Bamboo"
+msgstr "Bambù"
+
+#. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_bananas
 msgid "Bananas"
 msgstr "Banane"
@@ -919,6 +925,12 @@ msgid "Breakfast and devotional time"
 msgstr "Colazione e momento di devozione"
 
 #. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Brick, block and cement"
+msgstr "Mattoni, blocchi e cemento"
+
+#. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__bronchitis
 msgid "Bronchitis"
 msgstr "Bronchite"
@@ -1031,6 +1043,12 @@ msgid "Capital City"
 msgstr ""
 
 #. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Cardboard"
+msgstr "Cartone"
+
+#. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__cardiovascular
 msgid "Cardiovascular"
 msgstr "Cardiovascolare"
@@ -1110,6 +1128,12 @@ msgstr "Gruppo di età del Cdpr"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__cdsp_type
 msgid "Cdsp Type"
 msgstr "Tipo di Cdsp"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Cement"
+msgstr "Cemento"
 
 #. module: child_compassion
 #: model:fcp.program,value:child_compassion.program_csp
@@ -1749,6 +1773,12 @@ msgstr "Città più vicina"
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Closest city"
 msgstr "Città più vicina"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Cloth and carpet"
+msgstr "Tessuto e tappeto"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_clothing_trades
@@ -2478,6 +2508,12 @@ msgstr "Lo sapevi?"
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__diphtheria
 msgid "Diphtheria"
 msgstr "Difterite"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Dirt"
+msgstr "Terra battuta"
 
 #. module: child_compassion
 #: model:child.physical.disability,value:child_compassion.disability_leftarm
@@ -5611,6 +5647,18 @@ msgid "Learning Summary"
 msgstr "Riepilogo dell'apprendimento"
 
 #. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Leaves and grass"
+msgstr "Foglie e erba"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Leaves, grass and thatch"
+msgstr "Foglie, erba e paglia"
+
+#. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_lentils
 msgid "Lentils"
 msgstr "Lenticchie"
@@ -6137,6 +6185,12 @@ msgstr "Madre viva"
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Mother job"
 msgstr "Lavoro da madre"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Mud, earth, clay and adobe"
+msgstr "Fango, terra, argilla e adobe"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_multimedia
@@ -7288,6 +7342,18 @@ msgstr "Lavori di piantagione"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__planting_month_ids
 msgid "Planting months"
 msgstr "Mesi di semina"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Plastic"
+msgstr "Plastica"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Plastic sheets"
+msgstr "Teli di plastica"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_playhouse
@@ -9408,6 +9474,12 @@ msgid "Thunderstorm"
 msgstr "Temporale"
 
 #. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Tile"
+msgstr "Tegola"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__time
 msgid "Time"
 msgstr "Tempo"
@@ -9431,6 +9503,12 @@ msgstr "Tempo in minuti"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__timezone
 msgid "Timezone"
 msgstr "Fuso orario"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Tin"
+msgstr "Lamiera"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__title
@@ -10102,6 +10180,12 @@ msgid "Will display the comments when child is selected for sponsorship"
 msgstr ""
 "Visualizzerà i commenti quando il bambino viene selezionato per la "
 "sponsorizzazione"
+
+#. module: child_compassion
+#. odoo-python
+#: code:addons/child_compassion/models/project_compassion.py:0
+msgid "Wood"
+msgstr "Legno"
 
 #. module: child_compassion
 #. odoo-python
