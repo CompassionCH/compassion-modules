@@ -13,7 +13,7 @@ from datetime import datetime
 from babel.dates import format_date
 from markupsafe import Markup, escape
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
@@ -35,11 +35,13 @@ class ResPartner(models.Model):
     short_address = fields.Char(compute="_compute_address")
     date_communication = fields.Char(compute="_compute_date_communication")
 
+    @api.depends_context("lang")
     def _compute_address(self):
         # Replace line returns
         p = re.compile(r"\n+")
+        lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
-            t_partner = partner.with_context(lang=partner.lang)
+            t_partner = partner.with_context(lang=lang)
             lines = []
             if not partner.is_company and partner.title.shortcut:
                 title = escape(t_partner.title.shortcut)
@@ -53,11 +55,13 @@ class ResPartner(models.Model):
             text = "\n".join(str(line) for line in lines if line)
             partner.short_address = Markup(p.sub("<br/>", text))
 
+    @api.depends_context("lang")
     def _compute_date_communication(self):
         """City and date displayed in the top right of a letter"""
         today = datetime.today()
         city = self.env.user.partner_id.company_id.city
+        lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
-            date = format_date(today, format="long", locale=partner.lang)
-            formatted_date = f"le {date}" if "fr" in partner.lang else date
+            date = format_date(today, format="long", locale=lang)
+            formatted_date = f"le {date}" if "fr" in lang else date
             partner.date_communication = f"{city}, {formatted_date}"
