@@ -28,6 +28,7 @@ class CrmPhonecall(models.Model):
                 "communication_type": "Phone",
                 "subject": rec.name,
                 "body": rec.description or rec.name,
+                "has_attachment": bool(rec.message_attachment_count),
                 "tracking_status": TRACKING_STATUS_MAPPING.get(rec.state),
                 "user_id": rec.user_id.id,
             }

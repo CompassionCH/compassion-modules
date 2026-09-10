@@ -26,6 +26,9 @@
             "interaction_resume/static/src/xml/**/*.xml",
             "interaction_resume/static/src/js/**/*.js",
         ],
+        "web.assets_tests": [
+            "interaction_resume/static/tests/tours/interaction_resume.js",
+        ],
     },
     "external_dependencies": {
         "python": [],
