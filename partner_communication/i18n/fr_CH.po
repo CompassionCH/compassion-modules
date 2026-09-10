@@ -1499,6 +1499,24 @@ msgid "The kind of document with this communication can be used"
 msgstr "The kind of document with this communication can be used"
 
 #. module: partner_communication
+#: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
+msgid "This communication has no send mode, so it cannot be sent."
+msgstr ""
+"Cette communication n'a pas de mode d'envoi et ne peut donc pas être "
+"envoyée."
+
+#. module: partner_communication
+#: code:addons/partner_communication/models/communication_job.py:0
+#, python-format
+msgid ""
+"This communication has no send mode, so it cannot be sent. Choose below how "
+"it should go out and save."
+msgstr ""
+"Cette communication n'a pas de mode d'envoi et ne peut donc pas être "
+"envoyée. Choisissez ci-dessous comment elle doit être envoyée, puis "
+"enregistrez."
+
+#. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__user_id
 msgid "This config will only apply for communications from this user"
 msgstr ""

@@ -25,6 +25,15 @@
             icon="fa-envelope"
             type="object"
             class="oe_highlight"
+            title="This communication has no send mode, so it cannot be sent."
+            invisible="send_mode or state != 'pending' or not id"
+          />
+                    <button
+            name="send"
+            string="Send Now"
+            icon="fa-envelope"
+            type="object"
+            class="oe_highlight"
             invisible="send_mode != 'both' or state != 'pending' or not id"
             context="{'origin': 'both_email'}"
           />

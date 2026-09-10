@@ -573,10 +573,18 @@ class CommunicationJob(models.Model):
         # If only one job is asked, run synchronously
         if len(self) == 1:
             self = self.with_context(queue_job__no_delay=True)
+            if self.state == "pending" and not self.send_mode:
+                raise UserError(
+                    _(
+                        "This communication has no send mode, so it cannot be "
+                        "sent."
+                    )
+                )
 
         # Filter "pending" tasks
         todo = self.filtered(
             lambda j: j.state == "pending"
+            and j.send_mode
             and not (j.need_call == "before_sending" and j.activity_ids)
         )
         todo.write({"state": "processing"})
