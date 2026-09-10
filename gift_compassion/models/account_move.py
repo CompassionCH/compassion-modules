@@ -27,17 +27,25 @@ class AccountMove(models.Model):
         are called after posting the move.
         """
         posted = super()._post(soft=soft)
-        posted._filter_moves_to_gift().line_ids._trigger_gifts()
+        posted._filter_move_lines_to_gift()._trigger_gifts()
         return posted
 
     def write(self, vals):
         res = super().write(vals)
         if "line_ids" in vals:
-            self._filter_moves_to_gift().line_ids._trigger_gifts()
+            self._filter_move_lines_to_gift()._trigger_gifts()
         return res
 
-    def _filter_moves_to_gift(self):
-        return self.filtered(
-            lambda m: m.state == "posted"
-            and (m.move_type == "entry" or m.payment_state == "paid")
+    def _filter_move_lines_to_gift(self):
+        return (
+            self.filtered(
+                lambda m: m.state == "posted"
+                and (m.move_type == "entry" or m.payment_state == "paid")
+            )
+            .mapped("line_ids")
+            .filtered(
+                lambda line: line.product_id.categ_id
+                == self.env.ref("sponsorship_compassion.product_category_gift")
+                and line.contract_id.child_id
+            )
         )
