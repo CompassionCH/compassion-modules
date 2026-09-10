@@ -43,6 +43,7 @@ const LETTER = {
   body: "The sponsor wrote to us to ask for news of the sponsored child.",
   attachment: ATTACHMENT_NAME,
 };
+const LETTER_REWRITTEN = `${LETTER.body} They also asked for a photograph.`;
 const ANSWER = {
   type: "Email",
   direction: "Outgoing",
@@ -330,6 +331,49 @@ const checkAttachmentInResume = (withFile, withoutFile) => [
   })),
 ];
 
+/**
+ * Rewrites the text of an interaction from the resume and comes back to it.
+ * An entry of the resume is the record it was built from, so it has to be
+ * still there afterwards, carrying what was just written.
+ */
+const rewriteFromResume = (interaction, text) => [
+  {
+    content: `Open the entry of "${interaction.subject}"`,
+    trigger: `.o_data_row:contains("${interaction.subject}") td[name=subject]`,
+    run: "click",
+  },
+  {
+    content: "Open the interaction the entry was built from",
+    trigger: ".o_form_view button[name=open_related_action]",
+    run: "click",
+  },
+  {
+    content: "The interaction that was logged is displayed",
+    trigger: `.o_form_view div[name=subject] input:value("${interaction.subject}")`,
+  },
+  {
+    content: "Focus the text of the interaction",
+    trigger: ".o_form_view div[name=body] .odoo-editor-editable",
+    run: "click",
+  },
+  {
+    content: "Write down what was left out the first time",
+    trigger: ".o_form_view div[name=body] .odoo-editor-editable",
+    run: `editor ${text}`,
+  },
+  ...stepUtils.saveForm(),
+  {
+    content: "Go back to the entry of the resume",
+    trigger: ".o_control_panel .breadcrumb-item.o_back_button",
+    run: "click",
+  },
+  {
+    content: "The entry is still there, and carries what was just written",
+    trigger: `.o_form_view div[name=body]:contains("${text}")`,
+  },
+  ...backToResume(),
+];
+
 /** Checks that the chatter of the contact holds no note about an interaction. */
 const checkNotLogged = (interactions) => [
   ...goToContact(),
@@ -409,6 +453,8 @@ registry.category("web_tour.tours").add("interaction_resume_log_interaction", {
     ...checkInResume(ANSWER),
     ...checkInResume(VISIT),
     ...checkAttachmentInResume(LETTER, [ANSWER, VISIT]),
+    // Editing an interaction must not take the resume down with it.
+    ...rewriteFromResume(LETTER, LETTER_REWRITTEN),
     ...checkNotLogged([LETTER, ANSWER, VISIT]),
   ],
 });

@@ -23,6 +23,7 @@ def _force_pdf_rendering(self, report_ref, res_ids=None, data=None):
         self.with_context(force_report_rendering=True), report_ref, res_ids, data
     )
 
+
 ATTACHMENT_NAME = "letter-of-the-sponsor.txt"
 
 LETTER = {
@@ -33,6 +34,7 @@ LETTER = {
     "other_type": False,
     "attachment": ATTACHMENT_NAME,
 }
+REWRITTEN_LETTER = LETTER["body"] + " They also asked for a photograph."
 ANSWER = {
     "subject": "Answer written about the sponsored child",
     "body": "We answered the sponsor and told how the sponsored child is doing.",
@@ -204,6 +206,10 @@ class TestInteractionResume(HttpCase):
             ),
             "The attachment was left behind on the wizard",
         )
+
+        letter = self._only(interactions, "subject", LETTER["subject"])
+        self.assertIn(REWRITTEN_LETTER, letter.body)
+        self.assertIn(REWRITTEN_LETTER, self._resume_of(LETTER["subject"]).body)
 
         self._assert_no_note_about(
             LETTER["subject"], ANSWER["subject"], VISIT["subject"]

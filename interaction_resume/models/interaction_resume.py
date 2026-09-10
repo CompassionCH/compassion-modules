@@ -77,9 +77,7 @@ class InteractionResume(models.Model):
         }
 
     def action_refresh(self):
-        partner = self.mapped("partner_id")[:1]
-        for page in range(partner.last_interaction_fetch_page + 1):
-            partner.fetch_interactions(page=page)
+        self.mapped("partner_id")[:1].refresh_interactions()
         return True
 
     def fetch_more(self):
@@ -89,19 +87,20 @@ class InteractionResume(models.Model):
 
     def _identity_of(self, vals):
         """What tells one entry of a resume from another."""
+        source = self.env[vals["res_model"]]
         return (
             vals.get("partner_id") or False,
-            vals.get("direction") or False,
-            fields.Datetime.to_datetime(vals.get("date")) or False,
-            vals.get("subject") or False,
-        )
+            source._name,
+            vals.get("res_id") or False,
+        ) + source._interaction_discriminator(vals)
 
     def _identity(self):
         self.ensure_one()
         return self._identity_of(
             {
                 "partner_id": self.partner_id.id,
-                "direction": self.direction,
+                "res_model": self.res_model,
+                "res_id": self.res_id,
                 "date": self.date,
                 "subject": self.subject,
             }
@@ -123,9 +122,15 @@ class InteractionResume(models.Model):
         if not vals_list:
             return self.browse()
         partners = {vals.get("partner_id") for vals in vals_list}
+        res_models = {vals.get("res_model") for vals in vals_list}
         listed = {
             entry._identity(): entry
-            for entry in self.search([("partner_id", "in", list(partners))])
+            for entry in self.search(
+                [
+                    ("partner_id", "in", list(partners)),
+                    ("res_model", "in", list(res_models)),
+                ]
+            )
         }
         res = self.browse()
         to_create = []

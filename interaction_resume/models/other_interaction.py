@@ -55,6 +55,6 @@ class OtherInteractions(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        # Refresh interaction resume
-        self.mapped("partner_id").reset_interactions()
+        if not self._transient:
+            self.mapped("partner_id").refresh_interactions()
         return res
