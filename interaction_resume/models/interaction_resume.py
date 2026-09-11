@@ -77,8 +77,7 @@ class InteractionResume(models.Model):
         }
 
     def action_refresh(self):
-        partner = self.mapped("partner_id")[:1]
-        partner.fetch_interactions()
+        self.mapped("partner_id")[:1].refresh_interactions()
         return True
 
     def fetch_more(self):
@@ -86,37 +85,63 @@ class InteractionResume(models.Model):
         partner.fetch_interactions(page=partner.last_interaction_fetch_page + 1)
         return True
 
+    def _identity_of(self, vals):
+        """What tells one entry of a resume from another."""
+        source = self.env[vals["res_model"]]
+        return (
+            vals.get("partner_id") or False,
+            source._name,
+            vals.get("res_id") or False,
+        ) + source._interaction_discriminator(vals)
+
+    def _identity(self):
+        self.ensure_one()
+        return self._identity_of(
+            {
+                "partner_id": self.partner_id.id,
+                "res_model": self.res_model,
+                "res_id": self.res_id,
+                "date": self.date,
+                "subject": self.subject,
+            }
+        )
+
+    def _update_from_source(self, vals):
+        self.ensure_one()
+        changed = {
+            field: value
+            for field, value in vals.items()
+            if self._fields[field].convert_to_write(self[field], self) != value
+        }
+        if changed:
+            self.write(changed)
+        return self
+
     @api.model_create_multi
     def create(self, vals_list):
-        # Avoid duplicates
-        res = self.env[self._name]
-        for vals in vals_list:
-            subject = vals.get("subject")
-            if not subject:
-                existing_interaction = self.search(
-                    [
-                        ("partner_id", "=", vals.get("partner_id")),
-                        ("direction", "=", vals.get("direction")),
-                        ("date", "=", vals.get("date")),
-                        ("subject", "=", False),
-                    ],
-                    limit=1,
-                )
-                if not existing_interaction:
-                    res += super().create(vals)
-                else:
-                    res += existing_interaction
-                continue
-            existing_interaction = self.search(
+        if not vals_list:
+            return self.browse()
+        partners = {vals.get("partner_id") for vals in vals_list}
+        res_models = {vals.get("res_model") for vals in vals_list}
+        listed = {
+            entry._identity(): entry
+            for entry in self.search(
                 [
-                    ("partner_id", "=", vals.get("partner_id")),
-                    ("direction", "=", vals.get("direction")),
-                    ("date", "=", vals.get("date")),
-                    ("subject", "=", subject),
-                ],
-                limit=1,
+                    ("partner_id", "in", list(partners)),
+                    ("res_model", "in", list(res_models)),
+                ]
             )
-            if not existing_interaction:
-                existing_interaction = super().create(vals)
-            res += existing_interaction
-        return res
+        }
+        res = self.browse()
+        to_create = []
+        for vals in vals_list:
+            identity = self._identity_of(vals)
+            entry = listed.get(identity)
+            if entry:
+                res += entry._update_from_source(vals)
+            elif identity not in listed:
+                # Mark it as taken, so that a duplicate later in the same
+                # batch does not create a second entry for it.
+                listed[identity] = None
+                to_create.append(vals)
+        return res + super().create(to_create)

@@ -32,7 +32,8 @@ class ResPartner(models.Model):
     thankyou_preference = fields.Selection(
         "_get_delivery_preference", default="auto_digital", required=True
     )
-    short_address = fields.Char(compute="_compute_address")
+    short_address = fields.Html(compute="_compute_address", sanitize=False)
+    address_without_name = fields.Html(compute="_compute_address", sanitize=False)
     date_communication = fields.Char(compute="_compute_date_communication")
 
     def _compute_address(self):
@@ -40,18 +41,18 @@ class ResPartner(models.Model):
         p = re.compile(r"\n+")
         for partner in self:
             t_partner = partner.with_context(lang=partner.lang)
-            lines = []
+            name_line = ""
             if not partner.is_company and partner.title.shortcut:
                 title = escape(t_partner.title.shortcut)
                 firstname = escape(partner.firstname or "")
                 lastname = escape(partner.lastname or "")
-                full_name = " ".join(
+                name_line = " ".join(
                     part for part in [title, firstname, lastname] if part
                 )
-                lines.append(full_name)
-            lines.append(escape(t_partner.contact_address or ""))
-            text = "\n".join(str(line) for line in lines if line)
-            partner.short_address = Markup(p.sub("<br/>", text))
+            postal_lines = escape(t_partner.contact_address or "")
+            lines = [str(line) for line in [name_line, postal_lines] if line]
+            partner.short_address = Markup(p.sub("<br/>", "\n".join(lines)))
+            partner.address_without_name = Markup(p.sub("<br/>", str(postal_lines)))
 
     def _compute_date_communication(self):
         """City and date displayed in the top right of a letter"""
