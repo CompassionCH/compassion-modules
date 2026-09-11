@@ -32,7 +32,7 @@ class ResPartner(models.Model):
     thankyou_preference = fields.Selection(
         "_get_delivery_preference", default="auto_digital", required=True
     )
-    short_address = fields.Char(compute="_compute_address")
+    short_address = fields.Html(compute="_compute_address", sanitize=False)
     date_communication = fields.Char(compute="_compute_date_communication")
 
     def _compute_address(self):
