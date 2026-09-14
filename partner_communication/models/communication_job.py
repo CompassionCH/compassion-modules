@@ -721,7 +721,7 @@ class CommunicationJob(models.Model):
     @api.onchange("config_id", "partner_id")
     def onchange_config_id(self):
         self.user_id = self.config_id.user_id or self.env.user
-        if self.config_id:
+        if self.config_id and self.partner_id:
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
         # set default fields
