@@ -201,8 +201,11 @@ class SponsorshipContract(models.Model):
 
     @api.onchange("group_id")
     def _get_correct_pricelist(self):
-        if "S" in self.env.context.get("default_type", "O"):
-            self.contract_line_ids = self._get_sponsorship_standard_lines(False)
+        contract_type = self.type or self.env.context.get("default_type", "O")
+        if "S" in contract_type:
+            self.contract_line_ids = self._get_sponsorship_standard_lines(
+                contract_type in ["SC", "SWP"]
+            )
 
     @api.onchange("type")
     def _create_empty_lines_for_correspondence(self):
