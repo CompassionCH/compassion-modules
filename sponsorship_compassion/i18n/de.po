@@ -83,11 +83,6 @@ msgid "BVR Ref"
 msgstr "BVR Ref"
 
 #. module: sponsorship_compassion
-#: model:ir.cron,cron_name:sponsorship_compassion.recurring_invoicer_cron
-msgid "Base: Auto-vacuum internal data"
-msgstr "Basis: Auto-Vacuum für interne Daten"
-
-#. module: sponsorship_compassion
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 #, python-format
 msgid "Bi-annual"
@@ -552,11 +547,6 @@ msgid "Generated Invoices"
 msgstr "Erstellte Rechnungen"
 
 #. module: sponsorship_compassion
-#: model:ir.ui.menu,name:sponsorship_compassion.menu_recurring_invoicer_form
-msgid "Generated invoices"
-msgstr "Erstellte Rechnungen"
-
-#. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_gift
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_total_gift
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__gift
@@ -863,11 +853,6 @@ msgstr "Zuletzt aktualisiert am"
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_invoice_line_compassion_filter
 msgid "Last payment"
 msgstr "Letzte Zahlung"
-
-#. module: sponsorship_compassion
-#: model:ir.cron,name:sponsorship_compassion.recurring_invoicer_cron
-msgid "Launch friday invoice generation"
-msgstr "Start der Rechnungserstellung am Freitag"
 
 #. module: sponsorship_compassion
 #: model:ir.ui.menu,name:sponsorship_compassion.menu_invoice_automatic_generation
