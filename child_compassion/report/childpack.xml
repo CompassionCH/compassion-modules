@@ -319,7 +319,7 @@
               position: absolute;
               top: 0mm;
               left: 0mm;
-              margin-left: <t t-esc="marginLeft+269" />mm;
+              margin-left: <t t-esc="marginLeft+250" />mm;
               margin-top: 10mm;
               width: 23mm;
               height: 23mm;
