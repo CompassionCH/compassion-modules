@@ -1139,7 +1139,7 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         attachments = self.original_attachment_ids.filtered(
-            lambda a: a.mimetype.startswith("image")
+            lambda a: (a.mimetype or "").startswith("image")
         )
         images = {0: {0: []}}
 
