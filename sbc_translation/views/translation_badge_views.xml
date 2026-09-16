@@ -1,0 +1,65 @@
+<odoo>
+    <record id="view_translation_badge_tree" model="ir.ui.view">
+        <field name="name">translation.badge.list</field>
+        <field name="model">translation.badge</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="badge_type"/>
+                <field name="condition_type"/>
+                <field name="threshold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_translation_badge_form" model="ir.ui.view">
+        <field name="name">translation.badge.form</field>
+        <field name="model">translation.badge</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Badge Name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="icon_id" options="{'no_create': True}"/>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="badge_type"/>
+                            <field name="condition_type"/>
+                            <field name="threshold"/>
+                            <field name="start_date" invisible="condition_type != 'campaign'"/>
+                            <field name="end_date" invisible="condition_type != 'campaign'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Translators with this badge">
+                            <field name="user_badge_ids">
+                                <list>
+                                    <field name="user_id"/>
+                                    <field name="unlocked_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_translation_badge" model="ir.actions.act_window">
+        <field name="name">Badges</field>
+        <field name="res_model">translation.badge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_translation_badge"
+              parent="menu_translation_platform"
+              name="Badges"
+              action="action_translation_badge"
+              sequence="4"/>
+</odoo>
