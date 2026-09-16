@@ -95,42 +95,43 @@
                         <p />
                     </div>
                 </t>
-                <t
-          t-if="letter.report_needs_original_text"
-          t-foreach="letter.get_attachments_per_page()"
-          t-as="attachments_page"
-        >
-                    <div
-            t-if="attachments_page_value[0]"
-            class="page p-5"
-            style="page-break-after:always;"
-          >
-                        <t t-if="attachments_page_index % 2 == 0">
-                            <t t-call="sbc_compassion.correspondence_header" />
-                        </t>
-                        <t
-              t-foreach="attachments_page_value"
-              t-as="attachments_row"
+                <t t-if="letter.report_needs_original_text">
+                    <t
+              t-foreach="letter.get_attachments_per_page()"
+              t-as="attachments_page"
             >
-                            <div class="row mx-3 my-4">
-                                <t
-                  t-foreach="attachments_row_value"
-                  t-as="attachment"
+                        <div
+                t-if="attachments_page_value[0]"
+                class="page p-5"
+                style="page-break-after:always;"
+              >
+                            <t t-if="attachments_page_index % 2 == 0">
+                                <t t-call="sbc_compassion.correspondence_header" />
+                            </t>
+                            <t
+                  t-foreach="attachments_page_value"
+                  t-as="attachments_row"
                 >
-                                    <div class="col-12 px-4">
-                                        <!-- Aspect-ratio box: wkhtmltopdf renders
-                                             CSS mm at ~0.8x, so size relative to the
-                                             page width and let the background fit
-                                             inside without distorting the picture. -->
-                                        <div
-                      t-if="attachment"
-                      t-attf-style="height: 0; padding-bottom: 70%; background-image: url('data:image/jpeg;base64,{{attachment}}'); background-size: contain; background-position: center; background-repeat: no-repeat;"
-                    />
-                                    </div>
-                                </t>
-                            </div>
-                        </t>
-                    </div>
+                                <div class="row mx-3 my-4">
+                                    <t
+                      t-foreach="attachments_row_value"
+                      t-as="attachment"
+                    >
+                                        <div class="col-12 px-4">
+                                            <!-- Aspect-ratio box: wkhtmltopdf renders
+                                                 CSS mm at ~0.8x, so size relative to the
+                                                 page width and let the background fit
+                                                 inside without distorting the picture. -->
+                                            <div
+                          t-if="attachment"
+                          t-attf-style="height: 0; padding-bottom: 70%; background-image: url('data:image/jpeg;base64,{{attachment}}'); background-size: contain; background-position: center; background-repeat: no-repeat;"
+                        />
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
                 </t>
             </t>
         </t>
