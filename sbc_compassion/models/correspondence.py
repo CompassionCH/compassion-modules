@@ -191,7 +191,7 @@ class Correspondence(models.Model):
     original_attachment_ids = fields.One2many(
         "ir.attachment",
         "res_id",
-        domain=[("res_model", "=", _name)],
+        domain=[("res_model", "=", _name), ("res_field", "=", False)],
         string="Attached images",
         copy=True,
     )
