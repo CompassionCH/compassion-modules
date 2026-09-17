@@ -1,0 +1,26 @@
+name: tour tests
+
+on:
+  pull_request:
+    branches: ["18.0"]
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch the tours tests
+        env:
+          GH_TOKEN: ${{ secrets.TOURS_DISPATCH_TOKEN }}
+          PR_REPO: ${{ github.repository }}
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          jq -n \
+            --arg repo "$PR_REPO" --arg sha "$PR_SHA" --arg num "$PR_NUMBER" \
+            '{ref: "18.0", inputs: {pr_repo: $repo, pr_sha: $sha, pr_number: $num}}' \
+          | gh api --method POST \
+              repos/CompassionCH/addons-compassion-switzerland/actions/workflows/tours.yml/dispatches \
+              --input -
+          echo "Dispatched tour tests for $PR_REPO@$PR_SHA (PR #$PR_NUMBER)"
