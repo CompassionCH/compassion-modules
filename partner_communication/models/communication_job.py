@@ -575,7 +575,10 @@ class CommunicationJob(models.Model):
             self = self.with_context(queue_job__no_delay=True)
             if self.state == "pending" and not self.send_mode:
                 raise UserError(
-                    _("This communication has no send mode, so it cannot be sent.")
+                    _(
+                        "This communication has no send mode, so it cannot be sent."
+                        " Choose below how it should go out and save."
+                    )
                 )
 
         # Filter "pending" tasks
