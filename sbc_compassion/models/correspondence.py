@@ -475,16 +475,7 @@ class Correspondence(models.Model):
         for letter in self.with_context(skip_lang_detect=True):
             # Determine which text is analyzed
             is_translation = bool(letter.translated_text or letter.english_text)
-            letter_text = (
-                letter.translated_text or letter.english_text or letter.original_text
-            )
-            # Clean text for accurate detection
-            clean_text = (
-                letter_text.strip(" \t\n\r.")
-                .replace(BOX_SEPARATOR, "")
-                .replace(PAGE_SEPARATOR, "")
-                .strip()
-            )
+            clean_text = letter._clean_letter_text()
 
             if not clean_text:
                 # T2495 Default to English for empty B2S letters
@@ -508,17 +499,48 @@ class Correspondence(models.Model):
                 ):
                     letter.original_language_id = detected_lang
 
-    def _detect_letter_language(self):
-        """Language the letter is actually written in. Detected from its text."""
+    def _clean_letter_text(self):
+        """Text of the letter, stripped of separators, ready for detection."""
         self.ensure_one()
         text = self.translated_text or self.english_text or self.original_text or ""
-        clean = (
+        return (
             text.strip(" \t\n\r.")
             .replace(BOX_SEPARATOR, "")
             .replace(PAGE_SEPARATOR, "")
             .strip()
         )
-        return self.env["langdetect"].detect_language(clean)
+
+    def _letter_language_verdict(self):
+        """Detected language of the letter, and whether we have an opinion at all.
+
+        has_opinion is False only when the text is shorter than
+        langdetect.min_length; the caller then falls back to the field-office
+        stamp (T3371). Anything longer counts as an opinion, so a letter we
+        cannot read is still queued for translation (T3339).
+        """
+        self.ensure_one()
+        clean = self._clean_letter_text()
+        lang_detector = self.env["langdetect"]
+        return (
+            lang_detector.detect_language(clean),
+            len(clean) >= lang_detector.min_length,
+        )
+
+    def _sponsor_can_read_letter(self):
+        """True if the sponsor reads the language the letter is actually in.
+
+        Judged from the content when the letter holds enough text, since the
+        field-office stamp is not always right (T3339). Below that the detector
+        has no opinion, so the stamp is all we have, and trusting it beats
+        queueing letters nobody needs translated (T3371).
+        """
+        self.ensure_one()
+        language, has_opinion = self._letter_language_verdict()
+        if has_opinion:
+            return language in self.supporter_languages_ids
+        return bool(self.beneficiary_language_ids & self.supporter_languages_ids) or (
+            self.translation_language_id in self.supporter_languages_ids
+        )
 
     @api.depends("uuid")
     def _compute_read_url(self):
