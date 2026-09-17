@@ -33,6 +33,7 @@ class ResPartner(models.Model):
         "_get_delivery_preference", default="auto_digital", required=True
     )
     short_address = fields.Html(compute="_compute_address", sanitize=False)
+    address_without_name = fields.Html(compute="_compute_address", sanitize=False)
     date_communication = fields.Char(compute="_compute_date_communication")
 
     @api.depends_context("lang")
@@ -47,13 +48,13 @@ class ResPartner(models.Model):
                 title = escape(t_partner.title.shortcut)
                 firstname = escape(partner.firstname or "")
                 lastname = escape(partner.lastname or "")
-                full_name = " ".join(
+                name_line = " ".join(
                     part for part in [title, firstname, lastname] if part
                 )
-                lines.append(full_name)
-            lines.append(escape(t_partner.contact_address or ""))
-            text = "\n".join(str(line) for line in lines if line)
-            partner.short_address = Markup(p.sub("<br/>", text))
+            postal_lines = escape(t_partner.contact_address or "")
+            lines = [str(line) for line in [name_line, postal_lines] if line]
+            partner.short_address = Markup(p.sub("<br/>", "\n".join(lines)))
+            partner.address_without_name = Markup(p.sub("<br/>", str(postal_lines)))
 
     @api.depends_context("lang")
     def _compute_date_communication(self):

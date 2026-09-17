@@ -84,6 +84,13 @@ class Partner(models.Model):
         self.last_interaction_fetch_page = page
         return True
 
+    def refresh_interactions(self):
+        """Fetch again the interactions of every page already loaded"""
+        for partner in self:
+            for page in range(partner.last_interaction_fetch_page + 1):
+                partner.fetch_interactions(page=page)
+        return True
+
     def reset_interactions(self):
         """Reset the interaction resume for this partner"""
         self.mapped("interaction_resume_ids").unlink()

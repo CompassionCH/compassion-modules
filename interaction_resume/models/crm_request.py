@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.tools.mail import html2plaintext
 
 
@@ -65,6 +65,14 @@ class CrmRequest(models.Model):
                 ]
             )
         return res
+
+    def _interaction_discriminator(self, vals):
+        # A claim yields one entry per message of its thread, plus one for
+        # the form it came from, all built from the claim itself.
+        return (
+            fields.Datetime.to_datetime(vals.get("date")) or False,
+            vals.get("subject") or False,
+        )
 
     def _get_interaction_partner_domain(self, partner):
         if not partner.email:
