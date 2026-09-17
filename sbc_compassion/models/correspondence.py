@@ -562,22 +562,26 @@ class Correspondence(models.Model):
 
     def _has_page_image_source(self):
         """
-        Whether a source image is already known for this letter's pages - a
-        stored URL (own or Cloudinary) or an attached scan - without
-        triggering an external Cloudinary/Connect fetch.
+        Whether EVERY page already has a known source image - a stored URL
+        (own or Cloudinary) or an attached scan - without triggering an
+        external Cloudinary/Connect fetch. The report resolves the image per
+        page, so a single page missing its source still needs the text
+        overlay - otherwise that one page would render with neither an image
+        nor the sponsor's text.
         """
         self.ensure_one()
         if self.sponsor_letter_scan:
             return True
+        if not self.page_ids:
+            return False
         url_field, cloudinary_field = (
             ("final_page_url", "cloudinary_final_page_url")
             if self.sponsor_needs_final_letter
             else ("original_page_url", "cloudinary_original_page_url")
         )
-        return bool(
-            self.page_ids.filtered(
-                lambda p: getattr(p, url_field) or getattr(p, cloudinary_field)
-            )
+        return all(
+            getattr(page, url_field) or getattr(page, cloudinary_field)
+            for page in self.page_ids
         )
 
     def _compute_report_needs_final_text(self):
