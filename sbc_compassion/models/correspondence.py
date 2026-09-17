@@ -538,9 +538,9 @@ class Correspondence(models.Model):
         language, has_opinion = self._letter_language_verdict()
         if has_opinion:
             return language in self.supporter_languages_ids
-        return bool(
-            self.beneficiary_language_ids & self.supporter_languages_ids
-        ) or (self.translation_language_id in self.supporter_languages_ids)
+        return bool(self.beneficiary_language_ids & self.supporter_languages_ids) or (
+            self.translation_language_id in self.supporter_languages_ids
+        )
 
     @api.depends("uuid")
     def _compute_read_url(self):
