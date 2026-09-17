@@ -194,6 +194,8 @@ class CorrespondenceS2bGenerator(models.Model):
                 letter = letters.create(vals)
             letters += letter
         letters.create_text_boxes()
+        for letter in letters:
+            letter.spread_text_to_pages()
         self.write({"letter_ids": [Command.set(letters.ids)]})
         if not preview_mode:
             self.write(
