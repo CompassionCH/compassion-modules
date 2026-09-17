@@ -225,13 +225,8 @@ class Correspondence(models.Model):
             if not force_publish:
                 letter._check_translation_language()
 
-            # Can sponser read the letter? Decide from the letter's ACTUAL
-            # content language, not the field-office TranslationLanguage stamp.
-            # If it can't be determined, fail safe to translation.
-            detected_lang = letter._detect_letter_language()
-            langs_match = (
-                bool(detected_lang) and detected_lang in letter.supporter_languages_ids
-            )
+            # Can sponser read the letter?
+            langs_match = letter._sponsor_can_read_letter()
 
             # Is the letter still in the translation process?
             translation_hold = (

@@ -249,13 +249,5 @@ class Correspondence(models.Model):
             and "Final Letter" not in types
             and "auto" in self.partner_id.letter_delivery_preference
         )
-        # Only auto-send if the letter's actual content language is one the
-        # sponsor reads (detected from content, not the field-office stamp).
-        detected_lang = self._detect_letter_language()
-        valid = (
-            valid
-            and bool(detected_lang)
-            and detected_lang in self.supporter_languages_ids
-        )
-
-        return valid
+        # Don't auto-send a letter the sponsor cannot read.
+        return valid and self._sponsor_can_read_letter()
