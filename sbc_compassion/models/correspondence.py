@@ -549,16 +549,36 @@ class Correspondence(models.Model):
     def _compute_report_needs_original_text(self):
         """
         Used by the PDF report of the correspondence in order to get the text
-        to overlay on the image of the page. In case of a Supporter letter that is not
-        yet sent to GMC, we need to overlay the original text.
-        Otherwise, it will be blank.
+        to overlay on the image of the page. We need to overlay the original
+        text whenever no image will ever be available to print instead -
+        whether the letter hasn't been sent to GMC yet, or it was sent but no
+        photo ever came back. Otherwise the page would be rendered blank.
         """
         for letter in self:
             letter.report_needs_original_text = (
                 letter.direction == "Supporter To Beneficiary"
-                and not letter.kit_identifier
-                and not letter.sponsor_letter_scan
+                and not letter._has_page_image_source()
             )
+
+    def _has_page_image_source(self):
+        """
+        Whether a source image is already known for this letter's pages - a
+        stored URL (own or Cloudinary) or an attached scan - without
+        triggering an external Cloudinary/Connect fetch.
+        """
+        self.ensure_one()
+        if self.sponsor_letter_scan:
+            return True
+        url_field, cloudinary_field = (
+            ("final_page_url", "cloudinary_final_page_url")
+            if self.sponsor_needs_final_letter
+            else ("original_page_url", "cloudinary_original_page_url")
+        )
+        return bool(
+            self.page_ids.filtered(
+                lambda p: getattr(p, url_field) or getattr(p, cloudinary_field)
+            )
+        )
 
     def _compute_report_needs_final_text(self):
         """
