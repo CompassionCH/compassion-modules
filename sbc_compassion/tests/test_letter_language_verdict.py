@@ -7,6 +7,8 @@
 #
 ##############################################################################
 
+from langdetect import DetectorFactory
+
 from odoo.tests import TransactionCase
 
 SHORT_CAPTION = "Salut, C'est Martial. Juste un bonjour!"
@@ -29,6 +31,16 @@ class TestLetterLanguageVerdict(TransactionCase):
     record, and building one needs `BaseSponsorshipTest`, whose `setUpClass` is
     currently broken for all 13 test classes that use it.
     """
+
+    def setUp(self):
+        super().setUp()
+        # langdetect samples randomly and runs unseeded in production, so the
+        # same text occasionally misses the confidence threshold (~0.1% of runs
+        # for the English text below). Pin the seed here so these tests exercise
+        # verdict handling rather than detector luck.
+        previous_seed = DetectorFactory.seed
+        DetectorFactory.seed = 0
+        self.addCleanup(setattr, DetectorFactory, "seed", previous_seed)
 
     def _letter(self, text, field="translated_text"):
         return self.env["correspondence"].new(
