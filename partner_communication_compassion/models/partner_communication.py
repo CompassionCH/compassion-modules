@@ -22,8 +22,6 @@ _logger = logging.getLogger(__name__)
 class PartnerCommunication(models.Model):
     _inherit = "partner.communication.job"
 
-    utm_campaign_id = fields.Many2one("utm.campaign", readonly=False)
-
     def get_correspondence_attachments(self, letters=None):
         """
         Include PDF of letters if the send_mode is to print the letters.
