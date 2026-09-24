@@ -156,6 +156,7 @@ class TranslationUser(models.Model):
 
     def _get_formatted_badges(self):
         self.ensure_one()
+        self.env['translation.badge'].evaluate_badges(self.user_id)
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         all_badges = self.env['translation.badge'].search([('is_active', '=', True)])
         unlocked_badge_ids = self.env['sbc.translation.user.badge'].search([('user_id', '=', self.user_id.id)]).mapped(
