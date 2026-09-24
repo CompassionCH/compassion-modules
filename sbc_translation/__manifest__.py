@@ -48,6 +48,7 @@
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
+        "views/translation_badge_views.xml",
     ],
     "demo": [],
     "installable": True,

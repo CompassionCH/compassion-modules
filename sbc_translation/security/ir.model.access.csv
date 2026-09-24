@@ -15,3 +15,5 @@ access_model_sbc_reply_to_comments_wizard,Full access to reply to comments,model
 access_model_sbc_reply_to_issue_wizard,Full access to reply to issue,model_sbc_reply_to_issue_wizard,group_manager,1,1,1,1
 access_model_translation_letter_counting_wizard,Access on Translation letter counting,model_translation_letter_counting_wizard,base.group_user,1,1,1,1
 access_translator_model_translation_letter_counting_wizard,Access on Translation letter counting,model_translation_letter_counting_wizard,group_user,1,1,1,1
+access_translation_badge,translation.badge,model_translation_badge,base.group_user,1,1,1,1
+access_sbc_translation_user_badge,sbc.translation.user.badge,model_sbc_translation_user_badge,base.group_user,1,1,1,1

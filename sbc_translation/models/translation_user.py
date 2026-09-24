@@ -44,9 +44,8 @@ class TranslationUser(models.Model):
     )
     avatar = fields.Binary(related="partner_id.image_128")
     force_validation = fields.Boolean(
-        help="If checked, all translations submitted by this user will "
-        "require validation by a supervisor, regardless of their verified"
-        "skills",
+        help="If checked, all translations submitted by this user will require "
+        "validation by a supervisor, regardless of their verified skills"
     )
 
     _sql_constraints = [
@@ -126,10 +125,7 @@ class TranslationUser(models.Model):
         user_group = self.env.ref("sbc_translation.group_user")
         for translator in records:
             translator.user_id.write(
-                {
-                    "groups_id": [(4, user_group.id)],
-                    "translator_id": translator.id,
-                }
+                {"groups_id": [(4, user_group.id)], "translator_id": translator.id}
             )
         return records
 
@@ -213,10 +209,88 @@ class TranslationUser(models.Model):
             ).unlink()
         return True
 
+    def _get_formatted_badges(self):
+        self.ensure_one()
+        self.env["translation.badge"].evaluate_badges(self.user_id)
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        all_badges = self.env["translation.badge"].search([("is_active", "=", True)])
+        unlocked_badge_ids = (
+            self.env["sbc.translation.user.badge"]
+            .search([("user_id", "=", self.user_id.id)])
+            .mapped("badge_id.id")
+        )
+        corr_count = self.nb_translated_letters or 0
+        streak_count = getattr(self, "current_streak", 0)
+        today = fields.Date.context_today(self)
+
+        badges_by_category = {
+            "volume": {"category": "Volume", "badges": []},
+            "engagement": {"category": "Engagement", "badges": []},
+            "campaign": {"category": "Campaign", "badges": []},
+        }
+
+        for badge in all_badges:
+            is_unlocked = badge.id in unlocked_badge_ids
+            progress = 0.0
+            days_left = False
+            days_until_start = False
+
+            if is_unlocked:
+                progress = 1.0
+            else:
+                if badge.condition_type == "count" and badge.threshold:
+                    progress = min(1.0, corr_count / badge.threshold)
+                elif badge.condition_type == "streak" and badge.threshold:
+                    progress = min(1.0, streak_count / badge.threshold)
+                elif badge.condition_type == "campaign":
+                    if badge.start_date and badge.start_date > today:
+                        days_until_start = (badge.start_date - today).days
+                    else:
+                        domain = [
+                            ("new_translator_id", "=", self.id),
+                            ("translation_status", "=", "done"),
+                        ]
+                        if badge.start_date:
+                            domain.append(("translate_done", ">=", badge.start_date))
+                        if badge.end_date:
+                            domain.append(("translate_done", "<=", badge.end_date))
+
+                        if badge.threshold:
+                            campaign_count = self.env["correspondence"].search_count(
+                                domain
+                            )
+                            progress = min(1.0, campaign_count / badge.threshold)
+
+                        if badge.end_date:
+                            if badge.end_date >= today:
+                                days_left = (badge.end_date - today).days
+                            else:
+                                days_left = 0
+
+            badge_dict = {
+                "id": badge.id,
+                "name": badge.name,
+                "description": badge.description or "",
+                "icon_url": (
+                    f"{base_url}/web/image/theme.compassion.icons"
+                    f"/{badge.icon_id.id}/icon"
+                    if badge.icon_id
+                    else f"{base_url}/web/static/img/smile.svg"
+                ),
+                "is_unlocked": is_unlocked,
+                "progress": progress,
+                "threshold": badge.threshold or 0,
+                "days_left": days_left,
+                "days_until_start": days_until_start,
+                "start_date": badge.start_date.strftime("%d/%m/%Y")
+                if badge.start_date
+                else False,
+            }
+            badges_by_category[badge.badge_type]["badges"].append(badge_dict)
+
+        return [cat for cat in badges_by_category.values() if len(cat["badges"]) > 0]
+
     def get_user_info(self):
-        """
-        Translation Platform API call to fetch user info.
-        """
         self.ensure_one()
         user = self.user_id.sudo()
         partner = self.partner_id.sudo()
@@ -248,10 +322,10 @@ class TranslationUser(models.Model):
                 for skill in self.translation_skills
             ]
             or "None",
+            "badges": self._get_formatted_badges(),
         }
 
 
 class ResUsers(models.Model):
     _inherit = "res.users"
-
     translator_id = fields.Many2one("translation.user", "Translator")
