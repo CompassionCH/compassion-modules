@@ -255,7 +255,13 @@ class TranslationUser(models.Model):
                         if badge.start_date:
                             domain.append(("translate_done", ">=", badge.start_date))
                         if badge.end_date:
-                            domain.append(('translate_done', '<', badge.end_date + timedelta(days=1)))
+                            domain.append(
+                                (
+                                    "translate_done",
+                                    "<",
+                                    badge.end_date + timedelta(days=1),
+                                )
+                            )
 
                         if badge.threshold:
                             campaign_count = self.env["correspondence"].search_count(
@@ -276,7 +282,8 @@ class TranslationUser(models.Model):
                 "icon_url": (
                     f"{base_url}/web/image/theme.compassion.icons"
                     f"/{badge.icon_id.id}/svg_file"
-                    if badge.icon_id else f"{base_url}/web/static/img/smile.svg"
+                    if badge.icon_id
+                    else f"{base_url}/web/static/img/smile.svg"
                 ),
                 "is_unlocked": is_unlocked,
                 "progress": progress,

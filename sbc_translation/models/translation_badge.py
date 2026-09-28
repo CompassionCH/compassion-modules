@@ -1,5 +1,6 @@
-from odoo import api, fields, models
 from datetime import timedelta
+
+from odoo import api, fields, models
 
 
 class TranslationBadge(models.Model):
@@ -44,66 +45,78 @@ class TranslationBadge(models.Model):
 
     @api.model
     def evaluate_badges(self, user):
-        translator = self.env['translation.user'].search([('user_id', '=', user.id)], limit=1)
+        translator = self.env["translation.user"].search(
+            [("user_id", "=", user.id)], limit=1
+        )
         if not translator:
             return
 
         corr_count = translator.nb_translated_letters or 0
-        streak_count = getattr(translator, 'current_streak', 0)
+        streak_count = getattr(translator, "current_streak", 0)
 
-        unlocked_ids = self.env['sbc.translation.user.badge'].search([
-            ('user_id', '=', user.id)
-        ]).mapped('badge_id.id')
+        unlocked_ids = (
+            self.env["sbc.translation.user.badge"]
+            .search([("user_id", "=", user.id)])
+            .mapped("badge_id.id")
+        )
 
-        available_badges = self.search([
-            ('is_active', '=', True),
-            ('id', 'not in', unlocked_ids)
-        ])
+        available_badges = self.search(
+            [("is_active", "=", True), ("id", "not in", unlocked_ids)]
+        )
 
         for badge in available_badges:
             should_unlock = False
 
             if badge.threshold and badge.threshold > 0:
-                if badge.condition_type == 'count' and corr_count >= badge.threshold:
+                if badge.condition_type == "count" and corr_count >= badge.threshold:
                     should_unlock = True
 
-                elif badge.condition_type == 'streak' and streak_count >= badge.threshold:
+                elif (
+                    badge.condition_type == "streak" and streak_count >= badge.threshold
+                ):
                     should_unlock = True
 
-                elif badge.condition_type == 'campaign':
+                elif badge.condition_type == "campaign":
                     domain = [
-                        ('new_translator_id', '=', translator.id),
-                        ('translation_status', '=', 'done')
+                        ("new_translator_id", "=", translator.id),
+                        ("translation_status", "=", "done"),
                     ]
                     if badge.start_date:
-                        domain.append(('translate_done', '>=', badge.start_date))
+                        domain.append(("translate_done", ">=", badge.start_date))
                     if badge.end_date:
-                        domain.append(('translate_done', '<', badge.end_date + timedelta(days=1)))
+                        domain.append(
+                            ("translate_done", "<", badge.end_date + timedelta(days=1))
+                        )
 
-                    campaign_count = self.env['correspondence'].search_count(domain)
+                    campaign_count = self.env["correspondence"].search_count(domain)
 
                     if campaign_count >= badge.threshold:
                         should_unlock = True
 
             if should_unlock:
-                existing = self.env['sbc.translation.user.badge'].search_count([
-                    ('user_id', '=', user.id), ('badge_id', '=', badge.id)
-                ])
+                existing = self.env["sbc.translation.user.badge"].search_count(
+                    [("user_id", "=", user.id), ("badge_id", "=", badge.id)]
+                )
                 if not existing:
-                    self.env['sbc.translation.user.badge'].create({
-                        'user_id': user.id,
-                        'badge_id': badge.id
-                    })
+                    self.env["sbc.translation.user.badge"].create(
+                        {"user_id": user.id, "badge_id": badge.id}
+                    )
 
 
 class TranslationUserBadge(models.Model):
-    _name = 'sbc.translation.user.badge'
-    _description = 'User Unlocked Badges'
+    _name = "sbc.translation.user.badge"
+    _description = "User Unlocked Badges"
 
-    user_id = fields.Many2one('res.users', string="User", required=True)
-    badge_id = fields.Many2one('translation.badge', string="Badge", required=True, ondelete='cascade')
+    user_id = fields.Many2one("res.users", string="User", required=True)
+    badge_id = fields.Many2one(
+        "translation.badge", string="Badge", required=True, ondelete="cascade"
+    )
     unlocked_date = fields.Datetime(string="Unlocked On", default=fields.Datetime.now)
 
     _sql_constraints = [
-        ('unique_user_badge', 'UNIQUE(user_id, badge_id)', 'A user can only unlock a specific badge once.')
+        (
+            "unique_user_badge",
+            "UNIQUE(user_id, badge_id)",
+            "A user can only unlock a specific badge once.",
+        )
     ]
