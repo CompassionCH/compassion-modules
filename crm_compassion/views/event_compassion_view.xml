@@ -154,13 +154,9 @@
                             <field
                                     name="start_date"
                                     widget="daterange"
-                                    options="{'related_end_date': 'end_date'}"
+                                    options="{'end_date_field': 'end_date'}"
                             />
-                            <field
-                                    name="end_date"
-                                    widget="daterange"
-                                    options="{'related_start_date': 'start_date'}"
-                            />
+                            <field name="end_date" invisible="1" />
                             <field name="communication_config_id" />
                             <field name="ambassador_config_id" />
                             <field name="ambassador_sponsorship_config_id" />
