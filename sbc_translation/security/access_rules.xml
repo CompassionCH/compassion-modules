@@ -56,4 +56,14 @@
         <field name="perm_create" eval="True" />
         <field name="perm_unlink" eval="True" />
     </record>
+    <record id="translator_badges_rule" model="ir.rule">
+    <field name="name">Translator badges</field>
+    <field name="model_id" ref="model_sbc_translation_user_badge" />
+    <field name="domain_force">[('user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]" />
+    <field name="perm_read" eval="True" />
+    <field name="perm_write" eval="False" />
+    <field name="perm_create" eval="False" />
+    <field name="perm_unlink" eval="False" />
+</record>
 </odoo>
