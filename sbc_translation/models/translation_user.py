@@ -31,6 +31,8 @@ class TranslationUser(models.Model):
         compute="_compute_nb_translated_letters_last_year",
         store=True,
     )
+    current_streak = fields.Integer(compute="_compute_current_streak")
+
     search_source_lang = fields.Many2one(
         "res.lang.compassion",
         domain=[("translatable", "=", True)],
@@ -117,6 +119,47 @@ class TranslationUser(models.Model):
             translator.nb_translated_letters_last_year = mapped_data.get(
                 translator.id, 0
             )
+
+    def _compute_current_streak(self):
+        for translator in self:
+            translations = self.env["correspondence"].search(
+                [
+                    ("new_translator_id", "=", translator.id),
+                    ("translation_status", "=", "done"),
+                    ("translate_done", "!=", False),
+                ]
+            )
+
+            if not translations:
+                translator.current_streak = 0
+                continue
+
+            active_dates = set()
+            for trans in translations:
+                active_dates.add(trans.translate_done.date())
+
+            sorted_dates = sorted(list(active_dates), reverse=True)
+
+            today = fields.Date.context_today(self)
+            yesterday = today - timedelta(days=1)
+
+            most_recent_date = sorted_dates[0]
+
+            if most_recent_date != today and most_recent_date != yesterday:
+                translator.current_streak = 0
+                continue
+
+            streak = 0
+            expected_date = most_recent_date
+
+            for current_date in sorted_dates:
+                if current_date == expected_date:
+                    streak += 1
+                    expected_date -= timedelta(days=1)
+                else:
+                    break
+
+            translator.current_streak = streak
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -222,7 +265,7 @@ class TranslationUser(models.Model):
             .mapped("badge_id.id")
         )
         corr_count = self.nb_translated_letters or 0
-        streak_count = getattr(self, "current_streak", 0)
+        streak_count = self.current_streak or 0
         today = fields.Date.context_today(self)
 
         badges_by_category = {

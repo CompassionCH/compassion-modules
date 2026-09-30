@@ -28,7 +28,7 @@ class TranslationBadge(models.Model):
     condition_type = fields.Selection(
         [
             ("count", "Letter Count"),
-            ("streak", "Consecutive Months"),
+            ("streak", "Consecutive Days"),
             ("campaign", "Campaign Participation"),
         ],
         required=True,
