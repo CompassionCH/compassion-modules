@@ -19,3 +19,5 @@ access_translation_badge_user,translation.badge.user,model_translation_badge,bas
 access_translation_badge_manager,translation.badge.manager,model_translation_badge,sbc_translation.group_manager,1,1,1,1
 access_sbc_translation_user_badge,sbc.translation.user.badge.user,model_sbc_translation_user_badge,base.group_user,1,0,0,0
 access_sbc_translation_user_badge_manager,sbc.translation.user.badge.manager,model_sbc_translation_user_badge,sbc_translation.group_manager,1,1,1,1
+access_translation_badge_portal,translation.badge.portal,model_translation_badge,base.group_portal,1,0,0,0
+access_sbc_translation_user_badge_portal,sbc.translation.user.badge.portal,model_sbc_translation_user_badge,base.group_portal,1,0,0,0

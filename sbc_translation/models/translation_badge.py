@@ -67,38 +67,41 @@ class TranslationBadge(models.Model):
         for badge in available_badges:
             should_unlock = False
 
-            if badge.threshold and badge.threshold > 0:
-                if badge.condition_type == "count" and corr_count >= badge.threshold:
+            effective_threshold = (
+                badge.threshold if badge.threshold and badge.threshold > 0 else 1
+            )
+
+            if badge.condition_type == "count" and corr_count >= effective_threshold:
+                should_unlock = True
+
+            elif (
+                badge.condition_type == "streak" and streak_count >= effective_threshold
+            ):
+                should_unlock = True
+
+            elif badge.condition_type == "campaign":
+                domain = [
+                    ("new_translator_id", "=", translator.id),
+                    ("translation_status", "=", "done"),
+                ]
+                if badge.start_date:
+                    domain.append(("translate_done", ">=", badge.start_date))
+                if badge.end_date:
+                    domain.append(
+                        ("translate_done", "<", badge.end_date + timedelta(days=1))
+                    )
+
+                campaign_count = self.env["correspondence"].search_count(domain)
+
+                if campaign_count >= effective_threshold:
                     should_unlock = True
-
-                elif (
-                    badge.condition_type == "streak" and streak_count >= badge.threshold
-                ):
-                    should_unlock = True
-
-                elif badge.condition_type == "campaign":
-                    domain = [
-                        ("new_translator_id", "=", translator.id),
-                        ("translation_status", "=", "done"),
-                    ]
-                    if badge.start_date:
-                        domain.append(("translate_done", ">=", badge.start_date))
-                    if badge.end_date:
-                        domain.append(
-                            ("translate_done", "<", badge.end_date + timedelta(days=1))
-                        )
-
-                    campaign_count = self.env["correspondence"].search_count(domain)
-
-                    if campaign_count >= badge.threshold:
-                        should_unlock = True
 
             if should_unlock:
                 existing = self.env["sbc.translation.user.badge"].search_count(
                     [("user_id", "=", user.id), ("badge_id", "=", badge.id)]
                 )
                 if not existing:
-                    self.env["sbc.translation.user.badge"].create(
+                    self.env["sbc.translation.user.badge"].sudo().create(
                         {"user_id": user.id, "badge_id": badge.id}
                     )
 
