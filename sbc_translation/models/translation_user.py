@@ -122,12 +122,16 @@ class TranslationUser(models.Model):
 
     def _compute_current_streak(self):
         for translator in self:
-            translations = self.env["correspondence"].search(
-                [
-                    ("new_translator_id", "=", translator.id),
-                    ("translation_status", "=", "done"),
-                    ("translate_done", "!=", False),
-                ]
+            translations = (
+                self.env["correspondence"]
+                .sudo()
+                .search(
+                    [
+                        ("new_translator_id", "=", translator.id),
+                        ("translation_status", "=", "done"),
+                        ("translate_done", "!=", False),
+                    ]
+                )
             )
 
             if not translations:
@@ -136,7 +140,8 @@ class TranslationUser(models.Model):
 
             active_dates = set()
             for trans in translations:
-                active_dates.add(trans.translate_done.date())
+                local_dt = fields.Datetime.context_timestamp(self, trans.translate_done)
+                active_dates.add(local_dt.date())
 
             sorted_dates = sorted(list(active_dates), reverse=True)
 
