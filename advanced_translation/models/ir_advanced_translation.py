@@ -26,6 +26,9 @@ class IrAdvancedTranslation(models.Model):
     male_plural = fields.Text(translate=False)
     female_singular = fields.Text(translate=False)
     female_plural = fields.Text(translate=False)
+    src_fallback = fields.Boolean(
+        help="If checked, the term will be used as fallback if no translation is found"
+    )
 
     _sql_constraints = [("unique_term", "unique(src, lang)", "The term already exists")]
 
@@ -49,4 +52,4 @@ class IrAdvancedTranslation(models.Model):
             value = term.male_plural
         else:
             value = term.male_singular
-        return value or _(src)
+        return value or (_(src) if term.src_fallback else "")
