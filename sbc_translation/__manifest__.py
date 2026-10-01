@@ -39,7 +39,6 @@
         "sbc_compassion",
         "partner_contact_birthdate",
         "portal",
-        "theme_compassion_2025",
     ],
     "data": [
         "security/ir_groups.xml",

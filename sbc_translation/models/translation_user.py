@@ -166,6 +166,59 @@ class TranslationUser(models.Model):
 
             translator.current_streak = streak
 
+    def _evaluate_badges(self):
+        """Evaluates and grants badges for this translator."""
+        for translator in self:
+            corr_count = translator.nb_translated_letters or 0
+            streak_count = translator.current_streak or 0
+
+            unlocked_ids = (
+                self.env["sbc.translation.user.badge"]
+                .search([("user_id", "=", translator.user_id.id)])
+                .mapped("badge_id.id")
+            )
+
+            available_badges = self.env["translation.badge"].search(
+                [("active", "=", True), ("id", "not in", unlocked_ids)]
+            )
+
+            for badge in available_badges:
+                should_unlock = False
+
+                if badge.badge_type == "count" and corr_count >= badge.threshold:
+                    should_unlock = True
+
+                elif badge.badge_type == "streak" and streak_count >= badge.threshold:
+                    should_unlock = True
+
+                elif badge.badge_type == "campaign":
+                    domain = [
+                        ("new_translator_id", "=", translator.id),
+                        ("translation_status", "=", "done"),
+                    ]
+                    if badge.start_date:
+                        domain.append(("translate_done", ">=", badge.start_date))
+                    if badge.end_date:
+                        domain.append(
+                            ("translate_done", "<", badge.end_date + timedelta(days=1))
+                        )
+
+                    campaign_count = self.env["correspondence"].search_count(domain)
+                    if campaign_count >= badge.threshold:
+                        should_unlock = True
+
+                if should_unlock:
+                    existing = self.env["sbc.translation.user.badge"].search_count(
+                        [
+                            ("user_id", "=", translator.user_id.id),
+                            ("badge_id", "=", badge.id),
+                        ]
+                    )
+                    if not existing:
+                        self.env["sbc.translation.user.badge"].sudo().create(
+                            {"user_id": translator.user_id.id, "badge_id": badge.id}
+                        )
+
     @api.model_create_multi
     def create(self, vals_list):
         """
@@ -261,9 +314,8 @@ class TranslationUser(models.Model):
 
     def _get_formatted_badges(self):
         self.ensure_one()
-        self.env["translation.badge"].evaluate_badges(self.user_id)
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        all_badges = self.env["translation.badge"].search([("is_active", "=", True)])
+        all_badges = self.env["translation.badge"].search([("active", "=", True)])
         unlocked_badge_ids = (
             self.env["sbc.translation.user.badge"]
             .search([("user_id", "=", self.user_id.id)])
@@ -274,8 +326,8 @@ class TranslationUser(models.Model):
         today = fields.Date.context_today(self)
 
         badges_by_category = {
-            "volume": {"category": "Volume", "badges": []},
-            "engagement": {"category": "Engagement", "badges": []},
+            "count": {"category": "Volume", "badges": []},
+            "streak": {"category": "Engagement", "badges": []},
             "campaign": {"category": "Campaign", "badges": []},
         }
 
@@ -288,11 +340,11 @@ class TranslationUser(models.Model):
             if is_unlocked:
                 progress = 1.0
             else:
-                if badge.condition_type == "count" and badge.threshold:
+                if badge.badge_type == "count":
                     progress = min(1.0, corr_count / badge.threshold)
-                elif badge.condition_type == "streak" and badge.threshold:
+                elif badge.badge_type == "streak":
                     progress = min(1.0, streak_count / badge.threshold)
-                elif badge.condition_type == "campaign":
+                elif badge.badge_type == "campaign":
                     if badge.start_date and badge.start_date > today:
                         days_until_start = (badge.start_date - today).days
                     else:
@@ -311,11 +363,8 @@ class TranslationUser(models.Model):
                                 )
                             )
 
-                        if badge.threshold:
-                            campaign_count = self.env["correspondence"].search_count(
-                                domain
-                            )
-                            progress = min(1.0, campaign_count / badge.threshold)
+                        campaign_count = self.env["correspondence"].search_count(domain)
+                        progress = min(1.0, campaign_count / badge.threshold)
 
                         if badge.end_date:
                             if badge.end_date >= today:
@@ -328,14 +377,13 @@ class TranslationUser(models.Model):
                 "name": badge.name,
                 "description": badge.description or "",
                 "icon_url": (
-                    f"{base_url}/web/image/theme.compassion.icons"
-                    f"/{badge.icon_id.id}/svg_file"
-                    if badge.icon_id
+                    f"{base_url}/web/image/translation.badge/{badge.id}/icon"
+                    if badge.icon
                     else f"{base_url}/web/static/img/smile.svg"
                 ),
                 "is_unlocked": is_unlocked,
                 "progress": progress,
-                "threshold": badge.threshold or 0,
+                "threshold": badge.threshold,
                 "days_left": days_left,
                 "days_until_start": days_until_start,
                 "start_date": badge.start_date.strftime("%d/%m/%Y")
@@ -347,6 +395,9 @@ class TranslationUser(models.Model):
         return [cat for cat in badges_by_category.values() if len(cat["badges"]) > 0]
 
     def get_user_info(self):
+        """
+        Translation Platform API call to fetch user info.
+        """
         self.ensure_one()
         user = self.user_id.sudo()
         partner = self.partner_id.sudo()
@@ -378,8 +429,17 @@ class TranslationUser(models.Model):
                 for skill in self.translation_skills
             ]
             or "None",
-            "badges": self._get_formatted_badges(),
         }
+
+    @api.model
+    def get_my_badges(self):
+        """
+        Translation Platform API call to fetch only the user's badges.
+        """
+        translator = self.search([("user_id", "=", self.env.uid)], limit=1)
+        if translator:
+            return translator._get_formatted_badges()
+        return []
 
 
 class ResUsers(models.Model):

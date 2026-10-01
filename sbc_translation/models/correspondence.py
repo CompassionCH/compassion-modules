@@ -650,6 +650,9 @@ class Correspondence(models.Model):
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
 
+        if self.new_translator_id:
+            self.new_translator_id.sudo()._evaluate_badges()
+
     def list_letters(self):
         """API call to fetch letters to translate"""
         return [letter.get_letter_info() for letter in self.sorted("scanned_date")]

@@ -61,5 +61,6 @@
               parent="menu_translation_platform"
               name="Badges"
               action="action_translation_badge"
-              sequence="4"/>
+              sequence="4"
+              groups="sbc_translation.group_manager"/>
 </odoo>
