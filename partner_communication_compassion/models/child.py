@@ -96,16 +96,18 @@ class CompassionChild(models.Model):
         if not communication_config.active:
             return True
         job_obj = self.env["partner.communication.job"]
-        for child in self.filtered(
-            lambda r: r.sponsor_id
-            and r.pictures_ids
-            and r.sponsorship_ids[0].state == "active"
-        ):
+        for child in self.filtered(lambda r: r.sponsor_id and r.pictures_ids):
+            # Not the first sponsorship: a cancelled one can come before
+            sponsorship = child.sponsorship_ids.filtered(lambda s: s.state == "active")[
+                :1
+            ]
+            if not sponsorship:
+                continue
             sponsor = child.sponsor_id
             delivery = sponsor.photo_delivery_preference
             if "physical" in delivery or delivery == "both":
                 # Mark sponsorship for order the picture
-                child.sponsorship_ids[0].new_picture = True
+                sponsorship.new_picture = True
 
             job_obj.create(
                 {
