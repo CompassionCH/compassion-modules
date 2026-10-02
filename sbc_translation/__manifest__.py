@@ -35,7 +35,11 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "depends": ["sbc_compassion", "partner_contact_birthdate", "portal"],
+    "depends": [
+        "sbc_compassion",
+        "partner_contact_birthdate",
+        "portal",
+    ],
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
@@ -48,6 +52,7 @@
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
+        "views/translation_badge_views.xml",
     ],
     "demo": [],
     "installable": True,
