@@ -83,14 +83,8 @@
                                     <field name="website" />
                                     <field name="social_media_site" />
                                     <field name="available_for_visits" />
-                                    <field
-                    name="nb_csp_kids"
-                    attrs="{'invisible': [('funding_type', '=', 'Donor-Funded')]}"
-                  />
-                                    <field
-                    name="nb_cdsp_kids"
-                    attrs="{'invisible': [('funding_type', '=', 'Donor-Funded')]}"
-                  />
+                                    <field name="nb_csp_kids"/>
+                                    <field name="nb_cdsp_kids"/>
                                     <field
                     name="participant_expected_capacity"
                     attrs="{'invisible': [('funding_type', '!=', 'Donor-Funded')]}"
