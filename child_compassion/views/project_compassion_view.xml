@@ -331,10 +331,16 @@
         <field name="model">compassion.project</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name" />
-                <field name="fcp_id" />
-                <field name="last_update_date" />
-                <field name="suspension" />
+                <field name="name"/>
+                <field name="fcp_id"/>
+                <field name="program_start_date"/>
+                <field name="nb_csp_kids" sum="nb_csp_kids"/>
+                <field name="nb_cdsp_kids" sum="nb_cdsp_kids"/>
+                <field name="available_for_visits"/>
+                <field name="funding_type"/>
+                <field name="last_update_date"/>
+                <field name="suspension"/>
+                <field name="status"/>
             </list>
         </field>
     </record>
@@ -509,6 +515,16 @@
           string="Suspended More Than 2 Months"
           name="suspended_more_than_2_months"
           domain="[('date', '&lt;', datetime.datetime.now()-relativedelta(month=2)),('project_id.status', '=', 'Suspended')]"
+        />
+                <filter 
+          name="donor_funded_fcps" 
+          string="donor funded fcps" 
+          domain="[['intervention_ids.category_id.name','ilike','funded']]"
+        />
+                <filter 
+          name="fcp_with_contracts" 
+          string="fcp with sponsorships" 
+          domain="[('contract_ids.state', 'not in', ['terminated', 'cancelled'])]"
         />
                 <!-- Group by and other filters can be added here -->
             </search>
