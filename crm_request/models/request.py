@@ -21,7 +21,11 @@ class CrmClaim(models.Model):
         help="The destination email address that the contacts used.",
         readonly=False,
     )
-    stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
+    stage_id = fields.Many2one(
+        group_expand="_read_group_stage_ids",
+        readonly=False,
+        default=lambda self: self._get_default_request_stage(),
+    )
     ref = fields.Char(related="partner_id.ref")
     color = fields.Integer("Color index", compute="_compute_color")
     language = fields.Selection("_get_lang")
@@ -34,6 +38,17 @@ class CrmClaim(models.Model):
     incoming_message = fields.Html(compute="_compute_incoming_message")
     quoted_reply = fields.Html(compute="_compute_incoming_message")
     reply_to = fields.Char(compute="_compute_incoming_message")
+
+    @api.model
+    def _get_default_request_stage(self):
+        """New requests start in "New", whatever the order of the stages.
+
+        crm_claim takes the stage with sequence 1, which changes as soon as
+        the stages are reordered (T1937). Requests created without a stage,
+        like the website forms, then landed in another stage.
+        """
+        stage_new = self.env.ref("crm_claim.stage_claim1", raise_if_not_found=False)
+        return stage_new.id if stage_new else self._get_default_stage_id()
 
     def _compute_color(self):
         for request in self:
