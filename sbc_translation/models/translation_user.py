@@ -441,6 +441,17 @@ class TranslationUser(models.Model):
             return translator._get_formatted_badges()
         return []
 
+    @api.model
+    def cron_evaluate_existing_badges(self):
+        """
+        Scheduled action (Cron) to retroactively evaluate and grant badges
+        for all active translators. Solves the issue where legacy progress
+        was ignored until a new letter was translated.
+        """
+        active_translators = self.search([("active", "=", True)])
+        if active_translators:
+            active_translators._evaluate_badges()
+
 
 class ResUsers(models.Model):
     _inherit = "res.users"

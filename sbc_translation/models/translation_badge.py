@@ -43,9 +43,7 @@ class TranslationUserBadge(models.Model):
     _description = "User Unlocked Badges"
 
     user_id = fields.Many2one("res.users", required=True)
-    badge_id = fields.Many2one(
-        "translation.badge", required=True, ondelete="cascade"
-    )
+    badge_id = fields.Many2one("translation.badge", required=True, ondelete="cascade")
     unlocked_date = fields.Datetime(string="Unlocked On", default=fields.Datetime.now)
 
     _sql_constraints = [

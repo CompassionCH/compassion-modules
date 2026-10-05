@@ -1,13 +1,13 @@
 <odoo>
-    <record id="view_translation_badge_tree" model="ir.ui.view">
-        <field name="name">translation.badge.list</field>
+<record id="view_translation_badge_tree" model="ir.ui.view">
+        <field name="name">translation.badge.tree</field>
         <field name="model">translation.badge</field>
         <field name="arch" type="xml">
-            <list>
+            <list string="Badges">
                 <field name="name"/>
                 <field name="badge_type"/>
-                <field name="condition_type"/>
                 <field name="threshold"/>
+                <field name="active" widget="boolean_toggle"/>
             </list>
         </field>
     </record>
@@ -16,36 +16,30 @@
         <field name="name">translation.badge.form</field>
         <field name="model">translation.badge</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Badge">
                 <sheet>
+                    <field name="icon" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Badge Name"/></h1>
+                        <h1>
+                            <field name="name" placeholder="Badge Name"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="icon_id" options="{'no_create': True}"/>
-                            <field name="description"/>
+                            <field name="badge_type"/>
+                            <field name="threshold"/>
+                            <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group>
-                            <field name="badge_type"/>
-                            <field name="condition_type"/>
-                            <field name="threshold"/>
-                            <field name="start_date" invisible="condition_type != 'campaign'"/>
-                            <field name="end_date" invisible="condition_type != 'campaign'"/>
+                            <field name="start_date" invisible="badge_type != 'campaign'"/>
+                            <field name="end_date" invisible="badge_type != 'campaign'"/>
                         </group>
                     </group>
-
                     <notebook>
-                        <page string="Translators with this badge">
-                            <field name="user_badge_ids">
-                                <list>
-                                    <field name="user_id"/>
-                                    <field name="unlocked_date"/>
-                                </list>
-                            </field>
+                        <page string="Description">
+                            <field name="description"/>
                         </page>
                     </notebook>
-
                 </sheet>
             </form>
         </field>
