@@ -34,12 +34,6 @@
     />
         <field name="arch" type="xml">
             <filter name="suspended2month" position="after">
-                <!-- Dynamic filter for projects suspended more than 2 months -->
-                <filter
-          string="Suspended More Than 2 Months"
-          name="suspended_more_than_2_months"
-          domain="[('date', '&lt;', datetime.datetime.now()-relativedelta(month=2)),('project_id.status', '=', 'Suspended')]"
-        />
                 <filter
           name="donor_funded_fcps"
           string="donor funded fcps"
