@@ -33,7 +33,7 @@
       ref="child_compassion.view_compassion_project_filter"
     />
         <field name="arch" type="xml">
-            <filter name="suspended2months" position="after">
+            <filter name="suspended2month" position="after">
                 <!-- Dynamic filter for projects suspended more than 2 months -->
                 <filter
           string="Suspended More Than 2 Months"
