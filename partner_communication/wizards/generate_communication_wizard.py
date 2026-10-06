@@ -97,6 +97,17 @@ class GenerateCommunicationWizard(models.TransientModel):
             self.generate_communications(async_mode=False)
             return self.close()
 
+    def _get_action_context(self):
+        """Context for the actions returned by the wizard, without the
+        <view_type>_view_ref keys inherited from where the wizard was opened
+        (e.g. a sponsorship list view_ref), which Odoo would otherwise apply
+        to the communication views."""
+        return {
+            key: value
+            for key, value in self.env.context.items()
+            if not key.endswith("_view_ref")
+        }
+
     def reload(self):
         if not self.exists():
             return True
@@ -106,7 +117,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",
-            "context": self._context,
+            "context": self._get_action_context(),
             "target": "new",
         }
 
@@ -117,7 +128,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             "res_model": "partner.communication.job",
             "domain": [("id", "in", self.communication_ids.ids)],
             "view_mode": "list,form",
-            "context": self._context,
+            "context": self._get_action_context(),
         }
 
     def generate_communications(self, async_mode=True):
