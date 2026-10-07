@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.tools.image import image_data_uri
 
 
 class TranslationUser(models.Model):
@@ -428,8 +429,10 @@ class TranslationUser(models.Model):
                 "name": badge.name,
                 "description": badge.description or "",
                 "type": badge.badge_type,
+                # Inline the icon: the platform authenticates with a bearer token,
+                # which <img> requests to /web/image would not carry.
                 "icon_url": (
-                    f"{base_url}/web/image/" f"translation.badge/{badge.id}/icon"
+                    image_data_uri(badge.icon)
                     if badge.icon
                     else f"{base_url}/web/static/img/smile.svg"
                 ),
