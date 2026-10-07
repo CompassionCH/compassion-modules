@@ -17,6 +17,7 @@ from . import (
     global_partner,
     gmc_message,
     household,
+    ir_actions_report,
     major_revision,
     project_compassion,
     project_lifecycle_event,

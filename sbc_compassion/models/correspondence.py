@@ -30,6 +30,8 @@ from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
+ROWS_PER_ATTACHMENT_PAGE = 2
+
 
 class CorrespondenceType(models.Model):
     _name = "correspondence.type"
@@ -137,6 +139,12 @@ class Correspondence(models.Model):
         compute="_compute_states",
     )
     state = fields.Selection("get_states", default="Draft", tracking=True)
+    on_hold = fields.Boolean(
+        readonly=True,
+        help="Letter is in the 'Exception' state only because it was deliberately "
+        "queued (e.g. project suspended, Christmas period), not because of an "
+        "actual error. Held letters remain visible to the sponsor.",
+    )
     email_read = fields.Datetime()
 
     # 2. Attachments and scans
@@ -183,7 +191,7 @@ class Correspondence(models.Model):
     original_attachment_ids = fields.One2many(
         "ir.attachment",
         "res_id",
-        domain=[("res_model", "=", _name)],
+        domain=[("res_model", "=", _name), ("res_field", "=", False)],
         string="Attached images",
         copy=True,
     )
@@ -467,16 +475,7 @@ class Correspondence(models.Model):
         for letter in self.with_context(skip_lang_detect=True):
             # Determine which text is analyzed
             is_translation = bool(letter.translated_text or letter.english_text)
-            letter_text = (
-                letter.translated_text or letter.english_text or letter.original_text
-            )
-            # Clean text for accurate detection
-            clean_text = (
-                letter_text.strip(" \t\n\r.")
-                .replace(BOX_SEPARATOR, "")
-                .replace(PAGE_SEPARATOR, "")
-                .strip()
-            )
+            clean_text = letter._clean_letter_text()
 
             if not clean_text:
                 # T2495 Default to English for empty B2S letters
@@ -500,17 +499,48 @@ class Correspondence(models.Model):
                 ):
                     letter.original_language_id = detected_lang
 
-    def _detect_letter_language(self):
-        """Language the letter is actually written in. Detected from its text."""
+    def _clean_letter_text(self):
+        """Text of the letter, stripped of separators, ready for detection."""
         self.ensure_one()
         text = self.translated_text or self.english_text or self.original_text or ""
-        clean = (
+        return (
             text.strip(" \t\n\r.")
             .replace(BOX_SEPARATOR, "")
             .replace(PAGE_SEPARATOR, "")
             .strip()
         )
-        return self.env["langdetect"].detect_language(clean)
+
+    def _letter_language_verdict(self):
+        """Detected language of the letter, and whether we have an opinion at all.
+
+        has_opinion is False only when the text is shorter than
+        langdetect.min_length; the caller then falls back to the field-office
+        stamp (T3371). Anything longer counts as an opinion, so a letter we
+        cannot read is still queued for translation (T3339).
+        """
+        self.ensure_one()
+        clean = self._clean_letter_text()
+        lang_detector = self.env["langdetect"]
+        return (
+            lang_detector.detect_language(clean),
+            len(clean) >= lang_detector.min_length,
+        )
+
+    def _sponsor_can_read_letter(self):
+        """True if the sponsor reads the language the letter is actually in.
+
+        Judged from the content when the letter holds enough text, since the
+        field-office stamp is not always right (T3339). Below that the detector
+        has no opinion, so the stamp is all we have, and trusting it beats
+        queueing letters nobody needs translated (T3371).
+        """
+        self.ensure_one()
+        language, has_opinion = self._letter_language_verdict()
+        if has_opinion:
+            return language in self.supporter_languages_ids
+        return bool(self.beneficiary_language_ids & self.supporter_languages_ids) or (
+            self.translation_language_id in self.supporter_languages_ids
+        )
 
     @api.depends("uuid")
     def _compute_read_url(self):
@@ -541,16 +571,40 @@ class Correspondence(models.Model):
     def _compute_report_needs_original_text(self):
         """
         Used by the PDF report of the correspondence in order to get the text
-        to overlay on the image of the page. In case of a Supporter letter that is not
-        yet sent to GMC, we need to overlay the original text.
-        Otherwise, it will be blank.
+        to overlay on the image of the page. We need to overlay the original
+        text whenever no image will ever be available to print instead -
+        whether the letter hasn't been sent to GMC yet, or it was sent but no
+        photo ever came back. Otherwise the page would be rendered blank.
         """
         for letter in self:
             letter.report_needs_original_text = (
                 letter.direction == "Supporter To Beneficiary"
-                and not letter.kit_identifier
-                and not letter.sponsor_letter_scan
+                and not letter._has_page_image_source()
             )
+
+    def _has_page_image_source(self):
+        """
+        Whether EVERY page already has a known source image - a stored URL
+        (own or Cloudinary) or an attached scan - without triggering an
+        external Cloudinary/Connect fetch. The report resolves the image per
+        page, so a single page missing its source still needs the text
+        overlay - otherwise that one page would render with neither an image
+        nor the sponsor's text.
+        """
+        self.ensure_one()
+        if self.sponsor_letter_scan:
+            return True
+        if not self.page_ids:
+            return False
+        url_field, cloudinary_field = (
+            ("final_page_url", "cloudinary_final_page_url")
+            if self.sponsor_needs_final_letter
+            else ("original_page_url", "cloudinary_original_page_url")
+        )
+        return all(
+            getattr(page, url_field) or getattr(page, cloudinary_field)
+            for page in self.page_ids
+        )
 
     def _compute_report_needs_final_text(self):
         """
@@ -724,7 +778,7 @@ class Correspondence(models.Model):
             ):
                 message_vals["state"] = "postponed"
                 if letter.child_id.project_id.hold_s2b_letters:
-                    letter.state = "Exception"
+                    letter.write({"state": "Exception", "on_hold": True})
                     letter.message_post(
                         body=_(
                             "Letter was put on hold because the project is suspended"
@@ -733,7 +787,7 @@ class Correspondence(models.Model):
                     )
             if letter.template_id.is_christmas_letter and not valid_christmas_period:
                 message_vals["state"] = "postponed"
-                letter.state = "Exception"
+                letter.write({"state": "Exception", "on_hold": True})
                 letter.message_post(
                     body=_("Christmas Letter put on hold outside of Christmas Period."),
                     subject=_("Christmas Hold"),
@@ -830,7 +884,7 @@ class Correspondence(models.Model):
 
     def hold_letters(self, message="Project suspended"):
         """Prevents to send S2B letters to GMC."""
-        self.write({"state": "Exception"})
+        self.write({"state": "Exception", "on_hold": True})
         for letter in self:
             letter.message_post(body=_("Letter was put on hold"), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
@@ -845,7 +899,7 @@ class Correspondence(models.Model):
 
     def reactivate_letters(self, message="Project reactivated"):
         """Release the hold on S2B letters."""
-        self.write({"state": "Received in the system"})
+        self.write({"state": "Received in the system", "on_hold": False})
         for letter in self:
             letter.message_post(body=_("The letter can now be sent."), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
@@ -1124,30 +1178,23 @@ class Correspondence(models.Model):
     def get_attachments_per_page(self, flatten=False):
         """
         Used for the S2B report generation
-        We group 4 attachements per page, 2 per row.
-        We also convert them on the fly to jpg small size image.
+        We group 2 attachments per page, 1 per row, so that each picture takes
+        about half a page like it did with the previous FPDF layout (T3442).
+        We also convert them on the fly to jpg.
         :param flatten: If True, we return a flat list of images
         """
         self.ensure_one()
         attachments = self.original_attachment_ids.filtered(
-            lambda a: a.mimetype.startswith("image")
+            lambda a: (a.mimetype or "").startswith("image")
         )
         images = {0: {0: []}}
-        page, row = 0, 0
 
-        for attachment in attachments:
+        for index, attachment in enumerate(attachments):
             img_data = image_process(
-                base64.b64decode(attachment.datas), size=(400, 400), quality=75
+                base64.b64decode(attachment.datas), size=(1600, 1600), quality=85
             )
-            images[page][row].append(base64.b64encode(img_data))
-            if len(images[page][row]) == 2:
-                row += 1
-                images[page][row] = []
-
-            if row == 2:
-                page += 1
-                row = 0
-                images[page] = {row: []}
+            page, row = divmod(index, ROWS_PER_ATTACHMENT_PAGE)
+            images.setdefault(page, {})[row] = [base64.b64encode(img_data)]
 
         if flatten:
             flat_images = []

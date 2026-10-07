@@ -191,7 +191,7 @@ const config = [{
     },
 
 }, {
-    files: ["**/*.esm.js"],
+    files: ["**/*.js"],
 
     languageOptions: {
         ecmaVersion: 2024,
@@ -201,6 +201,11 @@ const config = [{
             "setTimeout": "readonly",
             "clearTimeout": "readonly",
             "fetch": "readonly",
+            "location": "readonly",
+            "sessionStorage": "readonly",
+            "File": "readonly",
+            "DataTransfer": "readonly",
+            "Event": "readonly",
         }
     },
 }];

@@ -529,21 +529,21 @@ class CompassionProject(models.Model):
     @api.model
     def _get_materials(self):
         return [
-            ("Bamboo", "Bamboo"),
-            ("Brick/Block/Cement", "Brick, block and cement"),
-            ("Cardboard", "Cardboard"),
-            ("Cement", "Cement"),
-            ("Cloth/Carpet", "Cloth and carpet"),
-            ("Dirt", "Dirt"),
-            ("Leaves/Grass/Thatch", "Leaves, grass and thatch"),
-            ("Leaves/Grass", "Leaves and grass"),
-            ("Mud/Earth/Clay/Adobe", "Mud, earth, clay and adobe"),
-            ("Plastic Sheets", "Plastic sheets"),
-            ("Tile", "Tile"),
-            ("Tin/Corrugated Iron", "Tin"),
-            ("Wood", "Wood"),
-            ("Tin", "Tin"),
-            ("Plastic", "Plastic"),
+            ("Bamboo", _("Bamboo")),
+            ("Brick/Block/Cement", _("Brick, block and cement")),
+            ("Cardboard", _("Cardboard")),
+            ("Cement", _("Cement")),
+            ("Cloth/Carpet", _("Cloth and carpet")),
+            ("Dirt", _("Dirt")),
+            ("Leaves/Grass/Thatch", _("Leaves, grass and thatch")),
+            ("Leaves/Grass", _("Leaves and grass")),
+            ("Mud/Earth/Clay/Adobe", _("Mud, earth, clay and adobe")),
+            ("Plastic Sheets", _("Plastic sheets")),
+            ("Tile", _("Tile")),
+            ("Tin/Corrugated Iron", _("Tin")),
+            ("Wood", _("Wood")),
+            ("Tin", _("Tin")),
+            ("Plastic", _("Plastic")),
         ]
 
     @api.depends("gps_latitude", "gps_longitude", "closest_city")

@@ -13,7 +13,7 @@ from datetime import datetime
 from babel.dates import format_date
 from markupsafe import Markup, escape
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
@@ -32,32 +32,37 @@ class ResPartner(models.Model):
     thankyou_preference = fields.Selection(
         "_get_delivery_preference", default="auto_digital", required=True
     )
-    short_address = fields.Char(compute="_compute_address")
+    short_address = fields.Html(compute="_compute_address", sanitize=False)
+    address_without_name = fields.Html(compute="_compute_address", sanitize=False)
     date_communication = fields.Char(compute="_compute_date_communication")
 
+    @api.depends_context("lang")
     def _compute_address(self):
         # Replace line returns
         p = re.compile(r"\n+")
+        lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
-            t_partner = partner.with_context(lang=partner.lang)
-            lines = []
+            t_partner = partner.with_context(lang=lang)
+            name_line = ""
             if not partner.is_company and partner.title.shortcut:
                 title = escape(t_partner.title.shortcut)
                 firstname = escape(partner.firstname or "")
                 lastname = escape(partner.lastname or "")
-                full_name = " ".join(
+                name_line = " ".join(
                     part for part in [title, firstname, lastname] if part
                 )
-                lines.append(full_name)
-            lines.append(escape(t_partner.contact_address or ""))
-            text = "\n".join(str(line) for line in lines if line)
-            partner.short_address = Markup(p.sub("<br/>", text))
+            postal_lines = escape(t_partner.contact_address or "")
+            lines = [str(line) for line in [name_line, postal_lines] if line]
+            partner.short_address = Markup(p.sub("<br/>", "\n".join(lines)))
+            partner.address_without_name = Markup(p.sub("<br/>", str(postal_lines)))
 
+    @api.depends_context("lang")
     def _compute_date_communication(self):
         """City and date displayed in the top right of a letter"""
         today = datetime.today()
         city = self.env.user.partner_id.company_id.city
+        lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
-            date = format_date(today, format="long", locale=partner.lang)
-            formatted_date = f"le {date}" if "fr" in partner.lang else date
+            date = format_date(today, format="long", locale=lang)
+            formatted_date = f"le {date}" if "fr" in lang else date
             partner.date_communication = f"{city}, {formatted_date}"

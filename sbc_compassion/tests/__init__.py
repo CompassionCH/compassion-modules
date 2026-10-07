@@ -9,3 +9,4 @@
 ##############################################################################
 
 from . import test_sbc_compassion
+from . import test_letter_language_verdict

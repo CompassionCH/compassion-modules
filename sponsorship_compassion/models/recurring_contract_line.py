@@ -28,6 +28,20 @@ class SponsorshipLine(models.Model):
         ondelete="cascade",
     )
 
+    @api.depends("contract_id.type")
+    def _compute_amount_from_pricelist(self):
+        res = super()._compute_amount_from_pricelist()
+        for line in self:
+            if line.contract_id.type in ("SC", "SWP"):
+                # The sponsor freely chooses the amount of their contribution
+                line.amount_from_pricelist = False
+        return res
+
+    @api.onchange("amount")
+    def _onchange_contribution_amount(self):
+        if self.contract_id.type in ("SC", "SWP") and self.amount and not self.quantity:
+            self.quantity = 1
+
     @api.model
     def fields_view_get(
         self, view_id=None, view_type="form", toolbar=False, submenu=False

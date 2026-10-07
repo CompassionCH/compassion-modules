@@ -53,6 +53,14 @@ class InteractionSource(models.AbstractModel):
             for rec in self
         ]
 
+    def _interaction_discriminator(self, vals):
+        """What tells apart the several resume entries built from one record.
+
+        Nothing for a source that builds a single entry per record: the
+        record it was built from already tells its entry from any other.
+        """
+        return ()
+
     def create(self, vals_list):
         res = super().create(vals_list)
         for partner in res.mapped("partner_id"):

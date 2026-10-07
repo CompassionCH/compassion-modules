@@ -34,6 +34,27 @@ class AccountInvoiceLine(models.Model):
 
         return total_string, res_name
 
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        res.mapped("move_id")._filter_move_to_thank(
+            move_type="entry"
+        ).generate_thank_you()
+        return res
+
+    def unlink(self):
+        to_refresh = self.env["partner.communication.job"]
+        for thank_you_letter in self.mapped("move_id.communication_id").filtered(
+            lambda job: job.state not in ("processing", "done")
+        ):
+            other_lines = thank_you_letter.get_objects() - self
+            if not other_lines:
+                thank_you_letter.unlink()
+            else:
+                to_refresh |= thank_you_letter
+        res = super().unlink()
+        to_refresh.refresh_text()
+        return res
+
     def generate_thank_you(self):
         """Creates a thankyou letter communication.
         Must be called only on a single partner at a time.

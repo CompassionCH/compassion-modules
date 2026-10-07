@@ -573,10 +573,18 @@ class CommunicationJob(models.Model):
         # If only one job is asked, run synchronously
         if len(self) == 1:
             self = self.with_context(queue_job__no_delay=True)
+            if self.state == "pending" and not self.send_mode:
+                raise UserError(
+                    _(
+                        "This communication has no send mode, so it cannot be sent."
+                        " Choose below how it should go out and save."
+                    )
+                )
 
         # Filter "pending" tasks
         todo = self.filtered(
             lambda j: j.state == "pending"
+            and j.send_mode
             and not (j.need_call == "before_sending" and j.activity_ids)
         )
         todo.write({"state": "processing"})
@@ -721,7 +729,7 @@ class CommunicationJob(models.Model):
     @api.onchange("config_id", "partner_id")
     def onchange_config_id(self):
         self.user_id = self.config_id.user_id or self.env.user
-        if self.config_id:
+        if self.config_id and self.partner_id:
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
         # set default fields

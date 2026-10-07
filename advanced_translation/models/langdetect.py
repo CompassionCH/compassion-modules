@@ -13,6 +13,9 @@ class OSD(models.AbstractModel):
 
     default_threshold = 0.95
     languages_langdetect = ["en", "de", "fr", "it", "es"]
+    # Below this many characters langdetect is unreliable: it returns unstable
+    # results across runs and confidently wrong ones ("Amen" is detected as Dutch).
+    min_length = 50
 
     def detect_language(self, text, threshold=None):
         if threshold is None:
@@ -20,7 +23,7 @@ class OSD(models.AbstractModel):
 
         language = self.env["res.lang.compassion"]
 
-        if not isinstance(text, str) or len(text) < 50:
+        if not isinstance(text, str) or len(text) < self.min_length:
             return language
 
         try:
