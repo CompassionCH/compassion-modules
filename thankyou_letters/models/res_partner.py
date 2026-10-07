@@ -43,7 +43,7 @@ class ResPartner(models.Model):
         lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
             t_partner = partner.with_context(lang=lang)
-            lines = []
+            name_line = ""
             if not partner.is_company and partner.title.shortcut:
                 title = escape(t_partner.title.shortcut)
                 firstname = escape(partner.firstname or "")
