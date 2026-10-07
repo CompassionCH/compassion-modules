@@ -8,6 +8,7 @@
                 <field name="name"/>
                 <field name="badge_type"/>
                 <field name="threshold"/>
+                <field name="active" column_invisible="True"/>
             </list>
         </field>
     </record>
@@ -18,6 +19,8 @@
         <field name="arch" type="xml">
             <form string="Badge">
                 <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
                     <field name="icon" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>

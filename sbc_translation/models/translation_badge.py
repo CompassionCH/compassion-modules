@@ -7,6 +7,10 @@ class TranslationBadge(models.Model):
 
     name = fields.Char(string="Badge Name", required=True, translate=True)
     description = fields.Text(translate=True)
+    active = fields.Boolean(
+        default=True,
+        help="Archive a badge to stop awarding it while keeping existing awards.",
+    )
 
     icon = fields.Image(max_width=256, max_height=256)
 

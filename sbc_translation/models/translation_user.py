@@ -202,8 +202,6 @@ class TranslationUser(models.Model):
                 elif badge.badge_type == "campaign":
                     if badge.start_date and badge.start_date > today:
                         continue
-                    if badge.end_date and badge.end_date < today:
-                        continue
                     domain = [
                         ("new_translator_id", "=", translator.id),
                         ("translation_status", "=", "done"),
@@ -333,13 +331,12 @@ class TranslationUser(models.Model):
         UserBadge = self.env["sbc.translation.user.badge"]
         Correspondence = self.env["correspondence"]
 
-        all_badges = Badge.search(
-            [],
-            order="badge_type, threshold, id",
-        )
-
         unlocked_badge_ids = (
             UserBadge.search([("user_id", "=", self.user_id.id)]).mapped("badge_id").ids
+        )
+        all_badges = Badge.with_context(active_test=False).search(
+            ["|", ("active", "=", True), ("id", "in", unlocked_badge_ids)],
+            order="badge_type, threshold, id",
         )
 
         corr_count = self.nb_translated_letters or 0
@@ -425,7 +422,6 @@ class TranslationUser(models.Model):
 
             if is_unlocked:
                 progress = 1.0
-                current_value = badge.threshold
 
             badge_dict = {
                 "id": badge.id,
