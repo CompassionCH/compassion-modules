@@ -138,14 +138,19 @@ class TranslationUser(models.Model):
                 translator.current_streak = 0
                 continue
 
+            translator_tz = translator.user_id.tz or self.env.user.tz or "UTC"
+            tz_context = translator.with_context(tz=translator_tz)
+
             active_dates = set()
             for trans in translations:
-                local_dt = fields.Datetime.context_timestamp(self, trans.translate_done)
+                local_dt = fields.Datetime.context_timestamp(
+                    tz_context, trans.translate_done
+                )
                 active_dates.add(local_dt.date())
 
             sorted_dates = sorted(list(active_dates), reverse=True)
 
-            today = fields.Date.context_today(self)
+            today = fields.Date.context_today(tz_context)
             yesterday = today - timedelta(days=1)
 
             most_recent_date = sorted_dates[0]
@@ -169,29 +174,36 @@ class TranslationUser(models.Model):
     def _evaluate_badges(self):
         """Evaluates and grants badges for this translator."""
         for translator in self:
+            if not translator.user_id:
+                continue
             corr_count = translator.nb_translated_letters or 0
             streak_count = translator.current_streak or 0
 
             unlocked_ids = (
                 self.env["sbc.translation.user.badge"]
                 .search([("user_id", "=", translator.user_id.id)])
-                .mapped("badge_id.id")
+                .mapped("badge_id")
+                .ids
             )
 
             available_badges = self.env["translation.badge"].search(
-                [("active", "=", True), ("id", "not in", unlocked_ids)]
+                [
+                    ("id", "not in", unlocked_ids),
+                ]
             )
 
+            today = fields.Date.context_today(translator)
             for badge in available_badges:
                 should_unlock = False
-
-                if badge.badge_type == "count" and corr_count >= badge.threshold:
-                    should_unlock = True
-
-                elif badge.badge_type == "streak" and streak_count >= badge.threshold:
-                    should_unlock = True
-
+                if badge.badge_type == "count":
+                    should_unlock = corr_count >= badge.threshold
+                elif badge.badge_type == "streak":
+                    should_unlock = streak_count >= badge.threshold
                 elif badge.badge_type == "campaign":
+                    if badge.start_date and badge.start_date > today:
+                        continue
+                    if badge.end_date and badge.end_date < today:
+                        continue
                     domain = [
                         ("new_translator_id", "=", translator.id),
                         ("translation_status", "=", "done"),
@@ -314,85 +326,133 @@ class TranslationUser(models.Model):
 
     def _get_formatted_badges(self):
         self.ensure_one()
+
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        all_badges = self.env["translation.badge"].search([("active", "=", True)])
-        unlocked_badge_ids = (
-            self.env["sbc.translation.user.badge"]
-            .search([("user_id", "=", self.user_id.id)])
-            .mapped("badge_id.id")
+
+        Badge = self.env["translation.badge"]
+        UserBadge = self.env["sbc.translation.user.badge"]
+        Correspondence = self.env["correspondence"]
+
+        all_badges = Badge.search(
+            [],
+            order="badge_type, threshold, id",
         )
+
+        unlocked_badge_ids = (
+            UserBadge.search([("user_id", "=", self.user_id.id)]).mapped("badge_id").ids
+        )
+
         corr_count = self.nb_translated_letters or 0
         streak_count = self.current_streak or 0
         today = fields.Date.context_today(self)
 
         badges_by_category = {
-            "count": {"category": "Volume", "badges": []},
-            "streak": {"category": "Engagement", "badges": []},
-            "campaign": {"category": "Campaign", "badges": []},
+            "count": {
+                "category": "Volume",
+                "badges": [],
+            },
+            "streak": {
+                "category": "Engagement",
+                "badges": [],
+            },
+            "campaign": {
+                "category": "Campaign",
+                "badges": [],
+            },
         }
 
         for badge in all_badges:
             is_unlocked = badge.id in unlocked_badge_ids
             progress = 0.0
+            current_value = 0
             days_left = False
             days_until_start = False
 
+            if badge.badge_type == "count":
+                current_value = corr_count
+                progress = min(
+                    1.0,
+                    current_value / badge.threshold,
+                )
+
+            elif badge.badge_type == "streak":
+                current_value = streak_count
+                progress = min(
+                    1.0,
+                    current_value / badge.threshold,
+                )
+
+            elif badge.badge_type == "campaign":
+                if badge.start_date and badge.start_date > today:
+                    days_until_start = (badge.start_date - today).days
+
+                else:
+                    domain = [
+                        ("new_translator_id", "=", self.id),
+                        ("translation_status", "=", "done"),
+                    ]
+
+                    if badge.start_date:
+                        domain.append(
+                            (
+                                "translate_done",
+                                ">=",
+                                badge.start_date,
+                            )
+                        )
+
+                    if badge.end_date:
+                        domain.append(
+                            (
+                                "translate_done",
+                                "<",
+                                badge.end_date + timedelta(days=1),
+                            )
+                        )
+
+                    current_value = Correspondence.search_count(domain)
+
+                    progress = min(
+                        1.0,
+                        current_value / badge.threshold,
+                    )
+
+                    if badge.end_date:
+                        if badge.end_date >= today:
+                            days_left = (badge.end_date - today).days
+                        else:
+                            days_left = 0
+
             if is_unlocked:
                 progress = 1.0
-            else:
-                if badge.badge_type == "count":
-                    progress = min(1.0, corr_count / badge.threshold)
-                elif badge.badge_type == "streak":
-                    progress = min(1.0, streak_count / badge.threshold)
-                elif badge.badge_type == "campaign":
-                    if badge.start_date and badge.start_date > today:
-                        days_until_start = (badge.start_date - today).days
-                    else:
-                        domain = [
-                            ("new_translator_id", "=", self.id),
-                            ("translation_status", "=", "done"),
-                        ]
-                        if badge.start_date:
-                            domain.append(("translate_done", ">=", badge.start_date))
-                        if badge.end_date:
-                            domain.append(
-                                (
-                                    "translate_done",
-                                    "<",
-                                    badge.end_date + timedelta(days=1),
-                                )
-                            )
-
-                        campaign_count = self.env["correspondence"].search_count(domain)
-                        progress = min(1.0, campaign_count / badge.threshold)
-
-                        if badge.end_date:
-                            if badge.end_date >= today:
-                                days_left = (badge.end_date - today).days
-                            else:
-                                days_left = 0
+                current_value = badge.threshold
 
             badge_dict = {
                 "id": badge.id,
                 "name": badge.name,
                 "description": badge.description or "",
+                "type": badge.badge_type,
                 "icon_url": (
-                    f"{base_url}/web/image/translation.badge/{badge.id}/icon"
+                    f"{base_url}/web/image/" f"translation.badge/{badge.id}/icon"
                     if badge.icon
                     else f"{base_url}/web/static/img/smile.svg"
                 ),
                 "is_unlocked": is_unlocked,
+                "current": current_value,
                 "progress": progress,
                 "threshold": badge.threshold,
                 "days_left": days_left,
                 "days_until_start": days_until_start,
-                "start_date": badge.start_date.strftime("%d/%m/%Y")
-                if badge.start_date
-                else False,
+                "start_date": (
+                    badge.start_date.strftime("%d/%m/%Y") if badge.start_date else False
+                ),
             }
+
             badges_by_category[badge.badge_type]["badges"].append(badge_dict)
 
-        return [cat for cat in badges_by_category.values() if len(cat["badges"]) > 0]
+        return [
+            category for category in badges_by_category.values() if category["badges"]
+        ]
 
     def get_user_info(self):
         """

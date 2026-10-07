@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<record id="view_translation_badge_tree" model="ir.ui.view">
+    <record id="view_translation_badge_tree" model="ir.ui.view">
         <field name="name">translation.badge.tree</field>
         <field name="model">translation.badge</field>
         <field name="arch" type="xml">
@@ -7,7 +8,6 @@
                 <field name="name"/>
                 <field name="badge_type"/>
                 <field name="threshold"/>
-                <field name="active" widget="boolean_toggle"/>
             </list>
         </field>
     </record>
@@ -28,16 +28,24 @@
                         <group>
                             <field name="badge_type"/>
                             <field name="threshold"/>
-                            <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group>
                             <field name="start_date" invisible="badge_type != 'campaign'"/>
                             <field name="end_date" invisible="badge_type != 'campaign'"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="description" placeholder="Description of the badge..."/>
+                    </group>
+
                     <notebook>
-                        <page string="Description">
-                            <field name="description"/>
+                        <page string="Granted to">
+                            <field name="user_badge_ids">
+                                <list>
+                                    <field name="user_id"/>
+                                    <field name="unlocked_date"/>
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

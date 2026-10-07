@@ -7,7 +7,6 @@ class TranslationBadge(models.Model):
 
     name = fields.Char(string="Badge Name", required=True, translate=True)
     description = fields.Text(translate=True)
-    active = fields.Boolean(default=True)
 
     icon = fields.Image(max_width=256, max_height=256)
 
@@ -17,10 +16,15 @@ class TranslationBadge(models.Model):
             ("streak", "Engagement (Consecutive Days)"),
             ("campaign", "Time-bound Campaign"),
         ],
+        string="Type",
         required=True,
     )
 
-    threshold = fields.Integer(string="Target", default=1, required=True)
+    threshold = fields.Integer(
+        string="Target",
+        default=1,
+        required=True,
+    )
 
     start_date = fields.Date(string="Campaign Start Date")
     end_date = fields.Date(string="Campaign End Date")
@@ -42,9 +46,23 @@ class TranslationUserBadge(models.Model):
     _name = "sbc.translation.user.badge"
     _description = "User Unlocked Badges"
 
-    user_id = fields.Many2one("res.users", required=True)
-    badge_id = fields.Many2one("translation.badge", required=True, ondelete="cascade")
-    unlocked_date = fields.Datetime(string="Unlocked On", default=fields.Datetime.now)
+    user_id = fields.Many2one(
+        "res.users",
+        required=True,
+        index=True,
+        ondelete="cascade",
+    )
+
+    badge_id = fields.Many2one(
+        "translation.badge",
+        required=True,
+        ondelete="cascade",
+    )
+
+    unlocked_date = fields.Datetime(
+        string="Unlocked On",
+        default=fields.Datetime.now,
+    )
 
     _sql_constraints = [
         (
