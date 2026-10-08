@@ -37,11 +37,11 @@ except ImportError:
     _logger.warning("Please install bs4 for using the module")
 
 
-# GSM 03.38 basic charset and extension table (escape character excluded)
+# GSM 03.38 basic charset. The extension table is left out, because its
+# characters are not supported by all providers and Odoo counts them as unicode.
 GSM7_CHARSET = frozenset(
     "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?"
     "¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà"
-    "^{}\\[~]|€"
 )
 GSM7_REPLACEMENTS = str.maketrans(
     {
@@ -68,6 +68,14 @@ GSM7_REPLACEMENTS = str.maketrans(
         "―": "-",
         "•": "-",
         "…": "...",
+        "|": "-",
+        "~": "-",
+        "[": "(",
+        "]": ")",
+        "{": "(",
+        "}": ")",
+        "\\": "/",
+        "€": "EUR",
         "\t": " ",
         "\u00a0": " ",
         "\u2009": " ",
@@ -750,7 +758,8 @@ class CommunicationJob(models.Model):
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
         text = soup.get_text().replace(paragraph_delimiter, "\n\n")
-        return sanitize_gsm7("\n".join([t.strip() for t in text.split("\n")]))
+        text = re.sub(r" {2,}", " ", sanitize_gsm7(text))
+        return "\n".join([t.strip() for t in text.split("\n")])
 
     def refresh_text(self):
         self.mapped("attachment_ids").unlink()
