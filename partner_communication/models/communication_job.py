@@ -10,9 +10,11 @@
 import base64
 import logging
 import re
+import unicodedata
 from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
+from urllib.parse import urlparse
 
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
@@ -34,6 +36,67 @@ try:
     from bs4 import BeautifulSoup
 except ImportError:
     _logger.warning("Please install bs4 for using the module")
+
+
+# GSM 03.38 basic charset. The extension table is left out, because its
+# characters are not supported by all providers and Odoo counts them as unicode.
+GSM7_CHARSET = frozenset(
+    "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?"
+    "¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà"
+)
+GSM7_REPLACEMENTS = str.maketrans(
+    {
+        "‘": "'",
+        "’": "'",
+        "‚": "'",
+        "‛": "'",
+        "′": "'",
+        "`": "'",
+        "“": '"',
+        "”": '"',
+        "„": '"',
+        "‟": '"',
+        "″": '"',
+        "«": '"',
+        "»": '"',
+        "‹": "'",
+        "›": "'",
+        "‐": "-",
+        "‑": "-",
+        "‒": "-",
+        "–": "-",
+        "—": "-",
+        "―": "-",
+        "•": "-",
+        "…": "...",
+        "|": "-",
+        "~": "-",
+        "[": "(",
+        "]": ")",
+        "{": "(",
+        "}": ")",
+        "\\": "/",
+        "€": "EUR",
+        "\t": " ",
+        "\u00a0": " ",
+        "\u2009": " ",
+        "\u202f": " ",
+    }
+)
+
+
+def sanitize_gsm7(text):
+    """Keep only GSM-7 characters in the text, to avoid UCS-2 SMS encoding.
+    Typographic characters are replaced by their plain equivalent, accented
+    letters by their base letter and other characters are removed."""
+    result = []
+    for char in text.translate(GSM7_REPLACEMENTS):
+        if char not in GSM7_CHARSET:
+            char = "".join(
+                c for c in unicodedata.normalize("NFKD", char) if c in GSM7_CHARSET
+            )
+        result.append(char)
+    return "".join(result)
 
 
 class MLStripper(HTMLParser):
@@ -670,23 +733,29 @@ class CommunicationJob(models.Model):
         sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
 
         def _replace_link(match):
-            full_link = match.group(1).replace("&amp;", "&")
-            short_link = self.env["link.tracker"].search(
-                [
-                    ("url", "=", full_link),
-                    ("source_id", "=", source_id),
-                    ("medium_id", "=", sms_medium_id),
-                ]
-            )
-            if not short_link:
-                short_link = self.env["link.tracker"].create(
-                    {
-                        "url": full_link,
-                        "medium_id": sms_medium_id,
-                        "source_id": source_id,
-                    }
+            full_link = match.group(1).replace("&amp;", "&").strip()
+            parsed_link = urlparse(full_link)
+            if full_link.startswith(("?", "#")) or parsed_link.scheme not in (
+                "",
+                "http",
+                "https",
+            ):
+                # Don't track phone, email or anchor links: keep the bare target
+                return parsed_link.path
+            # Reuse the tracker of the same URL (normalized by link.tracker)
+            return (
+                self.env["link.tracker"]
+                .search_or_create(
+                    [
+                        {
+                            "url": full_link,
+                            "medium_id": sms_medium_id,
+                            "source_id": source_id,
+                        }
+                    ]
                 )
-            return short_link.short_url
+                .short_url
+            )
 
         body = self.body_html.replace("\n", " ").replace(
             "</p>", "</p>" + paragraph_delimiter
@@ -696,6 +765,7 @@ class CommunicationJob(models.Model):
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
         text = soup.get_text().replace(paragraph_delimiter, "\n\n")
+        text = re.sub(r" {2,}", " ", sanitize_gsm7(text))
         return "\n".join([t.strip() for t in text.split("\n")])
 
     def refresh_text(self):
