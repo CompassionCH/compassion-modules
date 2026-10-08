@@ -1277,6 +1277,7 @@ class Correspondence(models.Model):
                     ("template_id.is_christmas_letter", "=", True),
                     ("kit_identifier", "=", False),
                     ("state", "=", "Exception"),
+                    ("on_hold", "=", True),
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
