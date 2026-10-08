@@ -14,6 +14,7 @@ import unicodedata
 from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
+from urllib.parse import urlparse
 
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
@@ -732,23 +733,29 @@ class CommunicationJob(models.Model):
         sms_medium_id = self.env.ref("mass_mailing_sms.utm_medium_sms").id
 
         def _replace_link(match):
-            full_link = match.group(1).replace("&amp;", "&")
-            short_link = self.env["link.tracker"].search(
-                [
-                    ("url", "=", full_link),
-                    ("source_id", "=", source_id),
-                    ("medium_id", "=", sms_medium_id),
-                ]
-            )
-            if not short_link:
-                short_link = self.env["link.tracker"].create(
-                    {
-                        "url": full_link,
-                        "medium_id": sms_medium_id,
-                        "source_id": source_id,
-                    }
+            full_link = match.group(1).replace("&amp;", "&").strip()
+            parsed_link = urlparse(full_link)
+            if full_link.startswith(("?", "#")) or parsed_link.scheme not in (
+                "",
+                "http",
+                "https",
+            ):
+                # Don't track phone, email or anchor links: keep the bare target
+                return parsed_link.path
+            # Reuse the tracker of the same URL (normalized by link.tracker)
+            return (
+                self.env["link.tracker"]
+                .search_or_create(
+                    [
+                        {
+                            "url": full_link,
+                            "medium_id": sms_medium_id,
+                            "source_id": source_id,
+                        }
+                    ]
                 )
-            return short_link.short_url
+                .short_url
+            )
 
         body = self.body_html.replace("\n", " ").replace(
             "</p>", "</p>" + paragraph_delimiter
