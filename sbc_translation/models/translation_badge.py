@@ -12,7 +12,7 @@ class TranslationBadge(models.Model):
         help="Archive a badge to stop awarding it while keeping existing awards.",
     )
 
-    icon = fields.Image(max_width=256, max_height=256)
+    icon = fields.Image(max_width=128, max_height=128)
 
     badge_type = fields.Selection(
         [

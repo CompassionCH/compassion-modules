@@ -1,6 +1,9 @@
 from datetime import timedelta
 
+from psycopg2 import IntegrityError
+
 from odoo import api, fields, models
+from odoo.tools import mute_logger
 from odoo.tools.image import image_data_uri
 
 
@@ -56,6 +59,32 @@ class TranslationUser(models.Model):
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
+
+    @api.model
+    def _get_validated_translations_domain(self, translators, date_from=None, date_to=None):
+        """
+        Single definition of a counted translation, shared by badges and
+        leaderboards: a translation counts once validated, dated by its
+        validation time. Bounds are inclusive.
+        """
+        domain = [
+            ("new_translator_id", "in", translators.ids),
+            ("translation_status", "=", "done"),
+            ("translate_done", "!=", False),
+        ]
+        if date_from:
+            domain.append(("translate_done", ">=", date_from))
+        if date_to:
+            domain.append(("translate_done", "<=", date_to))
+        return domain
+
+    @api.model
+    def _get_campaign_domain(self, translators, badge):
+        """Validated translations counted for a campaign badge (whole end day)."""
+        domain = self._get_validated_translations_domain(translators, badge.start_date)
+        if badge.end_date:
+            domain.append(("translate_done", "<", badge.end_date + timedelta(days=1)))
+        return domain
 
     @api.depends("translated_letter_ids.translation_status")
     def _compute_nb_translated_letters(self):
@@ -203,18 +232,9 @@ class TranslationUser(models.Model):
                 elif badge.badge_type == "campaign":
                     if badge.start_date and badge.start_date > today:
                         continue
-                    domain = [
-                        ("new_translator_id", "=", translator.id),
-                        ("translation_status", "=", "done"),
-                    ]
-                    if badge.start_date:
-                        domain.append(("translate_done", ">=", badge.start_date))
-                    if badge.end_date:
-                        domain.append(
-                            ("translate_done", "<", badge.end_date + timedelta(days=1))
-                        )
-
-                    campaign_count = self.env["correspondence"].search_count(domain)
+                    campaign_count = self.env["correspondence"].search_count(
+                        self._get_campaign_domain(translator, badge)
+                    )
                     if campaign_count >= badge.threshold:
                         should_unlock = True
 
@@ -226,9 +246,18 @@ class TranslationUser(models.Model):
                         ]
                     )
                     if not existing:
-                        self.env["sbc.translation.user.badge"].sudo().create(
-                            {"user_id": translator.user_id.id, "badge_id": badge.id}
-                        )
+                        # This runs inside the letter submission: a concurrent
+                        # award (e.g. the cron) must not make the submission fail.
+                        try:
+                            with mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+                                self.env["sbc.translation.user.badge"].sudo().create(
+                                    {
+                                        "user_id": translator.user_id.id,
+                                        "badge_id": badge.id,
+                                    }
+                                )
+                        except IntegrityError:
+                            pass  # Already awarded at the same time by another process
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -365,6 +394,7 @@ class TranslationUser(models.Model):
             current_value = 0
             days_left = False
             days_until_start = False
+            is_finished = False
 
             if badge.badge_type == "count":
                 current_value = corr_count
@@ -385,30 +415,9 @@ class TranslationUser(models.Model):
                     days_until_start = (badge.start_date - today).days
 
                 else:
-                    domain = [
-                        ("new_translator_id", "=", self.id),
-                        ("translation_status", "=", "done"),
-                    ]
-
-                    if badge.start_date:
-                        domain.append(
-                            (
-                                "translate_done",
-                                ">=",
-                                badge.start_date,
-                            )
-                        )
-
-                    if badge.end_date:
-                        domain.append(
-                            (
-                                "translate_done",
-                                "<",
-                                badge.end_date + timedelta(days=1),
-                            )
-                        )
-
-                    current_value = Correspondence.search_count(domain)
+                    current_value = Correspondence.search_count(
+                        self._get_campaign_domain(self, badge)
+                    )
 
                     progress = min(
                         1.0,
@@ -416,10 +425,8 @@ class TranslationUser(models.Model):
                     )
 
                     if badge.end_date:
-                        if badge.end_date >= today:
-                            days_left = (badge.end_date - today).days
-                        else:
-                            days_left = 0
+                        days_left = max((badge.end_date - today).days, 0)
+                        is_finished = badge.end_date < today
 
             if is_unlocked:
                 progress = 1.0
@@ -442,6 +449,7 @@ class TranslationUser(models.Model):
                 "threshold": badge.threshold,
                 "days_left": days_left,
                 "days_until_start": days_until_start,
+                "is_finished": is_finished,
                 "start_date": (
                     badge.start_date.strftime("%d/%m/%Y") if badge.start_date else False
                 ),
