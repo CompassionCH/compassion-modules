@@ -456,7 +456,9 @@ class Correspondence(models.Model):
                 "translation_status": False,
             }
         )
-        self.message_post(body=reason)
+        self.message_post(
+            body=reason, message_type="comment", subtype_xmlid="mail.mt_note"
+        )
         responsible = self.env["res.config.settings"].get_param("letter_responsible")
         if responsible:
             self._make_activity(reason, responsible)
