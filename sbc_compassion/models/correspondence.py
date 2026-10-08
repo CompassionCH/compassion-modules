@@ -79,7 +79,9 @@ class Correspondence(models.Model):
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
-    child_id = fields.Many2one(related="sponsorship_id.child_id", readonly=True)
+    child_id = fields.Many2one(
+        related="sponsorship_id.child_id", store=True, readonly=True, index=True
+    )
     avatar_128 = fields.Image(compute="_compute_avatar")
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, tracking=True)
@@ -987,13 +989,17 @@ class Correspondence(models.Model):
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.get("partner_id")
             child = odoo_data.pop("child_id")
-            sponsorship = self.env["recurring.contract"].search(
+            sponsorships = self.env["recurring.contract"].search(
                 [
                     ("correspondent_id", "=", partner),
                     ("child_id", "=", child),
-                ],
-                limit=1,
+                ]
             )
+            # Prefer the live sponsorship: bound to a cancelled/draft duplicate,
+            # send_communication drops the letter and it never gets published.
+            sponsorship = sponsorships.sorted(
+                lambda s: s.state in ("cancelled", "draft")
+            )[:1]
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
 

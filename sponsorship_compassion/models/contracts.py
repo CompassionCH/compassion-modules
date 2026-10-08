@@ -248,14 +248,18 @@ class SponsorshipContract(models.Model):
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
         pricelist = self.pricelist_id
-        sponsorship_price = pricelist._get_product_price(
-            sponsorship_product,
-            1.0,
-        )
-        gen_price = pricelist._get_product_price(
-            gen_product,
-            1.0,
-        )
+        if pricelist:
+            sponsorship_price = pricelist._get_product_price(
+                sponsorship_product,
+                1.0,
+            )
+            gen_price = pricelist._get_product_price(
+                gen_product,
+                1.0,
+            )
+        else:
+            sponsorship_price = sponsorship_product.list_price
+            gen_price = gen_product.list_price
         sponsorship_vals = {
             "product_id": sponsorship_product.id,
             "quantity": 0 if correspondence else 1,
