@@ -14,6 +14,8 @@ from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
 
+import pygsm7
+
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
@@ -696,7 +698,7 @@ class CommunicationJob(models.Model):
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
         text = soup.get_text().replace(paragraph_delimiter, "\n\n")
-        return "\n".join([t.strip() for t in text.split("\n")])
+        return pygsm7.encode("\n".join([t.strip() for t in text.split("\n")]))
 
     def refresh_text(self):
         self.mapped("attachment_ids").unlink()
