@@ -10,11 +10,10 @@
 import base64
 import logging
 import re
+import unicodedata
 from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
-
-import pygsm7
 
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
@@ -36,6 +35,59 @@ try:
     from bs4 import BeautifulSoup
 except ImportError:
     _logger.warning("Please install bs4 for using the module")
+
+
+# GSM 03.38 basic charset and extension table (escape character excluded)
+GSM7_CHARSET = frozenset(
+    "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?"
+    "¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà"
+    "^{}\\[~]|€"
+)
+GSM7_REPLACEMENTS = str.maketrans(
+    {
+        "‘": "'",
+        "’": "'",
+        "‚": "'",
+        "‛": "'",
+        "′": "'",
+        "`": "'",
+        "“": '"',
+        "”": '"',
+        "„": '"',
+        "‟": '"',
+        "″": '"',
+        "«": '"',
+        "»": '"',
+        "‹": "'",
+        "›": "'",
+        "‐": "-",
+        "‑": "-",
+        "‒": "-",
+        "–": "-",
+        "—": "-",
+        "―": "-",
+        "•": "-",
+        "…": "...",
+        "\t": " ",
+        "\u00a0": " ",
+        "\u2009": " ",
+        "\u202f": " ",
+    }
+)
+
+
+def sanitize_gsm7(text):
+    """Keep only GSM-7 characters in the text, to avoid UCS-2 SMS encoding.
+    Typographic characters are replaced by their plain equivalent, accented
+    letters by their base letter and other characters are removed."""
+    result = []
+    for char in text.translate(GSM7_REPLACEMENTS):
+        if char not in GSM7_CHARSET:
+            char = "".join(
+                c for c in unicodedata.normalize("NFKD", char) if c in GSM7_CHARSET
+            )
+        result.append(char)
+    return "".join(result)
 
 
 class MLStripper(HTMLParser):
@@ -698,7 +750,7 @@ class CommunicationJob(models.Model):
         body = re.sub(r"<br>|<br/>", "\n", body)
         soup = BeautifulSoup(body, "lxml")
         text = soup.get_text().replace(paragraph_delimiter, "\n\n")
-        return pygsm7.encode("\n".join([t.strip() for t in text.split("\n")]))
+        return sanitize_gsm7("\n".join([t.strip() for t in text.split("\n")]))
 
     def refresh_text(self):
         self.mapped("attachment_ids").unlink()

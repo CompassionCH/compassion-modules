@@ -44,7 +44,6 @@
         "mail",
         "phone_validation",
     ],
-    "external_dependencies": {"python": ["pygsm7"]},
     "data": [
         "security/ir.model.access.csv",
         "security/communication_job_security.xml",

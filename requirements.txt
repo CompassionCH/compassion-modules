@@ -7,7 +7,6 @@ langdetect
 pandas>=3.0.0
 pdf2image
 phonenumbers
-pygsm7
 pyjwt
 pypdf
 pypng
