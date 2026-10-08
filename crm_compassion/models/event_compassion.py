@@ -399,7 +399,7 @@ class EventCompassion(models.Model):
                 "search_view_ref": "crm_compassion.event_income_search",
                 "list_view_ref": "crm_compassion.event_income_tree",
             },
-            "domain": [("id", "in", self.expense_line_ids.mapped("move_id").ids)],
+            "domain": [("id", "in", self.expense_line_ids.mapped("move_line_id").ids)],
         }
 
     def show_income(self):
