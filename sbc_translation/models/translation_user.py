@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from psycopg2 import IntegrityError
@@ -5,6 +6,8 @@ from psycopg2 import IntegrityError
 from odoo import api, fields, models
 from odoo.tools import mute_logger
 from odoo.tools.image import image_data_uri
+
+_logger = logging.getLogger(__name__)
 
 
 class TranslationUser(models.Model):
@@ -61,7 +64,9 @@ class TranslationUser(models.Model):
     ]
 
     @api.model
-    def _get_validated_translations_domain(self, translators, date_from=None, date_to=None):
+    def _get_validated_translations_domain(
+        self, translators, date_from=None, date_to=None
+    ):
         """
         Single definition of a counted translation, shared by badges and
         leaderboards: a translation counts once validated, dated by its
@@ -257,7 +262,12 @@ class TranslationUser(models.Model):
                                     }
                                 )
                         except IntegrityError:
-                            pass  # Already awarded at the same time by another process
+                            # Already awarded at the same time by another process
+                            _logger.debug(
+                                "Badge %s already awarded to user %s",
+                                badge.id,
+                                translator.user_id.id,
+                            )
 
     @api.model_create_multi
     def create(self, vals_list):
