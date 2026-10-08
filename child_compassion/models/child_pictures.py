@@ -9,6 +9,8 @@
 ##############################################################################
 import base64
 import logging
+import re
+from datetime import datetime, timezone
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -16,6 +18,9 @@ from odoo import _, api, fields, models
 from odoo.http import request
 
 logger = logging.getLogger(__name__)
+
+# Version segment of the media server URLs, holding the upload timestamp
+PUBLISHED_VERSION_RE = r"/v(\d{9,11})/"
 
 # This User-Agent simulate a browser, so that the fetch is not blocked
 HEADERS = {
@@ -138,6 +143,17 @@ class ChildPictures(models.Model):
         self.child_id.message_post(body=message, subject=_("Picture update"))
         self.unlink()
 
+    def _get_published_date(self):
+        """Publish date of the picture, read from the version of its URL.
+
+        The media server URLs contain the upload time: .../v1722936507/...
+        :return: date or False
+        """
+        match = re.search(PUBLISHED_VERSION_RE, self.image_url or "")
+        if not match:
+            return False
+        return datetime.fromtimestamp(int(match.group(1)), tz=timezone.utc).date()
+
     def _find_same_picture(self):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
@@ -182,7 +198,14 @@ class ChildPictures(models.Model):
 
             data = urlopen(Request(url, None, HEADERS), timeout=3).read()
             data = base64.encodebytes(data)
-            _image_date = self.child_id.last_photo_date or fields.Date.today()
+            # The first picture of a child is fetched before the child details,
+            # so without its photo date yet: the publish date keeps it from
+            # getting the download date, which would hide the next biennial.
+            _image_date = (
+                self.child_id.last_photo_date
+                or self._get_published_date()
+                or fields.Date.today()
+            )
             if pic_type.lower() == "headshot":
                 self.headshot = data
             elif pic_type.lower() == "fullshot":

@@ -163,8 +163,7 @@ class PartnerCommunication(models.Model):
             lambda j: j.state == "done" and j.config_id == biennial
         )
         if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
+            biennials.get_objects().sponsorship_ids.write({"new_picture": False})
         return res
 
     def cancel(self):
@@ -172,8 +171,7 @@ class PartnerCommunication(models.Model):
         biennial = self.env.ref("partner_communication_compassion.biennial")
         biennials = self.filtered(lambda j: j.config_id == biennial)
         if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
+            biennials.get_objects().sponsorship_ids.write({"new_picture": False})
         exit_confs = self._exit_communication_configs()
         self.filtered(
             lambda j: j.config_id in exit_confs
