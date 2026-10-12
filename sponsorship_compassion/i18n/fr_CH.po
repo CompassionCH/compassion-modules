@@ -82,10 +82,6 @@ msgstr "Cadeau de Noël annuel"
 msgid "BVR Ref"
 msgstr "BVR Ref"
 
-#. module: sponsorship_compassion
-#: model:ir.cron,cron_name:sponsorship_compassion.recurring_invoicer_cron
-msgid "Base: Auto-vacuum internal data"
-msgstr "Base : données internes sur l'aspiration automatique"
 
 #. module: sponsorship_compassion
 #: code:addons/sponsorship_compassion/models/contracts.py:0
@@ -553,10 +549,6 @@ msgstr "Générer une facture cadeau"
 msgid "Generated Invoices"
 msgstr "Factures générées"
 
-#. module: sponsorship_compassion
-#: model:ir.ui.menu,name:sponsorship_compassion.menu_recurring_invoicer_form
-msgid "Generated invoices"
-msgstr "Factures générées"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_gift
@@ -867,10 +859,6 @@ msgstr "Dernière mise à jour le"
 msgid "Last payment"
 msgstr "Dernier paiement"
 
-#. module: sponsorship_compassion
-#: model:ir.cron,name:sponsorship_compassion.recurring_invoicer_cron
-msgid "Launch friday invoice generation"
-msgstr "Lancement de la génération de factures le vendredi"
 
 #. module: sponsorship_compassion
 #: model:ir.ui.menu,name:sponsorship_compassion.menu_invoice_automatic_generation

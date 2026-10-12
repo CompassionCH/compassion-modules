@@ -35,7 +35,7 @@ class GenerateGiftWizard(models.TransientModel):
             birthday_gift_type = self.env.ref(
                 "sponsorship_compassion.gift_type_birthday"
             )
-            gift_vals = {"sponsorship_gift_type_id": birthday_gift_type.id}
+            gift_vals = {"gift_type_id": birthday_gift_type.id}
             gift_date = self.compute_date_birthday_invoice(
                 contract_id.child_id.birthdate
             )
