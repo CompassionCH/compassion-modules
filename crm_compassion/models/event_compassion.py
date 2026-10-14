@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import math
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from odoo import _, api, exceptions, fields, models
@@ -166,10 +167,19 @@ class EventCompassion(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     def _compute_expense_lines(self):
+        # analytic_id.line_ids is empty without analytic_plan_id in the context;
+        # auto_account_id searches the column of every plan.
+        line_obj = self.env["account.analytic.line"]
         for event in self:
-            event.expense_line_ids = event.analytic_id.line_ids.filtered(
-                lambda line: line.amount < 0.0
-            )
+            expenses = line_obj
+            if event.analytic_id:
+                expenses = line_obj.search(
+                    [
+                        ("auto_account_id", "=", event.analytic_id.id),
+                        ("amount", "<", 0.0),
+                    ]
+                )
+            event.expense_line_ids = expenses
 
     def _compute_income_lines(self):
         for event in self:
@@ -179,11 +189,22 @@ class EventCompassion(models.Model):
                 and line.move_id.move_type == "out_invoice"
             )
 
-    @api.depends("analytic_id.line_ids")
+    # A dependency on analytic_id.line_ids never fires: account.analytic.line
+    # triggers the recompute itself (_recompute_event_expenses).
+    @api.depends("analytic_id")
     def _compute_expense(self):
+        line_obj = self.env["account.analytic.line"]
+        accounts = self.analytic_id
+        totals = defaultdict(float)
+        for fname in line_obj._get_plan_fnames() if accounts else []:
+            for account, amount in line_obj._read_group(
+                [(fname, "in", accounts.ids), ("amount", "<", 0.0)],
+                [fname],
+                ["amount:sum"],
+            ):
+                totals[account.id] += amount
         for event in self:
-            expenses = event.expense_line_ids.filtered(lambda line: line.amount < 0)
-            event.total_expense = abs(sum(expenses.mapped("amount") or [0]))
+            event.total_expense = abs(totals[event.analytic_id.id])
 
     @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
