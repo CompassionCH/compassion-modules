@@ -113,6 +113,36 @@ class TestMigrationExpenses(TransactionCase):
         self.assertIn("2 event accounts moved to the plan Events", output)
         self.assertIn("0 analytic lines of event accounts left in account_id", output)
 
+    def test_accounts_sharing_a_line(self):
+        """Two moved accounts on one line would make Odoo refuse the second
+        move: both stay in their plan, the others move."""
+        legacy_2 = self.env["account.analytic.plan"].create(
+            {"name": "Migration test legacy 2"}
+        )
+        first = self._event("First", self.legacy)
+        second = self._event("Second", legacy_2)
+        alone = self._event("Alone", self.legacy)
+        line = self._line(
+            -10,
+            **{
+                self.legacy_col: first.analytic_id,
+                legacy_2._column_name(): second.analytic_id,
+            },
+        )
+        self._line(-20, **{self.legacy_col: alone.analytic_id})
+        accounts = (first | second | alone).analytic_id
+
+        with self.assertLogs(LOGGER, "WARNING") as logs:
+            self.migration._move_accounts_to_events_plan(self.env, accounts)
+
+        self.assertEqual(first.analytic_id.plan_id, self.legacy)
+        self.assertEqual(second.analytic_id.plan_id, legacy_2)
+        self.assertEqual(alone.analytic_id.plan_id, self.events_plan)
+        self.assertEqual(line[self.legacy_col], first.analytic_id)
+        self.assertEqual(line[legacy_2._column_name()], second.analytic_id)
+        self.assertFalse(line[self.events_col])
+        self.assertIn("2 event accounts not moved to Events", logs.output[0])
+
     def test_lines_left_in_account_id(self):
         event = self._event("Left in account_id", self.legacy)
         self._line(-10, account_id=event.analytic_id)

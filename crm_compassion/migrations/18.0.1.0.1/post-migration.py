@@ -56,6 +56,17 @@ def _move_accounts_to_events_plan(env, accounts):
                 sorted(conflicts),
             )
             to_move -= to_move.browse(conflicts)
+    # Two moved accounts on one line: Odoo moves the first into the column of
+    # Events, then refuses the second (RedirectWarning). Leave both.
+    shared = _accounts_sharing_lines(env, to_move)
+    if shared:
+        _logger.warning(
+            "%s event accounts not moved to Events: some of their lines hold "
+            "another event account to move. Accounts (lines): %s",
+            len(shared),
+            dict(sorted(shared.items())),
+        )
+        to_move -= to_move.browse(shared)
     to_move.write({"plan_id": events_plan.id})
     _logger.info("%s event accounts moved to the plan Events", len(to_move))
 
@@ -76,6 +87,41 @@ def _move_accounts_to_events_plan(env, accounts):
         )
     else:
         _logger.info("0 analytic lines of event accounts left in account_id")
+
+
+def _accounts_sharing_lines(env, accounts):
+    """{account id: number of lines} for the accounts that share a line with
+    another of the accounts, in the columns Odoo moves them from."""
+    if not accounts:
+        return {}
+    columns = [
+        SQL.identifier("line", fname)
+        for fname in sorted({plan._column_name() for plan in accounts.plan_id})
+    ]
+    env.cr.execute(
+        SQL(
+            """
+            SELECT acc.id, COUNT(*)
+              FROM (
+                    SELECT ARRAY(
+                           SELECT DISTINCT unnest(ARRAY[%(columns)s])
+                           INTERSECT SELECT unnest(%(ids)s::int[])
+                           ) AS ids
+                      FROM account_analytic_line line
+                     WHERE %(in_any_column)s
+                   ) AS line_accounts
+             CROSS JOIN unnest(line_accounts.ids) AS acc(id)
+             WHERE cardinality(line_accounts.ids) > 1
+             GROUP BY acc.id
+            """,
+            columns=SQL(", ").join(columns),
+            ids=accounts.ids,
+            in_any_column=SQL(" OR ").join(
+                SQL("%s = ANY(%s)", column, accounts.ids) for column in columns
+            ),
+        )
+    )
+    return dict(env.cr.fetchall())
 
 
 def _recompute_expenses(env, events):
