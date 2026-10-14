@@ -47,6 +47,15 @@ class MoveLine(models.Model):
         if self.contract_id.ambassador_id:
             self.user_id = self.contract_id.ambassador_id
 
+    def unlink(self):
+        # The analytic lines left on these items are deleted by the database
+        # (ondelete cascade), without account.analytic.line.unlink().
+        analytic_lines = self.analytic_line_ids
+        events = analytic_lines._get_events()
+        res = super().unlink()
+        analytic_lines._recompute_event_expenses(events)
+        return res
+
     def generate_thank_you(self):
         """
         - Include a receipt for Ambassadors when generating thank you letters

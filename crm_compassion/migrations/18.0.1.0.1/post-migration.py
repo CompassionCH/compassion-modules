@@ -3,7 +3,7 @@
 import logging
 
 from odoo import SUPERUSER_ID, api
-from odoo.tools import float_compare
+from odoo.tools import SQL, float_compare
 
 _logger = logging.getLogger(__name__)
 
@@ -24,27 +24,38 @@ def _move_accounts_to_events_plan(env, accounts):
     events_plan = env.ref("crm_compassion.plan_events")
     events_fname = events_plan._column_name()
     to_move = accounts.filtered(lambda a: a.root_plan_id != events_plan)
-    # Odoo refuses the move (RedirectWarning) if a line already holds another
-    # account in the column of Events: leave these accounts in their plan.
+    # A line that already holds another account in the column of Events would
+    # make Odoo refuse the move (RedirectWarning), or overwrite that account
+    # when it is moved in the same batch: leave such accounts in their plan.
+    env.flush_all()
     for plan, plan_accounts in to_move.grouped("plan_id").items():
-        fname = plan._column_name()
-        conflicts = line_obj.search(
-            [
-                (events_fname, "not in", plan_accounts.ids + [False]),
-                (fname, "in", plan_accounts.ids),
-            ]
+        fname = SQL.identifier(plan._column_name())
+        env.cr.execute(
+            SQL(
+                """
+                SELECT %(fname)s, COUNT(*)
+                  FROM account_analytic_line
+                 WHERE %(fname)s = ANY(%(ids)s)
+                   AND %(events_fname)s IS NOT NULL
+                   AND %(events_fname)s != %(fname)s
+                 GROUP BY %(fname)s
+                """,
+                fname=fname,
+                events_fname=SQL.identifier(events_fname),
+                ids=plan_accounts.ids,
+            )
         )
+        conflicts = dict(env.cr.fetchall())
         if conflicts:
-            blocked = conflicts.mapped(fname)
             _logger.warning(
                 "%s event accounts of plan %s not moved to Events: %s of their "
-                "lines already have an account of Events. Accounts: %s",
-                len(blocked),
-                plan.name,
+                "lines already have another account of Events. Accounts: %s",
                 len(conflicts),
-                blocked.ids,
+                plan.name,
+                sum(conflicts.values()),
+                sorted(conflicts),
             )
-            to_move -= blocked
+            to_move -= to_move.browse(conflicts)
     to_move.write({"plan_id": events_plan.id})
     _logger.info("%s event accounts moved to the plan Events", len(to_move))
 

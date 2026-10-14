@@ -106,7 +106,6 @@ class TestEventAnalytic(TransactionCase):
         )
 
     def _assert_expenses(self, expense_lines, total):
-        self.env.invalidate_all()
         self.assertEqual(self.event.expense_line_ids, expense_lines)
         self.assertAlmostEqual(self.event.total_expense, total)
         self.assertAlmostEqual(self.event.balance, self.event.total_income - total)
@@ -157,4 +156,39 @@ class TestEventAnalytic(TransactionCase):
         self._assert_expenses(line, 45)
 
         line.unlink()
+        self._assert_expenses(self.env["account.analytic.line"], 0)
+
+    def test_account_in_two_columns(self):
+        """A line holding the event's account in two plan columns is one
+        expense."""
+        account = self.event.analytic_id
+        line = self._analytic_line(-25)
+        line.account_id = account
+        self.assertEqual(line[account.plan_id._column_name()], account)
+        self._assert_expenses(line, 25)
+
+    def test_expense_deleted_with_journal_item(self):
+        """The database deletes the analytic lines of a deleted journal item."""
+        bill = self.env["account.move"].create(
+            {
+                "move_type": "in_invoice",
+                "partner_id": self.partner.id,
+                "invoice_date": fields.Date.today(),
+                "invoice_line_ids": [
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "price_unit": 60,
+                            "tax_ids": [Command.clear()],
+                        }
+                    )
+                ],
+            }
+        )
+        line = self._analytic_line(-60)
+        line.move_line_id = bill.invoice_line_ids
+        self._assert_expenses(line, 60)
+
+        bill.unlink()
+        self.assertFalse(line.exists())
         self._assert_expenses(self.env["account.analytic.line"], 0)

@@ -9,6 +9,7 @@
 ##############################################################################
 
 from odoo import api, models
+from odoo.tools import SQL
 
 
 class AnalyticAccount(models.Model):
@@ -57,5 +58,37 @@ class AnalyticAccount(models.Model):
 
     def _recompute_event_expenses(self, events):
         if events:
+            events.invalidate_recordset(["expense_line_ids"])
             self.env.add_to_compute(events._fields["total_expense"], events)
             events.modified(["total_expense"])
+
+    @api.model
+    def _get_expense_totals(self, accounts):
+        """Sum of the negative lines of each account, in any plan column. A
+        line holding the same account in two columns is counted once."""
+        if not accounts:
+            return {}
+        fnames = self._get_plan_fnames()
+        self.flush_model([*fnames, "amount"])
+        columns = [SQL.identifier("line", fname) for fname in fnames]
+        self.env.cr.execute(
+            SQL(
+                """
+                SELECT acc.id, SUM(line.amount)
+                  FROM account_analytic_line line
+                 CROSS JOIN LATERAL (
+                       SELECT DISTINCT unnest(ARRAY[%(columns)s])
+                       ) AS acc(id)
+                 WHERE (%(in_any_column)s)
+                   AND line.amount < 0
+                   AND acc.id = ANY(%(ids)s)
+                 GROUP BY acc.id
+                """,
+                columns=SQL(", ").join(columns),
+                in_any_column=SQL(" OR ").join(
+                    SQL("%s = ANY(%s)", column, accounts.ids) for column in columns
+                ),
+                ids=accounts.ids,
+            )
+        )
+        return dict(self.env.cr.fetchall())

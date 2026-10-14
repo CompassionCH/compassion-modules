@@ -8,7 +8,6 @@
 #
 ##############################################################################
 import math
-from collections import defaultdict
 from datetime import datetime, timedelta
 
 from odoo import _, api, exceptions, fields, models
@@ -193,18 +192,9 @@ class EventCompassion(models.Model):
     # triggers the recompute itself (_recompute_event_expenses).
     @api.depends("analytic_id")
     def _compute_expense(self):
-        line_obj = self.env["account.analytic.line"]
-        accounts = self.analytic_id
-        totals = defaultdict(float)
-        for fname in line_obj._get_plan_fnames() if accounts else []:
-            for account, amount in line_obj._read_group(
-                [(fname, "in", accounts.ids), ("amount", "<", 0.0)],
-                [fname],
-                ["amount:sum"],
-            ):
-                totals[account.id] += amount
+        totals = self.env["account.analytic.line"]._get_expense_totals(self.analytic_id)
         for event in self:
-            event.total_expense = abs(totals[event.analytic_id.id])
+            event.total_expense = abs(totals.get(event.analytic_id.id, 0.0))
 
     @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
