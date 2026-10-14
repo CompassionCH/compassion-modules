@@ -166,15 +166,16 @@ class EventCompassion(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     def _compute_expense_lines(self):
-        # analytic_id.line_ids is empty without analytic_plan_id in the context;
-        # auto_account_id searches the column of every plan.
+        # analytic_id.line_ids is empty without analytic_plan_id in the context:
+        # search the column of the account's plan, as its balance in Odoo does.
         line_obj = self.env["account.analytic.line"]
         for event in self:
+            account = event.analytic_id
             expenses = line_obj
-            if event.analytic_id:
+            if account:
                 expenses = line_obj.search(
                     [
-                        ("auto_account_id", "=", event.analytic_id.id),
+                        (account.plan_id._column_name(), "=", account.id),
                         ("amount", "<", 0.0),
                     ]
                 )
@@ -189,12 +190,20 @@ class EventCompassion(models.Model):
             )
 
     # A dependency on analytic_id.line_ids never fires: account.analytic.line
-    # triggers the recompute itself (_recompute_event_expenses).
+    # triggers the recompute itself (_recompute_expenses).
     @api.depends("analytic_id")
     def _compute_expense(self):
-        totals = self.env["account.analytic.line"]._get_expense_totals(self.analytic_id)
+        totals = {}
+        for plan, accounts in self.analytic_id.grouped("plan_id").items():
+            fname = plan._column_name()
+            groups = self.env["account.analytic.line"]._read_group(
+                [(fname, "in", accounts.ids), ("amount", "<", 0.0)],
+                groupby=[fname],
+                aggregates=["amount:sum"],
+            )
+            totals.update((account.id, amount) for account, amount in groups)
         for event in self:
-            event.total_expense = abs(totals.get(event.analytic_id.id, 0.0))
+            event.total_expense = -totals.get(event.analytic_id.id, 0.0)
 
     @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
@@ -494,6 +503,13 @@ class EventCompassion(models.Model):
             "event_id": self.id,
             "plan_id": self.env.ref("crm_compassion.plan_events").id,
         }
+
+    def _recompute_expenses(self):
+        """Recompute the expenses after a change of analytic lines, which the
+        ORM cannot trace to the events through auto_account_id."""
+        self.invalidate_recordset(["expense_line_ids"])
+        self.env.add_to_compute(self._fields["total_expense"], self)
+        self.modified(["total_expense"])
 
     def _get_origin_vals(self, analytic_id):
         return {

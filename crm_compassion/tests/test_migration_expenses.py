@@ -107,9 +107,7 @@ class TestMigrationExpenses(TransactionCase):
         self.assertEqual(shared_line[self.legacy_col], same_batch.analytic_id)
         self.assertEqual(shared_line[self.events_col], plain.analytic_id)
         output = "\n".join(logs.output)
-        self.assertIn(
-            "2 event accounts of plan Migration test legacy not moved", output
-        )
+        self.assertIn("2 event accounts not moved to Events", output)
         self.assertIn("2 event accounts moved to the plan Events", output)
         self.assertIn("0 analytic lines of event accounts left in account_id", output)
 

@@ -159,13 +159,17 @@ class TestEventAnalytic(TransactionCase):
         self._assert_expenses(self.env["account.analytic.line"], 0)
 
     def test_account_in_two_columns(self):
-        """A line holding the event's account in two plan columns is one
-        expense."""
+        """Expenses are read in the column of the account's plan, like its
+        balance in Odoo: a line holding the account in another column too is
+        one expense, and a line holding it only in another column is none."""
         account = self.event.analytic_id
         line = self._analytic_line(-25)
         line.account_id = account
         self.assertEqual(line[account.plan_id._column_name()], account)
         self._assert_expenses(line, 25)
+
+        line[account.plan_id._column_name()] = False
+        self._assert_expenses(self.env["account.analytic.line"], 0)
 
     def test_expense_deleted_with_journal_item(self):
         """The database deletes the analytic lines of a deleted journal item."""
