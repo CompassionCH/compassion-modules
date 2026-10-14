@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class TranslationBadge(models.Model):
@@ -44,6 +45,18 @@ class TranslationBadge(models.Model):
             "The target must be bigger than 0.",
         )
     ]
+
+    @api.constrains("badge_type", "start_date", "end_date")
+    def _check_campaign_dates(self):
+        for badge in self.filtered(lambda b: b.badge_type == "campaign"):
+            if not badge.start_date or not badge.end_date:
+                raise ValidationError(
+                    _("A campaign badge requires a start date and an end date.")
+                )
+            if badge.end_date < badge.start_date:
+                raise ValidationError(
+                    _("The campaign end date must be on or after its start date.")
+                )
 
 
 class TranslationUserBadge(models.Model):

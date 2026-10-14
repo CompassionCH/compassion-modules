@@ -160,12 +160,9 @@ class TranslationUser(models.Model):
             translations = (
                 self.env["correspondence"]
                 .sudo()
-                .search(
-                    [
-                        ("new_translator_id", "=", translator.id),
-                        ("translation_status", "=", "done"),
-                        ("translate_done", "!=", False),
-                    ]
+                .search_fetch(
+                    self._get_validated_translations_domain(translator),
+                    ["translate_done"],
                 )
             )
 
