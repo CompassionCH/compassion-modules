@@ -101,3 +101,15 @@ class TestOriginCampaign(TransactionCase):
         self.origin_none.campaign_id = self.newspaper
         self.assertEqual(follower.campaign_id, self.newspaper)
         self.assertEqual(own.campaign_id, self.own)
+
+    def test_source_follows_origin(self):
+        magazine = self.env["utm.source"].create({"name": "Origin campaign magazine"})
+        own = self.env["utm.source"].create({"name": "Origin campaign own"})
+        follower = self._contract(origin_id=self.origin_none.id)
+        kept = self._contract(origin_id=self.origin_none.id, source_id=own.id)
+        self.origin_none.source_id = magazine
+        self.assertEqual(follower.source_id, magazine)
+        self.assertEqual(kept.source_id, own)
+        follower.origin_id = self.origin_magazine
+        self.assertFalse(follower.source_id)
+        self.assertEqual(follower.campaign_id, self.magazine)

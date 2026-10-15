@@ -21,6 +21,8 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
+from .contract_origin import ORIGIN_UTM_FIELDS
+
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
 testing = tools.config.get("test_enable")
@@ -596,14 +598,11 @@ class SponsorshipContract(models.Model):
                 else:
                     vals["commitment_number"] = 1
 
-            if vals.get("origin_id") and not vals.get("campaign_id"):
-                campaign = (
-                    self.env["recurring.contract.origin"]
-                    .browse(vals["origin_id"])
-                    .campaign_id
-                )
-                if campaign:
-                    vals["campaign_id"] = campaign.id
+            if vals.get("origin_id"):
+                origin = self.env["recurring.contract.origin"].browse(vals["origin_id"])
+                for fname in ORIGIN_UTM_FIELDS:
+                    if origin[fname] and not vals.get(fname):
+                        vals[fname] = origin[fname].id
 
         new_sponsorships = super().create(vals_list)
 
@@ -631,22 +630,22 @@ class SponsorshipContract(models.Model):
         if "parent_id" in vals:
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
-        # The campaign follows the origin, unless it was set otherwise
-        campaign_followers = self.env[self._name]
-        if "origin_id" in vals and "campaign_id" not in vals:
-            campaign_followers = self.filtered(
-                lambda c: not c.campaign_id or c.campaign_id == c.origin_id.campaign_id
-            )
+        # The campaign and source follow the origin, unless set otherwise
+        utm_followers = {}
+        if "origin_id" in vals:
+            utm_followers = {
+                fname: self.filtered(
+                    lambda c, f=fname: not c[f] or c[f] == c.origin_id[f]
+                )
+                for fname in ORIGIN_UTM_FIELDS
+                if fname not in vals
+            }
 
         super().write(vals)
 
-        campaign_followers = campaign_followers.filtered(
-            lambda c: c.campaign_id != c.origin_id.campaign_id
-        )
-        if campaign_followers:
-            campaign_followers.write(
-                {"campaign_id": campaign_followers.origin_id.campaign_id.id}
-            )
+        for fname, contracts in utm_followers.items():
+            changed = contracts.filtered(lambda c, f=fname: c[f] != c.origin_id[f])
+            changed._follow_origin(fname)
 
         updated_correspondents = self.env[self._name]
         previous_states = []
@@ -697,6 +696,11 @@ class SponsorshipContract(models.Model):
     @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
+
+    def _follow_origin(self, fname):
+        """Give the campaign or source of their origin to the sponsorships."""
+        for origin, contracts in self.grouped("origin_id").items():
+            contracts.write({fname: origin[fname].id})
 
     def commitment_sent(self, vals):
         """Called when GMC received the commitment."""
@@ -784,10 +788,10 @@ class SponsorshipContract(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.onchange("origin_id")
-    def _onchange_origin_id_campaign(self):
-        campaign = self.origin_id.campaign_id
-        if campaign and not self.campaign_id:
-            self.campaign_id = campaign
+    def _onchange_origin_id_utm(self):
+        for fname in ORIGIN_UTM_FIELDS:
+            if self.origin_id[fname] and not self[fname]:
+                self[fname] = self.origin_id[fname]
 
     @api.onchange("parent_id")
     def on_change_parent_id(self):

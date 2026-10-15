@@ -15,6 +15,9 @@ from odoo import _, api, fields, models
 
 logger = logging.getLogger(__name__)
 
+# UTM fields of an origin given to its sponsorships that have none
+ORIGIN_UTM_FIELDS = ("campaign_id", "source_id")
+
 
 class ContractOrigin(models.Model):
     """Origin of a contract"""
@@ -47,6 +50,12 @@ class ContractOrigin(models.Model):
         "Campaign",
         index="btree_not_null",
         help="Campaign given to the sponsorships of this origin that have none.",
+    )
+    source_id = fields.Many2one(
+        "utm.source",
+        "Source",
+        index="btree_not_null",
+        help="Source given to the sponsorships of this origin that have none.",
     )
     contract_ids = fields.One2many(
         "recurring.contract",
@@ -154,23 +163,19 @@ class ContractOrigin(models.Model):
         return result
 
     def write(self, vals):
-        """Give the new campaign to the sponsorships that had none or the old one."""
-        if "campaign_id" not in vals:
-            return super().write(vals)
-        followers = self.env["recurring.contract"]
-        for origin in self:
-            followers |= origin.contract_ids.filtered(
-                lambda c, old=origin.campaign_id: not c.campaign_id
-                or c.campaign_id == old
+        """Give the new campaign or source to the sponsorships that had none or
+        the old one."""
+        fnames = [f for f in ORIGIN_UTM_FIELDS if f in vals]
+        followers = {
+            fname: self.contract_ids.filtered(
+                lambda c, f=fname: not c[f] or c[f] == c.origin_id[f]
             )
+            for fname in fnames
+        }
         res = super().write(vals)
-        followers = followers.filtered(
-            lambda c: c.campaign_id != c.origin_id.campaign_id
-        )
-        for campaign, contracts in followers.grouped(
-            lambda c: c.origin_id.campaign_id
-        ).items():
-            contracts.write({"campaign_id": campaign.id})
+        for fname, contracts in followers.items():
+            changed = contracts.filtered(lambda c, f=fname: c[f] != c.origin_id[f])
+            changed._follow_origin(fname)
         return res
 
     def _find_same_origin(self, vals):

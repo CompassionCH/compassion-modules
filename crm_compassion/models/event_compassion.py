@@ -150,7 +150,21 @@ class EventCompassion(models.Model):
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
     campaign_id = fields.Many2one(
-        "utm.campaign", "Campaign", readonly=False, copy=False, index="btree_not_null"
+        "utm.campaign",
+        "Campaign",
+        readonly=False,
+        copy=False,
+        index="btree_not_null",
+        help="The fundraising action the event belongs to. A peer-to-peer "
+        "fundraising event (crowdfunding, sport) is its own campaign.",
+    )
+    source_id = fields.Many2one(
+        "utm.source",
+        "Source",
+        copy=False,
+        index="btree_not_null",
+        help="The event as the occasion that brought the sponsorships. A "
+        "peer-to-peer fundraising event has one source per fundraiser instead.",
     )
 
     # Multi-company
@@ -305,10 +319,15 @@ class EventCompassion(models.Model):
         calendar_obj = self.env["calendar.event"].with_context(default_start_date=None)
 
         for event in events:
-            if not event.campaign_id:
-                event.with_context(no_sync=True).campaign_id = self.env[
-                    "utm.campaign"
-                ].create(event._get_campaign_vals())
+            if event._is_peer_to_peer():
+                if not event.campaign_id:
+                    event.with_context(no_sync=True).campaign_id = self.env[
+                        "utm.campaign"
+                    ].create({"title": event.full_name})
+            elif not event.source_id:
+                event.with_context(no_sync=True).source_id = self.env[
+                    "utm.source"
+                ].create({"name": event.full_name})
             analytic_id = (
                 self.env["account.analytic.account"]
                 .create(event._get_analytic_vals())
@@ -335,17 +354,18 @@ class EventCompassion(models.Model):
             for event in self:
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
-                if "campaign_id" in vals:
+                utm_vals = {
+                    fname: event[fname].id
+                    for fname in ("campaign_id", "source_id")
+                    if fname in vals
+                }
+                if utm_vals:
                     # Only administrator has write access to origins.
                     self.env["recurring.contract.origin"].sudo().search(
                         [("event_id", "=", event.id)]
-                    ).write({"campaign_id": event.campaign_id.id})
-                # A campaign named after the event follows its name
-                elif (
-                    event.campaign_id.title == old_names[event]
-                    and event.full_name != old_names[event]
-                ):
-                    event.campaign_id.title = event.full_name
+                    ).write(utm_vals)
+                if event.full_name != old_names[event]:
+                    event._rename_utm(old_names[event])
                 if "user_id" in vals and event.origin_id:
                     event.origin_id.partner_id = event.user_id.partner_id
 
@@ -536,10 +556,22 @@ class EventCompassion(models.Model):
             "analytic_id": analytic_id,
             "partner_id": self.user_id.partner_id.id,
             "campaign_id": self.campaign_id.id,
+            "source_id": self.source_id.id,
         }
 
-    def _get_campaign_vals(self):
-        return {"title": self.full_name}
+    def _is_peer_to_peer(self):
+        """Participants of a peer-to-peer fundraising event raise funds on their
+        own page: the event is the campaign, each fundraiser a source."""
+        return self.type in ("crowdfunding", "sport")
+
+    def _rename_utm(self, old_name):
+        """The campaign and source named after the event follow its name."""
+        if self.campaign_id.title == old_name:
+            self.campaign_id.title = self.full_name
+        if self.source_id.name == old_name:
+            self.source_id.name = self.env["utm.mixin"]._get_unique_names(
+                "utm.source", [self.full_name]
+            )[0]
 
     def _get_calendar_vals(self):
         """
