@@ -28,6 +28,8 @@ creating a new model for tracking upcoming events.
    - Opportunities can generate new events
    - Each event is linked to an analytic account
    - Each event creates a sponsorship origin
+   - Each event has a UTM campaign, given to its origin and to the
+     sponsorships of the origin
    - Portal users have an analytic account to track sponsorships gained
      by them
    - Can set ambassadors to sponsorships in order to track who brought
