@@ -1129,7 +1129,7 @@ class CommunicationJob(models.Model):
             (config_lang.printer_input_tray_id.system_name, behaviour["input_tray"])
         )
 
-        to_print = report._render_qweb_pdf(report.xml_id, res_ids=self.ids)
+        to_print = report._render_qweb_pdf(report, res_ids=self.ids)
         printer = behaviour["printer"].with_context(lang=lang)
         if behaviour["action"] == "server" and printer:
             # Get pdf should directly send it to the printer
