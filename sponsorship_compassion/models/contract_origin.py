@@ -42,6 +42,12 @@ class ContractOrigin(models.Model):
     )
     partner_id = fields.Many2one("res.partner", "Partner")
     analytic_id = fields.Many2one("account.analytic.account", "Analytic Account")
+    campaign_id = fields.Many2one(
+        "utm.campaign",
+        "Campaign",
+        index="btree_not_null",
+        help="Campaign given to the sponsorships of this origin that have none.",
+    )
     contract_ids = fields.One2many(
         "recurring.contract",
         "origin_id",
@@ -146,6 +152,26 @@ class ContractOrigin(models.Model):
                 else:
                     raise
         return result
+
+    def write(self, vals):
+        """Give the new campaign to the sponsorships that had none or the old one."""
+        if "campaign_id" not in vals:
+            return super().write(vals)
+        followers = self.env["recurring.contract"]
+        for origin in self:
+            followers |= origin.contract_ids.filtered(
+                lambda c, old=origin.campaign_id: not c.campaign_id
+                or c.campaign_id == old
+            )
+        res = super().write(vals)
+        followers = followers.filtered(
+            lambda c: c.campaign_id != c.origin_id.campaign_id
+        )
+        for campaign, contracts in followers.grouped(
+            lambda c: c.origin_id.campaign_id
+        ).items():
+            contracts.write({"campaign_id": campaign.id})
+        return res
 
     def _find_same_origin(self, vals):
         return self.search(

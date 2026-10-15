@@ -596,6 +596,15 @@ class SponsorshipContract(models.Model):
                 else:
                     vals["commitment_number"] = 1
 
+            if vals.get("origin_id") and not vals.get("campaign_id"):
+                campaign = (
+                    self.env["recurring.contract.origin"]
+                    .browse(vals["origin_id"])
+                    .campaign_id
+                )
+                if campaign:
+                    vals["campaign_id"] = campaign.id
+
         new_sponsorships = super().create(vals_list)
 
         for sub_sponsorship in new_sponsorships.filtered("parent_id"):
@@ -622,7 +631,22 @@ class SponsorshipContract(models.Model):
         if "parent_id" in vals:
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
+        # The campaign follows the origin, unless it was set otherwise
+        campaign_followers = self.env[self._name]
+        if "origin_id" in vals and "campaign_id" not in vals:
+            campaign_followers = self.filtered(
+                lambda c: not c.campaign_id or c.campaign_id == c.origin_id.campaign_id
+            )
+
         super().write(vals)
+
+        campaign_followers = campaign_followers.filtered(
+            lambda c: c.campaign_id != c.origin_id.campaign_id
+        )
+        if campaign_followers:
+            campaign_followers.write(
+                {"campaign_id": campaign_followers.origin_id.campaign_id.id}
+            )
 
         updated_correspondents = self.env[self._name]
         previous_states = []
@@ -759,6 +783,12 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
+    @api.onchange("origin_id")
+    def _onchange_origin_id_campaign(self):
+        campaign = self.origin_id.campaign_id
+        if campaign and not self.campaign_id:
+            self.campaign_id = campaign
+
     @api.onchange("parent_id")
     def on_change_parent_id(self):
         """If a previous sponsorship is selected, the origin should be

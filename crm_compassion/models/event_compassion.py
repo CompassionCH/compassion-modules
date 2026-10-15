@@ -149,7 +149,9 @@ class EventCompassion(models.Model):
     calendar_event_id = fields.Many2one("calendar.event", readonly=False)
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
-    campaign_id = fields.Many2one("utm.campaign", "Campaign", readonly=False)
+    campaign_id = fields.Many2one(
+        "utm.campaign", "Campaign", readonly=False, copy=False, index="btree_not_null"
+    )
 
     # Multi-company
     company_id = fields.Many2one(
@@ -303,6 +305,10 @@ class EventCompassion(models.Model):
         calendar_obj = self.env["calendar.event"].with_context(default_start_date=None)
 
         for event in events:
+            if not event.campaign_id:
+                event.with_context(no_sync=True).campaign_id = self.env[
+                    "utm.campaign"
+                ].create(event._get_campaign_vals())
             analytic_id = (
                 self.env["account.analytic.account"]
                 .create(event._get_analytic_vals())
@@ -323,11 +329,23 @@ class EventCompassion(models.Model):
 
     def write(self, vals):
         """Push values to linked objects."""
+        old_names = {event: event.full_name for event in self}
         res = super().write(vals)
         if not self.env.context.get("no_sync"):
             for event in self:
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
+                if "campaign_id" in vals:
+                    # Only administrator has write access to origins.
+                    self.env["recurring.contract.origin"].sudo().search(
+                        [("event_id", "=", event.id)]
+                    ).write({"campaign_id": event.campaign_id.id})
+                # A campaign named after the event follows its name
+                elif (
+                    event.campaign_id.title == old_names[event]
+                    and event.full_name != old_names[event]
+                ):
+                    event.campaign_id.title = event.full_name
                 if "user_id" in vals and event.origin_id:
                     event.origin_id.partner_id = event.user_id.partner_id
 
@@ -517,7 +535,11 @@ class EventCompassion(models.Model):
             "event_id": self.id,
             "analytic_id": analytic_id,
             "partner_id": self.user_id.partner_id.id,
+            "campaign_id": self.campaign_id.id,
         }
+
+    def _get_campaign_vals(self):
+        return {"title": self.full_name}
 
     def _get_calendar_vals(self):
         """
