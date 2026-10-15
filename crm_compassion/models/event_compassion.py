@@ -320,10 +320,7 @@ class EventCompassion(models.Model):
 
         for event in events:
             if event._is_peer_to_peer():
-                if not event.campaign_id:
-                    event.with_context(no_sync=True).campaign_id = self.env[
-                        "utm.campaign"
-                    ].create({"title": event.full_name})
+                event.with_context(no_sync=True)._ensure_campaign()
             elif not event.source_id:
                 event.with_context(no_sync=True).source_id = self.env[
                     "utm.source"
@@ -563,6 +560,13 @@ class EventCompassion(models.Model):
         """Participants of a peer-to-peer fundraising event raise funds on their
         own page: the event is the campaign, each fundraiser a source."""
         return self.type in ("crowdfunding", "sport")
+
+    def _ensure_campaign(self):
+        """A peer-to-peer fundraising event is its own campaign."""
+        for event in self.filtered(lambda e: not e.campaign_id):
+            event.campaign_id = self.env["utm.campaign"].create(
+                {"title": event.full_name}
+            )
 
     def _rename_utm(self, old_name):
         """The campaign and source named after the event follow its name."""
