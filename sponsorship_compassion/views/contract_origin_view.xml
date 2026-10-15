@@ -10,6 +10,7 @@
                 <field name="partner_id" />
                 <field name="analytic_id" />
                 <field name="campaign_id" optional="show" />
+                <field name="source_id" optional="show" />
                 <field name="country_id" />
                 <field name="won_sponsorships" />
                 <field name="conversion_rate" widget="progressbar" />
@@ -49,6 +50,7 @@
             />
                         <field name="other_name" invisible="type != 'other'" />
                         <field name="campaign_id" />
+                        <field name="source_id" />
                         <field name="won_sponsorships" />
                         <field name="conversion_rate" />
                     </group>
@@ -75,6 +77,7 @@
                 <field name="type" />
                 <field name="partner_id" />
                 <field name="campaign_id" />
+                <field name="source_id" />
                 <group expand="0" string="Group By...">
                     <filter
             name="group_type"

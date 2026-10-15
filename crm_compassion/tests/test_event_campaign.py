@@ -13,7 +13,8 @@ from odoo.tests import TransactionCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestEventCampaign(TransactionCase):
-    """Each event has a campaign, given to its origin and to its sponsorships."""
+    """An event is a source, or a campaign for peer-to-peer fundraising, given
+    to its origin and to its sponsorships."""
 
     @classmethod
     def setUpClass(cls):
@@ -65,18 +66,26 @@ class TestEventCampaign(TransactionCase):
             }
         )
 
-    def test_event_gets_campaign(self):
+    def test_event_is_a_source(self):
         event = self._event()
-        self.assertEqual(event.campaign_id.title, event.full_name)
-        self.assertEqual(event.origin_id.campaign_id, event.campaign_id)
+        self.assertEqual(event.source_id.name, event.full_name)
+        self.assertFalse(event.campaign_id)
+        self.assertEqual(event.origin_id.source_id, event.source_id)
         contract = self._contract(event.origin_id)
-        self.assertEqual(contract.campaign_id, event.campaign_id)
+        self.assertEqual(contract.source_id, event.source_id)
+
+    def test_peer_to_peer_event_is_a_campaign(self):
+        event = self._event(type="sport", name="Campaign test run")
+        self.assertEqual(event.campaign_id.title, event.full_name)
+        self.assertFalse(event.source_id)
+        self.assertEqual(event.origin_id.campaign_id, event.campaign_id)
 
     def test_event_keeps_given_campaign(self):
         tour = self.env["utm.campaign"].create({"title": "Campaign test tour"})
         event = self._event(campaign_id=tour.id)
         self.assertEqual(event.campaign_id, tour)
         self.assertEqual(event.origin_id.campaign_id, tour)
+        self.assertEqual(self._contract(event.origin_id).campaign_id, tour)
 
     def test_change_of_event_campaign(self):
         event = self._event()
@@ -89,17 +98,20 @@ class TestEventCampaign(TransactionCase):
         self.assertEqual(follower.campaign_id, tour)
         self.assertEqual(own.campaign_id, own_campaign)
 
-    def test_campaign_follows_event_name(self):
+    def test_utm_follows_event_name(self):
         event = self._event()
         event.name = "Campaign test gospel concert"
-        self.assertEqual(event.campaign_id.title, event.full_name)
-        # A campaign named otherwise keeps its name
-        event.campaign_id.title = "Campaign test gospel night"
+        self.assertEqual(event.source_id.name, event.full_name)
+        # A source named otherwise keeps its name
+        event.source_id.name = "Campaign test gospel night"
         event.name = "Campaign test gospel evening"
-        self.assertEqual(event.campaign_id.title, "Campaign test gospel night")
+        self.assertEqual(event.source_id.name, "Campaign test gospel night")
+        run = self._event(type="sport", name="Campaign test run")
+        run.name = "Campaign test relay"
+        self.assertEqual(run.campaign_id.title, run.full_name)
 
-    def test_copy_gets_own_campaign(self):
+    def test_copy_gets_own_source(self):
         event = self._event()
         copy = event.copy()
-        self.assertTrue(copy.campaign_id)
-        self.assertNotEqual(copy.campaign_id, event.campaign_id)
+        self.assertTrue(copy.source_id)
+        self.assertNotEqual(copy.source_id, event.source_id)

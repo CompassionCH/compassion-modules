@@ -216,6 +216,7 @@
                         <page string="Marketing">
                             <group>
                                 <field name="campaign_id" />
+                                <field name="source_id" />
                                 <field name="analytic_id" readonly="1" />
                             </group>
                         </page>

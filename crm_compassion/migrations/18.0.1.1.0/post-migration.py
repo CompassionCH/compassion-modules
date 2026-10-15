@@ -1,5 +1,5 @@
-# The origins of an event take the campaign of the event, which their
-# sponsorships without campaign then take (new campaign_id of the origin).
+# The origins of an event take the campaign of the event (new campaign_id of
+# the origin), which their sponsorships without campaign then take.
 from openupgradelib import openupgrade
 
 
