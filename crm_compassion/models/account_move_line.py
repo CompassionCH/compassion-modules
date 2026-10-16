@@ -24,22 +24,36 @@ class MoveLine(models.Model):
         store=True,
     )
 
-    @api.depends("analytic_line_ids")
+    @api.depends("analytic_line_ids", "contract_id.origin_id.event_id")
     def _compute_event(self):
-        """Event analytic accounts can be in any analytic plan: the
-        ``crm_compassion.plan_events`` plan, but also older plans (e.g. the
-        accounts of events migrated from v14), each stored in its own column
-        on account.analytic.line."""
+        """The event of a line, once set, is kept. Otherwise it is found from:
+        - the origin of the sponsorship of the line;
+        - the UTM of the invoice: the event whose source it is, or the
+          peer-to-peer event whose campaign it is;
+        - the analytic accounts of the line (history: the accounts of events
+          migrated from v14 are in other plans, each in its own column)."""
+        event_obj = self.env["crm.event.compassion"]
         analytic_obj = self.env["account.analytic.account"]
+        move_utm = "source_id" in self.env["account.move"]._fields
         for line in self:
-            analytic_accounts = analytic_obj.union(
-                *(al._get_analytic_accounts() for al in line.analytic_line_ids)
-            )
-            event = analytic_accounts.mapped("event_id")[:1]
-            if not line.event_id and event:
-                line.event_id = event
-            else:
+            if line.event_id:
                 line.event_id = line.event_id
+                continue
+            event = line.contract_id.origin_id.event_id
+            if not event and move_utm and line.move_id.source_id:
+                event = event_obj.search(
+                    [("source_id", "=", line.move_id.source_id.id)], limit=1
+                )
+            if not event and move_utm and line.move_id.campaign_id:
+                events = event_obj.search(
+                    [("campaign_id", "=", line.move_id.campaign_id.id)], limit=2
+                )
+                event = events if len(events) == 1 else event
+            if not event:
+                event = analytic_obj.union(
+                    *(al._get_analytic_accounts() for al in line.analytic_line_ids)
+                ).mapped("event_id")[:1]
+            line.event_id = event
 
     @api.onchange("contract_id")
     def on_change_contract_id(self):

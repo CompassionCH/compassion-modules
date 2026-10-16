@@ -115,3 +115,60 @@ class TestEventCampaign(TransactionCase):
         copy = event.copy()
         self.assertTrue(copy.source_id)
         self.assertNotEqual(copy.source_id, event.source_id)
+
+    def _invoice_line(self, line_vals=None, **move_vals):
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.product.id,
+                            "price_unit": 40,
+                            **(line_vals or {}),
+                        },
+                    )
+                ],
+                **move_vals,
+            }
+        )
+        return invoice.invoice_line_ids
+
+    def test_line_event_from_contract_origin(self):
+        event = self._event()
+        contract = self._contract(event.origin_id)
+        line = self._invoice_line({"contract_id": contract.id})
+        self.assertEqual(line.event_id, event)
+
+    def test_line_event_from_invoice_source(self):
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        line = self._invoice_line(source_id=event.source_id.id)
+        self.assertEqual(line.event_id, event)
+        run = self._event(type="sport", name="Campaign test run")
+        line = self._invoice_line(campaign_id=run.campaign_id.id)
+        self.assertEqual(line.event_id, run)
+
+    def test_analytic_plan_settings(self):
+        self.assertEqual(
+            self._event().analytic_id.plan_id,
+            self.env.ref("crm_compassion.plan_events"),
+        )
+        trips = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test trips"}
+        )
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", "sport, tour")
+        params.set_param("crm_compassion.analytic_event_plan_id", str(trips.id))
+        self.assertEqual(
+            self._event(type="tour", name="Campaign test trip").analytic_id.plan_id,
+            trips,
+        )
+        concert = self._event(name="Campaign test gospel")
+        self.assertFalse(concert.analytic_id)
+        self.assertTrue(concert.origin_id)
+        concert.name = "Campaign test gospel renamed"

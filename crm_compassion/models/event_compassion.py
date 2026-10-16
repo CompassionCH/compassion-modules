@@ -325,10 +325,13 @@ class EventCompassion(models.Model):
                 event.with_context(no_sync=True).source_id = self.env[
                     "utm.source"
                 ].create({"name": event.full_name, "category": "event"})
+            plan = event._get_analytic_plan()
             analytic_id = (
                 self.env["account.analytic.account"]
-                .create(event._get_analytic_vals())
+                .create(dict(event._get_analytic_vals(), plan_id=plan.id))
                 .id
+                if plan
+                else False
             )
             origin_id = (
                 self.env["recurring.contract.origin"]
@@ -350,7 +353,15 @@ class EventCompassion(models.Model):
         if not self.env.context.get("no_sync"):
             for event in self:
                 # Update Analytic Account and Origin
-                event.analytic_id.write(event._get_analytic_vals())
+                analytic_vals = event._get_analytic_vals()
+                if event._get_analytic_plan() == self.env.ref(
+                    "crm_compassion.plan_events"
+                ):
+                    # Accounts of events migrated from other plans move to Events
+                    analytic_vals["plan_id"] = self.env.ref(
+                        "crm_compassion.plan_events"
+                    ).id
+                event.analytic_id.write(analytic_vals)
                 utm_vals = {
                     fname: event[fname].id
                     for fname in ("campaign_id", "source_id")
@@ -536,8 +547,23 @@ class EventCompassion(models.Model):
             "year": self.year,
             "partner_id": self.user_id.partner_id.id,
             "event_id": self.id,
-            "plan_id": self.env.ref("crm_compassion.plan_events").id,
         }
+
+    def _get_analytic_plan(self):
+        """Plan of the analytic account of a new event; none when its type gets
+        no account. Settings (system parameters):
+        - crm_compassion.analytic_event_types: types getting an account, comma
+          separated (default: all);
+        - crm_compassion.analytic_event_plan_id: their plan (default: Events)."""
+        self.ensure_one()
+        params = self.env["ir.config_parameter"].sudo()
+        plan_obj = self.env["account.analytic.plan"]
+        types = params.get_param("crm_compassion.analytic_event_types")
+        if types and self.type not in [t.strip() for t in types.split(",")]:
+            return plan_obj
+        plan_id = params.get_param("crm_compassion.analytic_event_plan_id")
+        plan = plan_obj.browse(int(plan_id)).exists() if plan_id else plan_obj
+        return plan or self.env.ref("crm_compassion.plan_events")
 
     def _recompute_expenses(self):
         """Recompute the expenses after a change of analytic lines, which the

@@ -134,19 +134,7 @@ class ContractOrigin(models.Model):
     def create(self, vals_list):
         """Try to find existing origin instead of raising an error."""
         result = self.browse()
-        partner_obj = self.env["res.partner"]
         for vals in vals_list:
-            # Put analytic account of the user if it exists
-            partner_id = vals.get("partner_id")
-            analytic_id = vals.get("analytic_id")
-            if vals["type"] == "partner" and partner_id and not analytic_id:
-                partner_name = partner_obj.browse(partner_id).complete_name
-                analytic_account = (
-                    self.env["account.analytic.account"]
-                    .with_context(lang="en_US")
-                    .search([("name", "=", partner_name)], limit=1)
-                )
-                vals["analytic_id"] = analytic_account.id
             try:
                 with self.env.cr.savepoint():
                     result += super().create(vals)
