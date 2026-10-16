@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="ir_cron_archive_finished_analytic_accounts" model="ir.cron">
+        <field name="name">Interventions: archive the analytic accounts of finished interventions</field>
+        <field name="model_id" ref="model_compassion_intervention" />
+        <field name="state">code</field>
+        <field name="code">model._cron_archive_finished_analytic_accounts()</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active" eval="True" />
+    </record>
+</odoo>

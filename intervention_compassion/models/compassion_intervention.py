@@ -12,10 +12,17 @@ import logging
 import re
 import time
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
+
+# Archiving of the analytic accounts of finished interventions (years)
+ARCHIVE_IDLE_YEARS = 2
+ARCHIVE_ENDED_YEARS = 2
+ARCHIVE_STARTED_YEARS = 3
 
 INTERVENTION_PORTAL_URL = "https://compassionci.my.site.com/GlobalPartners/"
 
@@ -709,6 +716,77 @@ class CompassionIntervention(models.Model):
             )
             if "failure" in message.state:
                 raise UserError(message.failure_reason)
+        return True
+
+    def _is_finished_for_archiving(self, today):
+        """Ended more than 2 years ago, or started more than 3 years ago when
+        there is no end date."""
+        self.ensure_one()
+        if self.end_date:
+            return self.end_date < today - relativedelta(years=ARCHIVE_ENDED_YEARS)
+        return bool(
+            self.start_date
+            and self.start_date < today - relativedelta(years=ARCHIVE_STARTED_YEARS)
+        )
+
+    @api.model
+    def _cron_archive_finished_analytic_accounts(self):
+        """Archive the analytic accounts of the finished interventions that have
+        no balance and no journal item for 2 years. An account shared by several
+        interventions waits for all of them; an account still in a distribution
+        model is kept."""
+        today = fields.Date.context_today(self)
+        idle_since = today - relativedelta(years=ARCHIVE_IDLE_YEARS)
+        interventions = self.with_context(active_test=False).search(
+            [("analytic_account_id.active", "=", True)]
+        )
+        accounts = self.env["account.analytic.account"]
+        for account, account_interventions in interventions.grouped(
+            "analytic_account_id"
+        ).items():
+            if all(i._is_finished_for_archiving(today) for i in account_interventions):
+                accounts |= account
+        if not accounts:
+            return True
+        self.env.flush_all()
+        cr = self.env.cr
+        # Accounts on journal items since then, with or without analytic line,
+        # and in distribution models
+        cr.execute(
+            """SELECT DISTINCT kk::int FROM account_move_line ml,
+                      jsonb_object_keys(ml.analytic_distribution) k,
+                      regexp_split_to_table(k, ',') kk
+               WHERE ml.date >= %s AND ml.analytic_distribution IS NOT NULL
+               UNION
+               SELECT DISTINCT kk::int FROM account_analytic_distribution_model m,
+                      jsonb_object_keys(m.analytic_distribution) k,
+                      regexp_split_to_table(k, ',') kk""",
+            (idle_since,),
+        )
+        used = {row[0] for row in cr.fetchall()}
+        currency = self.env.company.currency_id
+        to_archive = self.env["account.analytic.account"]
+        for plan, plan_accounts in (
+            (accounts - accounts.browse(used)).grouped("root_plan_id").items()
+        ):
+            column = plan._column_name()
+            cr.execute(
+                f"""SELECT {column}, coalesce(sum(amount), 0), max(date)
+                    FROM account_analytic_line WHERE {column} = ANY(%s)
+                    GROUP BY 1""",
+                (plan_accounts.ids,),
+            )
+            lines = {row[0]: row[1:] for row in cr.fetchall()}
+            for account in plan_accounts:
+                balance, last_date = lines.get(account.id, (0.0, None))
+                if currency.is_zero(balance) and not (
+                    last_date and last_date >= idle_since
+                ):
+                    to_archive |= account
+        to_archive.write({"active": False})
+        logger.info(
+            "%s analytic accounts of finished interventions archived", len(to_archive)
+        )
         return True
 
     def create_analytic_account(self):
