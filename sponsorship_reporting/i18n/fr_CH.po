@@ -1,0 +1,556 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sponsorship_reporting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 18:55+0000\n"
+"PO-Revision-Date: 2026-10-16 18:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__acquisition_id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__acquisition
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__acquisition
+msgid "Acquisition"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__active
+#, python-format
+msgid "Active"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "By months"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "By weeks"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__cancellation_id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__cancellation
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__cancellation
+msgid "Cancellation"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__cancelled
+#, python-format
+msgid "Cancelled"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__category
+msgid "Category"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__category__child
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Child departure"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_account_invoice_report_search
+msgid "Compare fiscal years"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__3
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__3
+#, python-format
+msgid "Death of partner"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__display_name
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report__display_name
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__display_name
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__display_name
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__display_name
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__6
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__6
+#, python-format
+msgid "Doesn't pay"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__draft
+#, python-format
+msgid "Draft"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__end_date
+msgid "End Date"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__end_reason_id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__end_reason_id
+msgid "End Reason"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model,name:sponsorship_reporting.model_end_sponsorships_month_report
+msgid "End of sponsorships monthly report"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_details_pivot
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_pivot
+msgid "Ended Sponsorships"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.actions.act_window,name:sponsorship_reporting.action_ended_sponsorships_details_report
+#: model:ir.ui.menu,name:sponsorship_reporting.menu_ended_sponsorships_details
+msgid "Ended Sponsorships (details)"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.actions.act_window,name:sponsorship_reporting.action_ended_sponsorships_report
+#: model:ir.ui.menu,name:sponsorship_reporting.menu_ended_sponsorships
+msgid "Ended Sponsorships (percentage)"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_bar
+msgid "Ended Sponsorships percentage"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_ending
+msgid "Ending Analysis"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__12
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__12
+#, python-format
+msgid "Financial reasons"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__fiscal_month_number
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report__fiscal_month_number
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__fiscal_month_number
+msgid "Fiscal Month Number"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__fiscal_year
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report__fiscal_year
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__fiscal_year
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Fiscal Year"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_account_invoice_report_search
+msgid "Fiscal Year Analysis"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model,name:sponsorship_reporting.model_fiscal_year_report
+msgid "Fiscal Year Report"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.actions.act_window,help:sponsorship_reporting.action_sponsorships_evolution_months_report
+#: model_terms:ir.actions.act_window,help:sponsorship_reporting.action_sponsorships_evolution_years_report
+msgid ""
+"From this report, you can have an overview of active sponsorships during "
+"time. The search tool can also be used to personalise your Sponsorships "
+"reports and so, match this analysis to your needs."
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.actions.act_window,help:sponsorship_reporting.action_ended_sponsorships_report
+msgid "From this report, you can have an overview of the ended sponsorships."
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.actions.act_window,help:sponsorship_reporting.action_new_sponsorships_report
+msgid ""
+"From this report, you can have an overview of the new sponsorships. The "
+"search tool can also be used to personalise your Sponsorships reports and "
+"so, match this analysis to your needs."
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.actions.act_window,help:sponsorship_reporting.action_ended_sponsorships_details_report
+msgid "From this report, you can view the details of the ended sponsorships."
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model,name:sponsorship_reporting.model_gme_monthly_report
+msgid "GME monthly acquisition/cancellation"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Group By"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report__id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__is_active
+msgid "Is Active"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,help:sponsorship_reporting.field_end_sponsorships_month_report__valid_month
+#: model:ir.model.fields,help:sponsorship_reporting.field_fiscal_year_report__valid_month
+#: model:ir.model.fields,help:sponsorship_reporting.field_gme_monthly_report__valid_month
+msgid "Is the fiscal month already passed in current fiscal year?"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__lang
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__lang
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Lang"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "Language"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
+msgid "Last 12 Months"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
+msgid "Last 24 Months"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Last 5 Years"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "Last 6 Months"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report____last_update
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report____last_update
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report____last_update
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report____last_update
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report____last_update
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
+msgid "Last Year"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "Medium"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__2
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__2
+#, python-format
+msgid "Mistake from our staff"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__4
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__4
+#, python-format
+msgid "Moved to foreign country"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__name
+msgid "Name"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__9
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__9
+#, python-format
+msgid "Never paid"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_graph
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_pivot
+msgid "New Sponsorships"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__no_sub
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sub_category__no_sub
+#, python-format
+msgid "No sub"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__25
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__25
+#, python-format
+msgid "Not given"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__5
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__5
+#, python-format
+msgid "Not satisfied"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "Origin"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__partner_id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__partner_id
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__active_percentage
+msgid "Percentage (/active)"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__total_percentage
+msgid "Percentage (/terminated)"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,help:sponsorship_reporting.field_end_sponsorships_month_report__active_percentage
+msgid "Percentage on active sponsorships in that period"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,help:sponsorship_reporting.field_end_sponsorships_month_report__total_percentage
+msgid "Percentage on total ended sponsorships in that period"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: code:addons/sponsorship_reporting/reports/gme_monthly_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__8
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__8
+#, python-format
+msgid "Personal reasons"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
+msgid "Product"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_base
+msgid "Reports"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "Reprise"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__sds_state
+msgid "Sds State"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "Sponsor cancellation"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__category__sponsor
+msgid "Sponsor end"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__sponsor_line
+msgid "Sponsor line number"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__sponsored
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__sponsored
+msgid "Sponsored"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_new_sponsorships
+msgid "Sponsorship Activations"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model,name:sponsorship_reporting.model_sponsorship_line_report
+msgid "Sponsorship Line"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_metrics
+msgid "Sponsorship Metrics"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__sponsorships
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__sponsorships
+msgid "Sponsorships"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.actions.act_window,name:sponsorship_reporting.action_new_sponsorships_report
+msgid "Sponsorships Activations Report"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.actions.act_window,name:sponsorship_reporting.action_sponsorships_evolution_months_report
+#: model:ir.model,name:sponsorship_reporting.model_sponsorships_evolution_months_report
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_evolution_months
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_graph
+msgid "Sponsorships Evolution By Months"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.actions.act_window,name:sponsorship_reporting.action_sponsorships_evolution_years_report
+#: model:ir.model,name:sponsorship_reporting.model_sponsorships_evolution_years_report
+#: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_evolution_year
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_years_report_graph
+msgid "Sponsorships Evolution By Years"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+msgid "State"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__study_date
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__study_date
+msgid "Study Date"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__sub
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sub_category__sub
+#, python-format
+msgid "Sub"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__sub_accept
+#, python-format
+msgid "Sub Accept"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__sub_category
+msgid "Sub Category"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__sub_reject
+#, python-format
+msgid "Sub Reject"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__sub_sponsorship_id
+msgid "Sub Sponsorship"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: code:addons/sponsorship_reporting/reports/end_sponsorships_report.py:0
+#: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__sub_waiting
+#, python-format
+msgid "Sub waiting"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+msgid "This Month"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
+#: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
+msgid "This Year"
+msgstr ""
+
+#. module: sponsorship_reporting
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__valid_month
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_fiscal_year_report__valid_month
+#: model:ir.model.fields,field_description:sponsorship_reporting.field_gme_monthly_report__valid_month
+msgid "Valid Month"
+msgstr ""

@@ -1,0 +1,425 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* firebase_connector
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 18:53+0000\n"
+"PO-Revision-Date: 2026-10-16 18:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__active
+msgid "Active"
+msgstr "Aktiv"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__body
+msgid "Body"
+msgstr "Nachrichtentext"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__code
+msgid "Code"
+msgstr "Nummer"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__color
+msgid "Color Index"
+msgstr "Farbkennzeichnung"
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__create_date
+msgid "Create Date"
+msgstr "Erstellungsdatum"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__create_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__create_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__create_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__create_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__create_uid
+msgid "Created by"
+msgstr "Angelegt von"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__create_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__create_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__create_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Delete"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__delivered
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__delivered
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Delivered"
+msgstr "Ausgeliefert"
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_firebase_registration
+msgid "Device registered with Firebase Cloud Messaging"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__display_name
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__display_name
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__display_name
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__display_name
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__display_name
+#: model:ir.model.fields,field_description:firebase_connector.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: firebase_connector
+#: model:firebase.notification.stage,name:firebase_connector.notification_stage_1
+msgid "Draft"
+msgstr "Entwurf"
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Dropdown menu"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__expected
+msgid "Expected"
+msgstr "Erwartet"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__failed
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__failed
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__failed_ratio
+msgid "Failed Ratio"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_view_firebase_notification_statistics_failed
+msgid "Failed notifications Statistics"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_firebase_notification
+msgid "Firebase Notifications"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_firebase_registration
+#: model:ir.model.fields,field_description:firebase_connector.field_res_partner__firebase_registration_ids
+#: model:ir.model.fields,field_description:firebase_connector.field_res_users__firebase_registration_ids
+msgid "Firebase Registration"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__registration_id
+msgid "Firebase Registration ID"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_firebase_notification_stage
+msgid "Firebase Stages Notification"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.constraint,message:firebase_connector.constraint_firebase_registration_firebase_id_unique
+msgid "Firebase registration ID should be unique"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.ui.menu,name:firebase_connector.menu_mobile_app_firebase_registration
+msgid "Firebase registrations"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_search
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_registration_search
+msgid "Group By"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__id
+#: model:ir.model.fields,field_description:firebase_connector.field_res_partner__id
+msgid "ID"
+msgstr ""
+
+#. module: firebase_connector
+#: model:firebase.notification.stage,name:firebase_connector.notification_stage_2
+msgid "Job queue"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__language
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__language
+msgid "Language"
+msgstr "Sprache"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification____last_update
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read____last_update
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage____last_update
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics____last_update
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration____last_update
+#: model:ir.model.fields,field_description:firebase_connector.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__write_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__write_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__write_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__write_uid
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__write_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__write_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__write_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__write_date
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_firebase_notification_partner_read
+msgid "Link between partner and notifications read status"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__partner_name
+msgid "Name"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__notification_id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__notification_id
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification_stage_search
+msgid "Notification"
+msgstr "Benachrichtigung"
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_firebase_notification_stage
+msgid "Notification stages"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_firebase_notification_statistics
+msgid "Notification statistics"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model,name:firebase_connector.model_firebase_notification
+msgid "Notification to send to Firebase Cloud Messaging"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.ui.menu,name:firebase_connector.menu_firebase_notification
+msgid "Notifications"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__opened
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__opened
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Opened"
+msgstr "Geöffnet"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__opened_ratio
+msgid "Opened Ratio"
+msgstr "Öffnungsrate"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__partner_id
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__partner_name
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_registration__partner_id
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_registration_search
+msgid "Partner"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_view_firebase_notification_statistics_partner
+msgid "Partner Statistics"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__read_ids
+msgid "Partner read status of the notification"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__partner_ids
+msgid "Partners"
+msgstr "Partner"
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+msgid "Partners selection"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_partner_read__read_date
+msgid "Read Date"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+#: model_terms:ir.ui.view,arch_db:firebase_connector.view_firebase_notification__kanban
+msgid "Received"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__received_ratio
+msgid "Received Ratio"
+msgstr "Zustellrate"
+
+#. module: firebase_connector
+#: model:ir.actions.act_window,name:firebase_connector.action_view_firebase_notification_statistics_received
+msgid "Received notifications Statistics"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_statistics__registration_id
+msgid "Registration"
+msgstr "Anmeldung"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__res_id
+msgid "Res"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__res_model
+msgid "Res Model"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+msgid "Resend to unread users"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+msgid "Schedule notification"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.ui.menu,name:firebase_connector.menu_firebase_send
+msgid "Send"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__send_date
+msgid "Send Date"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_registration_form
+msgid "Send Notification"
+msgstr ""
+
+#. module: firebase_connector
+#: code:addons/firebase_connector/models/firebase_notification.py:0
+#, python-format
+msgid "Send date should be in the future"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.actions.server,name:firebase_connector.send_notification_ir_actions_server
+#: model:ir.cron,cron_name:firebase_connector.send_notification
+#: model:ir.cron,name:firebase_connector.send_notification
+msgid "Send notification from the 15 minutes"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__send_to_logged_out_devices
+msgid "Send to devices without logged users."
+msgstr ""
+
+#. module: firebase_connector
+#: model:firebase.notification.stage,name:firebase_connector.notification_stage_3
+msgid "Sending"
+msgstr "Sende"
+
+#. module: firebase_connector
+#: model:firebase.notification.stage,name:firebase_connector.notification_stage_4
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__sent
+msgid "Sent"
+msgstr "Gesendet"
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+msgid "Sent notifications"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__sequence
+msgid "Sequence"
+msgstr "Reihenfolge"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__stage_id
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_search
+msgid "Stage"
+msgstr "Stufe"
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification_stage__name
+msgid "Stage Name"
+msgstr "Bezeichnung Stufe"
+
+#. module: firebase_connector
+#: model:ir.ui.menu,name:firebase_connector.menu_firebase_stage
+msgid "Stages"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__test_mode
+msgid "Test Mode"
+msgstr ""
+
+#. module: firebase_connector
+#: model_terms:ir.ui.view,arch_db:firebase_connector.firebase_notification_form
+msgid "This notification is scheduled for"
+msgstr ""
+
+#. module: firebase_connector
+#: model:ir.model.fields,field_description:firebase_connector.field_firebase_notification__title
+msgid "Title"
+msgstr "Titel"
+
+#. module: firebase_connector
+#: model:ir.model.fields,help:firebase_connector.field_firebase_notification_stage__sequence
+msgid "Used to order stages. Lower is better."
+msgstr ""

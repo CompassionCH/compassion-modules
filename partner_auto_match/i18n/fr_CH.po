@@ -1,0 +1,134 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_auto_match
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 18:54+0000\n"
+"PO-Revision-Date: 2026-10-16 18:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_auto_match
+#: model:ir.model,name:partner_auto_match.model_base
+msgid "Base"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_birthdate_date
+msgid "Birthdate"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:mail.activity.type,name:partner_auto_match.activity_check_duplicates
+msgid "Check Duplicates"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_city
+msgid "City"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__display_name
+#: model:ir.model.fields,field_description:partner_auto_match.field_res_partner_match__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_email
+msgid "Email"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_firstname
+msgid "Firstname"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__id
+#: model:ir.model.fields,field_description:partner_auto_match.field_res_partner_match__id
+msgid "ID"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_function
+msgid "Job"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_spoken_lang_ids
+msgid "Languages I can read"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner____last_update
+#: model:ir.model.fields,field_description:partner_auto_match.field_res_partner_match____last_update
+msgid "Last Modified on"
+msgstr "Dernière Modification le"
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lastname
+msgid "Lastname"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lang
+msgid "Main language"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_create
+msgid "Match Create"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_update
+msgid "Match Update"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model,name:partner_auto_match.model_res_partner_match
+msgid "Match partner"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_mobile
+msgid "Mobile"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model,name:partner_auto_match.model_cms_form_partner
+msgid "Object for partner fields in forms"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_phone
+msgid "Phone"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_street
+msgid "Street"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_title
+msgid "Title"
+msgstr ""
+
+#. module: partner_auto_match
+#: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_zip
+msgid "Zip"
+msgstr ""
