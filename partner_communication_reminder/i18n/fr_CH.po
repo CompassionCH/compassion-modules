@@ -635,7 +635,7 @@ msgstr ""
 #. module: partner_communication_reminder
 #: model:ir.model,name:partner_communication_reminder.model_partner_communication_job
 msgid "Communication Job"
-msgstr ""
+msgstr "Job de communication"
 
 #. module: partner_communication_reminder
 #: model:ir.model,name:partner_communication_reminder.model_compassion_hold
@@ -664,7 +664,7 @@ msgstr ""
 #. module: partner_communication_reminder
 #: model:base.automation,name:partner_communication_reminder.automation_recompute_due_invoices
 msgid "Recompute contract due invoices"
-msgstr ""
+msgstr "Recalculer les factures dues des contrats"
 
 #. module: partner_communication_reminder
 #: model:ir.model,name:partner_communication_reminder.model_recurring_contract

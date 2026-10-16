@@ -23,12 +23,12 @@ msgstr "Âge"
 #. module: partner_personal_info
 #: model:ir.model,name:partner_personal_info.model_res_partner
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #. module: partner_personal_info
 #: model_terms:ir.ui.view,arch_db:partner_personal_info.view_partner_form_compassion_personal
 msgid "Data privacy"
-msgstr ""
+msgstr "Protection des données"
 
 #. module: partner_personal_info
 #: model:ir.model.fields,field_description:partner_personal_info.field_res_partner__uuid
@@ -39,4 +39,4 @@ msgstr "Uuid"
 #. module: partner_personal_info
 #: model:ir.model.constraint,message:partner_personal_info.constraint_res_partner_uuid_uniq
 msgid "The uuid must be unique."
-msgstr ""
+msgstr "L'uuid doit être unique."

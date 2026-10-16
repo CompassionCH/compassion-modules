@@ -67,17 +67,17 @@ msgstr "Nachrichtentext"
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__bounced
 msgid "Bounced"
-msgstr ""
+msgstr "Unzustellbar"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__canceled
 msgid "Canceled"
-msgstr ""
+msgstr "Abgebrochen"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_crm_claim__date
 msgid "Claim Date"
-msgstr ""
+msgstr "Datum der Reklamation"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_partner_communication_job
@@ -101,12 +101,12 @@ msgstr "Kontakt"
 #. odoo-javascript
 #: code:addons/interaction_resume/static/src/xml/message_edit.xml:0
 msgid "Convert to Interaction"
-msgstr ""
+msgstr "In Interaktion umwandeln"
 
 #. module: interaction_resume
 #: model:ir.actions.server,name:interaction_resume.action_convert_mail_message_to_interaction
 msgid "Convert to Other Interaction"
-msgstr ""
+msgstr "In andere Interaktion umwandeln"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__create_uid
@@ -141,7 +141,7 @@ msgstr "Datum"
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__deferred
 msgid "Deferred"
-msgstr ""
+msgstr "Zurückgestellt"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__delivered
@@ -179,7 +179,7 @@ msgstr "Fehler"
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__exception
 msgid "Exception"
-msgstr ""
+msgstr "Ausnahme"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__failed_message_ids
@@ -191,7 +191,7 @@ msgstr "Fehlgeschlagene Nachrichten"
 #. odoo-javascript
 #: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
 msgid "Fetch More"
-msgstr ""
+msgstr "Mehr laden"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_follower_ids
@@ -230,14 +230,14 @@ msgstr "Has attachment"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__has_message
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Hat Nachricht"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__id
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__id
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_exception_icon
@@ -270,7 +270,7 @@ msgstr ""
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__ignored
 msgid "Ignored"
-msgstr ""
+msgstr "Ignoriert"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__direction__in
@@ -279,12 +279,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
 msgid "Incoming"
-msgstr ""
+msgstr "Eingehend"
 
 #. module: interaction_resume
 #: model_terms:ir.ui.view,arch_db:interaction_resume.res_partner_view_form
 msgid "Interaction Resume"
-msgstr ""
+msgstr "Lebenslauf der Interaktionen"
 
 #. module: interaction_resume
 #. odoo-python
@@ -292,7 +292,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:interaction_resume.field_res_partner__interaction_resume_ids
 #: model:ir.model.fields,field_description:interaction_resume.field_res_users__interaction_resume_ids
 msgid "Interaction resume"
-msgstr ""
+msgstr "Interaktionszusammenfassung"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_is_follower
@@ -304,7 +304,7 @@ msgstr "Ist Beobachter"
 #: model:ir.model.fields,field_description:interaction_resume.field_res_partner__last_interaction_fetch_page
 #: model:ir.model.fields,field_description:interaction_resume.field_res_users__last_interaction_fetch_page
 msgid "Last Interaction Fetch Page"
-msgstr ""
+msgstr "Letzte abgerufene Interaktionsseite"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__write_uid
@@ -325,34 +325,35 @@ msgstr "zuletzt aktualisiert am"
 #: model:ir.model.fields,help:interaction_resume.field_res_users__last_interaction_fetch_date
 msgid "Last date the interactions were fetched for this partner"
 msgstr ""
+"Datum, an dem die Interaktionen für diesen Partner zuletzt abgerufen wurden"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_res_partner__last_interaction_fetch_date
 #: model:ir.model.fields,field_description:interaction_resume.field_res_users__last_interaction_fetch_date
 msgid "Last interaction fetch date"
-msgstr ""
+msgstr "Datum des letzten Interaktionsabrufs"
 
 #. module: interaction_resume
 #. odoo-javascript
 #: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
 msgid "Log Interaction"
-msgstr ""
+msgstr "Interaktion protokollieren"
 
 #. module: interaction_resume
 #: model:ir.actions.act_window,name:interaction_resume.action_log_other_interaction
 #: model_terms:ir.ui.view,arch_db:interaction_resume.log_other_interaction_wizard_view
 msgid "Log interaction"
-msgstr ""
+msgstr "Interaktion protokollieren"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_partner_log_other_interaction
 msgid "Logging for other interactions"
-msgstr ""
+msgstr "Protokollierung für andere Interaktionen"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_partner_log_other_interaction_wizard
 msgid "Logging wizard for other interactions"
-msgstr ""
+msgstr "Assistent zur Protokollierung anderer Interaktionen"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_mailing_trace
@@ -364,7 +365,7 @@ msgstr "E-Mail Statistik"
 #: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__mass
 #: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__mass
 msgid "Mass Mailing"
-msgstr ""
+msgstr "Massenmailing"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_mail_message
@@ -395,7 +396,7 @@ msgstr "Meine Aktivität Deadline"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_calendar_event_id
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
+msgstr "Kalenderereignis der nächsten Aktivität"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_date_deadline
@@ -431,7 +432,7 @@ msgstr "Fehlernummer"
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_needaction_counter
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_needaction_counter
 msgid "Number of messages requiring action"
-msgstr ""
+msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
 
 #. module: interaction_resume
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_has_error_counter
@@ -442,7 +443,7 @@ msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
 #. module: interaction_resume
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_form_view
 msgid "Open communication"
-msgstr ""
+msgstr "Kommunikation öffnen"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__opened
@@ -461,7 +462,7 @@ msgstr "Anderes"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__other_type
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__other_type
 msgid "Other Type"
-msgstr ""
+msgstr "Anderer Typ"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__direction__out
@@ -471,7 +472,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
 msgid "Outgoing"
-msgstr ""
+msgstr "Ausgehend"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_sms_sms
@@ -484,7 +485,7 @@ msgstr "Ausgehende SMS"
 #: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__paper
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
 msgid "Paper"
-msgstr ""
+msgstr "Papier"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_crm_claim__partner_id
@@ -494,7 +495,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__partner_id
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__partner_id
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__pending
@@ -518,38 +519,38 @@ msgstr "Telefonanruf"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__rating_ids
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__rating_ids
 msgid "Ratings"
-msgstr ""
+msgstr "Bewertungen"
 
 #. module: interaction_resume
 #. odoo-javascript
 #: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualisieren"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__rejected
 msgid "Rejected"
-msgstr ""
+msgstr "Abgelehnt"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__replied
 msgid "Replied"
-msgstr ""
+msgstr "Beantwortet"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_crm_claim
 msgid "Request"
-msgstr ""
+msgstr "Anfrage"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__res_id
 msgid "Res"
-msgstr ""
+msgstr "Res"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__res_model
 msgid "Res Model"
-msgstr ""
+msgstr "Res-Modell"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_user_id
@@ -568,7 +569,7 @@ msgstr "interaction.resume"
 #: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__sms
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_has_sms_error
@@ -579,7 +580,7 @@ msgstr "SMS Zustellungsfehler"
 #. module: interaction_resume
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
 msgid "Send mode"
-msgstr ""
+msgstr "Sendemodus"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_communication_job__partner_id
@@ -594,17 +595,17 @@ msgstr "Gesendet"
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_mailing_trace__date
 msgid "Sent On"
-msgstr ""
+msgstr "Gesendet am"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__soft-bounced
 msgid "Soft bounced"
-msgstr ""
+msgstr "Vorübergehend unzustellbar"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__spam
 msgid "Spam"
-msgstr ""
+msgstr "Spam"
 
 #. module: interaction_resume
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_state
@@ -638,7 +639,7 @@ msgstr "unterstützen"
 #. odoo-python
 #: code:addons/interaction_resume/wizards/partner_log_other_interaction_wizard.py:0
 msgid "The interaction has been added to the resume."
-msgstr ""
+msgstr "Die Interaktion wurde zum Lebenslauf hinzugefügt."
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__tracking_status
@@ -654,7 +655,7 @@ msgstr "Art der aufgezeichneten Ausnahmeaktivität."
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__unsub
 msgid "Unsubscribed"
-msgstr ""
+msgstr "Abgemeldet"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__user_id
@@ -665,7 +666,7 @@ msgstr "Benutzer"
 #: model:base.automation,name:interaction_resume.vacuum_interaction
 #: model:ir.actions.server,name:interaction_resume.action_vacuum_interaction
 msgid "Vacuum interaction"
-msgstr ""
+msgstr "Interaktionen bereinigen"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__website_message_ids
@@ -682,4 +683,4 @@ msgstr "Website-Kommunikationshistorie"
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_interaction_source
 msgid "interaction.source"
-msgstr ""
+msgstr "interaction.source"

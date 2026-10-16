@@ -34,11 +34,15 @@ msgid ""
 "wizard, donation, project creation). When unset, the salutation stays usable"
 " in the backend but is hidden from those forms."
 msgstr ""
+"Wenn gesetzt, wird diese Anrede in den öffentlichen Formularen angeboten "
+"(Patenschaftsassistent, Spende, Projekterstellung). Wenn nicht gesetzt, "
+"bleibt die Anrede im Backend verwendbar, wird aber in diesen Formularen "
+"ausgeblendet."
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__is_shown_on_public_forms
 msgid "Is Shown On Public Forms"
-msgstr ""
+msgstr "Wird in öffentlichen Formularen angezeigt"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__order_index
@@ -53,7 +57,7 @@ msgstr "res.partner.title"
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__plural
 msgid "Plural"
-msgstr ""
+msgstr "Plural"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner__salutation

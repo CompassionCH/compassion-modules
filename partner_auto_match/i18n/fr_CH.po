@@ -28,7 +28,7 @@ msgstr "Date de naissance"
 #. module: partner_auto_match
 #: model:mail.activity.type,name:partner_auto_match.activity_check_duplicates
 msgid "Check Duplicates"
-msgstr ""
+msgstr "Vérifier les doublons"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_city
@@ -88,7 +88,7 @@ msgstr "Portable"
 #. module: partner_auto_match
 #: model:ir.model,name:partner_auto_match.model_cms_form_partner
 msgid "Object for partner fields in forms"
-msgstr ""
+msgstr "Objet pour les champs partenaire dans les formulaires"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_id

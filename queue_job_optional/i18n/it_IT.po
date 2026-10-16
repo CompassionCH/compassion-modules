@@ -22,18 +22,21 @@ msgid ""
 "Another job with same identity key is already scheduled with different "
 "arguments."
 msgstr ""
+"Un altro job con la stessa chiave di identità è già pianificato con "
+"argomenti diversi."
 
 #. module: queue_job_optional
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "Another job with same identity key is already scheduled."
-msgstr ""
+msgstr "Un altro job con la stessa chiave di identità è già pianificato."
 
 #. module: queue_job_optional
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "Another job(s) with same identity key is already running."
 msgstr ""
+"Uno o più altri job con la stessa chiave di identità sono già in esecuzione."
 
 #. module: queue_job_optional
 #: model:ir.model,name:queue_job_optional.model_base
@@ -54,7 +57,7 @@ msgstr "Azienda"
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__context
 msgid "Context"
-msgstr ""
+msgstr "Contesto"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__create_uid
@@ -85,7 +88,7 @@ msgstr "Fatto"
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "ETA Today"
-msgstr ""
+msgstr "ETA di oggi"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__end_date
@@ -95,7 +98,7 @@ msgstr "Data di fine"
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__eta
 msgid "Execute only after"
-msgstr ""
+msgstr "Esegui solo dopo"
 
 #. module: queue_job_optional
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__failed
@@ -106,32 +109,32 @@ msgstr "Fallito"
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__identity_key
 msgid "Identity Key"
-msgstr ""
+msgstr "Chiave di identità"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__is_predecessor_complete
 msgid "Is Predecessor Complete"
-msgstr ""
+msgstr "Predecessore completato"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_args
 msgid "Job Args"
-msgstr ""
+msgstr "Argomenti del job"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_function
 msgid "Job Function"
-msgstr ""
+msgstr "Funzione del job"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_result
 msgid "Job Result"
-msgstr ""
+msgstr "Risultato del job"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__write_uid
@@ -146,7 +149,7 @@ msgstr "Ultima modifica il"
 #. module: queue_job_optional
 #: model:res.groups,name:queue_job_optional.group_queue_job_replacement_user
 msgid "Manage Queue Job Replacement"
-msgstr ""
+msgstr "Gestisci le sostituzioni dei job in coda"
 
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
@@ -157,17 +160,17 @@ msgstr "Modello"
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "No related record ids are defined for this job."
-msgstr ""
+msgstr "Nessun ID di record collegato è definito per questo job."
 
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
 msgid "Open Related"
-msgstr ""
+msgstr "Apri elemento collegato"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__parent_job_id
 msgid "Parent Job"
-msgstr ""
+msgstr "Job padre"
 
 #. module: queue_job_optional
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__pending
@@ -189,60 +192,60 @@ msgstr "Elaborazione"
 #. module: queue_job_optional
 #: model:ir.actions.server,name:queue_job_optional.ir_cron_queue_job_replacement_process_ir_actions_server
 msgid "Queue Job Replacement: Process Jobs"
-msgstr ""
+msgstr "Sostituzione dei job in coda: elabora i job"
 
 #. module: queue_job_optional
 #: model:ir.actions.act_window,name:queue_job_optional.queue_job_replacement_action
 #: model:ir.ui.menu,name:queue_job_optional.queue_job_replacement_menu_list
 msgid "Queue Job Replacements"
-msgstr ""
+msgstr "Sostituzioni dei job in coda"
 
 #. module: queue_job_optional
 #: model:ir.ui.menu,name:queue_job_optional.queue_job_replacement_menu_root
 msgid "Queue Jobs"
-msgstr ""
+msgstr "Job in coda"
 
 #. module: queue_job_optional
 #: model:ir.model,name:queue_job_optional.model_queue_job_replacement
 msgid "Queued Job for later execution"
-msgstr ""
+msgstr "Job in coda per esecuzione successiva"
 
 #. module: queue_job_optional
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "Related record ids are invalid."
-msgstr ""
+msgstr "Gli ID dei record collegati non sono validi."
 
 #. module: queue_job_optional
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "Related records"
-msgstr ""
+msgstr "Record correlati"
 
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
 msgid "Requeue"
-msgstr ""
+msgstr "Rimetti in coda"
 
 #. module: queue_job_optional
 #: model:ir.actions.server,name:queue_job_optional.queue_job_replacement_action_requeue_selected
 msgid "Requeue Jobs"
-msgstr ""
+msgstr "Rimetti in coda i job"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__res_ids
 msgid "Res"
-msgstr ""
+msgstr "Res"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__res_model
 msgid "Res Model"
-msgstr ""
+msgstr "Modello Res"
 
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
 msgid "Set Done"
-msgstr ""
+msgstr "Imposta come completato"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__start_date
@@ -259,7 +262,7 @@ msgstr "Stato"
 #. odoo-python
 #: code:addons/queue_job_optional/models/queue_job_replacement.py:0
 msgid "Unsupported operator for is_predecessor_complete search."
-msgstr ""
+msgstr "Operatore non supportato per la ricerca is_predecessor_complete."
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__user_id

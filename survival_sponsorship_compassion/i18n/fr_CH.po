@@ -21,6 +21,8 @@ msgid ""
 "(Inherited from product template) The product can be sold as a survival "
 "sponsorship one"
 msgstr ""
+"(Hérité du modèle de produit) Le produit peut être vendu en tant que "
+"parrainage CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract_group
@@ -30,7 +32,7 @@ msgstr "Un groupe de contrats"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
 msgid "Alltime Survival Sponsorship Number"
-msgstr ""
+msgstr "Nombre total de parrainages CSP (depuis le début)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__csp_country
@@ -40,7 +42,7 @@ msgstr "Pays CSP"
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_survival_sponsorship_view
 msgid "Communications"
-msgstr ""
+msgstr "Communications"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_res_config_settings
@@ -50,24 +52,24 @@ msgstr "Paramètres de configuration"
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_res_partner
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_countries_current
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__sr_countries_current
 msgid "Countries currently impacted"
-msgstr ""
+msgstr "Pays actuellement impactés"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_countries_previous
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__sr_countries_previous
 msgid "Countries previously impacted"
-msgstr ""
+msgstr "Pays précédemment impactés"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
 msgid "Define which country this product is applicable to"
-msgstr ""
+msgstr "Définit à quel pays ce produit s'applique"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.actions.server,name:survival_sponsorship_compassion.warn_admin_on_product_overload_ir_actions_server
@@ -77,7 +79,7 @@ msgstr "Exécuter le code"
 #. module: survival_sponsorship_compassion
 #: model:product.attribute,name:survival_sponsorship_compassion.attribute_field_office
 msgid "Field Office"
-msgstr ""
+msgstr "Bureau national"
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view
@@ -91,6 +93,8 @@ msgid ""
 "List of current countries impacted by the church and its members by the CSP "
 "program."
 msgstr ""
+"Liste des pays actuellement impactés par l'église et ses membres via le "
+"programme CSP."
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_partner__sr_countries_previous
@@ -99,16 +103,18 @@ msgid ""
 "List of previously impacted countries by the church and its members by the "
 "CSP program."
 msgstr ""
+"Liste des pays précédemment impactés par l'église et ses membres via le "
+"programme CSP."
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_child_name
 msgid "Name of the baby (com)"
-msgstr ""
+msgstr "Nom du bébé (com)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_mom_name
 msgid "Name of the mom (com)"
-msgstr ""
+msgstr "Nom de la maman (com)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
@@ -116,18 +122,20 @@ msgid ""
 "Number of active sponsorships for the survival sponsorship program in a "
 "given country"
 msgstr ""
+"Nombre de parrainages actifs pour le programme de parrainage CSP dans un "
+"pays donné"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_nb_moms_supported_for_a_year
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__sr_nb_moms_supported_for_a_year
 msgid "Number of moms and babies supported for 1 year (all-in-all)"
-msgstr ""
+msgstr "Nombre de mamans et de bébés soutenus pendant 1 an (au total)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_partner__sr_nb_moms_supported_for_a_year
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_users__sr_nb_moms_supported_for_a_year
 msgid "Number of moms and babies supported for a year."
-msgstr ""
+msgstr "Nombre de mamans et de bébés soutenus pendant un an."
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_slot_number
@@ -135,11 +143,13 @@ msgid ""
 "Number of places available for the survival sponsorship program in a given "
 "country"
 msgstr ""
+"Nombre de places disponibles pour le programme de parrainage CSP dans un "
+"pays donné"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__slot_used
 msgid "Number of places used (all = 100, none = 0)"
-msgstr ""
+msgstr "Nombre de places utilisées (toutes = 100, aucune = 0)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
@@ -147,18 +157,19 @@ msgid ""
 "Number of sponsorships for the survival sponsorship program in a given "
 "country"
 msgstr ""
+"Nombre de parrainages pour le programme de parrainage CSP dans un pays donné"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_survival_sponsorship_count
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__sr_survival_sponsorship_count
 msgid "Number of survival sponsorships"
-msgstr ""
+msgstr "Nombre de parrainages de survie"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_partner__sr_survival_sponsorship_count
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_users__sr_survival_sponsorship_count
 msgid "Number of survival sponsorships for a church AND its members."
-msgstr ""
+msgstr "Nombre de parrainages de survie d'une église ET de ses membres."
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.constraint,message:survival_sponsorship_compassion.constraint_product_product_field_office_product_unique
@@ -188,7 +199,7 @@ msgstr "A contract line"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__slot_used
 msgid "Slot Used"
-msgstr ""
+msgstr "Places utilisées"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__type
@@ -203,7 +214,7 @@ msgstr "Statistiques"
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.view_sponsorship_report_survival_form_inherit
 msgid "Supported moms and babies"
-msgstr ""
+msgstr "Mamans et bébés soutenus"
 
 #. module: survival_sponsorship_compassion
 #: model:base.automation,name:survival_sponsorship_compassion.warn_admin_on_product_overload
@@ -213,12 +224,12 @@ msgstr "Limite des produits de survie"
 #. module: survival_sponsorship_compassion
 #: model:ir.actions.server,name:survival_sponsorship_compassion.warn_admin_on_product_overload_action
 msgid "Survival Product Limit Action"
-msgstr ""
+msgstr "Action sur la limite des produits de survie"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_slot_number
 msgid "Survival Slot Number"
-msgstr ""
+msgstr "Nombre de places CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields.selection,name:survival_sponsorship_compassion.selection__recurring_contract__type__csp
@@ -229,18 +240,18 @@ msgstr "Parrainage CSP"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
 msgid "Survival Sponsorship Field office"
-msgstr ""
+msgstr "Bureau national du parrainage CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
 msgid "Survival Sponsorship Number"
-msgstr ""
+msgstr "Nombre de parrainages CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "Survival Sponsorship Sale"
-msgstr ""
+msgstr "Vente de parrainage CSP"
 
 #. module: survival_sponsorship_compassion
 #. odoo-python
@@ -255,23 +266,23 @@ msgstr "Parrainages CSP"
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_reformat_all_phonenumbers__survival_sponsorship_warn_user_ids
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__survival_sponsorship_warn_user_ids
 msgid "Survival sponsorship product places owner"
-msgstr ""
+msgstr "Responsable des places du produit de parrainage CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__survival_sponsorship_count
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__survival_sponsorship_count
 msgid "Survival sponsorship(s)"
-msgstr ""
+msgstr "Parrainage(s) de survie"
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.view_res_partner_survival_button_form
 msgid "Survival sponsorships"
-msgstr ""
+msgstr "Parrainages CSP"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "The product can be sold as a survival sponsorship one"
-msgstr ""
+msgstr "Le produit peut être vendu en tant que parrainage CSP"
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view
@@ -282,24 +293,25 @@ msgstr "Ce bouton permet de calculer une date de fin dans 18 mois."
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_child_name
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_mom_name
 msgid "This field is used in the communications"
-msgstr ""
+msgstr "Ce champ est utilisé dans les communications"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_total_donation_for_csp
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_users__sr_total_donation_for_csp
 msgid "Total donation given"
-msgstr ""
+msgstr "Total des dons effectués"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_partner__sr_total_donation_for_csp
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_res_users__sr_total_donation_for_csp
 msgid "Total donation given for CSP."
-msgstr ""
+msgstr "Total des dons effectués pour le CSP."
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.new_participant_settings_form
 msgid "Users to notify when a survival sponsorship is expiring soon"
 msgstr ""
+"Utilisateurs à notifier lorsqu'un parrainage CSP arrive bientôt à échéance"
 
 #. module: survival_sponsorship_compassion
 #: model:product.template,thanks_name:survival_sponsorship_compassion.survival_product_template

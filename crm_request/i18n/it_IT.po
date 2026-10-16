@@ -136,12 +136,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "A support request requires your attention"
-msgstr ""
+msgstr "Una richiesta di assistenza richiede la tua attenzione"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_res_users__do_reminder_support_req
 msgid "Activate the reminder on support request"
-msgstr ""
+msgstr "Attiva il promemoria sulle richieste di assistenza"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_stage__active
@@ -156,7 +156,7 @@ msgstr "Utenti"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__alias_id
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
@@ -167,7 +167,7 @@ msgstr "Assegna"
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__user_id
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Assign to"
-msgstr ""
+msgstr "Assegna a"
 
 #. module: crm_request
 #: model:mail.template,name:crm_request.assigned_contact_holiday_email_template
@@ -177,7 +177,7 @@ msgstr ""
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
 msgid "Assigned to me"
-msgstr ""
+msgstr "Assegnate a me"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
@@ -192,7 +192,7 @@ msgstr "Categoria"
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim_category
 msgid "Category of claim"
-msgstr ""
+msgstr "Categoria di reclamo"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
@@ -202,12 +202,12 @@ msgstr "Richiesta"
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim_stage
 msgid "Claim stages"
-msgstr ""
+msgstr "Fasi dei reclami"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__color
 msgid "Color index"
-msgstr ""
+msgstr "Indice colore"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__create_uid
@@ -226,7 +226,7 @@ msgstr "Creato il"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__reply_date
 msgid "Date of first reply"
-msgstr ""
+msgstr "Data della prima risposta"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_res_users__do_reminder_support_req
@@ -234,6 +234,8 @@ msgid ""
 "Define if you receive scheduled actions on the support request you're "
 "assigned to"
 msgstr ""
+"Definisce se ricevi azioni pianificate sulle richieste di assistenza che ti "
+"sono assegnate"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__description
@@ -250,7 +252,7 @@ msgstr "Nome da visualizzare"
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
 msgid "Edit automatic reply template"
-msgstr ""
+msgstr "Modifica il modello di risposta automatica"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_thread
@@ -260,7 +262,7 @@ msgstr "Thread Email"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__end_date
 msgid "End of holiday"
-msgstr ""
+msgstr "Fine delle vacanze"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__gender
@@ -271,7 +273,7 @@ msgstr "Sesso"
 #: model:ir.actions.act_window,name:crm_request.crm_holiday_act
 #: model:ir.ui.menu,name:crm_request.menu_crm_holiday_act
 msgid "Holiday"
-msgstr ""
+msgstr "Vacanze"
 
 #. module: crm_request
 #: model:mail.template,name:crm_request.business_closed_email_template
@@ -281,46 +283,46 @@ msgstr ""
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_holiday_closure_template_preview
 msgid "Holiday Closure Template Preview"
-msgstr ""
+msgstr "Anteprima del modello di chiusura per vacanze"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_message
 msgid "Holiday Message"
-msgstr ""
+msgstr "Messaggio di vacanza"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_template_message
 msgid "Holiday Template Message"
-msgstr ""
+msgstr "Modello del messaggio di vacanza"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_holiday_closure
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__holiday_closure_id
 msgid "Holiday closure"
-msgstr ""
+msgstr "Chiusura per vacanze"
 
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.crm_holiday_act_menu
 msgid "Holidays"
-msgstr ""
+msgstr "Vacanze"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__id
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__id
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure_template_preview__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__incoming_message
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__incoming_message_id
 msgid "Incoming Message"
-msgstr ""
+msgstr "Messaggio in entrata"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__intern_note
 msgid "Internal note"
-msgstr ""
+msgstr "Nota interna"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__keywords
@@ -336,7 +338,7 @@ msgstr "Lingua"
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "Language must be specified."
-msgstr ""
+msgstr "La lingua deve essere specificata."
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__write_uid
@@ -358,6 +360,8 @@ msgid ""
 "List of keywords (separated by a comma \",\") who could be contained in the "
 "demand subject"
 msgstr ""
+"Elenco di parole chiave (separate da una virgola \",\") che possono essere "
+"contenute nell'oggetto della richiesta"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_res_partner_match
@@ -367,12 +371,12 @@ msgstr "res.partner.match"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_name
 msgid "Name of holiday"
-msgstr ""
+msgstr "Nome delle vacanze"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #. module: crm_request
 #: model:mail.template,subject:crm_request.business_closed_email_template
@@ -386,6 +390,8 @@ msgid ""
 "One keyword must be unique over all types and not be included in another "
 "keyword"
 msgstr ""
+"Una parola chiave deve essere unica tra tutti i tipi e non deve essere "
+"inclusa in un'altra parola chiave"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_mail
@@ -395,13 +401,13 @@ msgstr "Posta in uscita"
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #. module: crm_request
 #. odoo-python
 #: code:addons/crm_request/models/holiday_closure.py:0
 msgid "Please choose an end_date greater than the start_date"
-msgstr ""
+msgstr "Scegli una data di fine successiva alla data di inizio"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
@@ -411,18 +417,18 @@ msgstr "Anteprima"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure_template_preview__preview_text
 msgid "Preview Text"
-msgstr ""
+msgstr "Testo di anteprima"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__quoted_reply
 msgid "Quoted Reply"
-msgstr ""
+msgstr "Risposta citata"
 
 #. module: crm_request
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "RE: "
-msgstr ""
+msgstr "RE: "
 
 #. module: crm_request
 #: model_terms:ir.actions.act_window,help:crm_request.request_action
@@ -433,6 +439,12 @@ msgid ""
 "may automatically be linked to an email address using the mail gateway "
 "module."
 msgstr ""
+"Registra e monitora le richieste dei tuoi clienti. Le richieste possono "
+"essere collegate a un ordine di vendita o a un lotto. Puoi inviare e-mail "
+"con allegati e conservare la cronologia completa di una richiesta (e-mail "
+"inviate, tipo di intervento e così via). Le richieste possono essere "
+"collegate automaticamente a un indirizzo e-mail tramite il modulo mail "
+"gateway."
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__ref
@@ -447,18 +459,18 @@ msgstr "Rispondi"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__reply_to
 msgid "Reply To"
-msgstr ""
+msgstr "Rispondi a"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Reporter"
-msgstr ""
+msgstr "Segnalatore"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Request"
-msgstr ""
+msgstr "Richiesta"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_assign_request_wizard
@@ -468,23 +480,25 @@ msgstr "assign.request.wizard"
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.action_wizard_request_assign
 msgid "Request assign"
-msgstr ""
+msgstr "Assegna richiesta"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
 msgid "Request open"
-msgstr ""
+msgstr "Richiesta aperta"
 
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.request_action
 #: model:ir.ui.menu,name:crm_request.menu_crm_case_claims
 msgid "Requests"
-msgstr ""
+msgstr "Richieste"
 
 #. module: crm_request
 #: model:ir.actions.server,name:crm_request.crm_request_reminder_cron_ir_actions_server
 msgid "Send weekly reminder to user for new or waiting support request"
 msgstr ""
+"Invia un promemoria settimanale all'utente per le richieste di assistenza "
+"nuove o in attesa"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__signature
@@ -499,7 +513,7 @@ msgstr "Stadio"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__start_date
 msgid "Start of holiday"
-msgstr ""
+msgstr "Inizio delle vacanze"
 
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.support_root
@@ -515,18 +529,18 @@ msgstr "Modello"
 #. odoo-python
 #: code:addons/crm_request/models/holiday_closure.py:0
 msgid "The Compassion team"
-msgstr ""
+msgstr "Il team Compassion"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_crm_claim__alias_id
 msgid "The destination email address that the contacts used."
-msgstr ""
+msgstr "L'indirizzo e-mail di destinazione utilizzato dai contatti."
 
 #. module: crm_request
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "The request {} you were assigned to requires your attention."
-msgstr ""
+msgstr "La richiesta {} che ti è stata assegnata richiede la tua attenzione."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_type_form
@@ -541,7 +555,7 @@ msgstr "Non assegnato"
 #. module: crm_request
 #: model:crm.claim.category,name:crm_request.category_undefined
 msgid "Undefined"
-msgstr ""
+msgstr "Non definito"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_holiday_closure__holiday_message
@@ -550,6 +564,9 @@ msgid ""
 "the text with the holiday name, start date, end date or the date at which we"
 " will be able to answer again."
 msgstr ""
+"Usa [holiday_name], [start_date], [end_date] e [reply_date] per sostituire "
+"nel testo il nome delle vacanze, la data di inizio, la data di fine o la "
+"data in cui potremo rispondere di nuovo."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
@@ -560,11 +577,18 @@ msgid ""
 "                        <br/>\n"
 "                        If you edit the default message, please don't forget to enter the translations as well! Use the preview to check the final result."
 msgstr ""
+"Usa [holiday_name], [start_date], [end_date] e [reply_date] per sostituire nel testo il nome delle vacanze, la data di inizio, la data di fine o la data in cui potremo rispondere di nuovo.\n"
+"                        <br/>\n"
+"                        Il saluto e la firma vengono generati automaticamente e non sono necessari qui.\n"
+"                        <br/>\n"
+"                        Se modifichi il messaggio predefinito, non dimenticare di inserire anche le traduzioni! Usa l'anteprima per controllare il risultato finale."
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_holiday_closure__holiday_template_message
 msgid "Used in the template to replace keywords by actual values"
 msgstr ""
+"Utilizzato nel modello per sostituire le parole chiave con i valori "
+"effettivi"
 
 #. module: crm_request
 #: model:crm.claim.category,name:crm_request.category_volunteer
@@ -580,7 +604,7 @@ msgstr ""
 #. module: crm_request
 #: model:crm.claim.stage,name:crm_request.stage_wait_support
 msgid "Waiting for support"
-msgstr ""
+msgstr "In attesa di assistenza"
 
 #. module: crm_request
 #: model:crm.claim.stage,name:crm_request.stage_wait_customer
@@ -591,7 +615,7 @@ msgstr "In attesa sul cliente"
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "You can only reply if you set the partner."
-msgstr ""
+msgstr "Puoi rispondere solo se imposti il partner."
 
 #. module: crm_request
 #: model:mail.template,subject:crm_request.assigned_contact_holiday_email_template

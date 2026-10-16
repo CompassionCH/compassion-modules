@@ -197,14 +197,14 @@ msgstr "Numero allegati"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr ""
+msgstr "Allegato dal vassoio 1"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr ""
+msgstr "Allegato dal vassoio 2"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__attachment_id
@@ -223,12 +223,12 @@ msgstr "Funzione Allegati"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__attachments_name
 msgid "Attachments Name"
-msgstr ""
+msgstr "Nome degli allegati"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__attachments_data
 msgid "Attachments Only"
-msgstr ""
+msgstr "Solo allegati"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_ir_actions_server__auto_send
@@ -296,12 +296,12 @@ msgstr "Categoria"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet_category__name
 msgid "Category Name"
-msgstr ""
+msgstr "Nome della categoria"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_communication_snippet__category_id
 msgid "Category of the communication snippet"
-msgstr ""
+msgstr "Categoria dello snippet di comunicazione"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_change_text
@@ -383,7 +383,7 @@ msgstr "Snippet di comunicazione"
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_communication_snippet_category
 msgid "Communication Snippet Category"
-msgstr ""
+msgstr "Categoria di snippet di comunicazione"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_config
@@ -555,7 +555,7 @@ msgstr "Scarica il file stampato"
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_config__send_from__dynamic
 msgid "Dynamic"
-msgstr ""
+msgstr "Dinamico"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
@@ -571,7 +571,7 @@ msgstr "Modifica"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__email_from
 msgid "Email From"
-msgstr ""
+msgstr "E-mail da"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__email_template_id
@@ -702,7 +702,7 @@ msgstr "Gruppo per"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Ha un messaggio"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__id
@@ -716,7 +716,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__report_id
@@ -745,6 +745,9 @@ msgid ""
 "'Dynamic', the sender is dynamically retrieved from the related record using"
 " the field specified below."
 msgstr ""
+"Se 'Manuale', il mittente è determinato dalla regola di comunicazione. Se "
+"'Dinamico', il mittente viene recuperato dinamicamente dal record correlato "
+"usando il campo indicato qui sotto."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__sender_field_id
@@ -752,6 +755,8 @@ msgid ""
 "If 'Send From' is 'Dynamic', pick which Many2one-to-res.users field should "
 "be used as the sender."
 msgstr ""
+"Se 'Invia da' è 'Dinamico', scegli quale campo Many2one verso res.users "
+"usare come mittente."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__message_needaction
@@ -783,6 +788,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
+"Se impostato a True, la marca OMR per l'aggiunta di un allegato dal vassoio "
+"1 viene aggiunta alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
@@ -792,6 +799,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
+"Se impostato a True, la marca OMR per l'aggiunta di un allegato dal vassoio "
+"2 viene aggiunta alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_should_close_envelope
@@ -801,6 +810,8 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
+"Se impostato a True, la marca OMR per la chiusura della busta viene aggiunta"
+" alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_enable_marks
@@ -808,6 +819,7 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
 msgstr ""
+"Se impostato a True, le marche OMR vengono visualizzate nella comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__need_call
@@ -821,7 +833,7 @@ msgstr "Indica che dovremmo avere un contatto personale con il partner."
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Individual Documents"
-msgstr ""
+msgstr "Documenti singoli"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_is_follower
@@ -880,12 +892,12 @@ msgstr "Lettere"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__letters_name
 msgid "Letters Name"
-msgstr ""
+msgstr "Nome delle lettere"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__letters_data
 msgid "Letters Only"
-msgstr ""
+msgstr "Solo lettere"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_reformat_all_phonenumbers__module_partner_communication_crm_phone
@@ -897,7 +909,7 @@ msgstr "Collegare le comunicazioni con le telefonate del CRM"
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_config__send_from__manual
 msgid "Manual"
-msgstr ""
+msgstr "Manuale"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
@@ -962,7 +974,7 @@ msgstr "Necessità di chiamata"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
+msgstr "Evento calendario della prossima attività"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_date_deadline
@@ -1002,14 +1014,14 @@ msgstr "Numero di messaggi con errore di consegna"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "OMR Plugin"
-msgstr ""
+msgstr "Plugin OMR"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr ""
+msgstr "L'OMR deve chiudere la busta"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
@@ -1061,7 +1073,7 @@ msgstr "Fonte della carta"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_download_print_job_wizard
@@ -1131,12 +1143,12 @@ msgstr "In attesa"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Phonecall Plugin"
-msgstr ""
+msgstr "Plugin telefonate"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_phonecall_id
 msgid "Phonecall log"
-msgstr ""
+msgstr "Registro delle telefonate"
 
 #. module: partner_communication
 #. odoo-python
@@ -1163,7 +1175,7 @@ msgstr "Anteprima"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Preview PDF"
-msgstr ""
+msgstr "Anteprima PDF"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__print_if_not_email
@@ -1232,7 +1244,7 @@ msgstr "Progressi"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__rating_ids
 msgid "Ratings"
-msgstr ""
+msgstr "Valutazioni"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__partner_ids
@@ -1242,7 +1254,7 @@ msgstr "Destinatari"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Refresh"
-msgstr ""
+msgstr "Aggiorna"
 
 #. module: partner_communication
 #: model:ir.actions.server,name:partner_communication.refresh_action
@@ -1268,7 +1280,7 @@ msgstr "Ricarica"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__reply_to
 msgid "Reply To"
-msgstr ""
+msgstr "Rispondi a"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__report_name
@@ -1278,7 +1290,7 @@ msgstr "Nome del rapporto"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_mail_template_preview__res_id
 msgid "Res"
-msgstr ""
+msgstr "Res"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__object_ids
@@ -1301,7 +1313,7 @@ msgstr "Riprova"
 #: code:addons/partner_communication/models/communication_config.py:0
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_has_sms_error
@@ -1372,12 +1384,12 @@ msgstr "Inviare e-mail manualmente"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__send_from
 msgid "Send from"
-msgstr ""
+msgstr "Invia da"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__sender_field_id
 msgid "Send from selection"
-msgstr ""
+msgstr "Selezione del mittente"
 
 #. module: partner_communication
 #. odoo-python
@@ -1526,7 +1538,7 @@ msgstr "Il tipo di documento con questa comunicazione può essere utilizzato"
 #. module: partner_communication
 #: model:ir.model.constraint,message:partner_communication.constraint_communication_snippet_category_name_unique
 msgid "The name of the category must be unique."
-msgstr ""
+msgstr "Il nome della categoria deve essere unico."
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
@@ -1542,6 +1554,8 @@ msgid ""
 "This communication has no send mode, so it cannot be sent. Choose below how "
 "it should go out and save."
 msgstr ""
+"Questa comunicazione non ha una modalità di invio, quindi non può essere "
+"inviata. Scegli qui sotto come inviarla e salva."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__user_id
@@ -1622,7 +1636,7 @@ msgstr "Utilizzare le funzioni telefoniche del CRM"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_snippet_form
 msgid "Useful for global numbers..."
-msgstr ""
+msgstr "Utile per i numeri globali..."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_default_config__user_id
@@ -1645,11 +1659,13 @@ msgid ""
 "Will put the OMR marks on every page if the document is printed single-"
 "sided."
 msgstr ""
+"Metterà le marche OMR su ogni pagina se il documento viene stampato su un "
+"solo lato."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr ""
+msgstr "Posizione X in millimetri della prima marca OMR nella pagina"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_y
@@ -1657,6 +1673,8 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
+"Posizione Y in millimetri della prima marca OMR nella pagina, calcolata dal "
+"fondo della pagina."
 
 #. module: partner_communication
 #. odoo-python

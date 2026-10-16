@@ -18,12 +18,12 @@ msgstr ""
 #. module: sbc_translation
 #: model:website,contact_us_button_url:sbc_translation.translation_website
 msgid "/contactus"
-msgstr ""
+msgstr "/contactus"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_issue_log
 msgid "<b>Issue type</b>:"
-msgstr ""
+msgstr "<b>Tipo di problema</b>:"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_competence_kanban
@@ -31,6 +31,8 @@ msgid ""
 "<br/>\n"
 "                                <span>Letters in translation: </span>"
 msgstr ""
+"<br/>\n"
+"                                <span>Lettere in traduzione: </span>"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_competence_kanban
@@ -38,6 +40,8 @@ msgid ""
 "<br/>\n"
 "                                <span>Total translators: </span>"
 msgstr ""
+"<br/>\n"
+"                                <span>Totale traduttori: </span>"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_competence_kanban
@@ -45,6 +49,8 @@ msgid ""
 "<br/>\n"
 "                                <span>Translators active this year: </span>"
 msgstr ""
+"<br/>\n"
+"                                <span>Traduttori attivi quest'anno: </span>"
 
 #. module: sbc_translation
 #: model:mail.template,body_html:sbc_translation.translation_issue_notification
@@ -101,24 +107,24 @@ msgstr "Utenti"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__all_letter_ids
 msgid "All letters"
-msgstr ""
+msgstr "Tutte le lettere"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_res_partner__translation_user_id
 #: model:ir.model.fields,help:sbc_translation.field_res_users__translation_user_id
 msgid "Allow to engage the partner in translations."
-msgstr ""
+msgstr "Permette di coinvolgere il partner nelle traduzioni."
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__answer
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__answer
 msgid "Answer"
-msgstr ""
+msgstr "Risposta"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Approve translation"
-msgstr ""
+msgstr "Approva la traduzione"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_user_form
@@ -135,19 +141,19 @@ msgstr "Annulla"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Cannot read properly"
-msgstr ""
+msgstr "Impossibile leggere correttamente"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Child name different than expected"
-msgstr ""
+msgstr "Nome del bambino diverso da quello atteso"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Child protection issue"
-msgstr ""
+msgstr "Problema di protezione dei minori"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__comments
@@ -158,30 +164,30 @@ msgstr "Commenti"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
 msgid "Comments updated"
-msgstr ""
+msgstr "Commenti aggiornati"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_competence
 msgid "Compassion Translation Competence"
-msgstr ""
+msgstr "Competenza di traduzione Compassion"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_user
 msgid "Compassion Translator"
-msgstr ""
+msgstr "Traduttore Compassion"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__competence_id
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_user_view_search
 msgid "Competence"
-msgstr ""
+msgstr "Competenza"
 
 #. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.action_compassion_translation_competence_form
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_competence
 msgid "Competences"
-msgstr ""
+msgstr "Competenze"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_res_partner
@@ -191,25 +197,25 @@ msgstr "Contatto"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__correspondence_ids
 msgid "Correspondences"
-msgstr ""
+msgstr "Corrispondenze"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_letter_counting_wizard__counting
 msgid ""
 "Counting of the number of translated letters since the \"Start of counting\""
-msgstr ""
+msgstr "Conteggio del numero di lettere tradotte dall'\"Inizio del conteggio\""
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.action_translation_letter_counting
 #: model:ir.model,name:sbc_translation.model_translation_letter_counting_wizard
 #: model:ir.ui.menu,name:sbc_translation.translation_letter_counting_menu
 msgid "Counting of translation letters"
-msgstr ""
+msgstr "Conteggio delle lettere tradotte"
 
 #. module: sbc_translation
 #: model_terms:ir.actions.act_window,help:sbc_translation.action_letters_kanban
 msgid "Create new document"
-msgstr ""
+msgstr "Crea un nuovo documento"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__create_uid
@@ -234,18 +240,18 @@ msgstr "Creato il"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__current_letter_ids
 msgid "Current letters"
-msgstr ""
+msgstr "Lettere attuali"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.issue_reply
 msgid "Dear"
-msgstr ""
+msgstr "Gentile"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__dest_language_id
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_user_view_search
 msgid "Destination language"
-msgstr ""
+msgstr "Lingua di destinazione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__display_name
@@ -265,17 +271,17 @@ msgstr "Fatto"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__fallback_competence_id
 msgid "Fallback competence"
-msgstr ""
+msgstr "Competenza di riserva"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__force_validation
 msgid "Force Validation"
-msgstr ""
+msgstr "Forza la convalida"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__2
 msgid "High"
-msgstr ""
+msgstr "Alta"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__id
@@ -285,7 +291,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__force_validation
@@ -293,47 +299,50 @@ msgid ""
 "If checked, all translations submitted by this user will require validation "
 "by a supervisor, regardless of their verifiedskills"
 msgstr ""
+"Se spuntato, tutte le traduzioni inviate da questo utente richiederanno la "
+"convalida da parte di un supervisore, indipendentemente dalle sue competenze"
+" verificate"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__avatar
 msgid "Image 128"
-msgstr ""
+msgstr "Immagine 128"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "In Translation"
-msgstr ""
+msgstr "In traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_status__in_progress
 msgid "In progress"
-msgstr ""
+msgstr "In corso"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Inappropriate content"
-msgstr ""
+msgstr "Contenuto inappropriato"
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.increment_priority_cron_ir_actions_server
 msgid "Increment translation priority"
-msgstr ""
+msgstr "Incrementa la priorità di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_correspondence__translation_issue
 msgid "Issue about the letter reported by the translator"
-msgstr ""
+msgstr "Problema relativo alla lettera segnalato dal traduttore"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__translation_issue_comments
 msgid "Issue comment"
-msgstr ""
+msgstr "Commento sul problema"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_issue_wizard__translation_issue
 msgid "Issue type"
-msgstr ""
+msgstr "Tipo di problema"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__write_uid
@@ -364,28 +373,28 @@ msgstr "Lettera"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Letter already sent to GMC cannot be translated! [%s]"
-msgstr ""
+msgstr "Una lettera già inviata a GMC non può essere tradotta! [%s]"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Letter content"
-msgstr ""
+msgstr "Contenuto della lettera"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Letter in wrong language queue"
-msgstr ""
+msgstr "Lettera nella coda della lingua sbagliata"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_correspondence_paragraph
 msgid "Letter paragraph"
-msgstr ""
+msgstr "Paragrafo della lettera"
 
 #. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.action_letters_kanban
 msgid "Letter translation pool"
-msgstr ""
+msgstr "Pool di traduzione delle lettere"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_competence__fallback_competence_id
@@ -393,16 +402,18 @@ msgid ""
 "Letters will move to this pool if they sit for too long waiting to be "
 "translated."
 msgstr ""
+"Le lettere passeranno a questo pool se restano troppo a lungo in attesa di "
+"traduzione."
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__new_translator_id
 msgid "Local translator"
-msgstr ""
+msgstr "Traduttore locale"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__0
 msgid "Low"
-msgstr ""
+msgstr "Bassa"
 
 #. module: sbc_translation
 #: model:res.groups,name:sbc_translation.group_manager
@@ -412,7 +423,7 @@ msgstr "Responsabile"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Mark issue as resolved and send reply"
-msgstr ""
+msgstr "Segna il problema come risolto e invia la risposta"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__1
@@ -422,12 +433,12 @@ msgstr "Canale"
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
 msgid "Moment from which translated letters are counted"
-msgstr ""
+msgstr "Momento a partire dal quale vengono conteggiate le lettere tradotte"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "My supervision"
-msgstr ""
+msgstr "La mia supervisione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__name
@@ -439,49 +450,49 @@ msgstr "Nome"
 #. module: sbc_translation
 #: model:website,prevent_zero_price_sale_text:sbc_translation.translation_website
 msgid "Not Available For Sale"
-msgstr ""
+msgstr "Non disponibile per la vendita"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__number_active_translators
 msgid "Number Active Translators"
-msgstr ""
+msgstr "Numero di traduttori attivi"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__number_current_letters
 msgid "Number Current Letters"
-msgstr ""
+msgstr "Numero di lettere attuali"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__number_translators
 msgid "Number Translators"
-msgstr ""
+msgstr "Numero di traduttori"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__counting
 msgid "Number of translated letters"
-msgstr ""
+msgstr "Numero di lettere tradotte"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Open full view"
-msgstr ""
+msgstr "Apri la vista completa"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
 msgid "Open the letter in the translation platform"
-msgstr ""
+msgstr "Apri la lettera nella piattaforma di traduzione"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Other issue"
-msgstr ""
+msgstr "Altro problema"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "PDF not showing"
-msgstr ""
+msgstr "PDF non visualizzato"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
@@ -491,23 +502,23 @@ msgstr "Pagina"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
 msgid "Paragraph"
-msgstr ""
+msgstr "Paragrafo"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__paragraph_ids
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__paragraph_ids
 msgid "Paragraphs"
-msgstr ""
+msgstr "Paragrafi"
 
 #. module: sbc_translation
 #: model:website,footer_address:sbc_translation.translation_website
 msgid "Parkterrasse 10, 3012 Bern"
-msgstr ""
+msgstr "Parkterrasse 10, 3012 Bern"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__partner_id
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__partner_id
@@ -522,26 +533,26 @@ msgstr "Priorità:"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_correspondence_form_translation
 msgid "Put back into translation"
-msgstr ""
+msgstr "Rimetti in traduzione"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_correspondence_form_translation
 msgid "Remove from translation"
-msgstr ""
+msgstr "Rimuovi dalla traduzione"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Removed from translation platform"
-msgstr ""
+msgstr "Rimossa dalla piattaforma di traduzione"
 
 #. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.reply_to_comments_wizard
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 msgid "Reply to comments"
-msgstr ""
+msgstr "Rispondi ai commenti"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_sbc_reply_to_comments_wizard
@@ -553,7 +564,7 @@ msgstr "sbc.reply.to.comments.wizard"
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Reply to issue"
-msgstr ""
+msgstr "Rispondi alla segnalazione"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_sbc_reply_to_issue_wizard
@@ -563,100 +574,100 @@ msgstr "sbc.reply.to.issue.wizard"
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.resubmit_letter_translation_action
 msgid "Resubmit to translation"
-msgstr ""
+msgstr "Invia di nuovo alla traduzione"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 msgid "Return to translation"
-msgstr ""
+msgstr "Rimanda alla traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__search_competence_id
 msgid "Search Competence"
-msgstr ""
+msgstr "Cerca competenza"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__search_dest_lang
 msgid "Search Dest Lang"
-msgstr ""
+msgstr "Cerca lingua di destinazione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__search_source_lang
 msgid "Search Source Lang"
-msgstr ""
+msgstr "Cerca lingua di origine"
 
 #. module: sbc_translation
 #: model:ir.module.category,description:sbc_translation.module_category_translator
 msgid "Security groups for Translation Platform"
-msgstr ""
+msgstr "Gruppi di sicurezza per la piattaforma di traduzione"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 msgid "Send reply"
-msgstr ""
+msgstr "Invia la risposta"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__translation_skills
 msgid "Skills"
-msgstr ""
+msgstr "Competenze"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__source_language_id
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_user_view_search
 msgid "Source language"
-msgstr ""
+msgstr "Lingua di origine"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__src_translation_lang_id
 msgid "Source of translation"
-msgstr ""
+msgstr "Origine della traduzione"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Sponsor name different than expected"
-msgstr ""
+msgstr "Nome del sostenitore diverso da quello atteso"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
 msgid "Start of counting"
-msgstr ""
+msgstr "Inizio del conteggio"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user_skill__verified
 msgid "The competence has been approved by a manager."
-msgstr ""
+msgstr "La competenza è stata approvata da un responsabile."
 
 #. module: sbc_translation
 #: model:ir.model.constraint,message:sbc_translation.constraint_translation_competence_unique_competence
 msgid "This competence already exists."
-msgstr ""
+msgstr "Questa competenza esiste già."
 
 #. module: sbc_translation
 #: model:ir.model.constraint,message:sbc_translation.constraint_translation_user_unique_translator
 msgid "This translator already exists."
-msgstr ""
+msgstr "Questo traduttore esiste già."
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_correspondence_form_translation
 msgid "To Translate"
-msgstr ""
+msgstr "Da tradurre"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_status__to_do
 msgid "To do"
-msgstr ""
+msgstr "Da fare"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_status__to_validate
 msgid "To validate"
-msgstr ""
+msgstr "Da convalidare"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__nb_translated_letters
 msgid "Total translations"
-msgstr ""
+msgstr "Traduzioni totali"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_date
@@ -666,74 +677,74 @@ msgstr "Translate date"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_done
 msgid "Translate Done"
-msgstr ""
+msgstr "Traduzione completata"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__translated_letter_ids
 msgid "Translated Letter"
-msgstr ""
+msgstr "Lettera tradotta"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_user_view_search
 msgid "Translated last year"
-msgstr ""
+msgstr "Tradotte l'anno scorso"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_user_view_search
 msgid "Translated this year"
-msgstr ""
+msgstr "Tradotte quest'anno"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_competence_id
 msgid "Translation Competence"
-msgstr ""
+msgstr "Competenza di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_issue
 msgid "Translation Issue"
-msgstr ""
+msgstr "Problema di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_issue_comments
 msgid "Translation Issue Comments"
-msgstr ""
+msgstr "Commenti sul problema di traduzione"
 
 #. module: sbc_translation
 #: model:ir.module.category,name:sbc_translation.module_category_translator
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_platform
 msgid "Translation Platform"
-msgstr ""
+msgstr "Piattaforma di traduzione"
 
 #. module: sbc_translation
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_pool
 msgid "Translation Pool"
-msgstr ""
+msgstr "Pool di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_priority
 msgid "Translation Priority"
-msgstr ""
+msgstr "Priorità di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_priority_name
 msgid "Translation Priority Name"
-msgstr ""
+msgstr "Nome della priorità di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_status
 msgid "Translation Status"
-msgstr ""
+msgstr "Stato della traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_url
 msgid "Translation Url"
-msgstr ""
+msgstr "URL della traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_res_partner__translation_user_id
 #: model:ir.model.fields,field_description:sbc_translation.field_res_users__translation_user_id
 msgid "Translation User"
-msgstr ""
+msgstr "Utente traduttore"
 
 #. module: sbc_translation
 #: model:mail.template,name:sbc_translation.translation_issue_notification
@@ -743,32 +754,32 @@ msgstr ""
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "Translation status"
-msgstr ""
+msgstr "Stato della traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translation_supervisor_id
 msgid "Translation supervisor"
-msgstr ""
+msgstr "Supervisore della traduzione"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_user_skill
 msgid "Translation user skill"
-msgstr ""
+msgstr "Competenza dei traduttori"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_user_form
 msgid "Translations"
-msgstr ""
+msgstr "Traduzioni"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__nb_translated_letters_last_year
 msgid "Translations last year"
-msgstr ""
+msgstr "Traduzioni dell'anno scorso"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__nb_translated_letters_this_year
 msgid "Translations this year"
-msgstr ""
+msgstr "Traduzioni di quest'anno"
 
 #. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.action_compassion_translation_user_form
@@ -776,37 +787,37 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__translator_id
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_view_search
 msgid "Translator"
-msgstr ""
+msgstr "Traduttore"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__translator_since
 msgid "Translator Since"
-msgstr ""
+msgstr "Traduttore dal"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__skill_ids
 msgid "Translator skills"
-msgstr ""
+msgstr "Competenze dei traduttori"
 
 #. module: sbc_translation
 #: model:ir.ui.menu,name:sbc_translation.menu_translation_user
 msgid "Translators"
-msgstr ""
+msgstr "Traduttori"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__unread_comments
 msgid "Unread Comments"
-msgstr ""
+msgstr "Commenti non letti"
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.update_translation_priority_cron_ir_actions_server
 msgid "Update translation priority"
-msgstr ""
+msgstr "Aggiorna la priorità di traduzione"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__4
 msgid "Urgent"
-msgstr ""
+msgstr "Urgente"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__user_id
@@ -819,23 +830,23 @@ msgstr "Utente"
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__search_dest_lang
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__search_source_lang
 msgid "Utility field only used for the search view"
-msgstr ""
+msgstr "Campo di utilità usato solo per la vista di ricerca"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__verified
 msgid "Verified"
-msgstr ""
+msgstr "Verificata"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__3
 msgid "Very high"
-msgstr ""
+msgstr "Molto alta"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Wrong translation boxes layout"
-msgstr ""
+msgstr "Layout dei riquadri di traduzione errato"
 
 #. module: sbc_translation
 #. odoo-python
@@ -844,6 +855,8 @@ msgid ""
 "You cannot change the translation language of a letter that is being or "
 "already translated."
 msgstr ""
+"Non puoi cambiare la lingua di traduzione di una lettera che è in corso di "
+"traduzione o già tradotta."
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.issue_reply
@@ -851,12 +864,15 @@ msgid ""
 "You have just received a response to a problem about a letter on the "
 "translation platform you reported:"
 msgstr ""
+"Hai appena ricevuto una risposta a un problema che avevi segnalato su una "
+"lettera nella piattaforma di traduzione:"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Your reply will be added in an <b>automatic email with greetings</b>."
 msgstr ""
+"La tua risposta verrà inserita in un'<b>e-mail automatica con i saluti</b>."
 
 #. module: sbc_translation
 #: model:website,privacy_policy_url:sbc_translation.translation_website
@@ -866,19 +882,19 @@ msgstr "https://compassion.ch/it/privacy-e-termini/"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
 msgid "paragraph"
-msgstr ""
+msgstr "paragrafo"
 
 #. module: sbc_translation
 #: model:res.groups,comment:sbc_translation.group_manager
 msgid "the user can manage the translation platform."
-msgstr ""
+msgstr "l'utente può gestire la piattaforma di traduzione."
 
 #. module: sbc_translation
 #: model:res.groups,comment:sbc_translation.group_user
 msgid "the user will have access to the translation platform."
-msgstr ""
+msgstr "l'utente avrà accesso alla piattaforma di traduzione."
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid "translation priority"
-msgstr ""
+msgstr "priorità di traduzione"

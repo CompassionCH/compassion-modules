@@ -18,7 +18,7 @@ msgstr ""
 #. module: partner_salutation
 #: model:ir.model,name:partner_salutation.model_res_partner
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner__gender
@@ -34,11 +34,15 @@ msgid ""
 "wizard, donation, project creation). When unset, the salutation stays usable"
 " in the backend but is hidden from those forms."
 msgstr ""
+"Si activée, cette civilité est proposée dans les formulaires publics "
+"(assistant de parrainage, don, création de projet). Si désactivée, la "
+"civilité reste utilisable dans le back-office mais est masquée dans ces "
+"formulaires."
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__is_shown_on_public_forms
 msgid "Is Shown On Public Forms"
-msgstr ""
+msgstr "Affichée sur les formulaires publics"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__order_index
@@ -53,10 +57,10 @@ msgstr "res.partner.title"
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__plural
 msgid "Plural"
-msgstr ""
+msgstr "Pluriel"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner__salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_users__salutation
 msgid "Salutation"
-msgstr ""
+msgstr "Civilité"

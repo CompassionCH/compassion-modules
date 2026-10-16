@@ -43,7 +43,7 @@ msgstr "Anzeigename"
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__write_uid
@@ -68,7 +68,7 @@ msgstr "Bezeichnung"
 #. module: onramp_simulator
 #: model:ir.model,name:onramp_simulator.model_onramp_simulator
 msgid "Onramp Simulator"
-msgstr ""
+msgstr "Onramp-Simulator"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__result
@@ -93,9 +93,9 @@ msgstr "Server url"
 #. module: onramp_simulator
 #: model:ir.ui.menu,name:onramp_simulator.menu_simulator
 msgid "Simulate Message"
-msgstr ""
+msgstr "Nachricht simulieren"
 
 #. module: onramp_simulator
 #: model:ir.actions.act_window,name:onramp_simulator.open_simulator
 msgid "Simulator"
-msgstr ""
+msgstr "Simulator"

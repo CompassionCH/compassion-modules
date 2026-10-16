@@ -18,12 +18,12 @@ msgstr ""
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_tree
 msgid "Call"
-msgstr ""
+msgstr "Chiamata"
 
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_form
 msgid "Call now"
-msgstr ""
+msgstr "Chiama ora"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__comments
@@ -39,7 +39,7 @@ msgstr "phone.common"
 #. odoo-python
 #: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
 msgid "Communication Call"
-msgstr ""
+msgstr "Chiamata di comunicazione"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model,name:partner_communication_crm_phone.model_partner_communication_job
@@ -64,7 +64,7 @@ msgstr "Nome da visualizzare"
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__write_uid
@@ -79,42 +79,42 @@ msgstr "Ultima modifica il"
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_form
 msgid "Log call"
-msgstr ""
+msgstr "Registra chiamata"
 
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.call_wizard_form
 msgid "Log the call"
-msgstr ""
+msgstr "Registra la chiamata"
 
 #. module: partner_communication_crm_phone
 #. odoo-python
 #: code:addons/partner_communication_crm_phone/models/communication_job.py:0
 msgid "Log your call"
-msgstr ""
+msgstr "Registra la tua chiamata"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model,name:partner_communication_crm_phone.model_partner_communication_call_wizard
 msgid "Partner Communication Call Wizard"
-msgstr ""
+msgstr "Procedura guidata di chiamata per la comunicazione con i partner"
 
 #. module: partner_communication_crm_phone
 #. odoo-python
 #: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
 msgid "Partner did not answer"
-msgstr ""
+msgstr "Il partner non ha risposto"
 
 #. module: partner_communication_crm_phone
 #. odoo-python
 #: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
 msgid "Phone attempt: "
-msgstr ""
+msgstr "Tentativo telefonico: "
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_job__phonecall_id
 msgid "Phonecall log"
-msgstr ""
+msgstr "Registro delle telefonate"
 
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.call_wizard_form
 msgid "Still pending"
-msgstr ""
+msgstr "Ancora in sospeso"

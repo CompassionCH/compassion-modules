@@ -18,13 +18,13 @@ msgstr ""
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Child Protection"
-msgstr ""
+msgstr "Protezione dei bambini"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_file
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Codice di condotta"
 
 #. module: child_protection
 #: model:ir.model,name:child_protection.model_res_partner
@@ -46,41 +46,41 @@ msgstr "Fedina penale"
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_date
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_date
 msgid "Criminal Record Date"
-msgstr ""
+msgstr "Data del casellario giudiziale"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_name
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_name
 msgid "Criminal Record Name"
-msgstr ""
+msgstr "Nome del casellario giudiziale"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__date_agreed_child_protection_charter
 #: model:ir.model.fields,field_description:child_protection.field_res_users__date_agreed_child_protection_charter
 msgid "Date Agreed Child Protection Charter"
-msgstr ""
+msgstr "Data di accettazione della Carta per la protezione dell'infanzia"
 
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Date agreed"
-msgstr ""
+msgstr "Data di accettazione"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_filename
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_filename
 msgid "File Name"
-msgstr ""
+msgstr "Nome del file"
 
 #. module: child_protection
 #: model:res.groups,name:child_protection.group_criminal_record
 msgid "Manage Criminal Records"
-msgstr ""
+msgstr "Gestire i casellari giudiziali"
 
 #. module: child_protection
 #: model:base.automation,name:child_protection.partner_notify_criminal_record_expiration
 #: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_action
 msgid "Partner: Notify criminal record expiration"
-msgstr ""
+msgstr "Partner: notifica la scadenza del casellario giudiziale"
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__date_agreed_child_protection_charter
@@ -89,14 +89,16 @@ msgid ""
 "The date and time when the partner has agreed to the childprotection "
 "charter."
 msgstr ""
+"La data e l'ora in cui il partner ha accettato la Carta per la protezione "
+"dell'infanzia."
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,help:child_protection.field_res_users__code_of_conduct_file
 msgid "Upload file"
-msgstr ""
+msgstr "Carica un file"
 
 #. module: child_protection
 #: model:res.groups,comment:child_protection.group_criminal_record
 msgid "the user will have access to all criminal records."
-msgstr ""
+msgstr "l'utente avrà accesso a tutti i casellari giudiziali."

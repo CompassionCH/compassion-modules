@@ -3354,6 +3354,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.view_follow_contract_kanban_exit_pending
 msgid "<i class=\"fa fa-exclamation-triangle\"/> Awaiting exit communication"
 msgstr ""
+"<i class=\"fa fa-exclamation-triangle\"/> Austrittskommunikation ausstehend"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,help:partner_communication_compassion.field_recurring_contract__exit_communication_pending
@@ -3362,6 +3363,10 @@ msgid ""
 "sent to the sponsor yet. Sponsor-facing changes (invoice cleanup, donations "
 "page) are held back until it is sent."
 msgstr ""
+"Der Austritt eines Kindes wurde erfasst, aber die Austrittskommunikation "
+"wurde noch nicht an den Paten gesendet. Änderungen, die den Paten betreffen "
+"(Rechnungsbereinigung, Spendenseite), werden zurückgehalten, bis sie "
+"gesendet wurde."
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.new_letter
@@ -3406,12 +3411,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_project__tpl_item_ids
 msgid "Caption to use for pictures, or prayer shared by fcp, or else"
-msgstr ""
+msgstr "Bildunterschrift für Bilder oder Gebet des FCP, oder anderes"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_child_disaster_impact
 msgid "Child Disaster Impact"
-msgstr ""
+msgstr "Auswirkungen von Katastrophen auf das Kind"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_child_planned_exit
@@ -3441,12 +3446,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_child_ble
 msgid "Child Lifecycle Event"
-msgstr ""
+msgstr "Lebenszyklus-Ereignis des Kindes"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_child_note
 msgid "Child Note"
-msgstr ""
+msgstr "Notiz zum Kind"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_hold_removal
@@ -3467,12 +3472,12 @@ msgstr "Kommunikation Job"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_correspondence__sent_date
 msgid "Communication sent"
-msgstr ""
+msgstr "Kommunikation gesendet"
 
 #. module: partner_communication_compassion
 #: model:ir.actions.act_window,name:partner_communication_compassion.action_communication_template
 msgid "Communication templates"
-msgstr ""
+msgstr "Kommunikationsvorlagen"
 
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_donation
@@ -3512,20 +3517,20 @@ msgstr "Current values"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_project__last_suspension_communication_date
 msgid "Date of the last suspension communication"
-msgstr ""
+msgstr "Datum der letzten Suspendierungskommunikation"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,help:partner_communication_compassion.field_correspondence__letter_delivery_preference
 #: model:ir.model.fields,help:partner_communication_compassion.field_res_partner__letter_delivery_preference
 #: model:ir.model.fields,help:partner_communication_compassion.field_res_users__letter_delivery_preference
 msgid "Delivery preference for Child Letters"
-msgstr ""
+msgstr "Zustellpräferenz für Kinderbriefe"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,help:partner_communication_compassion.field_res_partner__photo_delivery_preference
 #: model:ir.model.fields,help:partner_communication_compassion.field_res_users__photo_delivery_preference
 msgid "Delivery preference for Child photo"
-msgstr ""
+msgstr "Zustellpräferenz für Kinderfotos"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_disaster_alert
@@ -3540,7 +3545,7 @@ msgstr "E-Mail"
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_mail_mail
 msgid "Emails"
-msgstr ""
+msgstr "E-Mails"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_planned_exit
@@ -3557,12 +3562,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_recurring_contract__exit_communication_pending
 msgid "Exit Communication Pending"
-msgstr ""
+msgstr "Austrittskommunikation ausstehend"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_recurring_contract__exit_communication_sent
 msgid "Exit Communication Sent"
-msgstr ""
+msgstr "Austrittskommunikation gesendet"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_project_suspension
@@ -3577,7 +3582,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_country__from_preposition
 msgid "From Preposition"
-msgstr ""
+msgstr "Präposition «von»"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_project
@@ -3597,7 +3602,7 @@ msgstr "Kommunikation generieren"
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__send_gifts_to
 msgid "Gift payer"
-msgstr ""
+msgstr "Geschenkzahler"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_correspondence__has_valid_language
@@ -3668,13 +3673,15 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_country__in_preposition
 msgid "In Preposition"
-msgstr ""
+msgstr "Präposition «in»"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,help:partner_communication_compassion.field_recurring_contract__new_picture
 msgid ""
 "Indicates a new picture was received and not yet transmitted to the sponsor."
 msgstr ""
+"Zeigt an, dass ein neues Bild empfangen, aber noch nicht an den Paten "
+"übermittelt wurde."
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_project_suspension
@@ -3746,7 +3753,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication_compassion/models/partner_communication.py:0
 msgid "Missing letter"
-msgstr ""
+msgstr "Fehlender Brief"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_fo_disaster_alert
@@ -3766,7 +3773,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_recurring_contract__new_picture
 msgid "New Picture"
-msgstr ""
+msgstr "Neues Bild"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_biennial
@@ -3783,7 +3790,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.contract_filter
 msgid "New picture"
-msgstr ""
+msgstr "Neues Bild"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_planned_exit_notification
@@ -3793,12 +3800,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:utm.campaign,title:partner_communication_compassion.utm_campaign_communication
 msgid "Odoo communication"
-msgstr ""
+msgstr "Odoo-Kommunikation"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__old_birthdate
 msgid "Old Birthdate"
-msgstr ""
+msgstr "Altes Geburtsdatum"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__old_firstname
@@ -3852,17 +3859,17 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_project_ile
 msgid "Project lifecycle event"
-msgstr ""
+msgstr "Lebenszyklus-Ereignis des Projekts"
 
 #. module: partner_communication_compassion
 #: model:ir.actions.server,name:partner_communication_compassion.ir_cron_suspension_announcement_ir_actions_server
 msgid "Project: 2-Month Suspension Announcement/Follow-Up"
-msgstr ""
+msgstr "Projekt: Ankündigung/Nachfassen bei 2-monatiger Suspendierung"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,help:partner_communication_compassion.field_compassion_project__last_suspension_communication_date
 msgid "Records the date of the last suspension communication."
-msgstr ""
+msgstr "Hält das Datum der letzten Suspendierungskommunikation fest."
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_recurring_contract
@@ -3907,12 +3914,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.generate_communication_wizard_sponsorship_form
 msgid "Selection"
-msgstr ""
+msgstr "Auswahl"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_recurring_contract__send_introduction_letter
 msgid "Send B2S intro letter to sponsor"
-msgstr ""
+msgstr "B2S-Einführungsbrief an Paten senden"
 
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.view_correspondence_form_communication
@@ -3974,7 +3981,7 @@ msgstr "Vorlage"
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_communication_templates
 msgid "Templates"
-msgstr ""
+msgstr "Vorlagen"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_sponsorship_cancellation
@@ -4006,12 +4013,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication_compassion/models/partner_communication.py:0
 msgid "The letter image is missing!"
-msgstr ""
+msgstr "Das Briefbild fehlt!"
 
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.project_tpl
 msgid "Third party letter"
-msgstr ""
+msgstr "Brief von Drittperson"
 
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.correspondence_view_search_email
@@ -4068,7 +4075,7 @@ msgstr "und"
 #. odoo-python
 #: code:addons/partner_communication_compassion/models/partner_communication.py:0
 msgid "pictures"
-msgstr ""
+msgstr "Bilder"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_transfer

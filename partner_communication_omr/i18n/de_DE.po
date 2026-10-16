@@ -22,7 +22,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr ""
+msgstr "Anhang aus Fach 1"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_2
@@ -31,7 +31,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr ""
+msgstr "Anhang aus Fach 2"
 
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_attachment
@@ -67,6 +67,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
+"Wenn aktiviert, wird die OMR-Markierung für einen Anhang aus Fach 1 zur "
+"Kommunikation hinzugefügt."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_2
@@ -78,6 +80,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
+"Wenn aktiviert, wird die OMR-Markierung für einen Anhang aus Fach 2 zur "
+"Kommunikation hinzugefügt."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_should_close_envelope
@@ -89,6 +93,8 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
+"Wenn aktiviert, wird die OMR-Markierung zum Schliessen des Couverts zur "
+"Kommunikation hinzugefügt."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_enable_marks
@@ -98,16 +104,17 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_job__omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
 msgstr ""
+"Wenn aktiviert, werden die OMR-Markierungen in der Kommunikation angezeigt."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_attachment__is_last_to_print
 msgid "Is Last To Print"
-msgstr ""
+msgstr "Ist zuletzt zu drucken"
 
 #. module: partner_communication_omr
 #: model_terms:ir.ui.view,arch_db:partner_communication_omr.communication_job_orm_form
 msgid "OMR"
-msgstr ""
+msgstr "OMR"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_should_close_envelope
@@ -116,7 +123,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr ""
+msgstr "OMR soll das Couvert schliessen"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_single_sided
@@ -154,6 +161,8 @@ msgstr "ir.actions.report.xml"
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_attachment__is_last_to_print
 msgid "Technical field for identifying last printed document with OMR marks."
 msgstr ""
+"Technisches Feld zur Kennzeichnung des zuletzt gedruckten Dokuments mit OMR-"
+"Markierungen."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_single_sided
@@ -165,6 +174,8 @@ msgid ""
 "Will put the OMR marks on every page if the document is printed single-"
 "sided."
 msgstr ""
+"Setzt die OMR-Markierungen auf jede Seite, wenn das Dokument einseitig "
+"gedruckt wird."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_top_mark_x
@@ -173,7 +184,7 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_generate_wizard__omr_top_mark_x
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_job__omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr ""
+msgstr "X-Position der ersten OMR-Markierung auf der Seite in Millimetern"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_top_mark_y
@@ -185,3 +196,5 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
+"Y-Position der ersten OMR-Markierung auf der Seite in Millimetern, vom "
+"unteren Seitenrand aus gemessen."

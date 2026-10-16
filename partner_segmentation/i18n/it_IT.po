@@ -343,6 +343,16 @@ msgid ""
 "            <p>Thank you for your precious support.</p>\n"
 "        "
 msgstr ""
+"<p>È fantastico che ti piaccia impegnarti e dedicare il tuo tempo a chi è meno fortunato!</p>\n"
+"            <p>Siamo davvero felici di averti nella grande comunità di Compassion. Grazie a te e a circa 8000 chiese partner in 25 paesi stiamo attualmente liberando più di 2,2 milioni di bambini dalla povertà.</p>\n"
+"            <p>Unisciti a noi mettendo in pratica la nostra fede, impegnandoti e restando in contatto con il nostro team di volontari.</p>\n"
+"            <p>Ecco alcuni link che potrebbero esserti utili:</p>\n"
+"            <ul>\n"
+"                <li><a href=\"https://compassion.ch/de/sich-mehr-engagieren/\" target=\"_blank\">Volontariato con Compassion</a></li>\n"
+"                <li><a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">Dai un'occhiata alle nostre ultime novità</a></li>\n"
+"            </ul>\n"
+"            <p>Grazie per il tuo prezioso sostegno.</p>\n"
+"        "
 
 #. module: partner_segmentation
 #: model:res.partner.segment,survey_result:partner_segmentation.compassionate_caregiver
@@ -386,13 +396,13 @@ msgstr ""
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__affinity
 msgid "Affinity"
-msgstr ""
+msgstr "Affinità"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__segments_affinity_ids
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__segments_affinity_ids
 msgid "Affinity for each segment"
-msgstr ""
+msgstr "Affinità per ogni segmento"
 
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.survey_question_form
@@ -526,7 +536,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__id
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: partner_segmentation
 #: model:survey.question,comments_message:partner_segmentation.pss_question_1
@@ -579,12 +589,12 @@ msgstr "Ultima modifica il"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__main_driver
 msgid "Main Driver"
-msgstr ""
+msgstr "Motivazione principale"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__max_checked_option
 msgid "Maximum answers"
-msgstr ""
+msgstr "Risposte massime"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_name
@@ -611,7 +621,7 @@ msgstr "Partecipato a proteste/manifestazioni"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__partner_id
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_res_partner_segment
@@ -623,7 +633,7 @@ msgstr "Segmentazione Partner"
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_res_partner_segment_affinity
 msgid "Partner segment affinity"
-msgstr ""
+msgstr "Affinità del partner per il segmento"
 
 #. module: partner_segmentation
 #: model:ir.ui.menu,name:partner_segmentation.menu_partner_segment
@@ -648,7 +658,7 @@ msgstr "Affinità di segmentazione dei partner"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__personalized_links
 msgid "Personalized Links"
-msgstr ""
+msgstr "Link personalizzati"
 
 #. module: partner_segmentation
 #: model_terms:survey.survey,description:partner_segmentation.partner_segmentation_survey
@@ -678,7 +688,7 @@ msgstr "Segmento primario"
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_id
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__primary_segment_id
 msgid "Primary segmentation category"
-msgstr ""
+msgstr "Categoria di segmentazione primaria"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value_right:partner_segmentation.pss_q1_labels
@@ -702,27 +712,27 @@ msgstr "Segmento secondario"
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__secondary_segment_id
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__secondary_segment_id
 msgid "Secondary segmentation category"
-msgstr ""
+msgstr "Categoria di segmentazione secondaria"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__segment_id
 msgid "Segment"
-msgstr ""
+msgstr "Segmento"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_index
 msgid "Segment Index"
-msgstr ""
+msgstr "Indice del segmento"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_size
 msgid "Segment Size"
-msgstr ""
+msgstr "Dimensione del segmento"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_total
 msgid "Segment Total"
-msgstr ""
+msgstr "Totale del segmento"
 
 #. module: partner_segmentation
 #: model:ir.model.constraint,message:partner_segmentation.constraint_res_partner_segment_unique_index
@@ -841,7 +851,7 @@ msgstr "Valore suggerito (controproposta)"
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_question_answer
 msgid "Survey Label"
-msgstr ""
+msgstr "Etichetta del sondaggio"
 
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_question
@@ -851,7 +861,7 @@ msgstr "Domanda sondaggio"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__survey_result
 msgid "Survey Result"
-msgstr ""
+msgstr "Risultato del sondaggio"
 
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_user_input
@@ -861,13 +871,13 @@ msgstr "Sondaggio Input degli utenti"
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_user_input_line
 msgid "Survey User Input Line"
-msgstr ""
+msgstr "Riga di risposta del sondaggio"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_count
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_count
 msgid "Survey number"
-msgstr ""
+msgstr "Numero di sondaggi"
 
 #. module: partner_segmentation
 #: model:ir.actions.act_window,name:partner_segmentation.act_partner_survey_input
@@ -881,7 +891,7 @@ msgstr "Sondaggi"
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_lines
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_lines
 msgid "Surveys answers"
-msgstr ""
+msgstr "Risposte ai sondaggi"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_10
@@ -931,6 +941,7 @@ msgstr "Usato un talento o un'abilità per raccogliere denaro per una causa"
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_index
 msgid "Used for segment computation by segmentation engine"
 msgstr ""
+"Usato per il calcolo dei segmenti da parte del motore di segmentazione"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_survey_question_answer__value_right
@@ -955,6 +966,8 @@ msgid ""
 "Which of the following actions, if any, have you ever taken to support a charitable\n"
 "            cause or non-profit organization?"
 msgstr ""
+"Quali delle seguenti azioni, se ce ne sono, hai mai intrapreso per sostenere una causa\n"
+"            benefica o un'organizzazione senza scopo di lucro?"
 
 #. module: partner_segmentation
 #: model:survey.question,title:partner_segmentation.pss_question_1
@@ -964,28 +977,30 @@ msgstr "Indica con quale delle seguenti affermazioni sei più d’accordo"
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment_affinity__affinity
 msgid "affinity of the partner for this segment (in percentage)."
-msgstr ""
+msgstr "affinità del partner per questo segmento (in percentuale)."
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_survey_question__max_checked_option
 msgid "if set, maximum number of options allowed for the user"
-msgstr ""
+msgstr "se impostato, numero massimo di opzioni consentite per l'utente"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_size
 msgid "number of partners for whom this is the primary segment"
-msgstr ""
+msgstr "numero di partner per i quali questo è il segmento primario"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_total
 msgid ""
 "percentage of categorized partners for whom this is the primary segment"
 msgstr ""
+"percentuale di partner categorizzati per i quali questo è il segmento "
+"primario"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__image
 msgid "segment illustration"
-msgstr ""
+msgstr "illustrazione del segmento"
 
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_tree

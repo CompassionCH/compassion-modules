@@ -18,18 +18,18 @@ msgstr ""
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Child Protection"
-msgstr ""
+msgstr "Protection de l'enfance"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_file
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Code de conduite"
 
 #. module: child_protection
 #: model:ir.model,name:child_protection.model_res_partner
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #. module: child_protection
 #: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_ir_actions_server
@@ -40,19 +40,19 @@ msgstr "Créez une activité : A criminal record is expiring today"
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record
 msgid "Criminal Record"
-msgstr ""
+msgstr "Casier judiciaire"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_date
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_date
 msgid "Criminal Record Date"
-msgstr ""
+msgstr "Date du casier judiciaire"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_name
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_name
 msgid "Criminal Record Name"
-msgstr ""
+msgstr "Nom du casier judiciaire"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__date_agreed_child_protection_charter
@@ -63,24 +63,24 @@ msgstr "Date de signature"
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Date agreed"
-msgstr ""
+msgstr "Date de signature"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_filename
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_filename
 msgid "File Name"
-msgstr ""
+msgstr "Nom du fichier"
 
 #. module: child_protection
 #: model:res.groups,name:child_protection.group_criminal_record
 msgid "Manage Criminal Records"
-msgstr ""
+msgstr "Gérer les casiers judiciaires"
 
 #. module: child_protection
 #: model:base.automation,name:child_protection.partner_notify_criminal_record_expiration
 #: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_action
 msgid "Partner: Notify criminal record expiration"
-msgstr ""
+msgstr "Partenaire : notifier l'expiration du casier judiciaire"
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__date_agreed_child_protection_charter
@@ -89,14 +89,16 @@ msgid ""
 "The date and time when the partner has agreed to the childprotection "
 "charter."
 msgstr ""
+"La date et l'heure auxquelles le partenaire a accepté la charte de "
+"protection de l'enfance."
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,help:child_protection.field_res_users__code_of_conduct_file
 msgid "Upload file"
-msgstr ""
+msgstr "Téléverser un fichier"
 
 #. module: child_protection
 #: model:res.groups,comment:child_protection.group_criminal_record
 msgid "the user will have access to all criminal records."
-msgstr ""
+msgstr "l'utilisateur aura accès à tous les casiers judiciaires."

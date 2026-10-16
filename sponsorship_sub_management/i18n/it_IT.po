@@ -19,13 +19,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
 msgid "%s - No SUB"
-msgstr ""
+msgstr "%s - Nessun SUB"
 
 #. module: sponsorship_sub_management
 #. odoo-python
 #: code:addons/sponsorship_sub_management/models/contracts.py:0
 msgid "%s - SUB Reject"
-msgstr ""
+msgstr "%s - SUB rifiutato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__active
@@ -36,7 +36,7 @@ msgstr "Attivo"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
 msgid "Active language"
-msgstr ""
+msgstr "Lingua attiva"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
@@ -46,7 +46,7 @@ msgstr "Annulla"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__cancel_gifts_on_termination
 msgid "Cancel pending gifts if sponsorship is terminated"
-msgstr ""
+msgstr "Annulla i regali in sospeso se il sostegno viene terminato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__cancelled
@@ -71,7 +71,7 @@ msgstr "Procedura guidata di trattenimento del bambino"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
 msgid "Choose which user will receive notifications about SUB Sponsorships"
-msgstr ""
+msgstr "Scegli quale utente riceverà le notifiche sui sub-sostegni"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__color
@@ -85,6 +85,8 @@ msgid ""
 "Completion date of child is in less than 2 years! Please choose another "
 "child."
 msgstr ""
+"La data di completamento del bambino è tra meno di 2 anni! Scegli un altro "
+"bambino."
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_create_sub_sponsorship
@@ -92,7 +94,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "Create SUB Sponsorship"
-msgstr ""
+msgstr "Crea un sub-sostegno"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__create_uid
@@ -109,7 +111,7 @@ msgstr "Creato il"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__channel__direct
 msgid "Direct"
-msgstr ""
+msgstr "Diretto"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__display_name
@@ -137,7 +139,7 @@ msgstr "Finito"
 #: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__channel__childpool
 msgid "Global Childpool"
-msgstr ""
+msgstr "Childpool globale"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
@@ -148,27 +150,27 @@ msgstr "Gruppo di..."
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__id
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__user_image
 msgid "Image 128"
-msgstr ""
+msgstr "Immagine 128"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_install_sds_tracking
 msgid "Install SDS Tracking"
-msgstr ""
+msgstr "Installa il monitoraggio SDS"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__is_other
 msgid "Is Other"
-msgstr ""
+msgstr "È altro"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,help:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
 msgid "Language for which to be notified (empty for all languages)"
-msgstr ""
+msgstr "Lingua per cui ricevere le notifiche (vuoto per tutte le lingue)"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__write_uid
@@ -185,17 +187,17 @@ msgstr "Ultima modifica il"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__lifecycle_ids
 msgid "Lifecycle events"
-msgstr ""
+msgstr "Eventi del ciclo di vita"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__child_hold_wizard__return_action__sub
 msgid "Make SUB Sponsorship"
-msgstr ""
+msgstr "Crea un sub-sostegno"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
 msgid "Manage SDS Followers Notifications"
-msgstr ""
+msgstr "Gestisci le notifiche dei responsabili SDS"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
@@ -205,40 +207,40 @@ msgstr "I miei sostegni"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "No SUB"
-msgstr ""
+msgstr "Nessun SUB"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__no_sub
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "No sub"
-msgstr ""
+msgstr "Nessun SUB"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__no_sub_reason
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__no_sub_default_reasons
 msgid "No sub reason"
-msgstr ""
+msgstr "Motivo dell'assenza di SUB"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sub_notes
 msgid "Notes for SUB Sponsorship"
-msgstr ""
+msgstr "Note per il sub-sostegno"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_tracking_contract_form
 msgid "Open SDS view"
-msgstr ""
+msgstr "Apri la vista SDS"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
 msgid "Open financial view"
-msgstr ""
+msgstr "Apri la vista finanziaria"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__child_image
 msgid "Portrait"
-msgstr ""
+msgstr "Ritratto"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__no_sub_reason
@@ -258,41 +260,41 @@ msgstr "Return action"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_uid
 msgid "SDS Follower"
-msgstr ""
+msgstr "Responsabile SDS"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
 msgid "SDS Followers"
-msgstr ""
+msgstr "Responsabili SDS"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_sds_sub_followers
 msgid "SDS SUB Sponsorship Followers"
-msgstr ""
+msgstr "Responsabili dei sub-sostegni SDS"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_state
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "SDS Status"
-msgstr ""
+msgstr "Stato SDS"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_state_date
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "SDS state date"
-msgstr ""
+msgstr "Data dello stato SDS"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.sds_sub_followers_act_window
 #: model:ir.ui.menu,name:sponsorship_sub_management.menu_sds_sub_followers_act_window
 msgid "SUB Followers"
-msgstr ""
+msgstr "Responsabili SUB"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "SUB Reject"
-msgstr ""
+msgstr "SUB rifiutato"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_follow_sds
@@ -303,7 +305,7 @@ msgstr "Welcome / SUB"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Search contracts"
-msgstr ""
+msgstr "Cerca contratti"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__sequence
@@ -314,7 +316,7 @@ msgstr "Sequenza"
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_end_reason
 #: model:ir.ui.menu,name:sponsorship_sub_management.menu_end_reason
 msgid "Sponsorship end reasons"
-msgstr ""
+msgstr "Motivi di fine del sostegno"
 
 #. module: sponsorship_sub_management
 #: model:base.automation,name:sponsorship_sub_management.sub_check
@@ -324,7 +326,7 @@ msgstr "Check SUB Accept/Reject"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Start date"
-msgstr ""
+msgstr "Data di inizio"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__state
@@ -339,17 +341,17 @@ msgstr "Stato"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub
 msgid "Sub"
-msgstr ""
+msgstr "Sub"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_accept
 msgid "Sub Accept"
-msgstr ""
+msgstr "SUB accettato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_reject
 msgid "Sub Reject"
-msgstr ""
+msgstr "SUB rifiutato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_sds_subsponsorship_wizard
@@ -359,34 +361,34 @@ msgstr "Procedura guidata per la sub-sponsorizzazione"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__user_id
 msgid "Sub sponsorships follower"
-msgstr ""
+msgstr "Responsabile dei sub-sostegni"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_waiting
 msgid "Sub waiting"
-msgstr ""
+msgstr "SUB in attesa"
 
 #. module: sponsorship_sub_management
 #. odoo-python
 #: code:addons/sponsorship_sub_management/models/contracts.py:0
 #: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
 msgid "The sponsor doesn't want a new child."
-msgstr ""
+msgstr "Il sostenitore non desidera un nuovo bambino."
 
 #. module: sponsorship_sub_management
 #: model:ir.model.constraint,message:sponsorship_sub_management.constraint_sds_sub_followers_unique_user
 msgid "This user is already configured."
-msgstr ""
+msgstr "Questo utente è già configurato."
 
 #. module: sponsorship_sub_management
 #: model:ir.ui.menu,name:sponsorship_sub_management.menu_tracking
 msgid "Track sponsorships"
-msgstr ""
+msgstr "Monitora i sostegni"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Waiting"
-msgstr ""
+msgstr "In attesa"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,help:sponsorship_sub_management.field_sds_sub_followers__sequence
@@ -394,17 +396,19 @@ msgid ""
 "When multiple followers match, the one with highest priority(at the top) "
 "will be assigned."
 msgstr ""
+"Se più responsabili corrispondono, verrà assegnato quello con la priorità "
+"più alta (in cima)."
 
 #. module: sponsorship_sub_management
 #. odoo-python
 #: code:addons/sponsorship_sub_management/models/contracts.py:0
 msgid "You cannot change the sub sponsorship."
-msgstr ""
+msgstr "Non puoi modificare il sub-sostegno."
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__no_sub
 msgid "no_sub"
-msgstr ""
+msgstr "no_sub"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
@@ -414,4 +418,4 @@ msgstr "o"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__sub
 msgid "sub"
-msgstr ""
+msgstr "sub"

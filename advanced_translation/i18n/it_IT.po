@@ -18,43 +18,43 @@ msgstr ""
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_adere
 msgid "Adere"
-msgstr ""
+msgstr "Adere"
 
 #. module: advanced_translation
 #: model:ir.actions.act_window,name:advanced_translation.action_advanced_translation_view
 #: model:ir.ui.menu,name:advanced_translation.menu_open_advanced_translation
 msgid "Advanced translation"
-msgstr ""
+msgstr "Traduzione avanzata"
 
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_ir_advanced_translation
 msgid "Advanced translation terms"
-msgstr ""
+msgstr "Termini di traduzione avanzata"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_amharic
 msgid "Amharic"
-msgstr ""
+msgstr "Amharic"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_aymara
 msgid "Aymara"
-msgstr ""
+msgstr "Aymara"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_bahasa_indonesia
 msgid "Bahasa Indonesia"
-msgstr ""
+msgstr "Bahasa Indonesia"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla_2
 msgid "Bangla"
-msgstr ""
+msgstr "Bangla"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla_ashik
 msgid "Bangla & Achik"
-msgstr ""
+msgstr "Bangla e Achik"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangla
@@ -64,27 +64,27 @@ msgstr "Bengalese"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_bangali
 msgid "Bengali"
-msgstr ""
+msgstr "Bengalese"
 
 #. module: advanced_translation
 #: model:ir.model.fields,help:advanced_translation.field_res_lang_compassion__translatable
 msgid "Can be translated by GP"
-msgstr ""
+msgstr "Può essere tradotta dal GP"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_castellano
 msgid "Castellano"
-msgstr ""
+msgstr "Castellano"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_cebuano
 msgid "Cebuano"
-msgstr ""
+msgstr "Cebuano"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_visayan
 msgid "Cebuano (Visayan)"
-msgstr ""
+msgstr "Cebuano (Visayan)"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__code_iso
@@ -111,22 +111,22 @@ msgstr "Creato il"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_haitien_creole
 msgid "Creole"
-msgstr ""
+msgstr "Creolo"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_creole_french
 msgid "Creole And French"
-msgstr ""
+msgstr "Creolo e francese"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_danish
 msgid "Danish"
-msgstr ""
+msgstr "Danese"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_dioula
 msgid "Dioula"
-msgstr ""
+msgstr "Dioula"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__display_name
@@ -147,12 +147,12 @@ msgstr "Spagnolo"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_ewe
 msgid "Ewe"
-msgstr ""
+msgstr "Ewe"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_fanti
 msgid "Fanti"
-msgstr ""
+msgstr "Fanti"
 
 #. module: advanced_translation
 #: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_child__gender__f
@@ -192,12 +192,12 @@ msgstr "Female singular"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_filipino
 msgid "Filipino"
-msgstr ""
+msgstr "Filipino"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_finnish
 msgid "Finnish "
-msgstr ""
+msgstr "Finlandese "
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_french
@@ -232,24 +232,26 @@ msgstr "Gruppo di..."
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_hindi
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__id
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: advanced_translation
 #: model:ir.model.fields,help:advanced_translation.field_ir_advanced_translation__src_fallback
 msgid ""
 "If checked, the term will be used as fallback if no translation is found"
 msgstr ""
+"Se selezionato, il termine verrà utilizzato come riserva se non viene "
+"trovata alcuna traduzione"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_indonesia
 msgid "Indonesia"
-msgstr ""
+msgstr "Indonesia"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_indonesian
@@ -269,52 +271,52 @@ msgstr "Javanische"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kannada
 msgid "Kannada"
-msgstr ""
+msgstr "Kannada"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_karen
 msgid "Karen"
-msgstr ""
+msgstr "Karen"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_karonese
 msgid "Karonese"
-msgstr ""
+msgstr "Karonese"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kembatigna
 msgid "Kembatigna"
-msgstr ""
+msgstr "Kembatigna"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kichua
 msgid "Kichua"
-msgstr ""
+msgstr "Kichua"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kinyarwanda
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "Kinyarwanda"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kiswahili
 msgid "Kiswahili"
-msgstr ""
+msgstr "Kiswahili"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_krobo
 msgid "Krobo"
-msgstr ""
+msgstr "Krobo"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_kunyarwanda
 msgid "Kunyarwanda"
-msgstr ""
+msgstr "Kunyarwanda"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_lahu
 msgid "Lahu"
-msgstr ""
+msgstr "Lahu"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__lang
@@ -330,7 +332,7 @@ msgstr "Lingua"
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_langdetect
 msgid "Language detection with langdetect"
-msgstr ""
+msgstr "Rilevamento della lingua con langdetect"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__write_uid
@@ -347,17 +349,17 @@ msgstr "Ultima modifica il"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_maa
 msgid "Maa"
-msgstr ""
+msgstr "Maa"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_maasai
 msgid "Maasai"
-msgstr ""
+msgstr "Maasai"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_malayalam
 msgid "Malayalam"
-msgstr ""
+msgstr "Malayalam"
 
 #. module: advanced_translation
 #: model:ir.model.fields.selection,name:advanced_translation.selection__compassion_child__gender__m
@@ -397,17 +399,17 @@ msgstr "Male singular"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_mandi
 msgid "Mandi"
-msgstr ""
+msgstr "Mandi"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_mazahua
 msgid "Mazahua"
-msgstr ""
+msgstr "Mazahua"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_moore
 msgid "Moore"
-msgstr ""
+msgstr "Moore"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_more
@@ -417,7 +419,7 @@ msgstr "Altro"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_nahuatl
 msgid "Nahuatl"
-msgstr ""
+msgstr "Nahuatl"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__name
@@ -427,27 +429,27 @@ msgstr "Nome"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_norwegian
 msgid "Norwegian"
-msgstr ""
+msgstr "Norvegese"
 
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_ocr
 msgid "Optical character recognition with Tesseract"
-msgstr ""
+msgstr "Riconoscimento ottico dei caratteri con Tesseract"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_oriya
 msgid "Oriya"
-msgstr ""
+msgstr "Oriya"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_oromiffa
 msgid "Oromiffa"
-msgstr ""
+msgstr "Oromiffa"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_oromo
 msgid "Oromo"
-msgstr ""
+msgstr "Oromo"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_portuguese
@@ -462,42 +464,42 @@ msgstr "Portoghese"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_quechi
 msgid "Q'uechi"
-msgstr ""
+msgstr "Q'uechi"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_quechua
 msgid "Quechua"
-msgstr ""
+msgstr "Quechua"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_qichua
 msgid "Quichua"
-msgstr ""
+msgstr "Quichua"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_samarenyo
 msgid "Samarenyo"
-msgstr ""
+msgstr "Samarenyo"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_santal
 msgid "Santal"
-msgstr ""
+msgstr "Santal"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_santali
 msgid "Santali"
-msgstr ""
+msgstr "Santali"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_sidamigna
 msgid "Sidamigna"
-msgstr ""
+msgstr "Sidamigna"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_sinhala
 msgid "Sinhala"
-msgstr ""
+msgstr "Sinhala"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__src
@@ -512,37 +514,37 @@ msgstr "Spagnolo"
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__src_fallback
 msgid "Src Fallback"
-msgstr ""
+msgstr "Src di riserva"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_swahil
 msgid "Swahil"
-msgstr ""
+msgstr "Swahil"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_swahili
 msgid "Swahili"
-msgstr ""
+msgstr "Swahili"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_swedish
 msgid "Swedish"
-msgstr ""
+msgstr "Svedese"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tagalog
 msgid "Tagalog"
-msgstr ""
+msgstr "Tagalog"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tamil
 msgid "Tamil"
-msgstr ""
+msgstr "Tamil"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_telegu
 msgid "Telegu"
-msgstr ""
+msgstr "Telegu"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_thai
@@ -552,22 +554,22 @@ msgstr "Tailandia"
 #. module: advanced_translation
 #: model:ir.model.constraint,message:advanced_translation.constraint_ir_advanced_translation_unique_term
 msgid "The term already exists"
-msgstr ""
+msgstr "Il termine esiste già"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tigrigna
 msgid "Tigrigna"
-msgstr ""
+msgstr "Tigrigna"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_toraja
 msgid "Toraja"
-msgstr ""
+msgstr "Toraja"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_totonaco
 msgid "Totonaco"
-msgstr ""
+msgstr "Totonaco"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__translatable
@@ -582,22 +584,22 @@ msgstr "translatable.model"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tugen
 msgid "Tugen"
-msgstr ""
+msgstr "Tugen"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_twi
 msgid "Twi"
-msgstr ""
+msgstr "Twi"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tzeltal
 msgid "Tzeltal"
-msgstr ""
+msgstr "Tzeltal"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tzotzil
 msgid "Tzotzil"
-msgstr ""
+msgstr "Tzotzil"
 
 #. module: advanced_translation
 #. odoo-python
@@ -608,17 +610,17 @@ msgstr "Sconosciuto"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_wassa_twi
 msgid "Wassa Twi"
-msgstr ""
+msgstr "Wassa Twi"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_wolaitigna
 msgid "Wolaitigna"
-msgstr ""
+msgstr "Wolaitigna"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_zapoteco
 msgid "Zapoteco"
-msgstr ""
+msgstr "Zapoteco"
 
 #. module: advanced_translation
 #. odoo-python

@@ -22,7 +22,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr ""
+msgstr "Pièce jointe du bac 1"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_2
@@ -31,12 +31,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr ""
+msgstr "Pièce jointe du bac 2"
 
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_attachment
 msgid "Communication Attachment"
-msgstr ""
+msgstr "Pièce jointe de communication"
 
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_defaults
@@ -46,7 +46,7 @@ msgstr "partner.communication.defaults"
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_job
 msgid "Communication Job"
-msgstr ""
+msgstr "Job de communication"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_enable_marks
@@ -55,7 +55,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_enable_marks
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_enable_marks
 msgid "Enable OMR"
-msgstr ""
+msgstr "Activer l'OMR"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_1
@@ -67,6 +67,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
+"Si activé, la marque OMR pour ajouter une pièce jointe du bac 1 est ajoutée "
+"à la communication."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_2
@@ -78,6 +80,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
+"Si activé, la marque OMR pour ajouter une pièce jointe du bac 2 est ajoutée "
+"à la communication."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_should_close_envelope
@@ -89,6 +93,8 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
+"Si activé, la marque OMR pour fermer l'enveloppe est ajoutée à la "
+"communication."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_enable_marks
@@ -97,17 +103,17 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_generate_wizard__omr_enable_marks
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_job__omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
-msgstr ""
+msgstr "Si activé, les marques OMR sont affichées dans la communication."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_attachment__is_last_to_print
 msgid "Is Last To Print"
-msgstr ""
+msgstr "Est le dernier à imprimer"
 
 #. module: partner_communication_omr
 #: model_terms:ir.ui.view,arch_db:partner_communication_omr.communication_job_orm_form
 msgid "OMR"
-msgstr ""
+msgstr "OMR"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_should_close_envelope
@@ -116,7 +122,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr ""
+msgstr "L'OMR doit fermer l'enveloppe"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_single_sided
@@ -154,6 +160,8 @@ msgstr "ir.actions.report.xml"
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_attachment__is_last_to_print
 msgid "Technical field for identifying last printed document with OMR marks."
 msgstr ""
+"Champ technique permettant d'identifier le dernier document imprimé avec des"
+" marques OMR."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_single_sided
@@ -165,6 +173,8 @@ msgid ""
 "Will put the OMR marks on every page if the document is printed single-"
 "sided."
 msgstr ""
+"Placera les marques OMR sur chaque page si le document est imprimé en recto "
+"simple."
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_top_mark_x
@@ -173,7 +183,7 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_generate_wizard__omr_top_mark_x
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_job__omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr ""
+msgstr "Position X en millimètres de la première marque OMR sur la page"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_top_mark_y
@@ -185,3 +195,5 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
+"Position Y en millimètres de la première marque OMR sur la page, calculée "
+"depuis le bas de la page."

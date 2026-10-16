@@ -570,7 +570,7 @@ msgstr "Add success story"
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__address_without_name
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users__address_without_name
 msgid "Address Without Name"
-msgstr ""
+msgstr "Indirizzo senza nome"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_ambassador_id
@@ -585,13 +585,13 @@ msgstr "Importo"
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__min_donation_amount
 msgid "Amount in the local currency to apply the configuration"
-msgstr ""
+msgstr "Importo nella valuta locale a cui applicare la configurazione"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
 #: model:ir.model.fields,field_description:thankyou_letters.field_account_move__avoid_thankyou_letter
 msgid "Avoid Thankyou Letter"
-msgstr ""
+msgstr "Evita la lettera di ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__body
@@ -613,7 +613,7 @@ msgstr "Annulla"
 #: model:ir.model.fields,help:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
 #: model:ir.model.fields,help:thankyou_letters.field_account_move__avoid_thankyou_letter
 msgid "Check to disable thank you letter for donation"
-msgstr ""
+msgstr "Spunta per disabilitare la lettera di ringraziamento per la donazione"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_partner_communication_defaults
@@ -687,13 +687,13 @@ msgstr "Grazie per la vostra donazione !"
 #. module: thankyou_letters
 #: model:ir.actions.act_window,name:thankyou_letters.action_thank_you
 msgid "Donation Receipts"
-msgstr ""
+msgstr "Ricevute delle donazioni"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__requires_thankyou
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_template__requires_thankyou
 msgid "Enable thank you letter"
-msgstr ""
+msgstr "Abilita la lettera di ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_event_id
@@ -703,13 +703,15 @@ msgstr "Evento"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users_valid_mandate_id
 msgid "First Valid Mandate"
-msgstr ""
+msgstr "Primo mandato valido"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_product_product__success_story_id
 #: model:ir.model.fields,help:thankyou_letters.field_product_template__success_story_id
 msgid "Forces a success story when receiving a donation for this product."
 msgstr ""
+"Forza una storia di successo quando si riceve una donazione per questo "
+"prodotto."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_gender
@@ -731,13 +733,14 @@ msgstr "Gruppo per"
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__id
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__lang
 msgid ""
 "If specified will only be used with partners that have the same language."
 msgstr ""
+"Se specificata, verrà usata solo con i partner che hanno la stessa lingua."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__need_call
@@ -785,7 +788,7 @@ msgstr "Articolo di giornale"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__lang
 msgid "Lang"
-msgstr ""
+msgstr "Lingua"
 
 #. module: thankyou_letters
 #: model:mail.template,name:thankyou_letters.thankyou_letter_template_large
@@ -807,7 +810,7 @@ msgstr "Ultima modifica il"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__min_donation_amount
 msgid "Minimum Donation Amount"
-msgstr ""
+msgstr "Importo minimo della donazione"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__name
@@ -822,7 +825,7 @@ msgstr "Need call"
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__new
 msgid "New"
-msgstr ""
+msgstr "Nuovo"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__only_when_chosen
@@ -843,7 +846,7 @@ msgstr "Procedura guidata per la generazione di comunicazioni con i partner"
 #. odoo-python
 #: code:addons/thankyou_letters/models/success_story.py:0
 msgid "Period is not valid"
-msgstr ""
+msgstr "Il periodo non è valido"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_plural
@@ -912,7 +915,7 @@ msgstr "Invia ora"
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__sentence
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Sentence"
-msgstr ""
+msgstr "Frase"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_success_story__only_when_chosen
@@ -920,6 +923,8 @@ msgid ""
 "Set this to use the story only for given products or when manually chosen. "
 "The story won't be used automatically."
 msgstr ""
+"Imposta questa opzione per usare la storia solo per determinati prodotti o "
+"quando viene scelta manualmente. La storia non verrà usata automaticamente."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_product_product__requires_thankyou
@@ -928,6 +933,8 @@ msgid ""
 "Set to true to enable thank you letters when invoice line with this product "
 "is reconciled."
 msgstr ""
+"Imposta su Vero per abilitare le lettere di ringraziamento quando viene "
+"riconciliata una riga di fattura con questo prodotto."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__short_address
@@ -968,12 +975,12 @@ msgstr "Stato"
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__story
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Story"
-msgstr ""
+msgstr "Storia"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_sentence_id
 msgid "Success Sentence"
-msgstr ""
+msgstr "Frase di successo"
 
 #. module: thankyou_letters
 #: model:ir.actions.act_window,name:thankyou_letters.action_success_story
@@ -985,7 +992,7 @@ msgstr "Storie di successo"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__success_story_id
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_story_id
 msgid "Success Story"
-msgstr ""
+msgstr "Storia di successo"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_success_story
@@ -996,7 +1003,7 @@ msgstr "Success Story"
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__success_story_id
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_template__success_story_id
 msgid "Success story"
-msgstr ""
+msgstr "Storia di successo"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_thankyou_config
@@ -1006,18 +1013,18 @@ msgstr "Grazie Configurazione"
 #. module: thankyou_letters
 #: model:ir.ui.menu,name:thankyou_letters.menu_donation_general
 msgid "Thank you Letters"
-msgstr ""
+msgstr "Lettere di ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__partner_communication_config
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_template__partner_communication_config
 msgid "Thank you config"
-msgstr ""
+msgstr "Configurazione dei ringraziamenti"
 
 #. module: thankyou_letters
 #: model:ir.ui.menu,name:thankyou_letters.thank_you_config_item
 msgid "Thank you configuration"
-msgstr ""
+msgstr "Configurazione dei ringraziamenti"
 
 #. module: thankyou_letters
 #: model:mail.template,subject:thankyou_letters.thankyou_letter_template
@@ -1030,12 +1037,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:thankyou_letters.field_account_bank_statement_line__communication_id
 #: model:ir.model.fields,field_description:thankyou_letters.field_account_move__communication_id
 msgid "Thank you letter"
-msgstr ""
+msgstr "Lettera di ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__user_id
 msgid "Thanker"
-msgstr ""
+msgstr "Chi ringrazia"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__thanks_name
@@ -1046,7 +1053,7 @@ msgstr "Thanks name"
 #. module: thankyou_letters
 #: model:ir.actions.act_window,name:thankyou_letters.action_thank_you_config
 msgid "Thankyou Config"
-msgstr ""
+msgstr "Configurazione dei ringraziamenti"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__thankyou_preference
@@ -1063,14 +1070,15 @@ msgstr "Tipo"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_form
 msgid "Use story only when manually chosen"
-msgstr ""
+msgstr "Usa la storia solo quando scelta manualmente"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__used
 msgid "Used"
-msgstr ""
+msgstr "Utilizzata"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_partner_communication_generate_wizard__selected_move_line_ids
 msgid "User-selected invoices for communication generation."
 msgstr ""
+"Fatture selezionate dall'utente per la generazione della comunicazione."

@@ -18,13 +18,13 @@ msgstr ""
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Child Protection"
-msgstr ""
+msgstr "Kinderschutz"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_file
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Verhaltenskodex"
 
 #. module: child_protection
 #: model:ir.model,name:child_protection.model_res_partner
@@ -46,41 +46,41 @@ msgstr "Strafregister"
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_date
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_date
 msgid "Criminal Record Date"
-msgstr ""
+msgstr "Datum des Strafregisterauszugs"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_name
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_name
 msgid "Criminal Record Name"
-msgstr ""
+msgstr "Name des Strafregisterauszugs"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__date_agreed_child_protection_charter
 #: model:ir.model.fields,field_description:child_protection.field_res_users__date_agreed_child_protection_charter
 msgid "Date Agreed Child Protection Charter"
-msgstr ""
+msgstr "Datum der Zustimmung zur Kinderschutz-Charta"
 
 #. module: child_protection
 #: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
 msgid "Date agreed"
-msgstr ""
+msgstr "Zugestimmt am"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_filename
 #: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_filename
 msgid "File Name"
-msgstr ""
+msgstr "Dateiname"
 
 #. module: child_protection
 #: model:res.groups,name:child_protection.group_criminal_record
 msgid "Manage Criminal Records"
-msgstr ""
+msgstr "Strafregisterauszüge verwalten"
 
 #. module: child_protection
 #: model:base.automation,name:child_protection.partner_notify_criminal_record_expiration
 #: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_action
 msgid "Partner: Notify criminal record expiration"
-msgstr ""
+msgstr "Partner: Ablauf des Strafregisterauszugs melden"
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__date_agreed_child_protection_charter
@@ -89,14 +89,16 @@ msgid ""
 "The date and time when the partner has agreed to the childprotection "
 "charter."
 msgstr ""
+"Datum und Uhrzeit, zu denen der Partner der Kinderschutz-Charta zugestimmt "
+"hat."
 
 #. module: child_protection
 #: model:ir.model.fields,help:child_protection.field_res_partner__code_of_conduct_file
 #: model:ir.model.fields,help:child_protection.field_res_users__code_of_conduct_file
 msgid "Upload file"
-msgstr ""
+msgstr "Datei hochladen"
 
 #. module: child_protection
 #: model:res.groups,comment:child_protection.group_criminal_record
 msgid "the user will have access to all criminal records."
-msgstr ""
+msgstr "Der Benutzer hat Zugriff auf alle Strafregisterauszüge."

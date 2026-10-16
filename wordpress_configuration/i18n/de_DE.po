@@ -18,7 +18,7 @@ msgstr ""
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__child_gift_url
 msgid "Child Gift Url"
-msgstr ""
+msgstr "URL Kindergeschenk"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__company_id
@@ -43,23 +43,23 @@ msgstr "Anzeigename"
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__fund_gift_url
 msgid "Fund Gift Url"
-msgstr ""
+msgstr "URL Fondsgeschenk"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__host
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #. module: wordpress_configuration
 #. odoo-python
 #: code:addons/wordpress_configuration/models/wordpress_configuration.py:0
 msgid "Hostname should not contain the protocol part ('http://')."
-msgstr ""
+msgstr "Der Hostname darf den Protokollteil ('http://') nicht enthalten."
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__write_uid
@@ -75,7 +75,7 @@ msgstr "Zuletzt aktualisiert am"
 #. odoo-python
 #: code:addons/wordpress_configuration/models/wordpress_configuration.py:0
 msgid "Missing Wordpress configuration for current company"
-msgstr ""
+msgstr "Fehlende WordPress-Konfiguration für die aktuelle Firma"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__password
@@ -85,12 +85,12 @@ msgstr "Passwort"
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__sponsorship_url
 msgid "Sponsorship Url"
-msgstr ""
+msgstr "URL Patenschaft"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__survival_sponsorship_url
 msgid "Survival Sponsorship Url"
-msgstr ""
+msgstr "URL Survival-Patenschaft"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__user
@@ -100,15 +100,15 @@ msgstr "Benutzer"
 #. module: wordpress_configuration
 #: model:ir.ui.menu,name:wordpress_configuration.menu_technical_wp
 msgid "Wordpress"
-msgstr ""
+msgstr "WordPress"
 
 #. module: wordpress_configuration
 #: model:ir.actions.act_window,name:wordpress_configuration.open_view_wordpress_configuration
 #: model:ir.ui.menu,name:wordpress_configuration.menu_wp_configuration
 msgid "Wordpress configuration"
-msgstr ""
+msgstr "WordPress-Konfiguration"
 
 #. module: wordpress_configuration
 #: model:ir.model,name:wordpress_configuration.model_wordpress_configuration
 msgid "Wordpress parameters (host, user, password) for a company"
-msgstr ""
+msgstr "WordPress-Parameter (Host, Benutzer, Passwort) für eine Firma"

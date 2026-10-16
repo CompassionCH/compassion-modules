@@ -702,7 +702,7 @@ msgstr ""
 #. module: partner_communication_reminder
 #: model:base.automation,name:partner_communication_reminder.automation_recompute_due_invoices
 msgid "Recompute contract due invoices"
-msgstr ""
+msgstr "Ricalcola le fatture in scadenza dei contratti"
 
 #. module: partner_communication_reminder
 #: model:ir.model,name:partner_communication_reminder.model_recurring_contract

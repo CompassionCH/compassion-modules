@@ -34,11 +34,15 @@ msgid ""
 "wizard, donation, project creation). When unset, the salutation stays usable"
 " in the backend but is hidden from those forms."
 msgstr ""
+"Se impostato, questo titolo di cortesia viene proposto nei formulari "
+"pubblici (procedura di sostegno, donazione, creazione di progetti). Se non "
+"impostato, il titolo resta utilizzabile nel backend ma è nascosto in questi "
+"formulari."
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__is_shown_on_public_forms
 msgid "Is Shown On Public Forms"
-msgstr ""
+msgstr "Mostrato nei formulari pubblici"
 
 #. module: partner_salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner_title__order_index

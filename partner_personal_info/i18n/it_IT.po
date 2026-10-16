@@ -28,7 +28,7 @@ msgstr "Contatto"
 #. module: partner_personal_info
 #: model_terms:ir.ui.view,arch_db:partner_personal_info.view_partner_form_compassion_personal
 msgid "Data privacy"
-msgstr ""
+msgstr "Protezione dei dati"
 
 #. module: partner_personal_info
 #: model:ir.model.fields,field_description:partner_personal_info.field_res_partner__uuid
@@ -39,4 +39,4 @@ msgstr "Uuid"
 #. module: partner_personal_info
 #: model:ir.model.constraint,message:partner_personal_info.constraint_res_partner_uuid_uniq
 msgid "The uuid must be unique."
-msgstr ""
+msgstr "L'uuid deve essere unico."
