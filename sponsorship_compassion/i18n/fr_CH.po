@@ -143,7 +143,7 @@ msgstr ""
 #. module: sponsorship_compassion
 #: model:account.analytic.account,name:sponsorship_compassion.account_analytic_account_campaign
 msgid "Campaign"
-msgstr "[INT-0000066678] ET-(Food Crisis) Support for West Oromia"
+msgstr "Campagne"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__can_make_gift
@@ -1124,11 +1124,6 @@ msgid ""
 "crowdunfding project * Transfer : sponsorship transferred from another "
 "country. * Other : select only if none other type matches."
 msgstr ""
-"Origin of contract :  * Contact with sponsor/ambassador : an other sponsor "
-"told the person about Compassion. * Event : sponsorship was made during an "
-"event * Marketing campaign : sponsorship was made after specific campaign "
-"(magazine, ad, etc..) * Transfer : sponsorship transferred from another "
-"country. * Other : select only if none other type matches."
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_form

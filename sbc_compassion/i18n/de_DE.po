@@ -643,7 +643,7 @@ msgstr "First write date"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_first_letter
 msgid "First letter from Participant"
-msgstr "First letter from Beneficiary"
+msgstr ""
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__fname
@@ -1063,7 +1063,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_compassion.field_reformat_all_phonenumbers__letter_responsible
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_config_settings__letter_responsible
 msgid "Letter translation check unsuccessful"
-msgstr "Letter responsible for activity schedule"
+msgstr ""
 
 #. module: sbc_compassion
 #. odoo-python
@@ -1704,8 +1704,6 @@ msgstr "import.letter.line"
 #: model:ir.model,name:sbc_compassion.model_import_letters_history
 msgid "S2B Letter Import"
 msgstr ""
-"History of the letters imported from a zip\n"
-"    or a PDF/TIFF"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letter_config
@@ -2026,7 +2024,8 @@ msgstr ""
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence__medium_id
 msgid "This is the method of delivery, e.g. Postcard, Email, or Banner Ad"
-msgstr "This is the method of delivery.Ex: Postcard, Email, or Banner Ad"
+msgstr ""
+"Dies ist die Art der Zustellung, z.B. Postkarte, E-Mail oder Bannerwerbung"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence__source_id
@@ -2034,8 +2033,8 @@ msgid ""
 "This is the source of the link, e.g. Search Engine, another domain, or name "
 "of email list"
 msgstr ""
-"This is the source of the link Ex:Search Engine, another domain,or name of "
-"email list"
+"Dies ist die Quelle des Links, z. B. eine Suchmaschine, eine andere Domain "
+"oder der Name einer E-Mail-Liste"
 
 #. module: sbc_compassion
 #: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_template_page_unique_page

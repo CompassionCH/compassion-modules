@@ -535,7 +535,7 @@ msgstr "Sélectionnez les réponses qui vous correspondent le plus"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__image
 msgid "Image"
-msgstr "I don't want to receive emails about the impact"
+msgstr "Image"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q5_labels

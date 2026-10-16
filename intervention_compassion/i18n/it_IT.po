@@ -286,7 +286,7 @@ msgstr ""
 #. module: intervention_compassion
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__commit_to_additional_fund
 msgid "Commit To Additional Fund"
-msgstr "Commit to additional fund"
+msgstr ""
 
 #. module: intervention_compassion
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__commited_percentage
@@ -1361,7 +1361,7 @@ msgstr "Remaining amount equal"
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__remaining_amount_to_raise
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__remaining_amount_to_raise
 msgid "Remaining Amount To Raise"
-msgstr "Remaining amount to raise"
+msgstr ""
 
 #. module: intervention_compassion
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__remaining_amount_greater
@@ -1615,7 +1615,7 @@ msgstr ""
 #. module: intervention_compassion
 #: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__fo_proposed_sla_costs
 msgid "The costs proposed by the National Office for the SLA"
-msgstr "The costs proposed by the Field Office for the SLA"
+msgstr ""
 
 #. module: intervention_compassion
 #: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__approved_sla_costs

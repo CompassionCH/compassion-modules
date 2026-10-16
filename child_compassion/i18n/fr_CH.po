@@ -763,7 +763,7 @@ msgstr "Beneficiary physical condition"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__beneficiary_physical_condition_description
 msgid "Beneficiary Physical Condition Description"
-msgstr "Beneficiary physical condition description"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__beneficiary_state
@@ -1076,7 +1076,7 @@ msgstr "Caregivers died number"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__caregivers_seriously_injured_number
 msgid "Caregivers Seriously Injured Number"
-msgstr "Caregivers seriously injured number"
+msgstr ""
 
 #. module: child_compassion
 #. odoo-python
@@ -1222,7 +1222,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__child_center_original_name
 msgid "Child Center Original Name"
-msgstr "Child center original name"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__child_death_category
@@ -1979,7 +1979,7 @@ msgstr "Fin de parrainage avant le"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__completion_date_change_reason
 msgid "Completion Date Change Reason"
-msgstr "Completion date change reason"
+msgstr ""
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_computer
@@ -2302,7 +2302,7 @@ msgstr "Cultural rituals"
 #. module: child_compassion
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_birthday
 msgid "Cultural and birthday celebrations"
-msgstr "Cultural and Birthday Celebrations"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__currency
@@ -2937,7 +2937,7 @@ msgstr "Erreur"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__estimated_basic_supplies_needed
 msgid "Estimated Basic Supplies Needed"
-msgstr "Estimated basic supplies needed"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__estimated_birthdate
@@ -2962,7 +2962,7 @@ msgstr "Estimated loss of livelihood"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__estimated_not_attending_project
 msgid "Estimated Not Attending Project"
-msgstr "Estimated not attending project"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__estimated_rehabilitation_funds_usd
@@ -3399,7 +3399,7 @@ msgstr "Field office damage"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__field_office_impact_description
 msgid "Field Office Impact Description"
-msgstr "Field office impact description"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_disaster_impact__field_office_impact_status
@@ -4770,12 +4770,12 @@ msgstr "Impact on fcp program"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__impact_on_fcp_program_temporarily_closed
 msgid "Impact On Fcp Program Temporarily Closed"
-msgstr "Impact on fcp program temporarily closed"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__impact_to_field_office_operations
 msgid "Impact To Field Office Operations"
-msgstr "Impact to field office operations"
+msgstr ""
 
 #. module: child_compassion
 #. odoo-python
@@ -5058,7 +5058,7 @@ msgstr "Is available"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__is_beneficiary_information_updates_withheld
 msgid "Is Beneficiary Information Updates Withheld"
-msgstr "Is beneficiary information updates withheld"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household_member__is_caregiver
@@ -5703,7 +5703,7 @@ msgstr "Dernière mise à jour le"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__last_weather_refresh_date
 msgid "Last Weather Refresh Date"
-msgstr "Last weather refresh date"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__last_reviewed_date
@@ -5877,7 +5877,7 @@ msgstr "Local church name"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__local_church_original_name
 msgid "Local Church Original Name"
-msgstr "Local church original name"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__local_grade_level
@@ -6523,7 +6523,7 @@ msgstr "Field Office Disaster Update"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_field_office_learning
 msgid "National Office Learning information"
-msgstr "Field Office Learning information"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__fo_disaster_update_ids
@@ -8002,7 +8002,7 @@ msgstr "Primary caregiver id"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__primary_ethnic_group_name
 msgid "Primary Ethnic Group Name"
-msgstr "Primary ethnic group name"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard__primary_owner
@@ -8514,27 +8514,27 @@ msgstr "ir.actions.report.xml"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_loss_of_life_beneficiaries
 msgid "Reported Loss Of Life Beneficiaries"
-msgstr "Reported loss of life beneficiaries"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_loss_of_life_caregivers
 msgid "Reported Loss Of Life Caregivers"
-msgstr "Reported loss of life caregivers"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_loss_of_life_siblings
 msgid "Reported Loss Of Life Siblings"
-msgstr "Reported loss of life siblings"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_number_beneficiaries_impacted
 msgid "Reported Number Beneficiaries Impacted"
-msgstr "Reported number beneficiaries impacted"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_number_of_fcps_impacted
 msgid "Reported Number Of Fcps Impacted"
-msgstr "Reported number of fcps impacted"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_serious_injuries_beneficiaries
@@ -8544,12 +8544,12 @@ msgstr "Reported serious injuries beneficiaries"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_serious_injuries_caregivers
 msgid "Reported Serious Injuries Caregivers"
-msgstr "Reported serious injuries caregivers"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__reported_serious_injuries_siblings
 msgid "Reported Serious Injuries Siblings"
-msgstr "Reported serious injuries siblings"
+msgstr ""
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_field_office_disaster
@@ -9061,7 +9061,7 @@ msgstr "Siblings died number"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__siblings_seriously_injured_number
 msgid "Siblings Seriously Injured Number"
-msgstr "Siblings seriously injured number"
+msgstr ""
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_sidamigna
@@ -9966,8 +9966,6 @@ msgid ""
 "These children were removed from the search results because of a National "
 "Office restriction configuration."
 msgstr ""
-"These children were removed from the search results because of a Field "
-"Office restriction configuration."
 
 #. module: child_compassion
 #. odoo-python
@@ -10356,7 +10354,7 @@ msgstr "Unsponsored since"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__disaster_communication_update_name
 msgid "Update ID"
-msgstr "Disaster Communication Update Name"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.actions.server,name:child_compassion.update_child_pictures

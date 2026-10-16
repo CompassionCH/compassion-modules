@@ -808,9 +808,6 @@ msgid ""
 "record. If not specified, it will assume a single value is given and will "
 "search according the relational_field set."
 msgstr ""
-"Odoo field name that will be used to search for an existing relational "
-"record. If not specified, it will assume a single value is given and will "
-"search according the the relational_field_id set."
 
 #. module: message_center_compassion
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__fastapi_endpoint__app__onramp
@@ -917,9 +914,6 @@ msgid ""
 "Odoo. Use `json_value` as the value to be processed. You should return the "
 "final Odoo value."
 msgstr ""
-"Pyhton function that will convert the JSON value to its  correct value in "
-"Odoo. Use `json_value` as the value to be processed. You should return the "
-"final Odoo value."
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__to_json_conversion
@@ -928,9 +922,6 @@ msgid ""
 " `odoo_value` as the raw value of the Odoofield. You should return the final"
 " JSON value."
 msgstr ""
-"Pyhton function that will convert the value for its JSON representation. Use"
-" `odoo_value` as the raw value of the Odoofield. You should return the final"
-" JSON value."
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
@@ -1174,7 +1165,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_action_connect__ignored
 msgid "True if the received connect_schema should be ignored"
-msgstr "True if the received connect_schema sould be ignored"
+msgstr ""
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter

@@ -645,7 +645,7 @@ msgstr "First write date"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_first_letter
 msgid "First letter from Participant"
-msgstr "First letter from Beneficiary"
+msgstr ""
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__fname
@@ -781,7 +781,7 @@ msgstr "Si actif, certains messages ont une erreur de livraison."
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image
 msgid "Image"
-msgstr "I don't want to receive emails about the impact"
+msgstr "Image"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_download
@@ -1063,7 +1063,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_compassion.field_reformat_all_phonenumbers__letter_responsible
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_config_settings__letter_responsible
 msgid "Letter translation check unsuccessful"
-msgstr "Letter responsible for activity schedule"
+msgstr ""
 
 #. module: sbc_compassion
 #. odoo-python
@@ -1704,8 +1704,6 @@ msgstr "import.letter.line"
 #: model:ir.model,name:sbc_compassion.model_import_letters_history
 msgid "S2B Letter Import"
 msgstr ""
-"History of the letters imported from a zip\n"
-"    or a PDF/TIFF"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letter_config
