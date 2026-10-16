@@ -20,3 +20,4 @@ from . import (
     res_partner,
     compassion_project,
 )
+from . import communication_config

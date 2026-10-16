@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="utm_source_view_tree_category" model="ir.ui.view">
+        <field name="name">utm.source.list.category</field>
+        <field name="model">utm.source</field>
+        <field name="inherit_id" ref="utm.utm_source_view_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="category" />
+            </field>
+        </field>
+    </record>
+
+    <record id="utm_source_view_form_category" model="ir.ui.view">
+        <field name="name">utm.source.form.category</field>
+        <field name="model">utm.source</field>
+        <field name="inherit_id" ref="utm.utm_source_view_form" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="category" />
+            </field>
+        </field>
+    </record>
+
+    <record id="utm_source_view_search_category" model="ir.ui.view">
+        <field name="name">utm.source.search.category</field>
+        <field name="model">utm.source</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="category" />
+                <group expand="0" string="Group By">
+                    <filter
+            name="group_category"
+            string="Category"
+            context="{'group_by': 'category'}"
+          />
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

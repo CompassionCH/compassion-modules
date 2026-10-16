@@ -64,6 +64,7 @@
         "views/contract_origin_view.xml",
         "views/project_view.xml",
         "views/utm_medium_view.xml",
+        "views/utm_source_view.xml",
         "data/compassion_mapping.xml",
         "data/sponsorship_product.xml",
         "data/sponsorship_gift_type.xml",

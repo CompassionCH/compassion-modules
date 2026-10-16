@@ -37,6 +37,7 @@ class TestOriginCampaign(TransactionCase):
         cls.magazine = campaign_obj.create({"title": "Origin campaign magazine"})
         cls.newspaper = campaign_obj.create({"title": "Origin campaign newspaper"})
         cls.own = campaign_obj.create({"title": "Origin campaign own"})
+        cls.unknown = cls.env.ref("sponsorship_compassion.utm_source_unknown")
         origin_obj = cls.env["recurring.contract.origin"]
         cls.origin_magazine = origin_obj.create(
             {
@@ -111,5 +112,13 @@ class TestOriginCampaign(TransactionCase):
         self.assertEqual(follower.source_id, magazine)
         self.assertEqual(kept.source_id, own)
         follower.origin_id = self.origin_magazine
-        self.assertFalse(follower.source_id)
+        self.assertEqual(follower.source_id, self.unknown)
         self.assertEqual(follower.campaign_id, self.magazine)
+
+    def test_unknown_source(self):
+        contract = self._contract(origin_id=self.origin_none.id)
+        self.assertEqual(contract.source_id, self.unknown)
+        # An unknown source follows the origin as an empty one
+        magazine = self.env["utm.source"].create({"name": "Origin campaign print"})
+        self.origin_none.source_id = magazine
+        self.assertEqual(contract.source_id, magazine)
