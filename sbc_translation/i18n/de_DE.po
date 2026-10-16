@@ -559,7 +559,7 @@ msgstr "Antwort auf Kommentare"
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_sbc_reply_to_comments_wizard
 msgid "Reply to comments wizard"
-msgstr "sbc.reply.to.comments.wizard"
+msgstr "Antwort auf Kommentare"
 
 #. module: sbc_translation
 #: model:ir.actions.act_window,name:sbc_translation.reply_to_issue_wizard
@@ -571,7 +571,7 @@ msgstr "Antwort auf die Frage"
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_sbc_reply_to_issue_wizard
 msgid "Reply to issue wizard"
-msgstr "sbc.reply.to.issue.wizard"
+msgstr "Antwort auf die Frage"
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.resubmit_letter_translation_action
@@ -674,7 +674,7 @@ msgstr "Übersetzungen insgesamt"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_date
 msgid "Translate Date"
-msgstr "Translate date"
+msgstr "Datum übersetzen"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_done

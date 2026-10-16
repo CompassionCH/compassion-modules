@@ -181,7 +181,7 @@ msgstr "child.hold.wizard"
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_child_pictures_download_wizard
 msgid "Child Picture Download Wizard"
-msgstr "child.pictures.download.wizard"
+msgstr "Kinderbild-Download-Assistent"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
@@ -299,7 +299,7 @@ msgstr "Kirche"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__church_member_count
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__church_member_count
 msgid "Church Member Count"
-msgstr "Church member count"
+msgstr "Anzahl der Kirchenmitglieder"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
@@ -380,7 +380,7 @@ msgstr "Vertrag Aktiv"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__contract_duration
 msgid "Contract Duration"
-msgstr "Contract duration"
+msgstr "Vertragsdauer"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_sponsorship_gift_type__contract_field
@@ -408,7 +408,7 @@ msgstr "Verträge"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__conversion_rate
 msgid "Conversion Rate"
-msgstr "Conversion rate"
+msgstr "Umrechnungskurs"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__sc
@@ -539,7 +539,7 @@ msgstr "Spenden"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__download_data
 msgid "Download Data"
-msgstr "Download data"
+msgstr "Daten herunterladen"
 
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_download_child_pictures
@@ -562,7 +562,7 @@ msgstr "Bearbeiten"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__end_period
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__end_period
 msgid "End Period"
-msgstr "End period"
+msgstr "Ende Periode"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -624,7 +624,7 @@ msgstr "Fullshot"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__fully_managed
 msgid "Fully Managed"
-msgstr "Fully managed"
+msgstr "Vollständig verwaltet"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__contracts_fully_managed
@@ -774,12 +774,12 @@ msgstr "Gruppieren nach ..."
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__has_been_sponsored
 msgid "Has Been Sponsored"
-msgstr "Has been sponsored"
+msgstr "Wurde gesponsert"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_has_mandate
 msgid "Has Mandate"
-msgstr "Has mandate"
+msgstr "Hat Mandat"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__headshot
@@ -862,7 +862,7 @@ msgstr "Rechnungskategorie"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__invoice_date
 msgid "Invoice Date"
-msgstr "Invoice date"
+msgstr "Rechnungsdatum"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_account_invoice_sponsorship_filter
@@ -979,7 +979,7 @@ msgstr "Mitglieder"
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_base_partner_merge_automatic_wizard
 msgid "Merge Partner Wizard"
-msgstr "base.partner.merge.automatic.wizard"
+msgstr "Assistent für die Zusammenführung von Partnern"
 
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_mistake
@@ -1229,7 +1229,7 @@ msgstr "Porträt"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__preferred_name
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__preferred_name
 msgid "Preferred Name"
-msgstr "Preferred name"
+msgstr "Bevorzugter Name"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__reading_language
@@ -1293,12 +1293,12 @@ msgstr "Vierteljährlich"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__receivable_items
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__receivable_items
 msgid "Receivable Items"
-msgstr "Receivable items"
+msgstr "Empfangene Posten"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_recurring_contract_origin
 msgid "Recurring Contract Origin"
-msgstr "recurring.contract.origin"
+msgstr "Wiederkehrender Vertrag Ursprung"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_recurring_contract
@@ -1308,12 +1308,12 @@ msgstr "Wiederkehrender Vertrag"
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_recurring_contract_activate_wizard
 msgid "Recurring contract activation wizard"
-msgstr "recurring.contract.activate.wizard"
+msgstr "Assistent zur Aktivierung wiederkehrender Verträge"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_end_contract_wizard
 msgid "Recurring contract end wizard"
-msgstr "end.contract.wizard"
+msgstr "Assistent für wiederkehrende Vertragsabschlüsse"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_recurring_contract_line
@@ -1324,13 +1324,13 @@ msgstr "A contract line"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__related_active_sponsorships
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__related_active_sponsorships
 msgid "Related Active Sponsorships"
-msgstr "Related active sponsorships"
+msgstr "Verwandte aktive Patenschaften"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__related_sponsorships
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__related_sponsorships
 msgid "Related Sponsorships"
-msgstr "Related sponsorships"
+msgstr "Verwandte Patenschaften"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1341,7 +1341,7 @@ msgstr "Verwandte Rechnungszeilen"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard__return_action
 msgid "Return Action"
-msgstr "Return action"
+msgstr "Rückholaktion"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_contract_origin_filter
@@ -1361,7 +1361,7 @@ msgstr ""
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__send_gifts_to
 msgid "Send Gifts To"
-msgstr "Send gifts to"
+msgstr "Geschenke senden an"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_reformat_all_phonenumbers__bypass_fcp_state
@@ -1509,7 +1509,7 @@ msgstr "Patenschaften"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__sponsorships_count
 msgid "Sponsorships Count"
-msgstr "Sponsorships count"
+msgstr "Patenschaften zählen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__portal_sponsorships
@@ -1549,7 +1549,7 @@ msgstr "Patenschaften entstanden"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__start_period
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__start_period
 msgid "Start Period"
-msgstr "Start period"
+msgstr "Start Zeitraum"
 
 #. module: sponsorship_compassion
 #: model:utm.campaign,title:sponsorship_compassion.utm_campaign_sub
@@ -1724,7 +1724,7 @@ msgstr "Unbekannter Fehler"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__unrec_items
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__unrec_items
 msgid "Unrec Items"
-msgstr "Unrec items"
+msgstr "Unerfasste Posten"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1767,7 +1767,7 @@ msgstr "Breite"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__won_sponsorships
 msgid "Won Sponsorships"
-msgstr "Won sponsorships"
+msgstr "Gewonnene Patenschaften"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__swp

@@ -673,7 +673,7 @@ msgstr "Icône Font Awesome e.g. fa-tasks"
 #. module: crm_compassion
 #: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__full_name
 msgid "Full Name"
-msgstr "Full name"
+msgstr "Nom complet"
 
 #. module: crm_compassion
 #: model:ir.model,name:crm_compassion.model_crm_lead_lost
@@ -727,12 +727,12 @@ msgstr "Hold ids"
 #. module: crm_compassion
 #: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__hold_end_date
 msgid "Hold End Date"
-msgstr "Hold end date"
+msgstr "Fin de Hold"
 
 #. module: crm_compassion
 #: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__hold_start_date
 msgid "Hold Start Date"
-msgstr "Hold start date"
+msgstr "Début du Hold"
 
 #. module: crm_compassion
 #: model:ir.ui.menu,name:crm_compassion.menu_holds
@@ -1391,7 +1391,7 @@ msgstr "La révision hebdomadaire existe déjà !"
 #: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__won_sponsorships
 #: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
 msgid "Won Sponsorships"
-msgstr "Won sponsorships"
+msgstr "Parrainages gagnés"
 
 #. module: crm_compassion
 #: model:ir.model.fields,field_description:crm_compassion.field_account_analytic_account__year

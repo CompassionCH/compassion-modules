@@ -1900,7 +1900,7 @@ msgstr "Text auf Seiten verteilen"
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__state
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__status

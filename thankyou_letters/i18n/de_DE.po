@@ -1030,7 +1030,7 @@ msgstr "Quelle"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__state
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search

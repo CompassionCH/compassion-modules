@@ -913,7 +913,7 @@ msgstr "Priorité"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__process_date
 msgid "Process Date"
-msgstr "Process date"
+msgstr "Date du traitement"
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form

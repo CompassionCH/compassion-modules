@@ -1026,7 +1026,7 @@ msgstr "OMR deve chiudere la busta"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
 msgid "Omr Single Sided"
-msgstr "Omr single sided"
+msgstr "Omr Monofacciale"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_x

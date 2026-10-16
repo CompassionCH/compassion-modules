@@ -414,7 +414,7 @@ msgstr "Moré"
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_more
 msgid "More"
-msgstr "Plus"
+msgstr "Moré"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_nahuatl

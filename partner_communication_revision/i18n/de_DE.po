@@ -901,7 +901,7 @@ msgstr "Neue Revision starten"
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__state
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_submit_revision__state
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_revision__activity_state

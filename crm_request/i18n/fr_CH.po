@@ -478,7 +478,7 @@ msgstr "Demande"
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_assign_request_wizard
 msgid "Request Assignation Wizard"
-msgstr "assign.request.wizard"
+msgstr "Assistant d'assignation"
 
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.action_wizard_request_assign

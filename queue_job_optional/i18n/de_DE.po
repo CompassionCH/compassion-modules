@@ -258,7 +258,7 @@ msgstr "Startdatum"
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__state
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: queue_job_optional
 #. odoo-python

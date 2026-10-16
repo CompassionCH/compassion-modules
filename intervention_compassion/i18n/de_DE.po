@@ -1541,7 +1541,7 @@ msgstr "Start no later than"
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__state
 #: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: intervention_compassion
 #: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__status_chooser

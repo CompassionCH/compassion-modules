@@ -574,7 +574,7 @@ msgstr "Patenschaftsgeschenke"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__state
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter

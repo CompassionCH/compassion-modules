@@ -332,7 +332,7 @@ msgstr "Startdatum"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__state
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter

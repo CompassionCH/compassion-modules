@@ -1047,7 +1047,7 @@ msgstr "OMR sollte den Umschlag schließen"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
 msgid "Omr Single Sided"
-msgstr "Omr single sided"
+msgstr "Omr Einseitig"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_x
@@ -1471,7 +1471,7 @@ msgstr "Bezeichnung der Herkunft"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__state
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__send_state
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
