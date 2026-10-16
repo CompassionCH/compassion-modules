@@ -324,7 +324,7 @@ msgstr "Failure method"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failure_reason
 msgid "Failure details"
-msgstr "Détails de l'échec"
+msgstr "Message d'erreur"
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_fastapi_endpoint
@@ -689,7 +689,7 @@ msgstr "Erreur d'envoi du message"
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__direction
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__direction
 msgid "Message Direction"
-msgstr "Sens du message"
+msgstr "Direction du message"
 
 #. module: message_center_compassion
 #: model:ir.actions.act_window,name:message_center_compassion.action_gmc_message_form
@@ -1103,7 +1103,7 @@ msgstr "État"
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Status"
-msgstr "État"
+msgstr "Status"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_state

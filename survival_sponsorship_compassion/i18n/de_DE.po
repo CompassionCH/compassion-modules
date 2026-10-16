@@ -21,8 +21,8 @@ msgid ""
 "(Inherited from product template) The product can be sold as a survival "
 "sponsorship one"
 msgstr ""
-"(Von der Produktvorlage geerbt) Das Produkt kann als Survival-Patenschaft "
-"verkauft werden"
+"(Geerbt von der Produktvorlage) Das Produkt kann als Überlebenssponsoring "
+"verkauft werden."
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract_group
@@ -32,7 +32,7 @@ msgstr "Eine Gruppe von Verträgen"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
 msgid "Alltime Survival Sponsorship Number"
-msgstr "Gesamtanzahl Survival-Patenschaften bisher"
+msgstr "Alltime Survival Patenschaftsnummer"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__csp_country
@@ -69,7 +69,7 @@ msgstr "Früher betroffene Länder"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
 msgid "Define which country this product is applicable to"
-msgstr "Legt fest, für welches Land dieses Produkt gilt"
+msgstr "Lege fest, für welches Land dieses Produkt geeignet ist"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.actions.server,name:survival_sponsorship_compassion.warn_admin_on_product_overload_ir_actions_server
@@ -109,12 +109,12 @@ msgstr ""
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_child_name
 msgid "Name of the baby (com)"
-msgstr "Name des Babys (Kommunikation)"
+msgstr "Name des Babys (com)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_mom_name
 msgid "Name of the mom (com)"
-msgstr "Name der Mutter (Kommunikation)"
+msgstr "Name der Mutter (com)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
@@ -122,8 +122,8 @@ msgid ""
 "Number of active sponsorships for the survival sponsorship program in a "
 "given country"
 msgstr ""
-"Anzahl der aktiven Patenschaften des Survival-Patenschaftsprogramms in einem"
-" bestimmten Land"
+"Anzahl der aktiven Patenschaften für das Überlebenspatenschaftsprogramm in "
+"einem bestimmten Land"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_nb_moms_supported_for_a_year
@@ -143,13 +143,13 @@ msgid ""
 "Number of places available for the survival sponsorship program in a given "
 "country"
 msgstr ""
-"Anzahl der verfügbaren Plätze für das Survival-Patenschaftsprogramm in einem"
-" bestimmten Land"
+"Anzahl der verfügbaren Plätze für das Überlebenspatenschaftsprogramm in "
+"einem bestimmten Land"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__slot_used
 msgid "Number of places used (all = 100, none = 0)"
-msgstr "Anzahl der belegten Plätze (alle = 100, keine = 0)"
+msgstr "Anzahl der verwendeten Stellen (alle = 100, keine = 0)"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__alltime_survival_sponsorship_number
@@ -157,7 +157,7 @@ msgid ""
 "Number of sponsorships for the survival sponsorship program in a given "
 "country"
 msgstr ""
-"Anzahl der Patenschaften des Survival-Patenschaftsprogramms in einem "
+"Anzahl der Patenschaften für das Überlebenspatenschaftsprogramm in einem "
 "bestimmten Land"
 
 #. module: survival_sponsorship_compassion
@@ -200,7 +200,7 @@ msgstr "A contract line"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__slot_used
 msgid "Slot Used"
-msgstr "Belegte Plätze"
+msgstr "Verwendeter Steckplatz"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__type
@@ -230,7 +230,7 @@ msgstr "Aktion bei Überschreitung des Survival-Produktlimits"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_slot_number
 msgid "Survival Slot Number"
-msgstr "Anzahl Survival-Plätze"
+msgstr "Survival Slot Nummer"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields.selection,name:survival_sponsorship_compassion.selection__recurring_contract__type__csp
@@ -241,18 +241,18 @@ msgstr "Survival-Patenschaft"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
 msgid "Survival Sponsorship Field office"
-msgstr "Länderbüro der Survival-Patenschaft"
+msgstr "Survival Patenschaft Außenstelle"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
 msgid "Survival Sponsorship Number"
-msgstr "Anzahl Survival-Patenschaften"
+msgstr "Nummer der Überlebenspatenschaft"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "Survival Sponsorship Sale"
-msgstr "Verkauf als Survival-Patenschaft"
+msgstr "Survival Sponsoring Verkauf"
 
 #. module: survival_sponsorship_compassion
 #. odoo-python
@@ -267,7 +267,7 @@ msgstr "Survival-Patenschaften"
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_reformat_all_phonenumbers__survival_sponsorship_warn_user_ids
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__survival_sponsorship_warn_user_ids
 msgid "Survival sponsorship product places owner"
-msgstr "Verantwortliche für die Plätze des Survival-Patenschaftsprodukts"
+msgstr "Überlebenspatenschaft Produkt platziert Eigentümer"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__survival_sponsorship_count
@@ -283,7 +283,7 @@ msgstr "Survival-Patenschaften"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "The product can be sold as a survival sponsorship one"
-msgstr "Das Produkt kann als Survival-Patenschaft verkauft werden"
+msgstr "Das Produkt kann als Überlebenssponsoring verkauft werden."
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view
@@ -294,7 +294,7 @@ msgstr "Diese Schaltfläche berechnet ein Enddatum in 18 Monaten von jetzt an."
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_child_name
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_mom_name
 msgid "This field is used in the communications"
-msgstr "Dieses Feld wird in den Mitteilungen verwendet"
+msgstr "Dieses Feld wird in der Kommunikation verwendet"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__sr_total_donation_for_csp

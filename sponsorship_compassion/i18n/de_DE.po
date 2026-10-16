@@ -102,7 +102,7 @@ msgstr "Partner anonymisieren"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group_bvr_reference
 msgid "BVR Ref"
-msgstr "BVR-Ref."
+msgstr "BVR Ref"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -206,7 +206,7 @@ msgstr "Sponsored child name"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__child_code
 msgid "Child reference"
-msgstr "Kinderreferenz"
+msgstr "Bezug zum Kind"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_account_bank_statement_line__children
@@ -315,7 +315,7 @@ msgstr "Nummer"
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_gmc_message_commitment
 #: model:ir.ui.menu,name:sponsorship_compassion.menu_message_sponsorship
 msgid "Commitment"
-msgstr "Verpflichtung"
+msgstr "Commitment"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__commitment_number
@@ -335,7 +335,7 @@ msgstr "Konfig-Einstellungen"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract_global_id
 msgid "Connect global ID"
-msgstr "Connect-Global-ID"
+msgstr "Globale ID verbinden"
 
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_gmc_message_constituent
@@ -352,18 +352,18 @@ msgstr "Kontakt"
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contract_origin.py:0
 msgid "Contact with Sponsor/Ambassador"
-msgstr "Kontakt mit Pate/Botschafter"
+msgstr "Kontakt mit Sponsor/Botschafter"
 
 #. module: sponsorship_compassion
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contract_origin.py:0
 msgid "Contact with sponsor/ambassador"
-msgstr "Kontakt mit Pate/Botschafter"
+msgstr "Kontakt mit Sponsor/Botschafter"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group__contains_sponsorship
 msgid "Contains sponsorship"
-msgstr "Enthält Patenschaft"
+msgstr "Enthält Sponsoring"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__contract_ids
@@ -375,7 +375,7 @@ msgstr "Contratto"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__is_active
 msgid "Contract Active"
-msgstr "Vertrag aktiv"
+msgstr "Vertrag Aktiv"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__contract_duration
@@ -395,7 +395,7 @@ msgstr "Vertragsdauer in Tagen"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__contract_line_ids
 msgid "Contract lines"
-msgstr "Vertragszeilen"
+msgstr "Vertragslinien"
 
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_contract
@@ -432,8 +432,8 @@ msgstr "Korrespondent (Kinder, mit denen der Partner korrespondiert)"
 msgid ""
 "Couldn't activate the new correspondent, GMC returned the following error: "
 msgstr ""
-"Der neue Korrespondent konnte nicht aktiviert werden, GMC hat folgenden "
-"Fehler zurückgegeben: "
+"Der neue Korrespondent konnte nicht aktiviert werden, GMC meldete folgende "
+"Fehlermeldung: "
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_res_partner__sr_sponsorship
@@ -442,8 +442,8 @@ msgid ""
 "Count only the sponsorships who are fully managed or those who are paid (not"
 " the correspondent)."
 msgstr ""
-"Zählt nur die vollständig verwalteten oder die bezahlten Patenschaften "
-"(nicht den Korrespondenten)."
+"Zähle nur die Patenschaften, die vollständig verwaltet werden, oder "
+"diejenigen, die bezahlt werden (nicht den Korrespondenten)."
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__country_id
@@ -503,7 +503,7 @@ msgstr "Tod des Partners"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_depart
 msgid "Depart of child"
-msgstr "Weggang des Kindes"
+msgstr "Abreise des Kindes"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
@@ -522,12 +522,12 @@ msgstr "Anzeigename"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_dont_pay
 msgid "Doesn't pay"
-msgstr "Zahlt nicht"
+msgstr "Zahlt sich nicht aus"
 
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_not_another_child
 msgid "Doesn't want to take another child right now"
-msgstr "Möchte im Moment kein weiteres Kind übernehmen"
+msgstr "Möchte im Moment kein weiteres Kind aufnehmen"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -573,12 +573,12 @@ msgstr "Anlass"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_child_exchange
 msgid "Exchange of beneficiary"
-msgstr "Kindertausch"
+msgstr "Austausch des Begünstigten"
 
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_sponsor_exchange
 msgid "Exchange of sponsor"
-msgstr "Patenwechsel"
+msgstr "Austausch des Sponsors"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__sponsorship_gift_type__gmc_gift_type__family_gift
@@ -619,7 +619,7 @@ msgstr "Partnerkirche"
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__fullshot
 msgid "Fullshot"
-msgstr "Ganzkörperfoto"
+msgstr "Fullshot"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__fully_managed
@@ -691,7 +691,7 @@ msgstr "Geschenk"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__amount
 msgid "Gift Amount"
-msgstr "Geschenkbetrag"
+msgstr "Geschenk Betrag"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_generate_gift_wizard
@@ -737,13 +737,13 @@ msgstr "Global id"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gmc_correspondent_commitment_id
 msgid "Gmc Correspondent Commitment"
-msgstr "GMC-Verpflichtung des Korrespondenten"
+msgstr "Gmc Correspondent Commitment"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__gmc_gender
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__gmc_gender
 msgid "Gmc Gender"
-msgstr "GMC-Geschlecht"
+msgstr "Gmc Geschlecht"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_sponsorship_gift_type__gmc_gift_type
@@ -753,7 +753,7 @@ msgstr "GMC-Geschenkart"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gmc_payer_partner_id
 msgid "Gmc Payer Partner"
-msgstr "GMC-Zahler-Partner"
+msgstr "Gmc Payer Partner"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_sponsorship_gift_type__gmc_sponsorship_gift_type
@@ -784,12 +784,12 @@ msgstr "Has mandate"
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__headshot
 msgid "Headshot"
-msgstr "Porträtfoto"
+msgstr "Headshot"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__height
 msgid "Height"
-msgstr "Grösse"
+msgstr "Höhe"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__hold_id
@@ -823,9 +823,8 @@ msgid ""
 "ended but a SUB is made, the SUB will havethe same line id. Only new "
 "sponsorships will have new ids."
 msgstr ""
-"Identifiziert die aktive Patenschaftszeile eines Paten. Wenn eine "
-"Patenschaft endet, aber eine SUB erstellt wird, hat die SUB dieselbe Zeilen-"
-"ID. Nur neue Patenschaften erhalten neue IDs."
+"Wenn die Patenschaft beendet wird, aber eine SUB gemacht wird, hat die SUB "
+"dieselbe Zeilenkennung. Nur neue Patenschaften haben neue IDs."
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__include_child_name
@@ -899,7 +898,7 @@ msgstr "Wird per Lastschriftverfahren bezahlt"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_too_old
 msgid "Is too old to sponsor another child"
-msgstr "Ist zu alt, um ein weiteres Kind zu unterstützen"
+msgstr "zu alt ist, um ein anderes Kind zu sponsern"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__is_active
@@ -907,7 +906,8 @@ msgid ""
 "It indicates that the first invoice has been paid and the contract was "
 "activated."
 msgstr ""
-"Zeigt an, dass die erste Rechnung bezahlt und der Vertrag aktiviert wurde."
+"Es zeigt an, dass die erste Rechnung bezahlt wurde und der Vertrag aktiviert"
+" wurde."
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_account_move
@@ -967,7 +967,7 @@ msgstr "Reißverschluss machen"
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contract_origin.py:0
 msgid "Marketing campaign"
-msgstr "Marketingkampagne"
+msgstr "Marketing-Kampagne"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__member_ids
@@ -984,7 +984,7 @@ msgstr "base.partner.merge.automatic.wizard"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_mistake
 msgid "Mistake from our staff"
-msgstr "Fehler unserer Mitarbeitenden"
+msgstr "Fehler von unseren Mitarbeitern"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1000,7 +1000,7 @@ msgstr "Buchung"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_moved
 msgid "Moved to foreign country"
-msgstr "Ins Ausland gezogen"
+msgstr "Ins Ausland umgezogen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__name
@@ -1060,13 +1060,13 @@ msgstr "Nicht zufrieden"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_bible
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_bible
 msgid "Number of bibles distributed"
-msgstr "Anzahl verteilter Bibeln"
+msgstr "Anzahl der verteilten Bibeln"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_boy
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_boy
 msgid "Number of boys"
-msgstr "Anzahl Jungen"
+msgstr "Anzahl der Jungen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_sponsorship
@@ -1084,31 +1084,31 @@ msgstr "Number children"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_girl
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_girl
 msgid "Number of girls"
-msgstr "Anzahl Mädchen"
+msgstr "Anzahl der Mädchen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_medic_check
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_medic_check
 msgid "Number of given medical checks"
-msgstr "Anzahl durchgeführter medizinischer Untersuchungen"
+msgstr "Anzahl der durchgeführten medizinischen Untersuchungen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner_sr_nb_s2b_letter
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users_sr_nb_s2b_letter
 msgid "Number of letters to beneficiary"
-msgstr "Anzahl Briefe an Begünstigte"
+msgstr "Anzahl der Briefe an den Begünstigten"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner_sr_nb_b2s_letter
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users_sr_nb_b2s_letter
 msgid "Number of letters to sponsor"
-msgstr "Anzahl Briefe an Paten"
+msgstr "Anzahl der Briefe an den Sponsor"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_meal
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_nb_meal
 msgid "Number of meals served"
-msgstr "Anzahl servierter Mahlzeiten"
+msgstr "Anzahl der servierten Mahlzeiten"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_sponsorships
@@ -1191,12 +1191,12 @@ msgstr "Partner"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__partner_lang
 msgid "Partner language"
-msgstr "Sprache des Partners"
+msgstr "Partnersprache"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__partner_codega
 msgid "Partner ref"
-msgstr "Partner-Ref."
+msgstr "Partner ref"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__gmc_payer_partner_id
@@ -1336,7 +1336,7 @@ msgstr "Related sponsorships"
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/res_partner.py:0
 msgid "Related invoice lines"
-msgstr "Zugehörige Rechnungszeilen"
+msgstr "Verwandte Rechnungszeilen"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_hold_wizard__return_action
@@ -1379,8 +1379,8 @@ msgid ""
 "Set number of days after sponsorship ending where gifts to the child are "
 "still allowed"
 msgstr ""
-"Lege die Anzahl Tage nach dem Ende der Patenschaft fest, in denen Geschenke "
-"an das Kind noch erlaubt sind"
+"Festgelegte Anzahl von Tagen nach Beendigung der Patenschaft, in denen "
+"Geschenke an das Kind noch erlaubt sind"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_reformat_all_phonenumbers__time_allowed_for_letters
@@ -1389,8 +1389,8 @@ msgid ""
 "Set number of days after sponsorship ending where letters to the child are "
 "still allowed"
 msgstr ""
-"Lege die Anzahl Tage nach dem Ende der Patenschaft fest, in denen Briefe an "
-"das Kind noch erlaubt sind"
+"Festgelegte Anzahl von Tagen nach Beendigung der Patenschaft, in denen "
+"Briefe an das Kind noch erlaubt sind"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__birthday_invoice
@@ -1398,8 +1398,8 @@ msgid ""
 "Set the amount to enable automatic invoice creation each year for a birthday"
 " gift. The invoice is set two months before child's birthday."
 msgstr ""
-"Lege den Betrag fest, um jedes Jahr automatisch eine Rechnung für ein "
-"Geburtstagsgeschenk zu erstellen. Die Rechnung wird zwei Monate vor dem "
+"Lege den Betrag fest, damit jedes Jahr automatisch eine Rechnung für ein "
+"Geburtstagsgeschenk erstellt wird. Die Rechnung wird zwei Monate vor dem "
 "Geburtstag des Kindes erstellt."
 
 #. module: sponsorship_compassion
@@ -1447,7 +1447,7 @@ msgstr "Patenkinder"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_sponsor_other_children
 msgid "Sponsors other children"
-msgstr "Unterstützt andere Kinder"
+msgstr "Patenschaften für andere Kinder"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_line__sponsorship_id
@@ -1515,7 +1515,7 @@ msgstr "Sponsorships count"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__portal_sponsorships
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__portal_sponsorships
 msgid "Sponsorships accessible from the portal"
-msgstr "Über das Portal zugängliche Patenschaften"
+msgstr "Patenschaften über das Portal zugänglich"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__contracts_correspondant
@@ -1543,7 +1543,7 @@ msgstr "Vollständig verwaltete Patenschaften"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__contract_ids
 msgid "Sponsorships originated"
-msgstr "Entstandene Patenschaften"
+msgstr "Patenschaften entstanden"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__start_period
@@ -1559,7 +1559,7 @@ msgstr "SUB-Patenschaft"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_subreject
 msgid "Subreject"
-msgstr "SUB abgelehnt"
+msgstr "Unterprojekt"
 
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_partner_supporter
@@ -1617,7 +1617,7 @@ msgid ""
 "The donation product does not exist for the current company yet. Please "
 "create a product with default_code 'fund_gen' first."
 msgstr ""
-"Das Spendenprodukt existiert für die aktuelle Firma noch nicht. Bitte "
+"Das Spendenprodukt existiert noch nicht für das aktuelle Unternehmen. Bitte "
 "erstelle zuerst ein Produkt mit dem default_code 'fund_gen'."
 
 #. module: sponsorship_compassion
@@ -1633,8 +1633,8 @@ msgid ""
 "The sponsorship product does not exist for the current company yet. Please "
 "create a product with default_code 'sponsorship' first."
 msgstr ""
-"Das Patenschaftsprodukt existiert für die aktuelle Firma noch nicht. Bitte "
-"erstelle zuerst ein Produkt mit dem default_code 'sponsorship'."
+"Das Produkt \"Sponsoring\" existiert für das aktuelle Unternehmen noch "
+"nicht. Bitte erstelle zuerst ein Produkt mit dem default_code 'sponsorship'."
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_activate_sponsorship
@@ -1674,7 +1674,7 @@ msgstr "Rechnungen"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_time_fcp
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_time_fcp
 msgid "Total hour spent at the FCP"
-msgstr "Gesamtstunden im FCP"
+msgstr "Insgesamt im FCP verbrachte Stunden"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1692,12 +1692,12 @@ msgstr "Übertragung von "
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contract_origin.py:0
 msgid "Transfer from partner country"
-msgstr "Übertragung aus Partnerland"
+msgstr "Überweisung aus dem Partnerland"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__transfer_partner_id
 msgid "Transferred to"
-msgstr "Übertragen an"
+msgstr "Übertragen auf"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_child_pictures_download_wizard__type
@@ -1712,8 +1712,7 @@ msgstr "Typ"
 msgid ""
 "Unfortunately this sponsorship is already used, please choose a unique one"
 msgstr ""
-"Leider wird diese Patenschaft bereits verwendet, bitte wähle eine eindeutige"
-" aus"
+"Leider ist diese Patenschaft bereits vergeben, bitte wähle eine andere"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1742,7 +1741,7 @@ msgstr ""
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_funds
 msgid "Wants to support with fund donations"
-msgstr "Möchte mit Fonds-Spenden unterstützen"
+msgstr "Möchte mit Geldspenden unterstützen"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1753,7 +1752,7 @@ msgstr "Warnung"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__can_make_gift
 msgid "Whether gift to the child is possible at the moment or not"
-msgstr "Ob ein Geschenk an das Kind im Moment möglich ist oder nicht"
+msgstr "Ob das Geschenk an das Kind im Moment möglich ist oder nicht"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__can_write_letter
@@ -1773,7 +1772,7 @@ msgstr "Won sponsorships"
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__recurring_contract__type__swp
 msgid "Write&Pray"
-msgstr "Schreiben & Beten"
+msgstr "Write&Pray"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
@@ -1791,14 +1790,14 @@ msgstr "Du kannst eine Archivdatei von hier herunterladen."
 msgid ""
 "You can't change the correspondent of a cancelled or terminated sponsorship"
 msgstr ""
-"Du kannst den Korrespondenten einer stornierten oder beendeten Patenschaft "
+"Du kannst den Korrespondenten einer gekündigten oder beendeten Patenschaft "
 "nicht ändern"
 
 #. module: sponsorship_compassion
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "You cannot delete a validated sponsorship."
-msgstr "Eine validierte Patenschaft kann nicht gelöscht werden."
+msgstr "Du kannst eine bestätigte Patenschaft nicht löschen."
 
 #. module: sponsorship_compassion
 #: model:ir.model.constraint,message:sponsorship_compassion.constraint_recurring_contract_unique_gmc_commitment_id
@@ -1818,14 +1817,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "You cannot validate a sponsorship without any amount"
-msgstr "Eine Patenschaft ohne Betrag kann nicht validiert werden"
+msgstr "Du kannst eine Patenschaft nicht ohne einen Betrag validieren"
 
 #. module: sponsorship_compassion
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "You should select payment option with \"1 month\" as recurring value"
 msgstr ""
-"Du solltest eine Zahlungsoption mit «1 Monat» als wiederkehrendem Wert "
+"Du solltest die Zahlungsoption mit \"1 Monat\" als wiederkehrenden Wert "
 "wählen"
 
 #. module: sponsorship_compassion
@@ -1841,7 +1840,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "every"
-msgstr "alle"
+msgstr "jede"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sub_sponsorship_id

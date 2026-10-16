@@ -469,7 +469,7 @@ msgstr "Costo annuale della scuola secondaria"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__api_url
 msgid "Api Url"
-msgstr "URL API"
+msgstr "URL Api"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -596,7 +596,7 @@ msgstr "Numero allegati"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_aug
 msgid "Aug"
-msgstr "Ago"
+msgstr "Agosto"
 
 #. module: child_compassion
 #. odoo-python
@@ -607,7 +607,7 @@ msgstr "Agosto"
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_automotive
 msgid "Automotive"
-msgstr "Automobilistico"
+msgstr "Automotive"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__global_child_ids
@@ -653,7 +653,7 @@ msgstr "Average warmest temperature"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project__monthly_income
 msgid "Average family income in local currency"
-msgstr "Reddito medio della famiglia in valuta locale"
+msgstr "Reddito familiare medio in valuta locale"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_aviation
@@ -727,7 +727,7 @@ msgstr "Manzo"
 msgid ""
 "Before lessons start, children get to tuck into a mug of steaming porridge."
 msgstr ""
-"Prima delle lezioni, i bambini possono gustare una tazza di porridge "
+"Prima di iniziare le lezioni, i bambini mangiano una tazza di porridge "
 "fumante."
 
 #. module: child_compassion
@@ -898,7 +898,7 @@ msgstr "Pane"
 #: model:field.office.learning,title:child_compassion.learning_tz3
 #: model:field.office.learning,title:child_compassion.learning_ug3
 msgid "Break and snack time"
-msgstr "Pausa e merenda"
+msgstr "Pausa e spuntino"
 
 #. module: child_compassion
 #: model:field.office.learning,title:child_compassion.learning_bd3
@@ -1268,14 +1268,14 @@ msgstr "Child death subcategory"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_compassion_child_description
 msgid "Child Description Generator"
-msgstr "Generatore di descrizioni dei bambini"
+msgstr "Generatore di descrizione del bambino"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_disaster_impact
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__child_disaster_impact_ids
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__child_disaster_impact_ids
 msgid "Child Disaster Impact"
-msgstr "Impatto della catastrofe sul bambino"
+msgstr "Impatto dei disastri sui bambini"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__child_global_id
@@ -1286,7 +1286,7 @@ msgstr "Child global id"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_hobby
 msgid "Child Hobby"
-msgstr "Hobby del bambino"
+msgstr "Hobby per bambini"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_hold_wizard
@@ -1306,7 +1306,7 @@ msgstr "Child name"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_compassion_child_note
 msgid "Child Note"
-msgstr "Nota sul bambino"
+msgstr "Nota del bambino"
 
 #. module: child_compassion
 #: model:ir.actions.act_window,name:child_compassion.action_print_childpicture
@@ -1347,7 +1347,7 @@ msgstr "child.chronic.illness"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__local_id
 msgid "Child code"
-msgstr "Codice del bambino"
+msgstr "Codice bambino"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_future_hope
@@ -1363,7 +1363,7 @@ msgstr "Il bambino non è partito."
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__loss_ids
 msgid "Child loss"
-msgstr "Perdite del bambino"
+msgstr "Perdita di un bambino"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_major_course_study
@@ -1388,7 +1388,7 @@ msgstr "Foto del bambino"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__pictures_ids
 msgid "Child pictures"
-msgstr "Foto del bambino"
+msgstr "Immagini di bambini"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_project_activity
@@ -1400,7 +1400,7 @@ msgstr "Attività del progetto"
 #: model:ir.model.fields,help:child_compassion.field_compassion_generic_child__local_id
 #: model:ir.model.fields,help:child_compassion.field_compassion_global_child__local_id
 msgid "Child reference"
-msgstr "Riferimento del bambino"
+msgstr "Riferimento al bambino"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__request_reason__registration_with_compassion
@@ -1454,7 +1454,7 @@ msgstr "I bambini %s hanno una presa che non deve essere rimossa."
 #. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_reconciliation
 msgid "Children and caregiver reconciliation"
-msgstr "Riconciliazione tra bambini e tutori"
+msgstr "Riconciliazione tra bambini e caregiver"
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_ha1
@@ -1488,8 +1488,8 @@ msgid ""
 "Children are taught practical health and hygiene tips like learning to brush"
 " their teeth."
 msgstr ""
-"Ai bambini vengono insegnati consigli pratici di salute e igiene, ad esempio"
-" come lavarsi i denti."
+"Ai bambini vengono insegnati consigli pratici sulla salute e l'igiene, come "
+"imparare a lavarsi i denti."
 
 #. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_child_conference
@@ -1576,7 +1576,7 @@ msgstr ""
 #: model:field.office.learning,description:child_compassion.learning_tz2
 #: model:field.office.learning,description:child_compassion.learning_ug2
 msgid "Children learn Bible stories and sing songs."
-msgstr "I bambini imparano storie bibliche e cantano canzoni."
+msgstr "I bambini imparano le storie della Bibbia e cantano canzoni."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_gu2
@@ -1609,8 +1609,8 @@ msgid ""
 "Children sing songs and learn Bible stories. They also receive an age "
 "appropriate Bible."
 msgstr ""
-"I bambini cantano canzoni e imparano storie bibliche. Ricevono anche una "
-"Bibbia adatta alla loro età."
+"I bambini cantano canzoni e imparano le storie della Bibbia. Ricevono anche "
+"una Bibbia adatta alla loro età."
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_choir
@@ -1720,17 +1720,17 @@ msgstr "Strutture della chiesa"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__ministry_ids
 msgid "Church ministries"
-msgstr "Ministeri della chiesa"
+msgstr "Ministeri della Chiesa"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__preferred_lang_id
 msgid "Church preferred language"
-msgstr "Lingua preferita della chiesa"
+msgstr "Lingua preferita dalla Chiesa"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__utility_ids
 msgid "Church utilities"
-msgstr "Servizi della chiesa"
+msgstr "Utilità della chiesa"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__city
@@ -1793,7 +1793,7 @@ msgstr "Città più vicina"
 #. odoo-python
 #: code:addons/child_compassion/models/project_compassion.py:0
 msgid "Cloth and carpet"
-msgstr "Stoffa e tappeti"
+msgstr "Tessuto e tappeto"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_clothing_trades
@@ -1990,7 +1990,7 @@ msgstr "Linguaggi Compassion"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__project_ids
 msgid "Compassion projects"
-msgstr "Progetti Compassion"
+msgstr "Progetti di Compassion"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__vocational_training_status__completed
@@ -2064,12 +2064,12 @@ msgstr "Anomalie congenite"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_gmc_message
 msgid "Connect Message"
-msgstr "Messaggio Connect"
+msgstr "Messaggio Connetti"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_connect_month
 msgid "Connect month"
-msgstr "Mese Connect"
+msgstr "Connettiti mese"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__state__n
@@ -2080,7 +2080,7 @@ msgstr "Consegnato"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__consignment_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__consignment_hold_duration
 msgid "Consignment Hold Duration"
-msgstr "Durata dell'hold per consegna"
+msgstr "Durata del fermo deposito"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_construction
@@ -2106,7 +2106,7 @@ msgstr "Contiene la descrizione delle informazioni di apprendimento."
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_field_office_learning__title
 msgid "Contains the title of the learning information."
-msgstr "Contiene il titolo delle informazioni di apprendimento."
+msgstr "Contiene il titolo delle informazioni sull'apprendimento."
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__education_plan__continuing_in_formal_education
@@ -2182,7 +2182,8 @@ msgstr "Nome del Paese"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_hold__no_money_extension
 msgid "Counts how many time the no money hold was extended."
-msgstr "Conta quante volte l'hold senza fondi è stato prorogato."
+msgstr ""
+"Conta il numero di volte in cui è stato prolungato il blocco del pagamento."
 
 #. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_cowpeas
@@ -2419,7 +2420,7 @@ msgstr "Dibattiti e condivisione"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_dec
 msgid "Dec"
-msgstr "Dic"
+msgstr "Dicembre"
 
 #. module: child_compassion
 #. odoo-python
@@ -2629,7 +2630,7 @@ msgstr "Disaster impact description"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__disaster_status
 msgid "Disaster Status"
-msgstr "Stato della catastrofe"
+msgstr "Stato di calamità"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__disaster_type
@@ -2639,7 +2640,7 @@ msgstr "Disaster type"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__disaster_alert_ids
 msgid "Disaster alerts"
-msgstr "Allerte di catastrofe"
+msgstr "Avvisi di catastrofe"
 
 #. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_class
@@ -2731,7 +2732,7 @@ msgstr "Dodoma"
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_policy2
 msgid "Does not comply with other policies in CDA"
-msgstr "Non rispetta altre politiche del CDA"
+msgstr "non rispetta le politiche"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_dolls
@@ -2760,7 +2761,7 @@ msgstr "Bozza"
 #. module: child_compassion
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_drama
 msgid "Drama"
-msgstr "Teatro"
+msgstr "Drammatico"
 
 #. module: child_compassion
 #. odoo-python
@@ -2772,7 +2773,7 @@ msgstr "Autista"
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__current_weather__drizzle
 msgid "Drizzle"
-msgstr "Pioggerella"
+msgstr "Drizzle"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__drowning
@@ -2788,7 +2789,7 @@ msgstr "Polvere"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__e_commerce_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__e_commerce_hold_duration
 msgid "E Commerce Hold Duration"
-msgstr "Durata dell'hold e-commerce"
+msgstr "Durata del e-commerce Hold"
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_pe8
@@ -2847,7 +2848,7 @@ msgstr "Education needs"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__education_plan
 msgid "Education Plan"
-msgstr "Piano di istruzione"
+msgstr "Piano educativo"
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_educ_assistance
@@ -3119,7 +3120,7 @@ msgstr "Scaduto"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__extension_1
 msgid "Extension 1"
-msgstr "Proroga 1"
+msgstr "Estensione 1"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__extension_1_reason_ids
@@ -3129,7 +3130,7 @@ msgstr "Extension 1 reason ids"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__extension_2
 msgid "Extension 2"
-msgstr "Proroga 2"
+msgstr "Estensione 2"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__extension_2_reason_ids
@@ -3161,43 +3162,43 @@ msgstr "Struttura della chiesa FCP"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_church_ministry
 msgid "FCP Church ministry"
-msgstr "Ministero della chiesa FCP"
+msgstr "Ministero della Chiesa FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_church_utility
 msgid "FCP Church utility"
-msgstr "Servizio della chiesa FCP"
+msgstr "Utilità FCP Church"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_community_occupation
 msgid "FCP Community occupation"
-msgstr "Occupazione della comunità FCP"
+msgstr "Occupazione comunitaria FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_diet
 msgid "FCP Diet"
-msgstr "Alimentazione FCP"
+msgstr "Dieta FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_disaster_impact
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__fcp_disaster_impact_ids
 msgid "FCP Disaster Impact"
-msgstr "Impatto della catastrofe sull'FCP"
+msgstr "Impatto del disastro FCP"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__fcp_disaster_impact_ids
 msgid "FCP Disaster Impacts"
-msgstr "Impatti delle catastrofi sull'FCP"
+msgstr "Impatti dei disastri FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_involvement
 msgid "FCP Involvement"
-msgstr "Coinvolgimento FCP"
+msgstr "Coinvolgimento della FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_lifecycle_reason
 msgid "FCP Lifecycle Reason"
-msgstr "Motivo del ciclo di vita FCP"
+msgstr "Motivo del ciclo di vita di FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_program
@@ -3212,12 +3213,12 @@ msgstr "fcp.property"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_school_cost
 msgid "FCP School costs"
-msgstr "Costi scolastici FCP"
+msgstr "Costi della scuola FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_suspension_extension_reason
 msgid "FCP Suspension Reason"
-msgstr "Motivo di sospensione FCP"
+msgstr "Motivo della sospensione del FCP"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fcp_cognitive_activity
@@ -3252,7 +3253,7 @@ msgstr "Iniziativa dell'FCP o della denominazione"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_fo_high_risk
 msgid "FO high risk"
-msgstr "Rischio elevato per l'FO"
+msgstr "FO ad alto rischio"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
@@ -3386,7 +3387,7 @@ msgstr "Fcp name"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_feb
 msgid "Feb"
-msgstr "Feb"
+msgstr "Febbraio"
 
 #. module: child_compassion
 #. odoo-python
@@ -3449,14 +3450,14 @@ msgstr "Descrizione dell'impatto sull'ufficio sul campo"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_disaster_impact__field_office_impact_status
 msgid "Field Office Impact Status"
-msgstr "Stato dell'impatto sull'ufficio sul campo"
+msgstr "Stato dell'impatto del Field Office"
 
 #. module: child_compassion
 #: model:ir.actions.act_window,name:child_compassion.open_view_field_office
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__field_office_ids
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_field_office
 msgid "Field Offices"
-msgstr "Uffici nazionali"
+msgstr "Field Offices"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
@@ -3468,7 +3469,7 @@ msgstr "Stato Field Office"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__field_office_id
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__field_office_id
 msgid "Field office"
-msgstr "Ufficio sul campo"
+msgstr "Field Office"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__search_filter_ids
@@ -3527,7 +3528,7 @@ msgstr "Venditore di pesce"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Fisher"
-msgstr "Pescatore"
+msgstr "Fisher"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_fishing
@@ -3713,7 +3714,7 @@ msgstr "Pacchetto completo per bambini"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__fullshot
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__fullshot
 msgid "Fullshot"
-msgstr "Foto a figura intera"
+msgstr "Fullshot"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__funct_new_photo_called
@@ -3733,7 +3734,7 @@ msgstr "Future hopes"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__future_hope_ids
 msgid "Future hopes"
-msgstr "Speranze per il futuro"
+msgstr "Speranze future"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__future_involvement_ids
@@ -3743,7 +3744,7 @@ msgstr "Coinvolgimento futuro"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__interested_partner_ids
 msgid "GP interested with a church engagement"
-msgstr "GP interessati a un impegno con una chiesa"
+msgstr "GP interessato a un impegno in chiesa"
 
 #. module: child_compassion
 #. odoo-python
@@ -3841,7 +3842,7 @@ msgstr "Bambino globale"
 #: model:ir.ui.menu,name:child_compassion.menu_global_pool
 #: model:ir.ui.menu,name:child_compassion.menu_pool_section
 msgid "Global Childpool"
-msgstr "Childpool globale"
+msgstr "Global Childpool"
 
 #. module: child_compassion
 #: model:compassion.field.office,tpl_looking_forward:child_compassion.field_office_bo
@@ -3983,7 +3984,7 @@ msgstr "Parrucchiere"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__harvest_month_ids
 msgid "Harvest months"
-msgstr "Mesi del raccolto"
+msgstr "Mesi di raccolta"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__has_been_sponsored
@@ -4047,7 +4048,7 @@ msgstr "Ha disabilità fisiche"
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__current_weather__haze
 msgid "Haze"
-msgstr "Foschia"
+msgstr "Haze"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__headshot
@@ -4226,12 +4227,12 @@ msgstr "Tipo di Hold"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__hold_expiration
 msgid "Hold expiration"
-msgstr "Scadenza dell'hold"
+msgstr "Hold scadenza"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_reservation__expiration_date
 msgid "Hold expiration date"
-msgstr "Data di scadenza dell'hold"
+msgstr "Data di scadenza del Hold"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__hold_type
@@ -4241,17 +4242,17 @@ msgstr "Tipo"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__holding_gp_ids
 msgid "Holding Global Partner"
-msgstr "Global Partner che detiene l'hold"
+msgstr "Holding Global Partner"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__holding_global_partner_id
 msgid "Holding global partner"
-msgstr "Global Partner che detiene l'hold"
+msgstr "Holding partner globale"
 
 #. module: child_compassion
 #: model:ir.ui.menu,name:child_compassion.menu_holds
 msgid "Holds"
-msgstr "Hold"
+msgstr "Holds"
 
 #. module: child_compassion
 #: model:ir.actions.act_window,name:child_compassion.open_view_holds
@@ -4310,7 +4311,7 @@ msgstr "Household id"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_child_household_duty
 msgid "Household Duty"
-msgstr "Compito domestico"
+msgstr "Doveri della casa"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_compassion_household_member
@@ -4320,7 +4321,7 @@ msgstr "Membro della famiglia"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__duty_ids
 msgid "Household duties"
-msgstr "Lavori domestici"
+msgstr "Mansioni domestiche"
 
 #. module: child_compassion
 #. odoo-python
@@ -4337,7 +4338,7 @@ msgstr "Casalinga"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_global_child__priority_score
 msgid "How fast the child should be sponsored"
-msgstr "Quanto velocemente il bambino dovrebbe trovare un sostenitore"
+msgstr "Quanto velocemente il bambino dovrebbe essere sponsorizzato"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -4347,7 +4348,7 @@ msgstr "Quanti bambini sarebbero?"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__hunger_month_ids
 msgid "Hunger months"
-msgstr "Mesi della fame"
+msgstr "Mesi di fame"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__fo_disaster_alert__disaster_type__hurricanes_/_tropical_storms_/_cyclones_/_typhoons
@@ -4777,7 +4778,7 @@ msgstr "Image url"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__image_url_compassion
 msgid "Image Url Compassion"
-msgstr "URL immagine Compassion"
+msgstr "Immagine Url Compassione"
 
 #. module: child_compassion
 #. odoo-python
@@ -5382,7 +5383,7 @@ msgstr "Giacarta"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_jan
 msgid "Jan"
-msgstr "Gen"
+msgstr "Jan"
 
 #. module: child_compassion
 #. odoo-python
@@ -5404,7 +5405,7 @@ msgstr "Encefalite giapponese"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_jul
 msgid "Jul"
-msgstr "Lug"
+msgstr "Luglio"
 
 #. module: child_compassion
 #. odoo-python
@@ -5425,7 +5426,7 @@ msgstr "Saltare"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_jun
 msgid "Jun"
-msgstr "Giu"
+msgstr "Giugno"
 
 #. module: child_compassion
 #. odoo-python
@@ -5820,7 +5821,7 @@ msgstr "Learning summary"
 #. odoo-python
 #: code:addons/child_compassion/models/project_compassion.py:0
 msgid "Leaves and grass"
-msgstr "Foglie ed erba"
+msgstr "Foglie e erba"
 
 #. module: child_compassion
 #. odoo-python
@@ -6117,7 +6118,7 @@ msgstr "Vendita al mercato"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Mason"
-msgstr "Muratore"
+msgstr "Mason"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_category__maternal
@@ -6194,7 +6195,7 @@ msgstr "Campagne sanitarie"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__fcp_medical_check
 msgid "Medical check/year"
-msgstr "Controlli medici/anno"
+msgstr "Controllo medico/anno"
 
 #. module: child_compassion
 #: model:fcp.physical.activity,value:child_compassion.physical_act_medical_checkups
@@ -6860,13 +6861,13 @@ msgstr "No money extension"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__no_money_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__no_money_hold_duration
 msgid "No Money Hold Duration"
-msgstr "Durata dell'hold senza fondi"
+msgstr "Durata della trattenuta senza denaro"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__no_money_hold_extension
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__no_money_hold_extension
 msgid "No Money Hold Extension"
-msgstr "Proroga dell'hold senza fondi"
+msgstr "Estensione della trattenuta senza denaro"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard__no_money_yield_rate
@@ -7090,7 +7091,7 @@ msgstr "Numero di errori"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__nb_found
 msgid "Number of matching children"
-msgstr "Numero di bambini corrispondenti"
+msgstr "Quanti bambini corrispondenti"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_child_christian_activity__message_needaction_counter
@@ -7173,7 +7174,7 @@ msgstr "Numero di messaggi con errore di consegna"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__nb_restricted_children
 msgid "Number of restricted children"
-msgstr "Numero di bambini con restrizioni"
+msgstr "Quanti bambini limitati"
 
 #. module: child_compassion
 #. odoo-python
@@ -7210,7 +7211,7 @@ msgstr "Lavoro ostacolato"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_oct
 msgid "Oct"
-msgstr "Ott"
+msgstr "Ottobre"
 
 #. module: child_compassion
 #. odoo-python
@@ -7231,7 +7232,7 @@ msgstr "Old value"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_child__code
 msgid "Old child reference"
-msgstr "Vecchio riferimento del bambino"
+msgstr "Riferimento al bambino vecchio"
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_ug8
@@ -7403,7 +7404,7 @@ msgstr "Pastore"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_print_childpicture__pdf
 msgid "Pdf"
-msgstr "PDF"
+msgstr "pdf"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_print_childpack__pdf_download
@@ -7544,7 +7545,7 @@ msgstr "Lavoro nelle piantagioni"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__planting_month_ids
 msgid "Planting months"
-msgstr "Mesi della semina"
+msgstr "Mesi di semina"
 
 #. module: child_compassion
 #. odoo-python
@@ -8065,17 +8066,17 @@ msgstr "Primary school finished"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__primary_adults_occupation_ids
 msgid "Primary adults occupation"
-msgstr "Occupazione principale degli adulti"
+msgstr "Occupazione primaria degli adulti"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__primary_caregiver
 msgid "Primary caregiver"
-msgstr "Tutore principale"
+msgstr "Assistente principale"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__primary_diet_ids
 msgid "Primary diet"
-msgstr "Alimentazione principale"
+msgstr "Dieta primaria"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__primary_language_id
@@ -8127,7 +8128,7 @@ msgstr "Program start date"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__implemented_program_ids
 msgid "Programs implemented"
-msgstr "Programmi attuati"
+msgstr "Programmi implementati"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__interested_program_ids
@@ -8149,12 +8150,12 @@ msgstr "Progetto"
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_compassion_project_description
 msgid "Project Description Generator"
-msgstr "Generatore di descrizioni dei progetti"
+msgstr "Descrizione del progetto Generatore"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_disaster_impact__project_fcp_id
 msgid "Project Fcp"
-msgstr "Progetto FCP"
+msgstr "Progetto Fcp"
 
 #. module: child_compassion
 #. odoo-python
@@ -8364,7 +8365,7 @@ msgstr "Psicologia"
 #. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_pulse
 msgid "Pulse"
-msgstr "Legumi"
+msgstr "Impulso"
 
 #. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_puppets
@@ -8414,7 +8415,7 @@ msgstr "Pioggia"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__rainy_month_ids
 msgid "Rainy months"
-msgstr "Mesi delle piogge"
+msgstr "Mesi piovosi"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__rating_ids
@@ -8522,7 +8523,7 @@ msgstr "Reintegrazione"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__reinstatement_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__reinstatement_hold_duration
 msgid "Reinstatement Hold Duration"
-msgstr "Durata dell'hold di reinserimento"
+msgstr "Durata del blocco del reintegro"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_hold__reinstatement_reason
@@ -8633,7 +8634,7 @@ msgstr "Reservation expiration date"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__reservation_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__reservation_hold_duration
 msgid "Reservation Hold Duration"
-msgstr "Durata dell'hold di prenotazione"
+msgstr "Durata della prenotazione Hold"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_reservation__reservation_id
@@ -8947,7 +8948,7 @@ msgstr "La scuola inizia a"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__school_cost_paid_ids
 msgid "School costs paid by FCP"
-msgstr "Costi scolastici pagati dall'FCP"
+msgstr "Costi scolastici pagati da FCP"
 
 #. module: child_compassion
 #. odoo-python
@@ -9088,7 +9089,7 @@ msgstr "Sent date"
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_sep
 msgid "Sep"
-msgstr "Set"
+msgstr "Settembre"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__sepsis/infection
@@ -9409,7 +9410,7 @@ msgstr "Lingue parlate"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__sponsor_id
 msgid "Sponsor"
-msgstr "Sostieni un bambino"
+msgstr "Sponsor"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__child_hold_wizard__channel__sponsor_cancel
@@ -9424,7 +9425,7 @@ msgstr "Annullamento dello sponsor"
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__sponsor_cancel_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__sponsor_cancel_hold_duration
 msgid "Sponsor Cancel Hold Duration"
-msgstr "Durata dell'hold per annullamento del sostenitore"
+msgstr "Annullamento dello sponsor Durata del Hold"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__sponsor_impact
@@ -9434,7 +9435,7 @@ msgstr "Sponsor impact"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__sponsor_ref
 msgid "Sponsor reference"
-msgstr "Riferimento del sostenitore"
+msgstr "Riferimento dello sponsor"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__sponsorship_status__sponsored
@@ -9485,7 +9486,7 @@ msgstr "Sport"
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__current_weather__squall
 msgid "Squall"
-msgstr "Groppo"
+msgstr "Squall"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__staff_number
@@ -9633,7 +9634,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:child_compassion.field_reformat_all_phonenumbers__sub_child_hold_duration
 #: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__sub_child_hold_duration
 msgid "Sub Child Hold Duration"
-msgstr "Durata dell'hold per bambino sostitutivo"
+msgstr "Durata del SUB Child Hold"
 
 #. module: child_compassion
 #: model:fcp.community.occupation,value:child_compassion.icp_occupation_farming
@@ -9710,12 +9711,12 @@ msgstr "Suspension end date"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project_ile__extension_1
 msgid "Suspension is extended by 30 days"
-msgstr "La sospensione è prorogata di 30 giorni"
+msgstr "La sospensione è prolungata di 30 giorni"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project_ile__extension_2
 msgid "Suspension is extended by additional 30 days (60 in total)"
-msgstr "La sospensione è prorogata di ulteriori 30 giorni (60 in totale)"
+msgstr "La sospensione viene prolungata di altri 30 giorni (60 in totale)."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__suspension_reason_ids
@@ -9853,8 +9854,8 @@ msgid ""
 "The ISO country code in two chars. \n"
 "You can use this field for quick search."
 msgstr ""
-"Il codice ISO del paese in due caratteri. \n"
-"Puoi usare questo campo per una ricerca rapida."
+"Il codice ISO del paese in due caratteri.\n"
+"Puoi utilizzare questo campo per una ricerca rapida."
 
 #. module: child_compassion
 #: model:ir.model.constraint,message:child_compassion.constraint_compassion_reservation_reservation_id
@@ -10092,7 +10093,7 @@ msgstr "Tigrigna"
 #. odoo-python
 #: code:addons/child_compassion/models/project_compassion.py:0
 msgid "Tile"
-msgstr "Piastrelle"
+msgstr "Tegola"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__time
@@ -10123,7 +10124,7 @@ msgstr "Fuso orario"
 #. odoo-python
 #: code:addons/child_compassion/models/project_compassion.py:0
 msgid "Tin"
-msgstr "Latta"
+msgstr "Lamiera"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__title
@@ -10361,9 +10362,7 @@ msgstr "URL della pagina del CIA World Factbook per questo paese."
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_field_office__available_on_childpool
 msgid "Uncheck to restrict child selection from this field office."
-msgstr ""
-"Deseleziona per limitare la selezione dei bambini da questo ufficio sul "
-"campo."
+msgstr "Deseleziona per limitare la selezione dei bambini da questo ufficio."
 
 #. module: child_compassion
 #: model:child.major.course.study,value:child_compassion.course_undecided
@@ -10383,7 +10382,7 @@ msgstr "Unemployment rate"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project__church_building_size
 msgid "Unit is square meters"
-msgstr "L'unità è il metro quadrato"
+msgstr "L'unità di misura è il metro quadro"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__university_year
@@ -10418,7 +10417,7 @@ msgstr "Uscita non pianificata"
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project_ile__type__unplanned_fcp_transition
 msgid "Unplanned Transition"
-msgstr "Transizione non pianificata"
+msgstr "Uscita non pianificata"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__sponsorship_status__unsponsored
@@ -10457,7 +10456,7 @@ msgstr "Us grade level"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__usd
 msgid "Usd"
-msgstr "USD"
+msgstr "Usd"
 
 #. module: child_compassion
 #: model:res.groups,name:child_compassion.group_sponsorship
@@ -11125,7 +11124,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__learning_ids
 msgid "What I learn"
-msgstr "Cosa imparo"
+msgstr "Cosa ho imparato"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_global_child_attributes_form
@@ -11200,7 +11199,7 @@ msgstr "Gruppo musicale in chiesa"
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__yellow_fever
@@ -11276,7 +11275,7 @@ msgstr "Fondi accumulati"
 #. module: child_compassion
 #: model:fcp.involvement,value:child_compassion.involvement_advocacy
 msgid "advocacy"
-msgstr "advocacy"
+msgstr "patrocinio"
 
 #. module: child_compassion
 #: model:child.future.hope,value:child_compassion.future_hope_advocate
@@ -11286,7 +11285,7 @@ msgstr "impegnarsi per i bambini nel bisogno"
 #. module: child_compassion
 #: model:fcp.involvement,value:child_compassion.involvement_alumni
 msgid "alumni"
-msgstr "ex alunni"
+msgstr "alumni"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__request_reason__project_opened_closer_to_home
@@ -11339,7 +11338,7 @@ msgstr "Disaccordi tra la chiesa e la comunità locale"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_processes
 msgid "compassion processes not being followed"
-msgstr "i processi di Compassion non vengono seguiti"
+msgstr "i processi di compassione non vengono seguiti"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__country
@@ -11360,7 +11359,7 @@ msgstr "Disastro"
 #. module: child_compassion
 #: model:fo.high.risk,value:child_compassion.fo_risk_disaster
 msgid "disaster prone area"
-msgstr "zona soggetta a catastrofi"
+msgstr "area soggetta a disastri"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_policy
@@ -11413,7 +11412,7 @@ msgstr "padre"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_financial
 msgid "financial issues"
-msgstr "problemi finanziari"
+msgstr "questioni finanziarie"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_financial
@@ -11447,7 +11446,7 @@ msgstr "amico"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_fund
 msgid "fund balance beyond standard limits"
-msgstr "saldo dei fondi oltre i limiti standard"
+msgstr "saldo del fondo oltre i limiti standard"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
@@ -11479,7 +11478,7 @@ msgstr "Restrizioni governative"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_government
 msgid "government restriction issues"
-msgstr "problemi di restrizioni governative"
+msgstr "problemi di restrizione governativa"
 
 #. module: child_compassion
 #. odoo-python
@@ -11547,17 +11546,17 @@ msgstr "https://vimeo.com/488510214"
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_fo_process
 msgid "icp is unclear about fo processes"
-msgstr "l'ICP non ha chiari i processi del FO"
+msgstr "L'icp non è chiaro sui processi fo"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_leaders_commitment
 msgid "icp leaders not showing commitment"
-msgstr "i responsabili dell'ICP non dimostrano impegno"
+msgstr "I leader dell'icp non si impegnano"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_leadership_commitee
 msgid "icp leadership committee issues"
-msgstr "problemi del comitato direttivo dell'ICP"
+msgstr "questioni del comitato direttivo icp"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_leadership_commitment
@@ -11572,17 +11571,17 @@ msgstr "Controllo insoddisfacente del centro"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_management
 msgid "icp management practices issues"
-msgstr "problemi nelle pratiche di gestione dell'ICP"
+msgstr "questioni relative alle pratiche di gestione dell'icp"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_processes_staff
 msgid "icp processes not followed by staff"
-msgstr "i processi dell'ICP non vengono seguiti dal personale"
+msgstr "I processi icp non vengono seguiti dal personale"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_staff_conflicts
 msgid "icp staff conflicts"
-msgstr "conflitti nel personale dell'ICP"
+msgstr "conflitti del personale icp"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_staffing_conflicts
@@ -11650,7 +11649,7 @@ msgstr "Leggi locali"
 #. module: child_compassion
 #: model:fcp.involvement,value:child_compassion.involvement_leveraged
 msgid "leveraged"
-msgstr "leveraged"
+msgstr "a leva"
 
 #. module: child_compassion
 #: model:child.project.activity,value:child_compassion.project_activity_bible
@@ -11681,7 +11680,7 @@ msgstr "mangiare al centro"
 #. module: child_compassion
 #: model:fcp.involvement,value:child_compassion.involvement_mentoring
 msgid "mentoring"
-msgstr "mentoring"
+msgstr "tutoraggio"
 
 #. module: child_compassion
 #. odoo-python
@@ -11786,7 +11785,7 @@ msgstr "uno"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__source_code
 msgid "origin of the hold"
-msgstr "origine dell'hold"
+msgstr "origine del Hold"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_other
@@ -11848,7 +11847,7 @@ msgstr "Standard di qualità del programma"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_program
 msgid "program implemented incorrectly"
-msgstr "programma attuato in modo errato"
+msgstr "programma implementato in modo non corretto"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__request_reason__programming_availability_is_a_better_fit_for_beneficiary
@@ -11959,7 +11958,7 @@ msgstr "matrigna"
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_transition
 msgid "sucessful transition"
-msgstr "transizione riuscita"
+msgstr "transizione di successo"
 
 #. module: child_compassion
 #: model:fcp.school.cost,value:child_compassion.icp_school_cost_tutoring
@@ -11991,7 +11990,7 @@ msgstr "il centro di sviluppo infantile ha chiuso"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_leadership
 msgid "the church leadership"
-msgstr "la direzione della chiesa"
+msgstr "la leadership della chiesa"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__request_reason__beneficiary_exit_was_a_mistake
@@ -12001,12 +12000,12 @@ msgstr "l'uscita è stata un errore"
 #. module: child_compassion
 #: model:res.groups,comment:child_compassion.group_sponsorship
 msgid "the user will have access to all sponsorships and related data."
-msgstr "l'utente avrà accesso a tutti i sostegni e ai dati correlati."
+msgstr "l'utente avrà accesso a tutte le sponsorizzazioni e ai relativi dati."
 
 #. module: child_compassion
 #: model:res.groups,comment:child_compassion.group_manager
 msgid "the user will have access to sponsorship configuration."
-msgstr "l'utente avrà accesso alla configurazione dei sostegni."
+msgstr "l'utente avrà accesso alla configurazione della sponsorizzazione."
 
 #. module: child_compassion
 #. odoo-python
@@ -12055,7 +12054,7 @@ msgstr "con"
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_work_environment
 msgid "work environment not supporting program"
-msgstr "ambiente di lavoro non favorevole al programma"
+msgstr "l'ambiente di lavoro non supporta il programma"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__request_reason__beneficiary_/_caregiver_not_comply_with_policies

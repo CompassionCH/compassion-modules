@@ -222,7 +222,7 @@ msgstr "Pas de reprise"
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__no_sub_reason
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__no_sub_default_reasons
 msgid "No sub reason"
-msgstr "Pas de motif de reprise"
+msgstr "Raison non-reprise"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sub_notes
@@ -348,12 +348,12 @@ msgstr "Reprise"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_accept
 msgid "Sub Accept"
-msgstr "Reprise acceptée"
+msgstr "Sub Accept"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_reject
 msgid "Sub Reject"
-msgstr "Reprise refusée"
+msgstr "Sub Reject"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_sds_subsponsorship_wizard
@@ -405,7 +405,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/sponsorship_sub_management/models/contracts.py:0
 msgid "You cannot change the sub sponsorship."
-msgstr "Vous ne pouvez pas modifier le parrainage de reprise."
+msgstr "Vous ne pouvez pas changer la reprise."
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__no_sub

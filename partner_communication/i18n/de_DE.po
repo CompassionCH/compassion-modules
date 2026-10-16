@@ -210,14 +210,14 @@ msgstr "# Anhänge"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr "Anhang aus Fach 1"
+msgstr "Aufsatz aus Fach 1"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr "Anhang aus Fach 2"
+msgstr "Aufsatz aus Fach 2"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__attachment_id
@@ -507,7 +507,7 @@ msgstr "Datum"
 #. module: partner_communication
 #: model:mail.template,name:partner_communication.default_communication_template
 msgid "Default communication"
-msgstr ""
+msgstr "Standard-Kommunikation"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__attachments_function
@@ -807,8 +807,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
-"Wenn aktiviert, wird die OMR-Markierung für einen Anhang aus Fach 1 zur "
-"Kommunikation hinzugefügt."
+"Bei True wird die OMR-Markierung für das Hinzufügen eines Anhangs aus Back 1"
+" der Mitteilung hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
@@ -818,8 +818,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
-"Wenn aktiviert, wird die OMR-Markierung für einen Anhang aus Fach 2 zur "
-"Kommunikation hinzugefügt."
+"Wenn diese Option auf True gesetzt ist, wird die OMR-Markierung für das "
+"Hinzufügen eines Anhangs aus Fach 2 zur Kommunikation hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_should_close_envelope
@@ -829,8 +829,8 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
-"Wenn aktiviert, wird die OMR-Markierung zum Schliessen des Couverts zur "
-"Kommunikation hinzugefügt."
+"Wenn diese Option auf True gesetzt ist, wird die OMR-Markierung für das "
+"Schließen des Umschlags zur Mitteilung hinzugefügt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_enable_marks
@@ -838,7 +838,8 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
 msgstr ""
-"Wenn aktiviert, werden die OMR-Markierungen in der Kommunikation angezeigt."
+"Bei der Einstellung True werden die OMR-Markierungen in der Kommunikation "
+"angezeigt."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__need_call
@@ -1041,7 +1042,7 @@ msgstr "OMR-Plugin"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr "OMR soll das Couvert schliessen"
+msgstr "OMR sollte den Umschlag schließen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
@@ -1074,7 +1075,7 @@ msgstr "Postausgang"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults__printer_output_tray_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__printer_output_tray_id
 msgid "Output Bin"
-msgstr "Ausgabefach"
+msgstr "Output Bin"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__pdf_page_count
@@ -1166,7 +1167,7 @@ msgstr "Telefonanruf-Plugin"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_phonecall_id
 msgid "Phonecall log"
-msgstr "Telefonanruf-Protokoll"
+msgstr "Protokoll eines Telefonats"
 
 #. module: partner_communication
 #. odoo-python
@@ -1577,8 +1578,9 @@ msgid ""
 "This communication has no send mode, so it cannot be sent. Choose below how "
 "it should go out and save."
 msgstr ""
-"Diese Kommunikation hat keinen Versandmodus und kann deshalb nicht gesendet "
-"werden. Wähle unten, wie sie verschickt werden soll, und speichere."
+"Diese Kommunikation hat keinen Sende-Modus und kann daher nicht versendet "
+"werden. Wählen Sie unten aus, wie sie versendet werden soll, und speichern "
+"Sie."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__user_id
@@ -1682,12 +1684,12 @@ msgid ""
 "sided."
 msgstr ""
 "Setzt die OMR-Markierungen auf jede Seite, wenn das Dokument einseitig "
-"gedruckt wird."
+"bedruckt ist."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr "X-Position der ersten OMR-Markierung auf der Seite in Millimetern"
+msgstr "X-Position in Millimetern der ersten OMR-Markierung auf der Seite"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_y
@@ -1695,8 +1697,8 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
-"Y-Position der ersten OMR-Markierung auf der Seite in Millimetern, vom "
-"unteren Seitenrand aus gemessen."
+"Y-Position in Millimetern der ersten OMR-Markierung auf der Seite, berechnet"
+" vom unteren Rand der Seite."
 
 #. module: partner_communication
 #. odoo-python

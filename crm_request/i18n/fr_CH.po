@@ -210,7 +210,7 @@ msgstr "Étapes de demande"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__color
 msgid "Color index"
-msgstr "Index de couleur"
+msgstr "Color index"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__create_uid
@@ -302,7 +302,7 @@ msgstr "Modèle de réponse automatique"
 #: model:ir.model,name:crm_request.model_holiday_closure
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__holiday_closure_id
 msgid "Holiday closure"
-msgstr "Fermeture pour vacances"
+msgstr "Fermeture des fêtes"
 
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.crm_holiday_act_menu
@@ -363,8 +363,8 @@ msgid ""
 "List of keywords (separated by a comma \",\") who could be contained in the "
 "demand subject"
 msgstr ""
-"Liste de mots-clés (séparés par une virgule « , ») pouvant figurer dans le "
-"sujet de la demande"
+"Liste des mots-clés (séparés par une virgule \",\") qui pourraient être "
+"contenus dans l’objet de la demande"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_res_partner_match
@@ -374,7 +374,7 @@ msgstr "res.partner.match"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_name
 msgid "Name of holiday"
-msgstr "Nom des vacances"
+msgstr "Nom de la fermeture"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
@@ -393,8 +393,8 @@ msgid ""
 "One keyword must be unique over all types and not be included in another "
 "keyword"
 msgstr ""
-"Un mot-clé doit être unique parmi tous les types et ne pas être inclus dans "
-"un autre mot-clé"
+"Un mot clé doit être unique sur tous les types et ne pas être inclus dans un"
+" autre mot clé"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_mail
@@ -410,7 +410,7 @@ msgstr "Partenaire"
 #. odoo-python
 #: code:addons/crm_request/models/holiday_closure.py:0
 msgid "Please choose an end_date greater than the start_date"
-msgstr "Veuillez choisir une date de fin postérieure à la date de début"
+msgstr "Veuillez choisir une date de fin ultérieure à la date de début"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
@@ -467,7 +467,7 @@ msgstr "Répondre À"
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Reporter"
-msgstr "Rapporteur"
+msgstr "Reporter"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim
@@ -521,7 +521,7 @@ msgstr "Début des vacances"
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.support_root
 msgid "Support"
-msgstr "SOUTENIR"
+msgstr "Support"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__template_id
@@ -537,7 +537,7 @@ msgstr "L’équipe de Compassion"
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_crm_claim__alias_id
 msgid "The destination email address that the contacts used."
-msgstr "L'adresse e-mail de destination utilisée par les contacts."
+msgstr "Adresse e-mail de destination utilisée par les contacts."
 
 #. module: crm_request
 #. odoo-python
@@ -549,7 +549,7 @@ msgstr ""
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_type_form
 msgid "Type"
-msgstr "Type d'origine"
+msgstr "Type"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
@@ -559,7 +559,7 @@ msgstr "Non assigné"
 #. module: crm_request
 #: model:crm.claim.category,name:crm_request.category_undefined
 msgid "Undefined"
-msgstr "Non défini"
+msgstr "Indéfini"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_holiday_closure__holiday_message
@@ -598,7 +598,7 @@ msgstr ""
 #: model:crm.claim.category,name:crm_request.category_volunteer
 #: model:mail.template,subject:crm_request.volunteer_email_template
 msgid "Volunteer"
-msgstr ""
+msgstr "Volontaire"
 
 #. module: crm_request
 #: model:mail.template,name:crm_request.volunteer_email_template

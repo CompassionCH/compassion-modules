@@ -736,7 +736,7 @@ msgstr "partner.communication.defaults"
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_partner_communication_job
 msgid "Communication Job"
-msgstr "Job de communication"
+msgstr "Communication"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_res_partner
@@ -811,7 +811,7 @@ msgstr "Activer lettres de remerciement"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_event_id
 msgid "Event"
-msgstr "Évènement"
+msgstr "Événement"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users_valid_mandate_id

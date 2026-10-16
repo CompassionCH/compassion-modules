@@ -494,7 +494,7 @@ msgstr "Data"
 #. module: partner_communication
 #: model:mail.template,name:partner_communication.default_communication_template
 msgid "Default communication"
-msgstr ""
+msgstr "Comunicazione predefinita"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__attachments_function
@@ -788,8 +788,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from back 1 is added "
 "to the communication."
 msgstr ""
-"Se impostato a True, la marca OMR per l'aggiunta di un allegato dal vassoio "
-"1 viene aggiunta alla comunicazione."
+"Se impostato su Vero, il contrassegno OMR per l'aggiunta di un allegato dal "
+"retro 1 viene aggiunto alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
@@ -799,8 +799,8 @@ msgid ""
 "If set to True, the OMR mark for adding an attachment from tray 2 is added "
 "to the communication."
 msgstr ""
-"Se impostato a True, la marca OMR per l'aggiunta di un allegato dal vassoio "
-"2 viene aggiunta alla comunicazione."
+"Se si imposta su Vero, il contrassegno OMR per l'aggiunta di un allegato dal"
+" vassoio 2 viene aggiunto alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_should_close_envelope
@@ -810,8 +810,8 @@ msgid ""
 "If set to True, the OMR mark for closing the envelope is added to the "
 "communication."
 msgstr ""
-"Se impostato a True, la marca OMR per la chiusura della busta viene aggiunta"
-" alla comunicazione."
+"Se impostato su Vero, il segno OMR di chiusura della busta viene aggiunto "
+"alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_enable_marks
@@ -819,7 +819,7 @@ msgstr ""
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_enable_marks
 msgid "If set to True, the OMR marks are displayed in the communication."
 msgstr ""
-"Se impostato a True, le marche OMR vengono visualizzate nella comunicazione."
+"Se si imposta su Vero, i segni OMR vengono visualizzati nella comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config__need_call
@@ -1021,7 +1021,7 @@ msgstr "Plugin OMR"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_should_close_envelope
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_should_close_envelope
 msgid "OMR should close the envelope"
-msgstr "L'OMR deve chiudere la busta"
+msgstr "OMR deve chiudere la busta"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_single_sided
@@ -1555,7 +1555,7 @@ msgid ""
 "it should go out and save."
 msgstr ""
 "Questa comunicazione non ha una modalità di invio, quindi non può essere "
-"inviata. Scegli qui sotto come inviarla e salva."
+"inviata. Scegliere di seguito come deve essere inviata e salvare."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_default_config__user_id
@@ -1659,13 +1659,13 @@ msgid ""
 "Will put the OMR marks on every page if the document is printed single-"
 "sided."
 msgstr ""
-"Metterà le marche OMR su ogni pagina se il documento viene stampato su un "
-"solo lato."
+"Se il documento è stampato su una sola facciata, i segni OMR vengono apposti"
+" su ogni pagina."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "X position in millimeters of the first OMR mark in the page"
-msgstr "Posizione X in millimetri della prima marca OMR nella pagina"
+msgstr "Posizione X in millimetri del primo segno OMR nella pagina"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job_omr_top_mark_y
@@ -1673,7 +1673,7 @@ msgid ""
 "Y position in millimeters of the first OMR mark in the page, computed from "
 "the bottom of the page."
 msgstr ""
-"Posizione Y in millimetri della prima marca OMR nella pagina, calcolata dal "
+"Posizione Y in millimetri del primo segno OMR nella pagina, calcolata dal "
 "fondo della pagina."
 
 #. module: partner_communication

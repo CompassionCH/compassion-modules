@@ -375,7 +375,7 @@ msgstr ""
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__affinity
 msgid "Affinity"
-msgstr "Affinité"
+msgstr "Affinity"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__segments_affinity_ids
@@ -411,7 +411,7 @@ msgstr ""
 #. module: partner_segmentation
 #: model_terms:survey.survey,description_done:partner_segmentation.partner_segmentation_survey
 msgid "Continue"
-msgstr "Continuer"
+msgstr "Continue"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__create_uid
@@ -465,7 +465,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__has_segment
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__has_segment
 msgid "Has Segment"
-msgstr "A un segment"
+msgstr "Has Segment"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value_right:partner_segmentation.pss_q5_labels
@@ -569,12 +569,12 @@ msgstr "Dernière mise à jour le"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__main_driver
 msgid "Main Driver"
-msgstr "Moteur principal"
+msgstr "Main Driver"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__max_checked_option
 msgid "Maximum answers"
-msgstr "Nombre maximum de réponses"
+msgstr "Maximum answers"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_name
@@ -613,32 +613,32 @@ msgstr "Segmentation du partenaire"
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_res_partner_segment_affinity
 msgid "Partner segment affinity"
-msgstr "Affinité du partenaire pour le segment"
+msgstr "Partner segment affinity"
 
 #. module: partner_segmentation
 #: model:ir.ui.menu,name:partner_segmentation.menu_partner_segment
 msgid "Partners Segmentation"
-msgstr "Segmentation des partenaires"
+msgstr "Partners Segmentation"
 
 #. module: partner_segmentation
 #: model:ir.ui.menu,name:partner_segmentation.menu_partner_segment_affinity
 msgid "Partners Segmentation Affinity"
-msgstr "Affinité de segmentation des partenaires"
+msgstr "Partners Segmentation Affinity"
 
 #. module: partner_segmentation
 #: model:ir.actions.act_window,name:partner_segmentation.open_view_partner_segmentation
 msgid "Partners segmentation"
-msgstr "Segmentation des partenaires"
+msgstr "Partners segmentation"
 
 #. module: partner_segmentation
 #: model:ir.actions.act_window,name:partner_segmentation.open_view_partner_segmentation_affinity
 msgid "Partners segmentation affinity"
-msgstr "Affinité de segmentation des partenaires"
+msgstr "Partners segmentation affinity"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__personalized_links
 msgid "Personalized Links"
-msgstr "Liens personnalisés"
+msgstr "Personalized Links"
 
 #. module: partner_segmentation
 #: model_terms:survey.survey,description:partner_segmentation.partner_segmentation_survey
@@ -657,18 +657,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__primary_partners_ids
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_form
 msgid "Primary Partners"
-msgstr "Partenaires principaux"
+msgstr "Primary Partners"
 
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.res_partner_compassion_search
 msgid "Primary Segment"
-msgstr "Segment principal"
+msgstr "Primary Segment"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_id
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__primary_segment_id
 msgid "Primary segmentation category"
-msgstr "Catégorie de segmentation principale"
+msgstr "Primary segmentation category"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value_right:partner_segmentation.pss_q1_labels
@@ -682,18 +682,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__secondary_partners_ids
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_form
 msgid "Secondary Partners"
-msgstr "Partenaires secondaires"
+msgstr "Secondary Partners"
 
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.res_partner_compassion_search
 msgid "Secondary Segment"
-msgstr "Segment secondaire"
+msgstr "Secondary Segment"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__secondary_segment_id
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__secondary_segment_id
 msgid "Secondary segmentation category"
-msgstr "Catégorie de segmentation secondaire"
+msgstr "Secondary segmentation category"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__segment_id
@@ -703,22 +703,22 @@ msgstr "Segment"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_index
 msgid "Segment Index"
-msgstr "Index du segment"
+msgstr "Segment Index"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_size
 msgid "Segment Size"
-msgstr "Taille du segment"
+msgstr "Segment Size"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_total
 msgid "Segment Total"
-msgstr "Total du segment"
+msgstr "Segment Total"
 
 #. module: partner_segmentation
 #: model:ir.model.constraint,message:partner_segmentation.constraint_res_partner_segment_unique_index
 msgid "Segment index must be unique"
-msgstr "L'index du segment doit être unique"
+msgstr "Segment index must be unique"
 
 #. module: partner_segmentation
 #: model:ir.ui.menu,name:partner_segmentation.menu_segmentation
@@ -844,7 +844,7 @@ msgstr "Question du sondage"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__survey_result
 msgid "Survey Result"
-msgstr "Résultat de l'enquête"
+msgstr "Survey Result"
 
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_user_input
@@ -860,7 +860,7 @@ msgstr "Ligne de saisie pour l'utilisateur du sondage"
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_count
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_count
 msgid "Survey number"
-msgstr "Numéro de sondage"
+msgstr "Survey number"
 
 #. module: partner_segmentation
 #: model:ir.actions.act_window,name:partner_segmentation.act_partner_survey_input
@@ -874,7 +874,7 @@ msgstr "Sondages"
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_lines
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_lines
 msgid "Surveys answers"
-msgstr "Réponses aux sondages"
+msgstr "Surveys answers"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_10
@@ -983,7 +983,7 @@ msgstr ""
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__image
 msgid "segment illustration"
-msgstr "illustration du segment"
+msgstr "segment illustration"
 
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_tree
