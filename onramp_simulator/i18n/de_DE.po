@@ -63,7 +63,7 @@ msgstr "Mitteilungstyp"
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__name
 msgid "Name"
-msgstr ""
+msgstr "Bezeichnung"
 
 #. module: onramp_simulator
 #: model:ir.model,name:onramp_simulator.model_onramp_simulator
@@ -83,7 +83,7 @@ msgstr "Result code"
 #. module: onramp_simulator
 #: model_terms:ir.ui.view,arch_db:onramp_simulator.onramp_simulator_form
 msgid "Send"
-msgstr ""
+msgstr "Senden"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__server_url

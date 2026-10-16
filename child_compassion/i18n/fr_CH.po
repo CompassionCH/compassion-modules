@@ -19,13 +19,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/compassion_hold.py:0
 msgid "%s - Reservation converted to hold"
-msgstr ""
+msgstr "%s - Reservation converties en hold"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "* The birthday is an estimation."
-msgstr ""
+msgstr "* La date de naissance est estimée."
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.childpack_document
@@ -71,7 +71,7 @@ msgstr "Un filtre est actif"
 #. odoo-python
 #: code:addons/child_compassion/models/compassion_hold.py:0
 msgid "A new hold has been created because of an existing reservation."
-msgstr ""
+msgstr "Un nouveau hold a été créé à cause d'une réservation existante."
 
 #. module: child_compassion
 #. odoo-python
@@ -244,7 +244,7 @@ msgstr "Emplois des parents"
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss__activity_exception_decoration
 #: model:ir.model.fields,field_description:child_compassion.field_fo_high_risk__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr ""
+msgstr "Activité d'exception de décoration"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__activity_state
@@ -318,7 +318,7 @@ msgstr "Status de l'Activité"
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss__activity_type_icon
 #: model:ir.model.fields,field_description:child_compassion.field_fo_high_risk__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Icône de type d'activité"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -361,7 +361,7 @@ msgstr "Critères avancés utilisés"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__age
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__age
 msgid "Age"
-msgstr ""
+msgstr "Âge"
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_contests
@@ -664,7 +664,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Baker"
-msgstr ""
+msgstr "Boulanger"
 
 #. module: child_compassion
 #. odoo-python
@@ -743,7 +743,7 @@ msgstr "Bénéficiaires"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Beneficiary - Unborn"
-msgstr ""
+msgstr "Bénéficiaire - Non né"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household_member__beneficiary_local_id
@@ -781,7 +781,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Best school subject"
-msgstr ""
+msgstr "Sujet d'école préferé"
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_bible
@@ -1082,7 +1082,7 @@ msgstr "Caregivers seriously injured number"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Carpenter"
-msgstr ""
+msgstr "Charpentier"
 
 #. module: child_compassion
 #: model:child.household.duty,value:child_compassion.household_duty_water
@@ -1332,7 +1332,7 @@ msgstr "child.future.hope"
 #. odoo-python
 #: code:addons/child_compassion/models/compassion_hold.py:0
 msgid "Child is not departed."
-msgstr ""
+msgstr "L'enfant n'est pas \"departed\"."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__loss_ids
@@ -1575,7 +1575,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_hold_wizard.py:0
 msgid "Children on hold"
-msgstr ""
+msgstr "Enfants en hold"
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_pe2
@@ -1751,7 +1751,7 @@ msgstr "Ville la plus proche"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Closest city"
-msgstr ""
+msgstr "Ville la plus proche"
 
 #. module: child_compassion
 #. odoo-python
@@ -1803,7 +1803,7 @@ msgstr "Score cognitif"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Cognitive activities"
-msgstr ""
+msgstr "Activités cognitives"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__cognitive_activity_babies_ids
@@ -2055,7 +2055,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Construction worker"
-msgstr ""
+msgstr "Ouvrier du bâtiment"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
@@ -2086,7 +2086,7 @@ msgstr "Poursuite de la formation technique et professionnelle"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Cook"
-msgstr ""
+msgstr "Cuisiner"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_cooking
@@ -2334,7 +2334,7 @@ msgstr "Mucovicidose"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Daily jobs"
-msgstr ""
+msgstr "Emplois quotidiens"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_dancing
@@ -2353,7 +2353,7 @@ msgstr "Données non disponibles/non applicables"
 #: model:ir.model.fields,field_description:child_compassion.field_demand_planning__date
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_child_form
 msgid "Date"
-msgstr ""
+msgstr "Date "
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__date
@@ -2840,7 +2840,7 @@ msgstr "Electrical power"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Electrician"
-msgstr ""
+msgstr "Électricien"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__electrocution
@@ -3228,7 +3228,7 @@ msgstr "Travail d'usine"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Factory worker"
-msgstr ""
+msgstr "Ouvrier d'usine"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__failed_message_ids
@@ -3283,7 +3283,7 @@ msgstr "Family impact"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Farmer"
-msgstr ""
+msgstr "Agriculteur"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_category__fatal_accident
@@ -3315,13 +3315,13 @@ msgstr "Father living with child"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Father alive"
-msgstr ""
+msgstr "Papa en vie"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Father job"
-msgstr ""
+msgstr "Métier du papa"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__fcp_id
@@ -3465,7 +3465,7 @@ msgstr "First scheduled letter"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__firstname
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__firstname
 msgid "Firstname"
-msgstr ""
+msgstr "Prénom"
 
 #. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_fish
@@ -3476,7 +3476,7 @@ msgstr "Poisson"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Fish seller"
-msgstr ""
+msgstr "Vendeur de poisson"
 
 #. module: child_compassion
 #. odoo-python
@@ -3624,13 +3624,13 @@ msgstr "Icône Font Awesome e.g. fa-tasks"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Food server"
-msgstr ""
+msgstr "Serveur de nourriture"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Food vendor"
-msgstr ""
+msgstr "Vendeur de nourriture"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_forestry
@@ -3704,7 +3704,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Gardener"
-msgstr ""
+msgstr "Jardinier"
 
 #. module: child_compassion
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_gardening
@@ -3901,7 +3901,7 @@ msgstr "Suivi de la croissance"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Guard"
-msgstr ""
+msgstr "Garde"
 
 #. module: child_compassion
 #: model:compassion.field.office,capital_city:child_compassion.field_office_gu
@@ -3932,7 +3932,7 @@ msgstr "Tempête de grêle"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Hairdresser"
-msgstr ""
+msgstr "Coiffeur"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__harvest_month_ids
@@ -4006,7 +4006,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__headshot
 msgid "Headshot"
-msgstr ""
+msgstr "Portrait"
 
 #. module: child_compassion
 #: model:child.school.subject,value:child_compassion.school_health
@@ -4023,7 +4023,7 @@ msgstr "Health needs"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Health care worker"
-msgstr ""
+msgstr "Personnel de santé"
 
 #. module: child_compassion
 #: model:fcp.physical.activity,value:child_compassion.physical_act_health_kits
@@ -4224,7 +4224,7 @@ msgstr "A domicile"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Homemaker"
-msgstr ""
+msgstr "Femme au foyer"
 
 #. module: child_compassion
 #: model:child.major.course.study,value:child_compassion.course_hospitality
@@ -4272,19 +4272,19 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__duty_ids
 msgid "Household duties"
-msgstr ""
+msgstr "Tâches ménagères"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Housekeeper"
-msgstr ""
+msgstr "Aide-ménagère"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Housewife"
-msgstr ""
+msgstr "Femme au foyer"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_global_child__priority_score
@@ -4854,6 +4854,8 @@ msgid ""
 "In addition, the project offers special activities for the parents such as "
 "education courses."
 msgstr ""
+"De plus, le centre de développement de l'enfant propose des activités pour "
+"les parents ainsi que des cours d'éducation"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project__annual_primary_school_cost
@@ -5344,7 +5346,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Janitor"
-msgstr ""
+msgstr "Concierge"
 
 #. module: child_compassion
 #. odoo-python
@@ -5497,7 +5499,7 @@ msgstr "Aider à la cuisine"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Knitter"
-msgstr ""
+msgstr "Tricoteuse"
 
 #. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_kocho
@@ -5513,7 +5515,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Laborer"
-msgstr ""
+msgstr "Ouvrier"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_lahu
@@ -5718,13 +5720,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__lastname
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__lastname
 msgid "Lastname"
-msgstr ""
+msgstr "Nom de famille"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Laundry worker"
-msgstr ""
+msgstr "Employé de blanchisserie"
 
 #. module: child_compassion
 #: model:child.major.course.study,value:child_compassion.course_law
@@ -5740,7 +5742,7 @@ msgstr "Application de la loi"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Law enforcement"
-msgstr ""
+msgstr "Application de la loi"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_lawyer
@@ -5894,7 +5896,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Local community"
-msgstr ""
+msgstr "Communauté locale"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
@@ -6033,7 +6035,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Manicurist"
-msgstr ""
+msgstr "Manucure"
 
 #. module: child_compassion
 #: model:compassion.field.office,capital_city:child_compassion.field_office_ph
@@ -6075,7 +6077,7 @@ msgstr "Marché"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Mason"
-msgstr ""
+msgstr "Maçon"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_category__maternal
@@ -6132,7 +6134,7 @@ msgstr "Rougeole"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Mechanic"
-msgstr ""
+msgstr "Mécanicien"
 
 #. module: child_compassion
 #: model:child.major.course.study,value:child_compassion.course_medical_health2
@@ -6184,7 +6186,7 @@ msgstr "Accompagnement"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Merchant"
-msgstr ""
+msgstr "Marchand"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__message_has_error
@@ -6324,13 +6326,13 @@ msgstr "Mother living with child"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Mother alive"
-msgstr ""
+msgstr "Mère en vie"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Mother job"
-msgstr ""
+msgstr "Métier de la maman"
 
 #. module: child_compassion
 #. odoo-python
@@ -6803,7 +6805,7 @@ msgstr "Type d'Activités à Venir"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_hold__no_money_extension
@@ -6913,7 +6915,7 @@ msgstr "Sans emploi"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__note_ids
 msgid "Notes"
-msgstr ""
+msgstr "Commentaires"
 
 #. module: child_compassion
 #: model:connect.month,name:child_compassion.connect_month_nov
@@ -6994,13 +6996,13 @@ msgstr "Nombre d'Actions"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Number of brothers"
-msgstr ""
+msgstr "Nombre de frères"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Number of children"
-msgstr ""
+msgstr "Nombre d'enfants"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__message_has_error_counter
@@ -7133,13 +7135,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "Number of sisters"
-msgstr ""
+msgstr "Nombre de soeurs"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Nurse"
-msgstr ""
+msgstr "Infirmière"
 
 #. module: child_compassion
 #: model:child.major.course.study,value:child_compassion.course_nursing
@@ -7257,13 +7259,13 @@ msgstr "Autres filtres"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Other non-relative"
-msgstr ""
+msgstr "Autre personne non apparentée"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Other relative"
-msgstr ""
+msgstr "Autre relatif"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_field_office_disaster
@@ -7291,7 +7293,7 @@ msgstr "Propriétaire"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Painter"
-msgstr ""
+msgstr "Peintre"
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_panel_discussion
@@ -7312,7 +7314,7 @@ msgstr "Parents together"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Participant - Unborn"
-msgstr ""
+msgstr "Participant - Non né"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__participant_expected_capacity
@@ -7396,7 +7398,7 @@ msgstr "Coqueluche"
 #. odoo-python
 #: code:addons/child_compassion/models/project_lifecycle_event.py:0
 msgid "Phase Out"
-msgstr ""
+msgstr "Phase de sortie"
 
 #. module: child_compassion
 #: model:compassion.field.office,capital_city:child_compassion.field_office_kh
@@ -7427,7 +7429,7 @@ msgstr "Physical score"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Physical activities"
-msgstr ""
+msgstr "Activités physiques"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__physical_activity_babies_ids
@@ -7657,7 +7659,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Plumber"
-msgstr ""
+msgstr "Plombier"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child_ble__child_death_subcategory__pneumonia
@@ -8137,13 +8139,13 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__project_activity_ids
 msgid "Project activities"
-msgstr ""
+msgstr "Activités du centre"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Project activities for children"
-msgstr ""
+msgstr "Activités pour les enfants du centre de développement de l'enfant"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_compassion_project_ile
@@ -8154,7 +8156,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Project name"
-msgstr ""
+msgstr "Nom du centre de développement de l'enfant"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_reservation__reservation_type__project
@@ -8197,7 +8199,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Project worker"
-msgstr ""
+msgstr "Collaborateur de projet"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__projected_transition_date
@@ -8867,7 +8869,7 @@ msgstr "School year begins"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "School begins in"
-msgstr ""
+msgstr "L'école commence en"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__school_cost_paid_ids
@@ -8878,7 +8880,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "School level"
-msgstr ""
+msgstr "Niveau d'études"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__subject_ids
@@ -9192,7 +9194,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Socio-emotional activities"
-msgstr ""
+msgstr "Activités socio-émotionnelles"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__socio_activity_babies_ids
@@ -9230,7 +9232,7 @@ msgstr "Sorgho"
 #. odoo-python
 #: code:addons/child_compassion/models/compassion_hold.py:0
 msgid "Sorry, the child is no longer available."
-msgstr ""
+msgstr "Désolé, l'enfant n'est plus disponible."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard__source_code
@@ -9274,7 +9276,7 @@ msgstr "Spiritual score"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Spiritual activities"
-msgstr ""
+msgstr "Activités spirituelles"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__spiritual_activity_babies_ids
@@ -9334,7 +9336,7 @@ msgstr "Langues parlées"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__sponsor_id
 msgid "Sponsor"
-msgstr ""
+msgstr "Parrainer"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__child_hold_wizard__channel__sponsor_cancel
@@ -9663,7 +9665,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Tailor"
-msgstr ""
+msgstr "Tailleur"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__take
@@ -9679,7 +9681,7 @@ msgstr "Développement de talents"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Teacher"
-msgstr ""
+msgstr "Enseignant"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_teaching
@@ -9880,6 +9882,9 @@ msgid ""
 "The no money hold for child {local_id} is expiring on {old_expiration} and "
 "will not be extended since no sponsorship exists for this child."
 msgstr ""
+"La prise en charge sans argent de l'enfant {local_id} expire le "
+"{old_expiration} et ne sera pas prolongée car il n'existe pas de parrainage "
+"pour cet enfant."
 
 #. module: child_compassion
 #. odoo-python
@@ -9909,13 +9914,15 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "The project has no electricity."
-msgstr ""
+msgstr "Le centre de développement de l'enfant n'a pas l'électricité"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "The project is located in %s, close to the border."
 msgstr ""
+"Le centre de développement de l'enfant se trouve en %s, près de la "
+"frontière."
 
 #. module: child_compassion
 #. odoo-python
@@ -10006,7 +10013,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/project_compassion.py:0
 msgid "Tile"
-msgstr ""
+msgstr "Tuile"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__time
@@ -10181,7 +10188,7 @@ msgstr "Tutorat"
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_hold_filter
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_reservation_filter
 msgid "Type"
-msgstr ""
+msgstr "Type d'origine"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_child_christian_activity__activity_exception_decoration
@@ -10249,13 +10256,13 @@ msgstr "Typical wall material"
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Typical food"
-msgstr ""
+msgstr "Nourriture principale"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/project_description.py:0
 msgid "Typical job"
-msgstr ""
+msgstr "Métier le plus commun"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_tzeltal
@@ -10436,7 +10443,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_note__visibility
 msgid "Visibility"
-msgstr ""
+msgstr "Visibilité"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__vocational_training_id
@@ -11017,7 +11024,7 @@ msgstr "Poids"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Welder"
-msgstr ""
+msgstr "Soudeur"
 
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_welding
@@ -11101,7 +11108,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Works in clothing trade"
-msgstr ""
+msgstr "Travaille dans le secteur de l'habillement"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
@@ -11127,7 +11134,7 @@ msgstr "Fièvre jaune"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard__yield_rate
@@ -11212,7 +11219,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "aunt"
-msgstr ""
+msgstr "tante"
 
 #. module: child_compassion
 #: model:fcp.school.cost,value:child_compassion.icp_school_cost_books
@@ -11224,7 +11231,7 @@ msgstr "livres"
 #: code:addons/child_compassion/models/household.py:0
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "brother"
-msgstr ""
+msgstr "frère"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -11323,7 +11330,7 @@ msgstr "la situation familiale s'est améliorée"
 #: code:addons/child_compassion/models/household.py:0
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "father"
-msgstr ""
+msgstr "père"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_financial
@@ -11345,7 +11352,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "foster parent"
-msgstr ""
+msgstr "père adoptif"
 
 #. module: child_compassion
 #. odoo-python
@@ -11373,13 +11380,13 @@ msgstr "obtenir des informations"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "godfather"
-msgstr ""
+msgstr "parrain"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "godmother"
-msgstr ""
+msgstr "marraine"
 
 #. module: child_compassion
 #: model:child.project.activity,value:child_compassion.project_activity_trips
@@ -11400,13 +11407,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "grandfather"
-msgstr ""
+msgstr "grand-papa"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "grandmother"
-msgstr ""
+msgstr "grand-maman"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__education_level__highschool
@@ -11514,13 +11521,13 @@ msgstr "analphabétisme"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "in a youth headed house."
-msgstr ""
+msgstr "dans une maison tenue par des jeunes."
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "in an institution."
-msgstr ""
+msgstr "en institution."
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_integrity
@@ -11577,7 +11584,7 @@ msgstr "écouter des histoires bibliques"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "lives"
-msgstr ""
+msgstr "vit"
 
 #. module: child_compassion
 #: model:fo.high.risk,value:child_compassion.fo_risk_malaria
@@ -11604,7 +11611,7 @@ msgstr ""
 #: code:addons/child_compassion/models/household.py:0
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "mother"
-msgstr ""
+msgstr "mère"
 
 #. module: child_compassion
 #: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_project_tree
@@ -11838,7 +11845,7 @@ msgstr "chanter"
 #: code:addons/child_compassion/models/household.py:0
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "sister"
-msgstr ""
+msgstr "soeur"
 
 #. module: child_compassion
 #. odoo-python
@@ -11865,13 +11872,13 @@ msgstr "trouver un travail"
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "step father"
-msgstr ""
+msgstr "beau-papa"
 
 #. module: child_compassion
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "step mother"
-msgstr ""
+msgstr "belle-maman"
 
 #. module: child_compassion
 #: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_transition
@@ -11946,7 +11953,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/child_compassion/models/household.py:0
 msgid "uncle"
-msgstr ""
+msgstr "oncle"
 
 #. module: child_compassion
 #: model:fcp.school.cost,value:child_compassion.icp_school_cost_uniforms
@@ -11967,7 +11974,7 @@ msgstr "Formation professionnelle"
 #. odoo-python
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "with"
-msgstr ""
+msgstr "avec"
 
 #. module: child_compassion
 #: model:fcp.suspension.extension.reason,value:child_compassion.icp_suspension_reason_work_environment

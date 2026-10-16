@@ -362,7 +362,7 @@ msgstr "Advanced criteria used"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__age
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__age
 msgid "Age"
-msgstr ""
+msgstr "Alter"
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_contests
@@ -613,7 +613,7 @@ msgstr "KFZ-Technik"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__global_child_ids
 msgid "Available Children"
-msgstr ""
+msgstr "Verfügbare Kinder"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__available_for_visits
@@ -1786,7 +1786,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__code
 msgid "Code"
-msgstr ""
+msgstr "Nummer"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_res_lang_compassion_code_iso
@@ -1913,7 +1913,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_company_id
 msgid "Company"
-msgstr ""
+msgstr "Unternehmen"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__compass_id
@@ -2473,7 +2473,7 @@ msgstr "Ausführliche Informationen"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__status_comment
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__details
 msgid "Details"
-msgstr ""
+msgstr "Dettagli"
 
 #. module: child_compassion
 #: model:compassion.field.office,capital_city:child_compassion.field_office_bangladesh
@@ -3477,7 +3477,7 @@ msgstr "First scheduled letter"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__firstname
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__firstname
 msgid "Firstname"
-msgstr ""
+msgstr "Vorname"
 
 #. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_fish
@@ -4134,7 +4134,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__hobby_ids
 msgid "Hobbies"
-msgstr ""
+msgstr "Hobbys"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__hold_id
@@ -4284,7 +4284,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__duty_ids
 msgid "Household duties"
-msgstr ""
+msgstr "Ämtli"
 
 #. module: child_compassion
 #. odoo-python
@@ -4879,7 +4879,7 @@ msgstr ""
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__vocational_training_status__in_progress
 msgid "In progress"
-msgstr ""
+msgstr "In Bearbeitung"
 
 #. module: child_compassion
 #: model:compassion.field.office,tpl_looking_forward:child_compassion.field_office_tz
@@ -5555,7 +5555,7 @@ msgstr "Sprache"
 #. module: child_compassion
 #: model:child.vocational.training,value:child_compassion.voc_languages
 msgid "Languages"
-msgstr ""
+msgstr "Sprachen"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__last_attended_project
@@ -5731,7 +5731,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__lastname
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__lastname
 msgid "Lastname"
-msgstr ""
+msgstr "Nachname"
 
 #. module: child_compassion
 #. odoo-python
@@ -8155,7 +8155,7 @@ msgstr "Projekt suspendiert"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__project_activity_ids
 msgid "Project activities"
-msgstr ""
+msgstr "Aktivitäten im Zentrum"
 
 #. module: child_compassion
 #. odoo-python
@@ -9347,12 +9347,12 @@ msgstr "Bibellektion"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__spoken_language_ids
 msgid "Spoken languages"
-msgstr ""
+msgstr "Gesprochene Sprachen"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__sponsor_id
 msgid "Sponsor"
-msgstr ""
+msgstr "Finde ein Patenkind"
 
 #. module: child_compassion
 #: model:ir.model.fields.selection,name:child_compassion.selection__child_hold_wizard__channel__sponsor_cancel
@@ -10459,7 +10459,7 @@ msgstr "Gewalt"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_note__visibility
 msgid "Visibility"
-msgstr ""
+msgstr "Sichtbarkeit"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__vocational_training_id

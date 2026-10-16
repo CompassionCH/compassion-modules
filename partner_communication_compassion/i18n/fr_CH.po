@@ -3158,7 +3158,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_child_disaster_impact__communication_id
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_correspondence__communication_id
 msgid "Communication"
-msgstr ""
+msgstr "Libellé"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_partner_communication_job
@@ -3173,7 +3173,7 @@ msgstr "Communication envoyée le"
 #. module: partner_communication_compassion
 #: model:ir.actions.act_window,name:partner_communication_compassion.action_communication_template
 msgid "Communication templates"
-msgstr ""
+msgstr "Modèles de communication"
 
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_donation
@@ -3198,7 +3198,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__correspondent_id
 msgid "Correspondent"
-msgstr ""
+msgstr "Correspondant"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_res_country
@@ -3318,7 +3318,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_household
 msgid "Household"
-msgstr ""
+msgstr "Ménage"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_notes
@@ -3512,12 +3512,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__res_model__res_partner
 msgid "Partners"
-msgstr ""
+msgstr "Partenaires"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__partner_id
 msgid "Payer"
-msgstr ""
+msgstr "Payeur"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_partner__photo_delivery_preference
@@ -3609,7 +3609,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.view_correspondence_form_communication
 msgid "Send Communication"
-msgstr ""
+msgstr "Envoyer la communication"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_generate_wizard__partner_source
@@ -3619,7 +3619,7 @@ msgstr "Envoi à"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_generate_wizard__res_model
 msgid "Source"
-msgstr ""
+msgstr "Origine"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_child
@@ -3703,7 +3703,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.correspondence_view_search_email
 msgid "Unread"
-msgstr ""
+msgstr "Non lu"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_job__utm_campaign_id
@@ -3756,7 +3756,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication_compassion/models/child.py:0
 msgid "and"
-msgstr ""
+msgstr "et"
 
 #. module: partner_communication_compassion
 #. odoo-python

@@ -200,7 +200,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "My Sponsorships"
-msgstr ""
+msgstr "Mes parrainages"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
@@ -308,7 +308,7 @@ msgstr "Recherche contrats"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__sequence
 msgid "Sequence"
-msgstr ""
+msgstr "Séquence"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_end_reason
@@ -319,7 +319,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:base.automation,name:sponsorship_sub_management.sub_check
 msgid "Sponsorship: Check SUB Accept/Reject after 50 days"
-msgstr ""
+msgstr "Vérifie SUB Acceptation/Rejet"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter

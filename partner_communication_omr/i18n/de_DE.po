@@ -55,7 +55,7 @@ msgstr "Kommunikation Job"
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_enable_marks
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_enable_marks
 msgid "Enable OMR"
-msgstr ""
+msgstr "OMR einschalten"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_1

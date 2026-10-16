@@ -143,19 +143,19 @@ msgstr "Annuler"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Cannot read properly"
-msgstr ""
+msgstr "Ne peut être lu correctement"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Child name different than expected"
-msgstr ""
+msgstr "Nom de l'enfant différent"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Child protection issue"
-msgstr ""
+msgstr "Contenu inapproprié protection des enfants"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__comments
@@ -293,7 +293,7 @@ msgstr "Élevé"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__id
 msgid "ID"
-msgstr ""
+msgstr "Identifiant"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__force_validation
@@ -321,7 +321,7 @@ msgstr "En cours"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Inappropriate content"
-msgstr ""
+msgstr "Contenu inapproprié"
 
 #. module: sbc_translation
 #: model:ir.actions.server,name:sbc_translation.increment_priority_cron_ir_actions_server
@@ -383,7 +383,7 @@ msgstr "Contenu de la lettre"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Letter in wrong language queue"
-msgstr ""
+msgstr "Mauvaise catégorie de langue"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_correspondence_paragraph
@@ -483,13 +483,13 @@ msgstr "Ouvrir la lettre dans la plateforme de traduction"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Other issue"
-msgstr ""
+msgstr "Autre problème"
 
 #. module: sbc_translation
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "PDF not showing"
-msgstr ""
+msgstr "PDF ne s'affiche pas"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
@@ -623,7 +623,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Sponsor name different than expected"
-msgstr ""
+msgstr "Nom du parrain différent"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
@@ -843,7 +843,7 @@ msgstr "Très élevé"
 #. odoo-python
 #: code:addons/sbc_translation/models/correspondence.py:0
 msgid "Wrong translation boxes layout"
-msgstr ""
+msgstr "Erreur de disposition de l'encart de traduction"
 
 #. module: sbc_translation
 #. odoo-python

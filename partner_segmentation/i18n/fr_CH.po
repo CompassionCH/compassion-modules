@@ -411,7 +411,7 @@ msgstr ""
 #. module: partner_segmentation
 #: model_terms:survey.survey,description_done:partner_segmentation.partner_segmentation_survey
 msgid "Continue"
-msgstr ""
+msgstr "Continuer"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__create_uid

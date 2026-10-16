@@ -85,7 +85,7 @@ msgstr ""
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__sponsorship_url
 msgid "Sponsorship Url"
-msgstr ""
+msgstr "URL di sponsorizzazione"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__survival_sponsorship_url

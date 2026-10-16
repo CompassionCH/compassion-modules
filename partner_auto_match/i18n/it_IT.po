@@ -23,7 +23,7 @@ msgstr "base"
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_birthdate_date
 msgid "Birthdate"
-msgstr ""
+msgstr "Data di nascita"
 
 #. module: partner_auto_match
 #: model:mail.activity.type,name:partner_auto_match.activity_check_duplicates
@@ -33,47 +33,47 @@ msgstr ""
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_city
 msgid "City"
-msgstr ""
+msgstr "Città"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_email
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_firstname
 msgid "Firstname"
-msgstr ""
+msgstr "Nome"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_function
 msgid "Job"
-msgstr ""
+msgstr "Lavoro"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_spoken_lang_ids
 msgid "Languages I can read"
-msgstr ""
+msgstr "Lingue che so leggere"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lastname
 msgid "Lastname"
-msgstr ""
+msgstr "Cognome"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lang
 msgid "Main language"
-msgstr ""
+msgstr "Lingua principale"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_create
 msgid "Match Create"
-msgstr ""
+msgstr "Crea partita"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_update
 msgid "Match Update"
-msgstr ""
+msgstr "Aggiornamento sulla partita"
 
 #. module: partner_auto_match
 #: model:ir.model,name:partner_auto_match.model_res_partner_match
@@ -83,7 +83,7 @@ msgstr "res.partner.match"
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_mobile
 msgid "Mobile"
-msgstr ""
+msgstr "Cellulare"
 
 #. module: partner_auto_match
 #: model:ir.model,name:partner_auto_match.model_cms_form_partner
@@ -98,19 +98,19 @@ msgstr ""
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_phone
 msgid "Phone"
-msgstr ""
+msgstr "Telefono"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_street
 msgid "Street"
-msgstr ""
+msgstr "Indirizzo"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_title
 msgid "Title"
-msgstr ""
+msgstr "Qualifica"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_zip
 msgid "Zip"
-msgstr ""
+msgstr "CAP"

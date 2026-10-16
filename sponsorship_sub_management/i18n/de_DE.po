@@ -31,7 +31,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__active
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
@@ -41,7 +41,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__cancel_gifts_on_termination
@@ -51,7 +51,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__cancelled
 msgid "Cancelled"
-msgstr ""
+msgstr "Abgebrochen"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__channel
@@ -61,7 +61,7 @@ msgstr "Kanal"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__child_id
 msgid "Child"
-msgstr ""
+msgstr "Kind"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_child_hold_wizard
@@ -120,7 +120,7 @@ msgstr "Anzeigename"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Entwurf"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.server,name:sponsorship_sub_management.action_sub_check
@@ -130,19 +130,19 @@ msgstr "Code ausführen"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Finished"
-msgstr ""
+msgstr "Abgeschlossen"
 
 #. module: sponsorship_sub_management
 #. odoo-python
 #: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__channel__childpool
 msgid "Global Childpool"
-msgstr ""
+msgstr "Globaler Kinderpool"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Group By..."
-msgstr ""
+msgstr "Gruppieren nach ..."
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__id
@@ -200,7 +200,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "My Sponsorships"
-msgstr ""
+msgstr "Meine Patenschaften"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
@@ -308,7 +308,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__sequence
 msgid "Sequence"
-msgstr ""
+msgstr "Reihenfolge"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_end_reason
@@ -319,7 +319,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:base.automation,name:sponsorship_sub_management.sub_check
 msgid "Sponsorship: Check SUB Accept/Reject after 50 days"
-msgstr ""
+msgstr "Check SUB Accept/Reject"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
@@ -409,7 +409,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "or"
-msgstr ""
+msgstr "oder"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__sub

@@ -227,7 +227,7 @@ msgstr "Groupe"
 #. module: advanced_translation
 #: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
 msgid "Group By..."
-msgstr ""
+msgstr "Grouper par..."
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_hindi
@@ -325,7 +325,7 @@ msgstr "Lang id"
 #. module: advanced_translation
 #: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_langdetect
@@ -502,7 +502,7 @@ msgstr ""
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__src
 msgid "Source"
-msgstr ""
+msgstr "Origine"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_spanish
@@ -603,7 +603,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/advanced_translation/models/translatable_model.py:0
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_wassa_twi
@@ -624,4 +624,4 @@ msgstr ""
 #. odoo-python
 #: code:addons/advanced_translation/models/translatable_model.py:0
 msgid "and"
-msgstr ""
+msgstr "et"

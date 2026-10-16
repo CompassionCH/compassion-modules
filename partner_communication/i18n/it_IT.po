@@ -179,6 +179,8 @@ msgid ""
 "Attached report templates should be linked to partner.communication.job "
 "objects!"
 msgstr ""
+"I modelli di report allegati devono essere collegati agli oggetti "
+"partner.communication.job!"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_ir_attachment
@@ -252,13 +254,13 @@ msgstr "Corpo Html"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Both"
-msgstr ""
+msgstr "Entrambi"
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "By e-mail"
-msgstr ""
+msgstr "Per e-mail"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
@@ -277,18 +279,19 @@ msgstr "Annullato"
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Cannot print multiple communication types at the same time."
 msgstr ""
+"Non è possibile stampare più tipi di comunicazione contemporaneamente."
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Cannot print multiple langs at the same time."
-msgstr ""
+msgstr "Non è possibile stampare più lingue contemporaneamente."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__category_id
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_snippet_search
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet_category__name
@@ -418,7 +421,7 @@ msgstr "Impostazioni di configurazione"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Configuration"
-msgstr ""
+msgstr "Configurazione"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_res_partner
@@ -428,7 +431,7 @@ msgstr "Contatto"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
 msgid "Content"
-msgstr ""
+msgstr "Contenuto"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__country_id
@@ -517,7 +520,7 @@ msgstr "Preferenza di consegna per la comunicazione globale"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__description
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__display_name
@@ -537,7 +540,7 @@ msgstr "Nome Visualizzato"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Don't inform sponsor"
-msgstr ""
+msgstr "Non informare lo sponsor"
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__done
@@ -598,7 +601,7 @@ msgstr "Abilitazione dell'OMR"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Error sending e-mail: %s"
-msgstr ""
+msgstr "Errore nell'invio dell'e-mail: %s"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__failed_message_ids
@@ -629,7 +632,7 @@ msgstr "Followers (Partner)"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Following field does not exist in res.partner: %s."
-msgstr ""
+msgstr "Il campo seguente non esiste in res.partner: %s."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_type_icon
@@ -1112,7 +1115,7 @@ msgstr "Campo di preferenza del partner"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Partner specific"
-msgstr ""
+msgstr "Partner specifici"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
@@ -1139,13 +1142,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Please select a printing configuration for the attachments you add."
-msgstr ""
+msgstr "Selezionare una configurazione di stampa per gli allegati aggiunti."
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/wizards/change_text_wizard.py:0
 msgid "Please update only one language at a time."
-msgstr ""
+msgstr "Aggiornare solo una lingua alla volta."
 
 #. module: partner_communication
 #. odoo-python
@@ -1187,7 +1190,7 @@ msgstr "Configurazione di stampa"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Print letter"
-msgstr ""
+msgstr "Lettera di stampa"
 
 #. module: partner_communication
 #. odoo-python
@@ -1255,7 +1258,7 @@ msgstr "Azienda collegata"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Related objects"
-msgstr ""
+msgstr "Oggetti correlati"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
@@ -1309,7 +1312,7 @@ msgstr "Errore di consegna degli SMS"
 #. odoo-python
 #: code:addons/partner_communication/wizards/generate_communication_wizard.py:0
 msgid "Schedule date must be in the future"
-msgstr ""
+msgstr "La data di programmazione deve essere futura"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__scheduled_date
@@ -1352,19 +1355,19 @@ msgstr "Inviare la comunicazione"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Send e-mail + print letter"
-msgstr ""
+msgstr "Inviare l'e-mail + stampare la lettera"
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Send e-mail automatically"
-msgstr ""
+msgstr "Inviare automaticamente le e-mail"
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "Send e-mail manually"
-msgstr ""
+msgstr "Inviare e-mail manualmente"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__send_from
@@ -1380,7 +1383,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Send result"
-msgstr ""
+msgstr "Invia il risultato"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__partner_id
@@ -1506,6 +1509,9 @@ msgid ""
 "The config should apply at least for a user or a language, otherwise you can"
 " simply change the settings in the general configuration."
 msgstr ""
+"La configurazione deve valere almeno per un utente o una lingua, altrimenti "
+"si possono semplicemente modificare le impostazioni nella configurazione "
+"generale."
 
 #. module: partner_communication
 #: model:ir.model.constraint,message:partner_communication.constraint_res_partner_email_is_set_if_email_only
@@ -1554,7 +1560,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "This is only possible for one template at time"
-msgstr ""
+msgstr "Questo è possibile solo per un modello alla volta"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
@@ -1657,6 +1663,7 @@ msgstr ""
 #: code:addons/partner_communication/wizards/change_text_wizard.py:0
 msgid "You can only update text on one communication type at time."
 msgstr ""
+"È possibile aggiornare il testo su un solo tipo di comunicazione alla volta."
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__edit
@@ -1677,19 +1684,19 @@ msgstr "generico: Comunicazione A4"
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "only by e-mail (send automatically)"
-msgstr ""
+msgstr "solo via e-mail (invio automatico)"
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "only by e-mail (send manually)"
-msgstr ""
+msgstr "solo via e-mail (invio manuale)"
 
 #. module: partner_communication
 #. odoo-python
 #: code:addons/partner_communication/models/communication_config.py:0
 msgid "partner.communication.job has no function called "
-msgstr ""
+msgstr "partner.communication.job non ha una funzione chiamata "
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__preview

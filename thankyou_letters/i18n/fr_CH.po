@@ -668,7 +668,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__active
 msgid "Active"
-msgstr ""
+msgstr "Actif"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__add_success_story
@@ -688,7 +688,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_ambassador_id
 msgid "Ambassador"
-msgstr ""
+msgstr "Ambassadeur"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__amount
@@ -720,7 +720,7 @@ msgstr "Body text"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
@@ -811,7 +811,7 @@ msgstr "Activer lettres de remerciement"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job_event_id
 msgid "Event"
-msgstr ""
+msgstr "Évènement"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users_valid_mandate_id
@@ -838,7 +838,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Group By"
-msgstr ""
+msgstr "Grouper par"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__id
@@ -873,7 +873,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__selected_move_line_ids
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__partner_communication_generate_wizard__res_model__account_move
 msgid "Invoices"
-msgstr ""
+msgstr "Factures"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__is_active
@@ -898,7 +898,7 @@ msgstr "Écriture comptable"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__lang
 msgid "Lang"
-msgstr ""
+msgstr "Langue"
 
 #. module: thankyou_letters
 #: model:mail.template,name:thankyou_letters.thankyou_letter_template_large
@@ -935,7 +935,7 @@ msgstr "Need call"
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__new
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__only_when_chosen
@@ -999,7 +999,7 @@ msgstr "Produit"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Retry"
-msgstr ""
+msgstr "Réessayer"
 
 #. module: thankyou_letters
 #: model:mail.template,subject:thankyou_letters.donation_summary_template
@@ -1020,7 +1020,7 @@ msgstr "Send mode"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Send Now"
-msgstr ""
+msgstr "Envoyer maintenant"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__sentence
@@ -1066,7 +1066,7 @@ msgstr "Signature letter"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__res_model
 msgid "Source"
-msgstr ""
+msgstr "Origine"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__state
@@ -1076,13 +1076,13 @@ msgstr "État"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Status"
-msgstr ""
+msgstr "État"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__story
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Story"
-msgstr ""
+msgstr "Histoire"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_sentence_id
@@ -1170,7 +1170,7 @@ msgstr "Thankyou preference"
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__type
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Type"
-msgstr ""
+msgstr "Type d'origine"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_form
@@ -1180,7 +1180,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__used
 msgid "Used"
-msgstr ""
+msgstr "Utilisée"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_partner_communication_generate_wizard__selected_move_line_ids

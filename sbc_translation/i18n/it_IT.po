@@ -91,7 +91,7 @@ msgstr ""
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__active
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_res_users
@@ -123,13 +123,13 @@ msgstr ""
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_user_form
 msgid "Archived"
-msgstr ""
+msgstr "Archiviato"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_comments_form
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #. module: sbc_translation
 #. odoo-python
@@ -153,7 +153,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence_paragraph__comments
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
 msgid "Comments"
-msgstr ""
+msgstr "Commenti"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
@@ -219,7 +219,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__create_date
@@ -229,7 +229,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__current_letter_ids
@@ -255,12 +255,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Visualizza Nome"
 
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_status__done
 msgid "Done"
-msgstr ""
+msgstr "Fatto"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__fallback_competence_id
@@ -343,7 +343,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultima modifica di"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_sbc_reply_to_comments_wizard__write_date
@@ -353,12 +353,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_correspondence
 msgid "Letter"
-msgstr ""
+msgstr "Lettera"
 
 #. module: sbc_translation
 #. odoo-python
@@ -407,7 +407,7 @@ msgstr ""
 #. module: sbc_translation
 #: model:res.groups,name:sbc_translation.group_manager
 msgid "Manager"
-msgstr ""
+msgstr "Responsabile"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.reply_to_issue_form
@@ -417,7 +417,7 @@ msgstr ""
 #. module: sbc_translation
 #: model:ir.model.fields.selection,name:sbc_translation.selection__correspondence__translation_priority__1
 msgid "Medium"
-msgstr ""
+msgstr "Canale"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_letter_counting_wizard__start_of_counting
@@ -434,7 +434,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__name
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #. module: sbc_translation
 #: model:website,prevent_zero_price_sale_text:sbc_translation.translation_website
@@ -486,7 +486,7 @@ msgstr ""
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
 msgid "Page"
-msgstr ""
+msgstr "Pagina"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
@@ -512,12 +512,12 @@ msgstr ""
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__partner_id
 msgid "Partner-related data of the user"
-msgstr ""
+msgstr "Dati dell'utente relativi al partner"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid "Priority:"
-msgstr ""
+msgstr "Priorità:"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.view_correspondence_form_translation
@@ -812,7 +812,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__user_id
 #: model:res.groups,name:sbc_translation.group_user
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__search_competence_id

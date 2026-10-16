@@ -30,6 +30,10 @@ msgid ""
 "    Until then, we wish you happy holidays.\n"
 "</p>\n"
 msgstr ""
+"\n"
+"<p>Vielen Dank für deine Nachricht.</p>\n"
+"<p>Wir freuen uns, deine Nachricht ab dem [reply_date] wieder zu beantworten.</p>\n"
+"<p>Bis dahin wünschen wir dir schöne Festtage.</p>\n"
 
 #. module: crm_request
 #: model:mail.template,body_html:crm_request.assigned_contact_holiday_email_template
@@ -402,7 +406,7 @@ msgstr ""
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
 msgid "Preview"
-msgstr ""
+msgstr "Vorschau"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure_template_preview__preview_text
@@ -500,7 +504,7 @@ msgstr ""
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.support_root
 msgid "Support"
-msgstr ""
+msgstr "unterstützen"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__template_id

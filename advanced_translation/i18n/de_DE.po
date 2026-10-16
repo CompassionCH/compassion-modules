@@ -227,7 +227,7 @@ msgstr "Gruppe"
 #. module: advanced_translation
 #: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
 msgid "Group By..."
-msgstr ""
+msgstr "Gruppieren nach ..."
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_hindi
@@ -325,7 +325,7 @@ msgstr "Lang id"
 #. module: advanced_translation
 #: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_langdetect
@@ -422,7 +422,7 @@ msgstr ""
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__name
 msgid "Name"
-msgstr ""
+msgstr "Bezeichnung"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_norwegian

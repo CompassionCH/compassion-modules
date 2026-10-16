@@ -533,7 +533,7 @@ msgstr ""
 #: model:survey.question,comments_message:partner_segmentation.pss_question_6
 #: model:survey.question,comments_message:partner_segmentation.pss_question_7
 msgid "If other, please specify:"
-msgstr ""
+msgstr "Se si tratta di altro, si prega di specificare:"
 
 #. module: partner_segmentation
 #: model:survey.question,title:partner_segmentation.pss_question_6
@@ -908,7 +908,7 @@ msgstr ""
 #: model:survey.question,validation_error_msg:partner_segmentation.pss_question_6
 #: model:survey.question,validation_error_msg:partner_segmentation.pss_question_7
 msgid "The answer you entered has an invalid format."
-msgstr ""
+msgstr "La risposta che hai inserito ha un formato non valido."
 
 #. module: partner_segmentation
 #: model:survey.question,constr_error_msg:partner_segmentation.pss_question_6
@@ -920,7 +920,7 @@ msgstr "Puoi scegliere fino a 3 ruoli"
 #: model:survey.question,constr_error_msg:partner_segmentation.pss_question_1
 #: model:survey.question,constr_error_msg:partner_segmentation.pss_question_7
 msgid "This question requires an answer."
-msgstr ""
+msgstr "Questa domanda richiede una risposta."
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_6

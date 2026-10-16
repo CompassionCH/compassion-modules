@@ -71,7 +71,7 @@ msgstr ""
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__company_id
 msgid "Company"
-msgstr ""
+msgstr "Société"
 
 #. module: gift_compassion
 #: model:ir.model,name:gift_compassion.model_res_config_settings
@@ -112,7 +112,7 @@ msgstr "Date partner paid"
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__delivered
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Delivered"
-msgstr ""
+msgstr "Delivré"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__display_name
@@ -129,7 +129,7 @@ msgstr "Domaine"
 #. module: gift_compassion
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Brouillon"
 
 #. module: gift_compassion
 #: model:base.automation,name:gift_compassion.enable_postponed_gifts
@@ -150,7 +150,7 @@ msgstr "Exécuter le code"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__failed_message_ids
 msgid "Failed Messages"
-msgstr ""
+msgstr "Messages échoués"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__field_office_notes
@@ -239,7 +239,7 @@ msgstr ""
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Gift Type"
-msgstr ""
+msgstr "Type Cadeau"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_reformat_all_phonenumbers__gift_notify_ids
@@ -256,12 +256,12 @@ msgstr ""
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__gift_type_id
 msgid "Gift type"
-msgstr ""
+msgstr "Type de cadeau"
 
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_sponsorship_contract_gift_form
 msgid "Gifts"
-msgstr ""
+msgstr "Cadeaux"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__attribution
@@ -286,7 +286,7 @@ msgstr "Type de cadeau"
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Group By..."
-msgstr ""
+msgstr "Grouper par..."
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__has_message
@@ -329,7 +329,7 @@ msgstr ""
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_collect
 msgid "Invoice Lines"
-msgstr ""
+msgstr "Lignes de factures"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__invoice_line_ids
@@ -346,7 +346,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/gift_compassion/models/sponsorship_gift.py:0
 msgid "Invoices"
-msgstr ""
+msgstr "Factures"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_is_follower
@@ -484,7 +484,7 @@ msgstr ""
 #. module: gift_compassion
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__open
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #. module: gift_compassion
 #: model:base.automation,name:gift_compassion.postpone_future_gifts_automation
@@ -524,7 +524,7 @@ msgstr "Contrat récurrent"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Erreur d'envoi de SMS"
 
 #. module: gift_compassion
 #: model:ir.actions.server,name:gift_compassion.send_gift
@@ -535,7 +535,7 @@ msgstr "Envoyer"
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Sent"
-msgstr ""
+msgstr "Envoyer par email"
 
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
@@ -567,7 +567,7 @@ msgstr "Cadeaux de parrainage"
 #. odoo-python
 #: code:addons/gift_compassion/models/contracts.py:0
 msgid "Sponsorship gifts"
-msgstr ""
+msgstr "Cadeaux de parrainage"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__state
@@ -577,7 +577,7 @@ msgstr "État"
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Status"
-msgstr ""
+msgstr "État"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__status_change_date
@@ -587,7 +587,7 @@ msgstr "Status change date"
 #. module: gift_compassion
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__suspended
 msgid "Suspended"
-msgstr ""
+msgstr "Suspendu"
 
 #. module: gift_compassion
 #: model:ir.model.fields,help:gift_compassion.field_recurring_contract__no_birthday_invoice

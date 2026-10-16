@@ -28,7 +28,7 @@ msgstr ""
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__comments
 msgid "Comments"
-msgstr ""
+msgstr "Commentaires"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model,name:partner_communication_crm_phone.model_phone_common
@@ -49,12 +49,12 @@ msgstr ""
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Créé par"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Créé le"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__display_name
@@ -64,17 +64,17 @@ msgstr "Nom affiché"
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__id
 msgid "ID"
-msgstr ""
+msgstr "Identifiant"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Dernière mise à jour par"
 
 #. module: partner_communication_crm_phone
 #: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Dernière mise à jour le"
 
 #. module: partner_communication_crm_phone
 #: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_form

@@ -23,7 +23,7 @@ msgstr "base"
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_birthdate_date
 msgid "Birthdate"
-msgstr ""
+msgstr "Date de naissance"
 
 #. module: partner_auto_match
 #: model:mail.activity.type,name:partner_auto_match.activity_check_duplicates
@@ -33,47 +33,47 @@ msgstr ""
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_city
 msgid "City"
-msgstr ""
+msgstr "Ville"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_email
 msgid "Email"
-msgstr ""
+msgstr "Courriel"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_firstname
 msgid "Firstname"
-msgstr ""
+msgstr "Prénom"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_function
 msgid "Job"
-msgstr ""
+msgstr "Poste"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_spoken_lang_ids
 msgid "Languages I can read"
-msgstr ""
+msgstr "Langues que je peux lire"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lastname
 msgid "Lastname"
-msgstr ""
+msgstr "Nom de famille"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_lang
 msgid "Main language"
-msgstr ""
+msgstr "Langue principale"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_create
 msgid "Match Create"
-msgstr ""
+msgstr "Match Créer"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__match_update
 msgid "Match Update"
-msgstr ""
+msgstr "Mise à jour du match"
 
 #. module: partner_auto_match
 #: model:ir.model,name:partner_auto_match.model_res_partner_match
@@ -83,7 +83,7 @@ msgstr "res.partner.match"
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_mobile
 msgid "Mobile"
-msgstr ""
+msgstr "Portable"
 
 #. module: partner_auto_match
 #: model:ir.model,name:partner_auto_match.model_cms_form_partner
@@ -93,24 +93,24 @@ msgstr ""
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_id
 msgid "Partner"
-msgstr ""
+msgstr "Partenaire"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_phone
 msgid "Phone"
-msgstr ""
+msgstr "Téléphone"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_street
 msgid "Street"
-msgstr ""
+msgstr "Rue"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_title
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #. module: partner_auto_match
 #: model:ir.model.fields,field_description:partner_auto_match.field_cms_form_partner__partner_zip
 msgid "Zip"
-msgstr ""
+msgstr "Code postal"

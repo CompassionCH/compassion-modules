@@ -555,7 +555,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__active
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__add_success_story
@@ -607,7 +607,7 @@ msgstr "Body text"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_account_bank_statement_line__avoid_thankyou_letter
@@ -720,12 +720,12 @@ msgstr "Sesso"
 #. module: thankyou_letters
 #: model:ir.actions.act_window,name:thankyou_letters.action_generate_communication_invoice
 msgid "Generate Communications"
-msgstr ""
+msgstr "Generare comunicazioni"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Group By"
-msgstr ""
+msgstr "Gruppo per"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__id
@@ -742,7 +742,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields,help:thankyou_letters.field_thankyou_config__need_call
 msgid "Indicates we should have a personal contact with the partner"
-msgstr ""
+msgstr "Indica che dovremmo avere un contatto personale con il partner."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_informal_salutation
@@ -760,7 +760,7 @@ msgstr "Saluto informale usato in francese"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__selected_move_line_ids
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__partner_communication_generate_wizard__res_model__account_move
 msgid "Invoices"
-msgstr ""
+msgstr "Fatture"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__is_active
@@ -848,7 +848,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_plural
 msgid "Plural"
-msgstr ""
+msgstr "Plurale"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__print_count
@@ -886,7 +886,7 @@ msgstr "Prodotto"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Retry"
-msgstr ""
+msgstr "Riprova"
 
 #. module: thankyou_letters
 #: model:mail.template,subject:thankyou_letters.donation_summary_template
@@ -896,7 +896,7 @@ msgstr ""
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_salutation
 msgid "Salutation"
-msgstr ""
+msgstr "Saluto"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__send_mode
@@ -906,7 +906,7 @@ msgstr "Send mode"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
 msgid "Send Now"
-msgstr ""
+msgstr "Invia ora"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__sentence
@@ -962,7 +962,7 @@ msgstr "Stato"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__type__story
@@ -979,7 +979,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:thankyou_letters.action_success_story
 #: model:ir.ui.menu,name:thankyou_letters.menu_donation_success_story_sales
 msgid "Success Stories"
-msgstr ""
+msgstr "Storie di successo"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__success_story_id

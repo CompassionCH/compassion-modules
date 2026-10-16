@@ -40,7 +40,7 @@ msgstr "Crea attività: A criminal record is expiring today"
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record
 #: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record
 msgid "Criminal Record"
-msgstr ""
+msgstr "Fedina penale"
 
 #. module: child_protection
 #: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_date

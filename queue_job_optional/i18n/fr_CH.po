@@ -44,12 +44,12 @@ msgstr "base"
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__channel
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Channel"
-msgstr ""
+msgstr "Canal"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__company_id
 msgid "Company"
-msgstr ""
+msgstr "Société"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__context
@@ -59,12 +59,12 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Créé par"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Créé le"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__description
@@ -74,13 +74,13 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nom affiché"
 
 #. module: queue_job_optional
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__done
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Done"
-msgstr ""
+msgstr "Fait"
 
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
@@ -90,7 +90,7 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__end_date
 msgid "End Date"
-msgstr ""
+msgstr "Date de fin"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__eta
@@ -101,12 +101,12 @@ msgstr ""
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__failed
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Failed"
-msgstr ""
+msgstr "Échec"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__id
 msgid "ID"
-msgstr ""
+msgstr "Identifiant"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__identity_key
@@ -136,12 +136,12 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Dernière mise à jour par"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Dernière mise à jour le"
 
 #. module: queue_job_optional
 #: model:res.groups,name:queue_job_optional.group_queue_job_replacement_user
@@ -151,7 +151,7 @@ msgstr ""
 #. module: queue_job_optional
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Model"
-msgstr ""
+msgstr "Modèle"
 
 #. module: queue_job_optional
 #. odoo-python
@@ -173,18 +173,18 @@ msgstr ""
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__pending
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__priority
 msgid "Priority"
-msgstr ""
+msgstr "Priorité"
 
 #. module: queue_job_optional
 #: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__processing
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "Processing"
-msgstr ""
+msgstr "En cours de traitement"
 
 #. module: queue_job_optional
 #: model:ir.actions.server,name:queue_job_optional.ir_cron_queue_job_replacement_process_ir_actions_server
@@ -247,13 +247,13 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__start_date
 msgid "Start Date"
-msgstr ""
+msgstr "Date de début"
 
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__state
 #: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
 msgid "State"
-msgstr ""
+msgstr "État"
 
 #. module: queue_job_optional
 #. odoo-python
@@ -264,4 +264,4 @@ msgstr ""
 #. module: queue_job_optional
 #: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__user_id
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"

@@ -31,7 +31,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__active
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
@@ -41,7 +41,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__cancel_gifts_on_termination
@@ -51,7 +51,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__cancelled
 msgid "Cancelled"
-msgstr ""
+msgstr "Annullato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__channel
@@ -61,7 +61,7 @@ msgstr "Canale"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__child_id
 msgid "Child"
-msgstr ""
+msgstr "Bambino"
 
 #. module: sponsorship_sub_management
 #: model:ir.model,name:sponsorship_sub_management.model_child_hold_wizard
@@ -120,7 +120,7 @@ msgstr "Visualizza Nome"
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Bozza"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.server,name:sponsorship_sub_management.action_sub_check
@@ -130,7 +130,7 @@ msgstr "Esegui codice"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Finished"
-msgstr ""
+msgstr "Finito"
 
 #. module: sponsorship_sub_management
 #. odoo-python
@@ -142,7 +142,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Group By..."
-msgstr ""
+msgstr "Gruppo di..."
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__id
@@ -200,7 +200,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "My Sponsorships"
-msgstr ""
+msgstr "I miei sostegni"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
@@ -308,7 +308,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__sequence
 msgid "Sequence"
-msgstr ""
+msgstr "Sequenza"
 
 #. module: sponsorship_sub_management
 #: model:ir.actions.act_window,name:sponsorship_sub_management.action_end_reason
@@ -319,7 +319,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model:base.automation,name:sponsorship_sub_management.sub_check
 msgid "Sponsorship: Check SUB Accept/Reject after 50 days"
-msgstr ""
+msgstr "Check SUB Accept/Reject"
 
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
@@ -334,7 +334,7 @@ msgstr "Stato"
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub
@@ -409,7 +409,7 @@ msgstr ""
 #. module: sponsorship_sub_management
 #: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "or"
-msgstr ""
+msgstr "o"
 
 #. module: sponsorship_sub_management
 #: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__sub

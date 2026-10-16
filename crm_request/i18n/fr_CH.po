@@ -30,6 +30,11 @@ msgid ""
 "    Until then, we wish you happy holidays.\n"
 "</p>\n"
 msgstr ""
+"\n"
+"<p>Merci pour votre message.</p>\n"
+"<p>Nous sommes impatients de répondre à nouveau à votre message à partir du [reply_date].</p>\n"
+"<p>D’ici là, nous vous souhaitons de joyeuses fêtes.</p>\n"
+"\n"
 
 #. module: crm_request
 #: model:mail.template,body_html:crm_request.assigned_contact_holiday_email_template
@@ -132,7 +137,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/crm_request/models/request.py:0
 msgid "A support request requires your attention"
-msgstr ""
+msgstr "Une demande de support nécessite votre attention"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_res_users__do_reminder_support_req
@@ -313,7 +318,7 @@ msgstr "Identifiant"
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__incoming_message
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__incoming_message_id
 msgid "Incoming Message"
-msgstr ""
+msgstr "Message entrant"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__intern_note
@@ -510,7 +515,7 @@ msgstr ""
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.support_root
 msgid "Support"
-msgstr ""
+msgstr "SOUTENIR"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__template_id
@@ -521,7 +526,7 @@ msgstr "Modèle"
 #. odoo-python
 #: code:addons/crm_request/models/holiday_closure.py:0
 msgid "The Compassion team"
-msgstr ""
+msgstr "L’équipe de Compassion"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_crm_claim__alias_id
@@ -533,11 +538,12 @@ msgstr ""
 #: code:addons/crm_request/models/request.py:0
 msgid "The request {} you were assigned to requires your attention."
 msgstr ""
+"La demande {} à laquelle vous avez été affecté nécessite votre attention."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_type_form
 msgid "Type"
-msgstr ""
+msgstr "Type d'origine"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view

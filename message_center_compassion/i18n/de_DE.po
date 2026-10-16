@@ -37,7 +37,7 @@ msgstr "Aktivitäten"
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_exception_decoration
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr ""
+msgstr "Aktivität Ausnahme Dekoration"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_state
@@ -49,7 +49,7 @@ msgstr "Status der Aktivität"
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_type_icon
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Aktivitätsart-Symbol"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__allow_null
@@ -75,7 +75,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__answer
 msgid "Answer"
-msgstr ""
+msgstr "Antwort"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_api_key
@@ -111,7 +111,7 @@ msgstr "Batch send"
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_recurring_contract_cancel_gifts_on_termination
@@ -187,7 +187,7 @@ msgstr "Konfig-Einstellungen"
 #. module: message_center_compassion
 #: model:ir.ui.menu,name:message_center_compassion.menu_message_config
 msgid "Configuration"
-msgstr ""
+msgstr "Konfiguration"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_answer_wrapper
@@ -222,7 +222,7 @@ msgstr "Connect service"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__content
 msgid "Content"
-msgstr ""
+msgstr "Inhalt"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__create_uid
@@ -293,18 +293,18 @@ msgstr ""
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Failed"
-msgstr ""
+msgstr "Fehlgeschlagen"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__failed_message_ids
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failed_message_ids
 msgid "Failed Messages"
-msgstr ""
+msgstr "Fehlgeschlagene Nachrichten"
 
 #. module: message_center_compassion
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__failure
 msgid "Failure"
-msgstr ""
+msgstr "Versagen"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__failure_method
@@ -373,7 +373,7 @@ msgstr "Beobachter (Partner)"
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_type_icon
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
+msgstr "Fontawesome-Icon, z. B. fa-tasks"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__from_json_conversion
@@ -449,7 +449,7 @@ msgstr "Gmc name"
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Group By..."
-msgstr ""
+msgstr "Gruppieren nach ..."
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__has_message
@@ -479,13 +479,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_exception_icon
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_exception_icon
 msgid "Icon"
-msgstr ""
+msgstr "Icona"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_exception_icon
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr ""
+msgstr "Symbol, um eine Ausnahmeaktivität anzuzeigen."
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_needaction
@@ -703,19 +703,19 @@ msgstr ""
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__my_activity_date_deadline
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr ""
+msgstr "Meine Aktivität Deadline"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__name
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__name
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__name
 msgid "Name"
-msgstr ""
+msgstr "Bezeichnung"
 
 #. module: message_center_compassion
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__new
 msgid "New"
-msgstr ""
+msgstr "Neu"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_calendar_event_id
@@ -757,7 +757,7 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_incoming_form
 #: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_outgoing_form
 msgid "No messages."
-msgstr ""
+msgstr "Keine Nachrichten."
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
@@ -871,7 +871,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__pending
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Pending"
-msgstr ""
+msgstr "Anstehend"
 
 #. module: message_center_compassion
 #. odoo-python
@@ -889,7 +889,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__priority
 msgid "Priority"
-msgstr ""
+msgstr "Priorität"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__process_date
@@ -1056,7 +1056,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:message_center_compassion.action_message_center_settings
 #: model:ir.ui.menu,name:message_center_compassion.compassion_settings_menu
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__start_date
@@ -1182,13 +1182,13 @@ msgstr "True if the received connect_schema sould be ignored"
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_exception_decoration
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Art der aufgezeichneten Ausnahmeaktivität."
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_action__connect_service
@@ -1330,4 +1330,4 @@ msgstr ""
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
 msgid "or"
-msgstr ""
+msgstr "oder"

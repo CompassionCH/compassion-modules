@@ -3477,7 +3477,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_donation
 msgid "Communications"
-msgstr ""
+msgstr "Kommunikation"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_hold
@@ -3497,7 +3497,7 @@ msgstr "Kontakt"
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__correspondent_id
 msgid "Correspondent"
-msgstr ""
+msgstr "Korrespondent"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_res_country
@@ -3592,7 +3592,7 @@ msgstr "Geschlecht"
 #. module: partner_communication_compassion
 #: model:ir.actions.act_window,name:partner_communication_compassion.action_generate_communication
 msgid "Generate Communications"
-msgstr ""
+msgstr "Kommunikation generieren"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__send_gifts_to
@@ -3621,7 +3621,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_household
 msgid "Household"
-msgstr ""
+msgstr "Haushalt"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_notes
@@ -3688,7 +3688,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_correspondence
 msgid "Letter"
-msgstr ""
+msgstr "Brief"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_correspondence__letter_delivery_preference
@@ -3818,12 +3818,12 @@ msgstr "Assistent zur Erzeugung von Partnerkommunikation"
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__res_model__res_partner
 msgid "Partners"
-msgstr ""
+msgstr "Partner"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__partner_source__partner_id
 msgid "Payer"
-msgstr ""
+msgstr "Bezahlen"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_partner__photo_delivery_preference
@@ -3917,12 +3917,12 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.view_correspondence_form_communication
 msgid "Send Communication"
-msgstr ""
+msgstr "Kommunikation senden"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_generate_wizard__partner_source
 msgid "Send to"
-msgstr ""
+msgstr "Senden an"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_generate_wizard__res_model
@@ -3958,7 +3958,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_generate_wizard__sponsorship_ids
 #: model:ir.model.fields.selection,name:partner_communication_compassion.selection__partner_communication_generate_wizard__res_model__recurring_contract
 msgid "Sponsorships"
-msgstr ""
+msgstr "Patenschaften"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_child_disaster_impact__state
@@ -4016,7 +4016,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model_terms:ir.ui.view,arch_db:partner_communication_compassion.correspondence_view_search_email
 msgid "Unread"
-msgstr ""
+msgstr "Ungelesen"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_job__utm_campaign_id
@@ -4062,7 +4062,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication_compassion/models/child.py:0
 msgid "and"
-msgstr ""
+msgstr "und"
 
 #. module: partner_communication_compassion
 #. odoo-python

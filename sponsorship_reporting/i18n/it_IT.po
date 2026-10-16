@@ -29,7 +29,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__active
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
@@ -55,12 +55,12 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__cancelled
 msgid "Cancelled"
-msgstr ""
+msgstr "Annullato"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__category
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__category__child
@@ -77,12 +77,12 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__3
@@ -108,12 +108,12 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__sds_state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Bozza"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__end_date
 msgid "End Date"
-msgstr ""
+msgstr "Data di fine"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__end_reason_id
@@ -130,7 +130,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_details_pivot
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_pivot
 msgid "Ended Sponsorships"
-msgstr ""
+msgstr "Sostegni Conclusi"
 
 #. module: sponsorship_reporting
 #: model:ir.actions.act_window,name:sponsorship_reporting.action_ended_sponsorships_details_report
@@ -225,7 +225,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.end_sponsorships_search
 msgid "Group By"
-msgstr ""
+msgstr "Gruppo per"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__id
@@ -272,7 +272,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
 msgid "Language"
-msgstr ""
+msgstr "Lingua"
 
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
@@ -299,12 +299,12 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultima modifica di"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_years_report__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
@@ -315,7 +315,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
 msgid "Medium"
-msgstr ""
+msgstr "Canale"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__2
@@ -332,7 +332,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorship_line_report__name
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__sponsorships
@@ -368,12 +368,12 @@ msgstr ""
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__end_sponsorships_month_report__end_reason_id__5
 #: model:ir.model.fields.selection,name:sponsorship_reporting.selection__gme_monthly_report__end_reason_id__5
 msgid "Not satisfied"
-msgstr ""
+msgstr "Non soddisfatto"
 
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
 msgid "Origin"
-msgstr ""
+msgstr "Origine"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_end_sponsorships_month_report__partner_id
@@ -411,12 +411,12 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_sponsorships_evolution_months_report_search
 msgid "Product"
-msgstr ""
+msgstr "Prodotto"
 
 #. module: sponsorship_reporting
 #: model:ir.ui.menu,name:sponsorship_reporting.sponsorships_report_menu_base
 msgid "Reports"
-msgstr ""
+msgstr "Rapporti"
 
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
@@ -482,7 +482,7 @@ msgstr ""
 #. module: sponsorship_reporting
 #: model_terms:ir.ui.view,arch_db:sponsorship_reporting.view_new_sponsorships_report_search
 msgid "State"
-msgstr ""
+msgstr "Stato"
 
 #. module: sponsorship_reporting
 #: model:ir.model.fields,field_description:sponsorship_reporting.field_sponsorships_evolution_months_report__study_date

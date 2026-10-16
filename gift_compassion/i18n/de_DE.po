@@ -56,7 +56,7 @@ msgstr ""
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__child_id
 msgid "Child"
-msgstr ""
+msgstr "Kind"
 
 #. module: gift_compassion
 #: model:ir.actions.act_window,name:gift_compassion.action_collect_invoices
@@ -129,7 +129,7 @@ msgstr "Dominio"
 #. module: gift_compassion
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Entwurf"
 
 #. module: gift_compassion
 #: model:base.automation,name:gift_compassion.enable_postponed_gifts
@@ -150,7 +150,7 @@ msgstr "Code ausführen"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__failed_message_ids
 msgid "Failed Messages"
-msgstr ""
+msgstr "Fehlgeschlagene Nachrichten"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__field_office_notes
@@ -261,7 +261,7 @@ msgstr ""
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_sponsorship_contract_gift_form
 msgid "Gifts"
-msgstr ""
+msgstr "Geschenke"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__attribution
@@ -286,7 +286,7 @@ msgstr ""
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Group By..."
-msgstr ""
+msgstr "Gruppieren nach ..."
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__has_message
@@ -348,7 +348,7 @@ msgstr "Abgerechnet"
 #. odoo-python
 #: code:addons/gift_compassion/models/sponsorship_gift.py:0
 msgid "Invoices"
-msgstr ""
+msgstr "Rechnungen"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_is_follower
@@ -408,7 +408,7 @@ msgstr "Min amount"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__name
 msgid "Name"
-msgstr ""
+msgstr "Bezeichnung"
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_recurring_contract__no_birthday_invoice
@@ -526,7 +526,7 @@ msgstr "Wiederkehrender Vertrag"
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "SMS Zustellungsfehler"
 
 #. module: gift_compassion
 #: model:ir.actions.server,name:gift_compassion.send_gift
@@ -537,7 +537,7 @@ msgstr "Sofort senden"
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
 msgid "Sent"
-msgstr ""
+msgstr "Gesendet"
 
 #. module: gift_compassion
 #: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
@@ -547,7 +547,7 @@ msgstr ""
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__sponsorship_id
 msgid "Sponsorship"
-msgstr ""
+msgstr "Patenschaft"
 
 #. module: gift_compassion
 #: model:ir.model,name:gift_compassion.model_sponsorship_gift
@@ -589,7 +589,7 @@ msgstr "Status change date"
 #. module: gift_compassion
 #: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__suspended
 msgid "Suspended"
-msgstr ""
+msgstr "Aufgehängt"
 
 #. module: gift_compassion
 #: model:ir.model.fields,help:gift_compassion.field_recurring_contract__no_birthday_invoice

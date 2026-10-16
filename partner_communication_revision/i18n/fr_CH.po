@@ -82,7 +82,7 @@ msgstr "A besoin d'une action"
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_revision__state__active
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.communication_config_search
 msgid "Active"
-msgstr ""
+msgstr "Actif"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_history_form
@@ -97,22 +97,22 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_ids
 msgid "Activities"
-msgstr ""
+msgstr "Activités"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr ""
+msgstr "Activité d'exception de décoration"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_state
 msgid "Activity State"
-msgstr ""
+msgstr "Status de l'Activité"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Icône de type d'activité"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -170,7 +170,7 @@ msgstr "Couleur"
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_cancel_proposition__comments
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_submit_revision__comments
 msgid "Comments"
-msgstr ""
+msgstr "Commentaires"
 
 #. module: partner_communication_revision
 #: model:ir.model,name:partner_communication_revision.model_partner_communication_config
@@ -236,7 +236,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.cancel_revision_wizard_form
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.submit_revision_wizard_form
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.communication_config_form
@@ -350,7 +350,7 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__failed_message_ids
 msgid "Failed Messages"
-msgstr ""
+msgstr "Messages échoués"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__false_text
@@ -380,7 +380,7 @@ msgstr "Abonnés (Partenaires)"
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_revision__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
+msgstr "Icône Font Awesome e.g. fa-tasks"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_keyword__name
@@ -417,12 +417,12 @@ msgstr "Identifiant"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_exception_icon
 msgid "Icon"
-msgstr ""
+msgstr "Icône"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_revision__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr ""
+msgstr "Icône indiquant une activité d'exception."
 
 #. module: partner_communication_revision
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_keyword__type__if
@@ -495,13 +495,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__edit_keyword_ids
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__keyword_ids
 msgid "Keywords"
-msgstr ""
+msgstr "Mots-clés"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_new_proposition__lang
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__lang
 msgid "Lang"
-msgstr ""
+msgstr "Langue"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_validate_proposition__lang
@@ -573,7 +573,7 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr ""
+msgstr "Mon délai d'activité"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__name
@@ -596,7 +596,7 @@ msgstr "Nested position"
 #. odoo-python
 #: code:addons/partner_communication_revision/models/communication_revision.py:0
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #. module: partner_communication_revision
 #: model:ir.actions.act_window,name:partner_communication_revision.action_new_proposition
@@ -622,17 +622,17 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr ""
+msgstr "Date limite de l'Activité à Venir"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_summary
 msgid "Next Activity Summary"
-msgstr ""
+msgstr "Résumé d'activité suivant"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_type_id
 msgid "Next Activity Type"
-msgstr ""
+msgstr "Type d'Activités à Venir"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.validate_revision_wizard_form
@@ -682,7 +682,7 @@ msgstr "Pdf name"
 #. module: partner_communication_revision
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_revision__state__pending
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #. module: partner_communication_revision
 #: model:mail.template,subject:partner_communication_revision.revision_reminder_template
@@ -704,7 +704,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_readonly
 msgid "Preview"
-msgstr ""
+msgstr "Prévisualiser"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__preview_job_id
@@ -776,7 +776,7 @@ msgstr "Responsable"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__activity_user_id
 msgid "Responsible User"
-msgstr ""
+msgstr "Responsable"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_cancel_proposition__revision_mode__proposition
@@ -824,7 +824,7 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Erreur d'envoi de SMS"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.new_proposition_form
@@ -899,6 +899,10 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__subject
@@ -1003,7 +1007,7 @@ msgstr "Translation revision id"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_validate_proposition__translator_user_id
 msgid "Translator"
-msgstr ""
+msgstr "Traducteur"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__true_text
@@ -1013,12 +1017,12 @@ msgstr "True text"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__type
 msgid "Type"
-msgstr ""
+msgstr "Type d'origine"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_revision__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Type de l'activité d'exception enregistrée."
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -1065,7 +1069,7 @@ msgstr ""
 #. module: partner_communication_revision
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_revision_preview__state__active_revision
 msgid "active"
-msgstr ""
+msgstr "Actif"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_keyword__raw_code

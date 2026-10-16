@@ -59,4 +59,4 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_salutation.field_res_partner__salutation
 #: model:ir.model.fields,field_description:partner_salutation.field_res_users__salutation
 msgid "Salutation"
-msgstr ""
+msgstr "Anrede"

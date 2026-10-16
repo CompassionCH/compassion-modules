@@ -18,7 +18,7 @@ msgstr ""
 #. module: partner_personal_info
 #: model_terms:ir.ui.view,arch_db:partner_personal_info.view_partner_form_compassion_personal
 msgid "Age"
-msgstr ""
+msgstr "Alter"
 
 #. module: partner_personal_info
 #: model:ir.model,name:partner_personal_info.model_res_partner

@@ -83,7 +83,7 @@ msgstr "Result code"
 #. module: onramp_simulator
 #: model_terms:ir.ui.view,arch_db:onramp_simulator.onramp_simulator_form
 msgid "Send"
-msgstr ""
+msgstr "Invia"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__server_url

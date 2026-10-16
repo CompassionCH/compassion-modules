@@ -59,7 +59,7 @@ msgstr ""
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__id
 msgid "ID"
-msgstr ""
+msgstr "Identifiant"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__write_uid

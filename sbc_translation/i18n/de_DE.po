@@ -366,7 +366,7 @@ msgstr "Zuletzt aktualisiert am"
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_correspondence
 msgid "Letter"
-msgstr ""
+msgstr "Brief"
 
 #. module: sbc_translation
 #. odoo-python
@@ -442,7 +442,7 @@ msgstr "Meine Aufsicht"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__name
 msgid "Name"
-msgstr ""
+msgstr "Bezeichnung"
 
 #. module: sbc_translation
 #: model:website,prevent_zero_price_sale_text:sbc_translation.translation_website
@@ -494,7 +494,7 @@ msgstr "PDF erscheint nicht"
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.translation_comments_update
 msgid "Page"
-msgstr ""
+msgstr "Seite"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.comments_reply
