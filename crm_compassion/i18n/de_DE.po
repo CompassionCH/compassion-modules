@@ -1,0 +1,1413 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_compassion
+#: model:mail.template,body_html:crm_compassion.event_letter_template
+msgid ""
+"<html>\n"
+"  <body><div>\n"
+"                    <t t-set=\"invoice_lines\" t-value=\"object.get_objects()\"/>\n"
+"                    <t t-set=\"donations\" t-value=\"invoice_lines.get_donations()\"/>\n"
+"                    <t t-set=\"partner\" t-value=\"object.partner_id\"/>\n"
+"                    <t t-set=\"ambassadors\" t-value=\"invoice_lines.mapped(&#x27;user_id&#x27;)\"/>\n"
+"                    <t t-set=\"count\" t-value=\"0\"/>\n"
+"                    <t t-set=\"currency\" t-value=\"invoice_lines[0].move_id.currency_id.name\"/>\n"
+"                </div>\n"
+"                <div>\n"
+"                    <t t-out=\"partner.salutation\"></t>,\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    On behalf of Compassion Switzerland we truly thank you for your <t t-out=\"&#x27;generous&#x27; if object.config_id.id != 52 else &#x27;&#x27;\"></t> gift of <br/><t t-out=\"donations[0]\"></t>\n"
+"                    <t t-if=\"donations[1]\">\n"
+"                        <!-- space --> supporting\n"
+"                        <t t-if=\"ambassadors\">\n"
+"                            <!-- space --> <t t-out=\"ambassadors.get_list(&#x27;full_name&#x27;)\"></t>\n"
+"                        </t>\n"
+"                            <!-- space --> for the <t t-out=\"donations[1]\"></t>.\n"
+"                    </t>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <t t-foreach=\"ambassadors.filtered(&#x27;advocate_details_id.quote&#x27;)\" t-as=\"amb\">\n"
+"                       <t t-set=\"count\" t-value=\"count + 1\"/>\n"
+"<div id=\"ambassador_quote\">\n"
+"                        <t t-out=\"amb.advocate_details_id.thank_you_quote\"></t>\n"
+"<br/>\n"
+"</div>\n"
+"                         <t t-if=\"len(ambassadors) != 1 and len(ambassadors) != count\">\n"
+"                                  <br/>\n"
+"                                  <br/>\n"
+"                                  <br/>\n"
+"                           </t>\n"
+"                    </t>\n"
+"<t t-if=\"len(ambassadors) == 2\">\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"</t>\n"
+"                    <t t-if=\"object.event_id.thank_you_text\">\n"
+"                        <t t-out=\"object.event_id.thank_you_text\"></t>\n"
+"                    </t>\n"
+"                    <t t-if=\"partner.number_sponsorships\">\n"
+"                        Have you recently written to your sponsor child? Our website allows you to write a letter directly online. Why not have another go at writing this week?\n"
+"                    </t>\n"
+"<t t-else=\"\">\n"
+"                        <t t-if=\"partner.is_new_donor\">\n"
+"                            Since 1952, Compassion has been pursuing a very specific mission: to release as many children as possible from extreme poverty – in Jesus’ name.\n"
+"In collaboration with 8600 local churches, we currently support 2,3 million children in 27 countries of the global south.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                        </t>\n"
+"                        <t t-if=\"not partner.opt_out\">\n"
+"                            Is the future of the world's poorest children important to you? Compassion offers different ways and solutions to release children from poverty. At the heart of Compassion’s ministry is the Child Sponsorship program. Maybe you would consider sponsoring a child and offering support and encouragement throughout their development? You can find further information on\n"
+"www.compassion.ch or you can call us on 0800 874 773.\n"
+"                                 <br/>\n"
+"                                 <br/>\n"
+"                        </t>\n"
+"                    </t>\n"
+"                    We just want to take this opportunity to thank you once again for your generosity and support towards these children in need.\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    Sincerely yours\n"
+"<t t-if=\"object.send_mode == &#x27;digital&#x27;\">\n"
+"   <br/>\n"
+"   <br/>\n"
+"    Rachel Maglo\n"
+"    <br/>\n"
+"    Donors relation\n"
+"    <br/>\n"
+"    Compassion Switzerland\n"
+"</t>\n"
+"<t t-if=\"len(ambassadors) != 0 and len(ambassadors) != 1\">\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"</t>\n"
+"                </div>\n"
+"            </body>\n"
+"</html>\n"
+msgstr ""
+"<html>\n"
+"  <body><div>\n"
+"    <t t-set=\"invoice_lines\" t-value=\"object.get_objects()\"/>\n"
+"    <t t-set=\"events\" t-value=\"invoice_lines.mapped(&#x27;event_id&#x27;)\"/>\n"
+"    <t t-set=\"donations\" t-value=\"invoice_lines.get_donations()\"/>\n"
+"    <t t-set=\"total\" t-value=\"sum(invoice_lines.mapped(&#x27;price_subtotal&#x27;))\"/>\n"
+"    <t t-set=\"gross\" t-value=\"&#x27; grosszügige&#x27; if total &gt;= 100 else &#x27;&#x27;\"/>\n"
+"    <t t-set=\"partner\" t-value=\"object.partner_id\"/>\n"
+"    <t t-set=\"plural\" t-value=\"partner.title.plural or partner.title.id == 29\"/>\n"
+"    <t t-set=\"du\" t-value=\"&#x27;ihr&#x27; if plural else &#x27;du&#x27;\"/>\n"
+"    <t t-set=\"dein\" t-value=\"&#x27;euer&#x27; if plural else &#x27;dein&#x27;\"/>\n"
+"    <t t-set=\"deine\" t-value=\"&#x27;eure&#x27; if plural else &#x27;deine&#x27;\"/>\n"
+"    <t t-set=\"dir\" t-value=\"&#x27;euch&#x27; if plural else &#x27;dir&#x27;\"/>\n"
+"    <t t-set=\"dich\" t-value=\"&#x27;euch&#x27; if plural else &#x27;dich&#x27;\"/>\n"
+"    <t t-set=\"products\" t-value=\"invoice_lines.mapped(&#x27;product_id&#x27;)\"/>\n"
+"    <t t-set=\"invoices\" t-value=\"invoice_lines.mapped(&#x27;move_id&#x27;)\"/>\n"
+"    <t t-set=\"gift\" t-value=\"&#x27;gift&#x27; in invoice_lines.mapped(&#x27;move_id.invoice_category&#x27;)\"/>\n"
+"    <t t-set=\"ambassadors\" t-value=\"invoice_lines.mapped(&#x27;user_id&#x27;).filtered(&#x27;advocate_details_id.quote&#x27;)\"/>\n"
+"    <t t-set=\"prenoms\" t-value=\"invoice_lines.mapped(&#x27;contract_id.child_id&#x27;).get_list(&#x27;preferred_name&#x27;, 3, deine + &#x27; Patenkinder&#x27;, False)\"/>\n"
+"    <t t-if=\"len(products) == 1 and len(invoices) == 1 or (gift and len(invoice_lines.mapped(&#x27;move_id.invoice_category&#x27;)) == 1)\">\n"
+"        <t t-set=\"votre_don\" t-value=\"(&#x27;eure&#x27; + gross + &#x27; Spende&#x27;) if plural else (&#x27;deine&#x27; + gross + &#x27; Spende&#x27;)\"/>\n"
+"        <t t-set=\"one\" t-value=\"True\"/>\n"
+"    </t>\n"
+"<t t-else=\"\">\n"
+"        <t t-set=\"votre_don\" t-value=\"&#x27;eure Spenden für einen Gesamtbetrag&#x27; if plural else  &#x27;deine Spenden für einen Gesamtbetrag&#x27;\"/>\n"
+"        <t t-set=\"one\" t-value=\"False\"/>\n"
+"    </t>\n"
+"    <t t-set=\"currency\" t-value=\"invoices[0].currency_id.name\"/>\n"
+"    <t t-set=\"number_years\" t-value=\"object.get_snippet(&#x27;number_years&#x27;, strip_html=True)\"/>\n"
+"    <t t-set=\"number_children\" t-value=\"object.get_snippet(&#x27;number_children&#x27;, strip_html=True)\"/>\n"
+"    <t t-set=\"number_fcps\" t-value=\"object.get_snippet(&#x27;number_fcps&#x27;, strip_html=True)\"/>\n"
+"    <t t-set=\"number_countries\" t-value=\"object.get_snippet(&#x27;number_countries&#x27;, strip_html=True)\"/>\n"
+"    <t t-set=\"years_uc\" t-value=\"object.get_snippet(&#x27;years_uc&#x27;, strip_html=True)\"/>\n"
+"    <t t-set=\"years_lc\" t-value=\"object.get_snippet(&#x27;years_lc&#x27;, strip_html=True)\"/>\n"
+"</div>\n"
+"<p>\n"
+"    <t t-out=\"partner.salutation\"></t>\n"
+"</p>\n"
+"<p>\n"
+"    Herzlichen Dank für <t t-out=\"votre_don\"></t> von <t t-out=\"donations[0]\"></t>\n"
+"\n"
+"    <t t-if=\"ambassadors and not gift\">\n"
+"        zugunsten von <t t-out=\"ambassadors.get_list(&#x27;preferred_name&#x27;)\"></t> und <t t-out=\"ambassadors.get(&#x27;sein&#x27;)\"></t> Einsatz am <t t-out=\"events.name\"></t>.\n"
+"        Dass Menschen wie <t t-out=\"du\"></t> <t t-out=\"ambassadors.get(&#x27;ihn&#x27;)\"></t> dabei unterstützen, ist unglaublich wertvoll!\n"
+"    </t>\n"
+"</p>\n"
+"<p>\n"
+"    Dank <t t-out=\"deine\"></t>m Engagement und dem Einsatz unserer rund <t t-out=\"number_fcps\"></t> Partnerkirchen vor Ort unterstützen wir zurzeit <t t-out=\"number_children\"></t> Millionen Kinder im globalen Süden. Gemeinsam tun wir das mit einem Ziel: sie nachhaltig aus Armut zu befreien.\n"
+"</p>\n"
+"<t t-if=\"partner.number_sponsorships &lt; 1\">\n"
+"    <p>\n"
+"        <t t-out=\"&#x27;Hättet ihr&#x27; if plral else &#x27;Hättest du&#x27;\"></t> Freude, eine Patenschaft für ein Kind zu übernehmen? Momentan sucht Compassion für diese Kinder dringend eine Patin oder einen Paten: <a href=\"https://compassion.ch/werde_pate\">compassion.ch/werde-pate</a>\n"
+"    </p>\n"
+"</t>\n"
+"<p>\n"
+"    Wenn <t t-out=\"du\"></t> mehr über die Verwendung <t t-out=\"deine\"></t>r Spende erfahren möchte<t t-out=\"&#x27;s&#x27; if not plural else &#x27;&#x27;\"></t>t, <t t-out=\"&#x27;könnt&#x27; if plural else &#x27;kannst&#x27;\"></t> <t t-out=\"du\"></t> <t t-out=\"dich\"></t> gerne bei uns melden.\n"
+"</p>\n"
+"<p>\n"
+"    Gemeinsam verändern wir das Leben von Kindern - eins nach dem anderen.\n"
+"</p>\n"
+"Liebe Grüsse\n"
+"</body>\n"
+"</html>\n"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_recurring_contract_group
+msgid "A group of contracts"
+msgstr "Eine Gruppe von Verträgen"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_needaction
+msgid "Action Needed"
+msgstr "Aktion notwendig"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_ids
+msgid "Activities"
+msgstr "Aktivitäten"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_mail_activity
+msgid "Activity"
+msgstr "Aktivität"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_state
+msgid "Activity State"
+msgstr "Status der Aktivität"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__audience_number
+msgid "Actual number of attendees present at the event."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__zip_id
+msgid "Address"
+msgstr "Adresse"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Allocate children"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "Allocated Children"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__allocate_child_ids
+msgid "Allocated children"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Allocation configuration"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_account_move_line__user_id
+#: model:ir.model.fields,field_description:crm_compassion.field_recurring_contract__ambassador_id
+#: model:ir.model.fields.selection,name:crm_compassion.selection__demand_weekly_revision__type__ambassador
+#: model_terms:ir.ui.view,arch_db:crm_compassion.event_income_search
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_recurring_contract_filter
+msgid "Ambassador"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_res_partner__ambassador_receipt_send_mode
+#: model:ir.model.fields,field_description:crm_compassion.field_res_users__ambassador_receipt_send_mode
+msgid "Ambassador Receipt Send Mode"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__ambassador_config_id
+msgid "Ambassador Receipt Template"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__ambassador_sponsorship_config_id
+msgid "Ambassador Sponsorship Notification"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__number_children_ambassador
+msgid "Ambassadors demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__average_unsponsored_ambassador
+msgid "Ambassadors resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_account_analytic_account
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__analytic_id
+msgid "Analytic Account"
+msgstr "Kostenstelle"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_account_analytic_line
+msgid "Analytic Line"
+msgstr "Kostenstellen-Buchung"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_attachment_count
+msgid "Attachment Count"
+msgstr "# Anhänge"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__audience_number
+msgid "Audience number"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
+msgid "Average conversion"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_form_view_oppor_spons1
+msgid "Avg"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
+msgid "Balance"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_body
+msgid "Body"
+msgstr "Nachrichtentext"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_stage
+msgid "CRM Stages"
+msgstr "Stufe zu Vorgang"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_calendar_event
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__calendar_event_id
+msgid "Calendar Event"
+msgstr "Kalenderereignis"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_child_hold_wizard__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_child_reservation_wizard__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_abstract_hold__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_child__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_hold__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_reservation__campaign_id
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__campaign_id
+msgid "Campaign"
+msgstr "Kampagne"
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__demand_weekly_revision__type__cancel
+msgid "Cancellation"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_child_hold_wizard
+msgid "Child Hold Wizard"
+msgstr "child.hold.wizard"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Children"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_communication_type
+msgid "Communication Type"
+msgstr "Communication type"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_compassion_abstract_hold
+msgid "Compassion Abstract Hold"
+msgstr "compassion.abstract.hold"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_calendar_event__compassion_event_id
+msgid "Compassion Event"
+msgstr "Event"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_calendar
+msgid "Compassion Events"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_event_compassion
+msgid "Compassion event"
+msgstr "Barmherzigkeitsveranstaltung"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_compassion_hold
+msgid "Compassion hold"
+msgstr "compassion.hold"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "Concert"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfig-Einstellungen"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__conversion_rate
+msgid "Conversion Rate"
+msgstr "Conversion rate"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__country_id
+msgid "Country"
+msgstr "Land"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_form_view_oppor_spons1
+msgid "Create Event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.actions.server,name:crm_compassion.partner_ambassador_action
+msgid "Create Odoo User"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__create_uid
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__create_uid
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_create_uid
+msgid "Created by"
+msgstr "Angelegt von"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__create_date
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__create_date
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_event_filter
+msgid "Customer"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_revision_filter
+msgid "Date"
+msgstr "Datum"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_reformat_all_phonenumbers__days_allocate_before_event
+#: model:ir.model.fields,field_description:crm_compassion.field_res_config_settings__days_allocate_before_event
+msgid "Days Allocate Before Event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_reformat_all_phonenumbers__days_hold_after_event
+#: model:ir.model.fields,field_description:crm_compassion.field_res_config_settings__days_hold_after_event
+msgid "Days Hold After Event"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_kanban_view_leads_spons1
+msgid "Delete"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_demand_planning
+#: model_terms:ir.ui.view,arch_db:crm_compassion.demand_settings_form
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_pivot
+msgid "Demand Planning"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.actions.act_window,name:crm_compassion.open_view_demand_revision
+#: model:ir.ui.menu,name:crm_compassion.menu_demand_revision
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_form
+msgid "Demand Weekly Revision"
+msgstr ""
+
+#. module: crm_compassion
+#: model:base.automation,name:crm_compassion.correct_resupply_event_rule
+#: model:ir.actions.server,name:crm_compassion.correct_resupply_event_action
+msgid "Demand planning: correct negative resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__demand
+msgid "Demand prevision"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__description
+#: model:ir.model.fields,field_description:crm_compassion.field_project_project_description
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_project_project_description
+msgid "Description to provide more information and context about this project"
+msgstr ""
+"Beschreibung, um weitere Informationen und mehr Kontext über dieses Projekt "
+"darzulegen"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_direction
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_mail__direction
+msgid "Direction"
+msgstr "Strategie"
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_crm_field_disaster_alert
+msgid "Disaster Alerts"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__display_name
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__display_name
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: crm_compassion
+#: model:mail.template,subject:crm_compassion.event_letter_template
+msgid "Donation Receipt"
+msgstr ""
+"Danke für {{'eure ' if object.partner_id.title.plural or "
+"object.partner_id.title.id == 29 else 'deine '}} Mitwirken im Kampf gegen "
+"Armut!"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__effective_allocated
+msgid "Effective Allocated"
+msgstr "Effective allocated"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__effective_resupply
+msgid "Effective Resupply"
+msgstr "Effective resupply"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_email
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_tracking_email__mail_id
+msgid "Email"
+msgstr "E-Mail"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__end_date
+msgid "End Date"
+msgstr "Enddatum"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_account_analytic_account__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_account_move_line__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_child_hold_wizard__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_child_reservation_wizard__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_abstract_hold__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_child__hold_event
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_hold__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_compassion_reservation__event_id
+#: model:ir.model.fields,field_description:crm_compassion.field_recurring_contract_origin__event_id
+#: model_terms:ir.ui.view,arch_db:crm_compassion.event_income_search
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_child_crm_search
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_hold_crm_search
+msgid "Event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:mail.template,name:crm_compassion.event_letter_template
+msgid "Event Donation - Thank You Letter"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Event name..."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_lead_event_id
+msgid "Event triggering the rule that created this lead"
+msgstr "Veranstaltung, die die Regel auslöst, die diesen Lead erzeugt hat"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/res_partner.py:0
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_events
+#: model:account.analytic.plan,name:crm_compassion.plan_events
+#: model:ir.actions.act_window,name:crm_compassion.action_events_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_lead__event_ids
+#: model:ir.model.fields.selection,name:crm_compassion.selection__demand_weekly_revision__type__events
+#: model:ir.ui.menu,name:crm_compassion.menu_events_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_form_view_oppor_spons1
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_res_partner_crm
+msgid "Events"
+msgstr "Ereignisse"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__number_children_events
+msgid "Events demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__resupply_events
+msgid "Events resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_tree_view_oppor_spons1
+msgid "Expected Sponsorship"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_lead__planned_sponsorships
+msgid "Expected new sponsorships"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__planned_sponsorships
+msgid "Expected sponsorships"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
+msgid "Expense"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__expense_line_ids
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Expenses"
+msgstr "Expense line ids"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_crm_field_section
+msgid "Field"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_crm_field_office
+msgid "Field Offices"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_crm_case_pipeline_filter_custom
+msgid "Followed Opportunities"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_follower_ids
+msgid "Followers"
+msgstr "Beobachter"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Beobachter (Partner)"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__full_name
+msgid "Full Name"
+msgstr "Full name"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_lead_lost
+msgid "Get Lost Reason"
+msgstr "Erfahren Sie den Grund Ihres Scheiterns"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:ir.ui.menu,name:crm_compassion.menu_global_pool
+#: model:ir.ui.menu,name:crm_compassion.menu_pool_section
+msgid "Global Childpool"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__child_hold_wizard__return_action__event
+msgid "Go back to event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_portal_wizard
+msgid "Grant Portal Access"
+msgstr "Portal-Zugriffsverwaltung"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.event_income_search
+msgid "Group By"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_event_filter
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_revision_filter
+msgid "Group By..."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_has_attachment
+msgid "Has Attachment"
+msgstr "Has attachment"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__hold_ids
+msgid "Hold"
+msgstr "Hold ids"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__hold_end_date
+msgid "Hold End Date"
+msgstr "Hold end date"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__hold_start_date
+msgid "Hold Start Date"
+msgstr "Hold start date"
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_holds
+msgid "Holds"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__holds
+msgid "Holds requested"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__id
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__id
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_id
+msgid "ID"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__message_has_error
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+"Das Senden mancher Nachrichten ist fehlgeschlagen wenn dieses Fenster "
+"angekreuzt ist."
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__income_line_ids
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
+msgid "Income"
+msgstr "Income line ids"
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__mail_mail__direction__in
+msgid "Incoming"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_res_partner_interaction_resume_ids
+#: model:ir.model.fields,field_description:crm_compassion.field_res_users_interaction_resume_ids
+msgid "Interaction resume"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Internal Notes"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__invoice_line_ids
+msgid "Invoice Line"
+msgstr "Invoice line ids"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_is_follower
+msgid "Is Follower"
+msgstr "Ist Beobachter"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_phonecall__is_from_employee
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_mail__is_from_employee
+msgid "Is From Employee"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_stage__is_lost
+msgid "Is Lost Stage?"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_account_move_line
+msgid "Journal Item"
+msgstr "Journalbuchung"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__write_uid
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__write_uid
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__write_date
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__write_date
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Interessent / Chance"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/res_partner.py:0
+#: model:ir.actions.server,name:crm_compassion.log_call_action
+msgid "Log your call"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_mail_tracking_email
+msgid "MailTracking email"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Marketing"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_meet
+msgid "Meeting"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_mail_message
+msgid "Message"
+msgstr "Nachricht"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_has_error
+msgid "Message Delivery error"
+msgstr "Error beim senden der Nachricht"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_ids
+msgid "Messages"
+msgstr "Mitteilungen"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__name
+msgid "Name"
+msgstr "Bezeichnung"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Nächste Aktivitätsfrist"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_summary
+msgid "Next Activity Summary"
+msgstr "Zusammenfassung nächste Aktion"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nächster Aktivitätstyp"
+
+#. module: crm_compassion
+#: model_terms:ir.actions.act_window,help:crm_compassion.action_events_compassion
+msgid "No events."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_reformat_all_phonenumbers__number_children_ambassador
+#: model:ir.model.fields,field_description:crm_compassion.field_res_config_settings__number_children_ambassador
+msgid "Number Children Ambassador"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_reformat_all_phonenumbers__number_children_website
+#: model:ir.model.fields,field_description:crm_compassion.field_res_config_settings__number_children_website
+msgid "Number Children Website"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Anzahl der Aktionen"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__number_allocate_children
+msgid "Number of children to allocate"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_has_error_counter
+msgid "Number of errors"
+msgstr "Fehlernummer"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_crm_case_pipeline_filter_custom
+msgid "Open Opportunities"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__lead_ids
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Opportunities"
+msgstr "Interessenten"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__origin_id
+msgid "Origin"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__mail_mail__direction__out
+msgid "Outgoing"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_mail_mail
+msgid "Outgoing Mails"
+msgstr "Postausgang"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: crm_compassion
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_ambassadors
+msgid "Partners"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_crm_phonecall
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_activity__phonecall_id
+msgid "Phonecall"
+msgstr "Telefonanruf"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "Presentation"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_form
+msgid "Previsions"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__balance
+msgid "Profit/Loss"
+msgstr "Saldo"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_compassion_reservation
+msgid "Project Reservation"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_crm_field_project
+msgid "Projects"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_res_partner__receive_ambassador_receipts
+#: model:ir.model.fields,field_description:crm_compassion.field_res_users__receive_ambassador_receipts
+msgid "Receive Ambassador Receipts"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_recurring_contract_origin
+msgid "Recurring Contract Origin"
+msgstr "recurring.contract.origin"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Wiederkehrender Vertrag"
+
+#. module: crm_compassion
+#: model:ir.ui.menu,name:crm_compassion.menu_sponsorship_reservation
+msgid "Reservations"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__user_id
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_event_filter
+msgid "Responsible"
+msgstr "Ambassador"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__activity_user_id
+msgid "Responsible User"
+msgstr "Manager Veranstaltung"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_form
+msgid "Results"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__resupply
+msgid "Resupply prevision"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_child_hold_wizard__return_action
+msgid "Return Action"
+msgstr "Return action"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__number_sub_sponsorship
+msgid "SUB demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__resupply_sub
+msgid "SUB resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_lead_lost__team_id
+msgid "Sales Team"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_lead_event_id
+msgid "Source Event"
+msgstr "Quelle Veranstaltung"
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "Sponsor tour"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_compassion_child
+msgid "Sponsored Child"
+msgstr "Patenkind"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__average_cancellation
+msgid "Sponsorship cancellations"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Sponsorships"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__contract_ids
+msgid "Sponsorships originated"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "Sport event"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__staff_ids
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Staff"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_lead_lost__lost_stage_id
+msgid "Stage"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.constraint,message:crm_compassion.constraint_crm_stage_cannot_be_lost_and_won
+msgid "Stage cannot be both Lost and Won"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+#: model:account.analytic.account,name:crm_compassion.account_analytic_account_stand
+msgid "Stand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__start_date
+msgid "Start Date"
+msgstr "Anfangsdatum"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status basierend auf Aktivitäten\n"
+"Überfällig: Fälligkeitsdatum bereits überschritten\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
+"Geplant: anstehende Aktivitäten."
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__street
+msgid "Street"
+msgstr "Strasse"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_form
+msgid "Street..."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__demand_weekly_revision__type__sub
+msgid "Sub"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_subject
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_mail__subject
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_message__subject
+msgid "Subject"
+msgstr "Betreff"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__ambassador_config_id
+msgid "Template used to generate receipts for ambassadors"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__ambassador_sponsorship_config_id
+msgid "Template used to generate sponsorship notifications for ambassadors"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__communication_config_id
+msgid "Thank You Template"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/contract.py:0
+msgid "The child has some comments"
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "The event is linked to expenses or sponsorships. You cannot delete it."
+msgstr ""
+
+#. module: crm_compassion
+#. odoo-python
+#: code:addons/crm_compassion/models/event_compassion.py:0
+msgid "The hold start date must be before the event starting date !"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_form_view_oppor_spons1
+#: model_terms:ir.ui.view,arch_db:crm_compassion.event_income_tree
+msgid "Total"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__total_demand
+msgid "Total Demand"
+msgstr "Total demand"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__total_expense
+msgid "Total Expense"
+msgstr "Total expense"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__total_income
+msgid "Total Income"
+msgstr "Total income"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__total_resupply
+msgid "Total Resupply"
+msgstr "Total resupply"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_tree
+msgid "Total demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_tree
+msgid "Total eff. resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_tree
+msgid "Total holds"
+msgstr ""
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_demand_weekly_revision_tree
+msgid "Total resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_interaction_resume_tracking_status
+msgid "Tracking Status"
+msgstr "Tracking status"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__type
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__type
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_mail__message_type
+#: model:ir.model.fields,field_description:crm_compassion.field_mail_message__message_type
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_event_filter
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_revision_filter
+msgid "Type"
+msgstr "Typ"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.actions.server,name:crm_compassion.action_update_won_sponsorships_count
+msgid "Update won sponsorship count"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_mail_mail__message_type
+#: model:ir.model.fields,help:crm_compassion.field_mail_message__message_type
+msgid ""
+"Used to categorize message generator\n"
+"'email': generated by an incoming email e.g. mailgateway\n"
+"'comment': generated by user input e.g. through discuss or composer\n"
+"'email_outgoing': generated by a mailing\n"
+"'notification': generated by system e.g. tracking messages\n"
+"'auto_comment': generated by automated notification mechanism e.g. acknowledgment\n"
+"'user_notification': generated for a specific recipient"
+msgstr ""
+"Wird verwendet, um den Nachrichtengenerator zu kategorisieren\n"
+"„email“: generiert durch eine eingehende E-Mail, z. B. von mailgateway\n"
+"„comment“: generiert durch Benutzereingaben, z. B. über Dialog oder Editor\n"
+"„email_outgoing“: generiert durch ein Mailing\n"
+"„notification“: vom System generiert, z. B. durch Verfolgungsnachrichten\n"
+"„auto_comment“: generiert durch einen automatischen Benachrichtigungsmechanismus, z. B. eine Bestätigung\n"
+"„user_notification“: für einen bestimmten Empfänger generiert"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__user_ids
+msgid "User"
+msgstr "User ids"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__partner_id
+msgid "Venue"
+msgstr "Kunde"
+
+#. module: crm_compassion
+#: model:ir.model.fields.selection,name:crm_compassion.selection__demand_weekly_revision__type__web
+msgid "Web"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__number_children_website
+msgid "Web demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_demand__average_unsponsored_web
+msgid "Web resupply"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__website_message_ids
+msgid "Website Messages"
+msgstr "Website Nachrichten"
+
+#. module: crm_compassion
+#: model:ir.model.fields,help:crm_compassion.field_crm_event_compassion__website_message_ids
+msgid "Website communication history"
+msgstr "Website Kommunikationshistorie"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__week_end_date
+msgid "Week End Date"
+msgstr "Week end date"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_demand_weekly_revision__week_start_date
+msgid "Week Start Date"
+msgstr "Week start date"
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_demand_weekly_demand
+msgid "Weekly Demand"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model,name:crm_compassion.model_demand_weekly_revision
+msgid "Weekly Revision"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.constraint,message:crm_compassion.constraint_demand_weekly_revision_unique_week_type
+msgid "Weekly revision already exist!"
+msgstr ""
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__won_sponsorships
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_events_tree
+msgid "Won Sponsorships"
+msgstr "Won sponsorships"
+
+#. module: crm_compassion
+#: model:ir.model.fields,field_description:crm_compassion.field_account_analytic_account__year
+#: model:ir.model.fields,field_description:crm_compassion.field_crm_event_compassion__year
+#: model_terms:ir.ui.view,arch_db:crm_compassion.view_event_filter
+msgid "Year"
+msgstr "Jahr"
+
+#. module: crm_compassion
+#: model_terms:ir.ui.view,arch_db:crm_compassion.crm_case_kanban_view_leads_spons1
+msgid "sponsorships"
+msgstr ""

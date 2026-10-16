@@ -1,0 +1,120 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_communication_crm_phone
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:14+0000\n"
+"PO-Revision-Date: 2026-10-16 19:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_communication_crm_phone
+#: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_tree
+msgid "Call"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_form
+msgid "Call now"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__comments
+msgid "Comments"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model,name:partner_communication_crm_phone.model_phone_common
+msgid "Common methods for phone features"
+msgstr "phone.common"
+
+#. module: partner_communication_crm_phone
+#. odoo-python
+#: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
+msgid "Communication Call"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model,name:partner_communication_crm_phone.model_partner_communication_job
+msgid "Communication Job"
+msgstr "Kommunikation Job"
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_call_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.communication_job_form
+msgid "Log call"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.call_wizard_form
+msgid "Log the call"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#. odoo-python
+#: code:addons/partner_communication_crm_phone/models/communication_job.py:0
+msgid "Log your call"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model,name:partner_communication_crm_phone.model_partner_communication_call_wizard
+msgid "Partner Communication Call Wizard"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#. odoo-python
+#: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
+msgid "Partner did not answer"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#. odoo-python
+#: code:addons/partner_communication_crm_phone/wizards/call_wizard.py:0
+msgid "Phone attempt: "
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model:ir.model.fields,field_description:partner_communication_crm_phone.field_partner_communication_job__phonecall_id
+msgid "Phonecall log"
+msgstr ""
+
+#. module: partner_communication_crm_phone
+#: model_terms:ir.ui.view,arch_db:partner_communication_crm_phone.call_wizard_form
+msgid "Still pending"
+msgstr ""
