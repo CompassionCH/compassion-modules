@@ -22,3 +22,4 @@ from . import (
     res_partner,
     sponsorship_gift_type,
 )
+from . import utm_source

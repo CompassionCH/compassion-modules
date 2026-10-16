@@ -11,4 +11,10 @@
     <record id="utm_source_sub" model="utm.source">
         <field name="name">Sub sponsorship</field>
     </record>
+
+    <!-- Source of the sponsorships whose origin is not known -->
+    <record id="utm_source_unknown" model="utm.source">
+        <field name="name">Unknown</field>
+        <field name="category">unknown</field>
+    </record>
 </odoo>

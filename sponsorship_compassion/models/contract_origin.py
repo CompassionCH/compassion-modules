@@ -167,9 +167,7 @@ class ContractOrigin(models.Model):
         the old one."""
         fnames = [f for f in ORIGIN_UTM_FIELDS if f in vals]
         followers = {
-            fname: self.contract_ids.filtered(
-                lambda c, f=fname: not c[f] or c[f] == c.origin_id[f]
-            )
+            fname: self.contract_ids.filtered(lambda c, f=fname: c._follows_origin(f))
             for fname in fnames
         }
         res = super().write(vals)

@@ -101,6 +101,11 @@
           name="required"
         >type in ['S', 'SC', 'SWP'] or not id</attribute>
             </field>
+            <field name="source_id" position="attributes">
+                <attribute
+          name="required"
+        >type in ['S', 'SC', 'SWP'] or not id</attribute>
+            </field>
 
 
             <!-- Add context in contract lines -->

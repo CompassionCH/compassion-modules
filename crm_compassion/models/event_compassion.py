@@ -324,7 +324,7 @@ class EventCompassion(models.Model):
             elif not event.source_id:
                 event.with_context(no_sync=True).source_id = self.env[
                     "utm.source"
-                ].create({"name": event.full_name})
+                ].create({"name": event.full_name, "category": "event"})
             analytic_id = (
                 self.env["account.analytic.account"]
                 .create(event._get_analytic_vals())

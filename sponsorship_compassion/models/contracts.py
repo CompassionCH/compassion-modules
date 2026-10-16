@@ -603,6 +603,10 @@ class SponsorshipContract(models.Model):
                 for fname in ORIGIN_UTM_FIELDS:
                     if origin[fname] and not vals.get(fname):
                         vals[fname] = origin[fname].id
+            if not vals.get("source_id"):
+                vals["source_id"] = self.env.ref(
+                    "sponsorship_compassion.utm_source_unknown"
+                ).id
 
         new_sponsorships = super().create(vals_list)
 
@@ -634,9 +638,7 @@ class SponsorshipContract(models.Model):
         utm_followers = {}
         if "origin_id" in vals:
             utm_followers = {
-                fname: self.filtered(
-                    lambda c, f=fname: not c[f] or c[f] == c.origin_id[f]
-                )
+                fname: self.filtered(lambda c, f=fname: c._follows_origin(f))
                 for fname in ORIGIN_UTM_FIELDS
                 if fname not in vals
             }
@@ -697,10 +699,25 @@ class SponsorshipContract(models.Model):
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
 
+    def _follows_origin(self, fname):
+        """The campaign or source of the sponsorship is empty, unknown or the one
+        of its origin."""
+        self.ensure_one()
+        value = self[fname]
+        return (
+            not value
+            or value == self.origin_id[fname]
+            or value == self.env.ref("sponsorship_compassion.utm_source_unknown")
+        )
+
     def _follow_origin(self, fname):
         """Give the campaign or source of their origin to the sponsorships."""
+        unknown = self.env.ref("sponsorship_compassion.utm_source_unknown")
         for origin, contracts in self.grouped("origin_id").items():
-            contracts.write({fname: origin[fname].id})
+            value = origin[fname] or (
+                unknown if fname == "source_id" else origin[fname]
+            )
+            contracts.write({fname: value.id})
 
     def commitment_sent(self, vals):
         """Called when GMC received the commitment."""
