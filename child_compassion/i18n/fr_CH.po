@@ -3402,7 +3402,7 @@ msgstr "Fille"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job
 msgid "Female Guardian Job"
-msgstr "Emploi de gardienne"
+msgstr "Profession de la tutrice"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job_type
@@ -6045,7 +6045,7 @@ msgstr "Garçon"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job
 msgid "Male Guardian Job"
-msgstr "Emploi de tuteur masculin"
+msgstr "Profession du tuteur"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job_type
@@ -9500,7 +9500,7 @@ msgstr "Squall"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__staff_number
 msgid "Staff Number"
-msgstr "Numéro de personnel"
+msgstr "Nombre de collaborateurs"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__state

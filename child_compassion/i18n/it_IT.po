@@ -772,7 +772,7 @@ msgstr "Descrizione delle condizioni fisiche del beneficiario"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__beneficiary_state
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__beneficiary_state
 msgid "Beneficiary State"
-msgstr "Stato beneficiario"
+msgstr "Stato del bambino"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_bangali
@@ -3404,7 +3404,7 @@ msgstr "Femmina"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job
 msgid "Female Guardian Job"
-msgstr "Lavoro di guardiano femminile"
+msgstr "Professione della tutrice"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job_type
@@ -6040,7 +6040,7 @@ msgstr "Maschio"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job
 msgid "Male Guardian Job"
-msgstr "Lavoro di guardiano maschile"
+msgstr "Professione del tutore"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job_type
@@ -9491,7 +9491,7 @@ msgstr "Squall"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__staff_number
 msgid "Staff Number"
-msgstr "Numero del personale"
+msgstr "Numero di collaboratori"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__state
@@ -10451,7 +10451,7 @@ msgstr "Accesso all'acqua nelle aree urbane"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__us_grade_level
 msgid "Us Grade Level"
-msgstr "Noi Livello di Grado"
+msgstr "Livello scolastico equivalente USA"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__usd

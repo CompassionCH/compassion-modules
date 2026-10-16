@@ -773,7 +773,7 @@ msgstr "Beschreibung des körperlichen Zustands des Begünstigten"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__beneficiary_state
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__beneficiary_state
 msgid "Beneficiary State"
-msgstr "Begünstigter Staat"
+msgstr "Status des Kindes"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_bangali
@@ -3410,7 +3410,7 @@ msgstr "Weiblich"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job
 msgid "Female Guardian Job"
-msgstr "Job als Wächterin"
+msgstr "Beruf der Betreuerin"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__female_guardian_job_type
@@ -6050,7 +6050,7 @@ msgstr "Junge"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job
 msgid "Male Guardian Job"
-msgstr "Männlicher Wächter Job"
+msgstr "Beruf des Betreuers"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household__male_guardian_job_type
@@ -9514,7 +9514,7 @@ msgstr "Squall"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__staff_number
 msgid "Staff Number"
-msgstr "Personalnummer"
+msgstr "Anzahl Mitarbeitende"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__state
@@ -10457,7 +10457,7 @@ msgstr "Ungesponsert Seit"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__disaster_communication_update_name
 msgid "Update ID"
-msgstr "aktualisiert am"
+msgstr "Update-ID"
 
 #. module: child_compassion
 #: model:ir.actions.server,name:child_compassion.update_child_pictures
@@ -10472,7 +10472,7 @@ msgstr "Zugang zu Wasser (städtisch)"
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child__us_grade_level
 msgid "Us Grade Level"
-msgstr "Wir Klassenstufe"
+msgstr "US-Klassenstufe"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project__usd
