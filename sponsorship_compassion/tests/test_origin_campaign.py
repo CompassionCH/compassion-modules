@@ -122,3 +122,20 @@ class TestOriginCampaign(TransactionCase):
         magazine = self.env["utm.source"].create({"name": "Origin campaign print"})
         self.origin_none.source_id = magazine
         self.assertEqual(contract.source_id, magazine)
+
+    def test_medium_guessed_from_source(self):
+        medium_obj = self.env["utm.medium"]
+        event = medium_obj.search([("name", "=", "Event")]) or medium_obj.create(
+            {"name": "Event"}
+        )
+        other = medium_obj.search([("name", "=", "Other")]) or medium_obj.create(
+            {"name": "Other"}
+        )
+        concert = self.env["utm.source"].create(
+            {"name": "Origin campaign concert", "category": "event"}
+        )
+        self.assertEqual(self._contract(source_id=concert.id).medium_id, event)
+        self.assertEqual(self._contract().medium_id, other)
+        website = self.env.ref("utm.utm_medium_website")
+        contract = self._contract(source_id=concert.id, medium_id=website.id)
+        self.assertEqual(contract.medium_id, website)
