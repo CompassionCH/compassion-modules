@@ -607,6 +607,12 @@ class SponsorshipContract(models.Model):
                 vals["source_id"] = self.env.ref(
                     "sponsorship_compassion.utm_source_unknown"
                 ).id
+            if not vals.get("medium_id"):
+                medium = (
+                    self.env["utm.source"].browse(vals["source_id"])._guess_medium()
+                )
+                if medium:
+                    vals["medium_id"] = medium.id
 
         new_sponsorships = super().create(vals_list)
 
