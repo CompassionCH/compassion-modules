@@ -1,0 +1,1872 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* intervention_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__birth_medical
+msgid "% births in medical facility"
+msgstr "% nascite in strutture mediche"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__under_five_population
+msgid "% population under age 5"
+msgstr "% popolazione sotto i 5 anni"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "/&gt;"
+msgstr "/&gt;"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid ": Amendment received"
+msgstr ": emendamento ricevuto"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid ": New milestone received."
+msgstr ": nuova tappa ricevuta."
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_needaction
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_needaction
+msgid "Action Needed"
+msgstr "Azione Necessaria"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__action_type
+msgid "Action Type"
+msgstr "Tipo di azione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__active
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "Active"
+msgstr "Attivo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_ids
+msgid "Activities"
+msgstr "Attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activities_for_parents
+msgid "Activities For Parents"
+msgstr "Attività per i genitori"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_exception_decoration
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Attività Eccezione Decorazione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_state
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_state
+msgid "Activity State"
+msgstr "Stato di attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_type_icon
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icona Tipo di attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__actual_duration
+msgid "Actual Duration"
+msgstr "Durata effettiva"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__actual_duration
+msgid "Actual duration in months"
+msgstr "Durata effettiva in mesi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__end_date
+msgid "Actual end date"
+msgstr "Data di fine effettiva"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__local_contribution
+msgid "Actual local contribution"
+msgstr "Contributo locale effettivo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__impacted_beneficiaries
+msgid "Actual number of impacted beneficiaries"
+msgstr "Numero effettivo di beneficiari raggiunti"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Actual numbers"
+msgstr "Cifre effettive"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__start_date
+msgid "Actual start date"
+msgstr "Data di inizio effettiva"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Add"
+msgstr "Aggiungi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__additional_marketing_information
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__additional_marketing_information
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__additional_marketing_information
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__additional_info
+msgid "Additional Marketing Information"
+msgstr "Informazioni di marketing aggiuntive"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_intervention_commitment_wizard_form
+msgid ""
+"Additional fundings were requested by the National Office for this "
+"Intervention:"
+msgstr ""
+"L'Ufficio nazionale ha richiesto finanziamenti aggiuntivi per questo "
+"intervento:"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Advanced Search"
+msgstr "Ricerca avanzata"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__amount_on_hold
+msgid "Amount On Hold"
+msgstr "Importo in hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__analytic_group_id
+msgid "Analytic Group"
+msgstr "Gruppo analitico"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__analytic_account_id
+msgid "Analytic account"
+msgstr "Conto analitico"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__approved
+msgid "Approved"
+msgstr "Approvato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__approved_sla_costs
+msgid "Approved Sla Costs"
+msgstr "Costi SLA approvati"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_attachment_count
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_attachment_count
+msgid "Attachment Count"
+msgstr "Numero allegati"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Available"
+msgstr "Disponibile"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__mother_average_age
+msgid "Avg age of first-time mother"
+msgstr "Età media delle madri al primo figlio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__household_children_average
+msgid "Avg of children per household"
+msgstr "Media di bambini per nucleo familiare"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__background_information
+msgid "Background Information"
+msgstr "Informazioni di contesto"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Budget"
+msgstr "Budget"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__can_be_funded
+msgid "Can Be Funded"
+msgstr "Può essere finanziato"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Cancel Hold"
+msgstr "Annulla hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__cancel_reason
+msgid "Cancel Reason"
+msgstr "Motivo dell'annullamento"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Cancel Reservation"
+msgstr "Annullamento della prenotazione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__cancelled
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__cancel
+msgid "Cancelled"
+msgstr "Annullato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__category_ids
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions_categories
+msgid "Categories"
+msgstr "Categorie"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__category_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__category_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__category_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__category_id
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_filter
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "Category"
+msgstr "Categoria"
+
+#. module: intervention_compassion
+#: model:ir.model.constraint,message:intervention_compassion.constraint_compassion_intervention_category_unique_name_type
+msgid "Category name and type must be unique!"
+msgstr "Il nome e il tipo della categoria devono essere unici!"
+
+#. module: intervention_compassion
+#: model:ir.model.constraint,message:intervention_compassion.constraint_compassion_intervention_subcategory_unique_name
+msgid "Category name must be unique!"
+msgstr "Il nome della categoria deve essere unico!"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__mother_children_challenges
+msgid "Challenges for mother and children"
+msgstr "Sfide per madri e bambini"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_church_plant_initiatives
+msgid "Church Plant Initiative"
+msgstr "Iniziativa di fondazione di chiese"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__closed
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__close
+msgid "Closed"
+msgstr "Chiuso"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__cognitive_activity_ids
+msgid "Cognitive activities"
+msgstr "Attività cognitive"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Commit Funds"
+msgstr "Impegna i fondi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__commit_to_additional_fund
+msgid "Commit To Additional Fund"
+msgstr "Impegna fondi aggiuntivi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__commited_percentage
+msgid "Commited Percentage"
+msgstr "Percentuale impegnata"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__commitment_amount
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__commitment_amount
+msgid "Commitment Amount"
+msgstr "Importo dell'impegno"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__committed
+msgid "Committed"
+msgstr "Impegnato"
+
+#. module: intervention_compassion
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions
+msgid "Committed Interventions"
+msgstr "Interventi impegnati"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__community_benefits
+msgid "Community Benefits"
+msgstr "Benefici per la comunità"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__company_id
+msgid "Company"
+msgstr "Azienda"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Contract"
+msgstr "Contratto"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Contracts"
+msgstr "Contratti"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_form
+msgid "Costs"
+msgstr "Costi"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_intervention_hold_wizard_form
+msgid "Create Hold"
+msgstr "Crea hold"
+
+#. module: intervention_compassion
+#: model:ir.actions.server,name:intervention_compassion.action_notify_before_expire
+msgid "Create activity: On Hold intervention close to expiration date"
+msgstr "Crea attività: intervento in hold prossimo alla scadenza"
+
+#. module: intervention_compassion
+#: model:ir.actions.server,name:intervention_compassion.action_compassion_intervention_create_analytic_account
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Create analytic account"
+msgstr "Crea conto analitico"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__created_intervention_id
+msgid "Created Intervention"
+msgstr "Intervento creato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__create_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__create_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__local_currency_id
+msgid "Currency"
+msgstr "Valuta"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__currency_usd
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__currency_usd
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__currency_usd
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__usd
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__usd
+msgid "Currency Usd"
+msgstr "Valuta USD"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__description
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__description
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__description
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Details"
+msgstr "Dettagli"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_disaster_response
+msgid "Disaster Response"
+msgstr "Risposta alle catastrofi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__disburse_without_commitment
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__disburse_without_commitment
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__disburse_without_commitment
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__disburse_without_commitment
+msgid "Disburse Without Commitment"
+msgstr "Eroga senza impegno"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__display_name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__display_name
+msgid "Display Name"
+msgstr "Visualizza Nome"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Donor-funded FCP"
+msgstr "FCP finanziato da donatori"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__draft
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_education
+msgid "Education"
+msgstr "Istruzione"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "End"
+msgstr "Fine"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__end_date
+msgid "End Date"
+msgstr "Data di fine"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__estimated_costs
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__estimated_costs
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__estimated_costs
+msgid "Estimated Costs"
+msgstr "Costi stimati"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__estimated_impacted_beneficiaries
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__estimated_impacted_beneficiaries
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__estimated_impacted_beneficiaries
+msgid "Estimated Impacted Beneficiaries"
+msgstr "Beneficiari coinvolti stimati"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__estimated_local_contribution
+msgid "Estimated Local Contribution"
+msgstr "Contributo locale stimato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__total_estimated_cost_local
+msgid "Estimated costs (local currency)"
+msgstr "Costi stimati (valuta locale)"
+
+#. module: intervention_compassion
+#: model:ir.actions.server,name:intervention_compassion.action_intervention_active
+#: model:ir.actions.server,name:intervention_compassion.action_intervention_close
+#: model:ir.actions.server,name:intervention_compassion.action_sla_done
+#: model:ir.actions.server,name:intervention_compassion.action_sla_wait
+msgid "Execute Code"
+msgstr "Esegui codice"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_generic_intervention__fcp_type__existing
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_global_intervention__fcp_type__existing
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__fcp_type__existing
+msgid "Existing"
+msgstr "Esistente"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Expansion"
+msgstr "Espansione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__expected_duration
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__expected_duration
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__expected_duration
+msgid "Expected Duration"
+msgstr "Durata prevista"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_generic_intervention__expected_duration
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_global_intervention__expected_duration
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__expected_duration
+msgid "Expected duration in months"
+msgstr "Durata prevista in mesi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__expiration_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__expiration_date
+msgid "Expiration Date"
+msgstr "Data di scadenza"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_reservation__reservation_type__fcp_intervention
+msgid "FCP Intervention"
+msgstr "Intervento FCP"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__fcp_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__fcp_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__fcp_ids
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "FCPs"
+msgstr "FCP"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__fo_costs_proposed
+msgid "FO Costs Proposed"
+msgstr "Costi proposti dal FO"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__fo_rejected_gp_preferences
+msgid "FO Rejected GP Preferences"
+msgstr "Preferenze del GP rifiutate dal FO"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__failed_message_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messaggi non riusciti"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__fcp_type
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__fcp_type
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__fcp_type
+msgid "Fcp Type"
+msgstr "Tipo di FCP"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__field_office_ids
+msgid "Field offices"
+msgstr "Uffici sul campo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__search_filter_ids
+msgid "Filters"
+msgstr "Filtri"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__fo_proposed_sla_costs
+msgid "Fo Proposed Sla Costs"
+msgstr "Costi SLA proposti dall'ufficio sul campo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_follower_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_follower_ids
+msgid "Followers"
+msgstr "Seguaci"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_partner_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partner)"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__activity_type_icon
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icona font awesome ad esempio fa-tasks"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_formal_education
+msgid "Formal Education"
+msgstr "Istruzione formale"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_project
+msgid "Frontline Church Partner"
+msgstr "Chiesa partner"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Fully committed"
+msgstr "Completamente impegnato"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Fully held"
+msgstr "Completamente in hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__funding_global_partners
+msgid "Funding Global Partners"
+msgstr "Partner globali finanziatori"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__funding_status
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__funding_status
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__funding_status
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_filter
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "Funding Status"
+msgstr "Stato del finanziamento"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__gp_accepted_costs
+msgid "GP Accepted Costs"
+msgstr "Costi accettati dal GP"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__gp_preferences_submitted
+msgid "GP Preferences Submitted"
+msgstr "Preferenze del GP inviate"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__gp_rejected_costs
+msgid "GP Rejected Costs"
+msgstr "Costi rifiutati dal GP"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_generic_intervention
+msgid "Generic information of interventions"
+msgstr "Informazioni generiche sugli interventi"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_global_intervention
+msgid "Global Intervention"
+msgstr "Intervento globale"
+
+#. module: intervention_compassion
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions_search
+msgid "Global Pool"
+msgstr "Pool globale"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_filter
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_hiv_aids
+msgid "HIV-AIDS"
+msgstr "HIV-AIDS"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_hvc
+msgid "HVC"
+msgstr "HVC"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__has_message
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__has_message
+msgid "Has Message"
+msgstr "Ha un messaggio"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_health
+msgid "Health"
+msgstr "Salute"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_hiv_education
+msgid "Hiv-Education"
+msgstr "Educazione sull'HIV"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__hold_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__hold_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__hold_id
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention_hold_wizard__action_type__hold
+msgid "Hold"
+msgstr "Hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__hold_amount
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__hold_amount
+msgid "Hold Amount"
+msgstr "Importo hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__hold_expiration_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__hold_expiration_date
+msgid "Hold Expiration Date"
+msgstr "Data di scadenza dell'hold"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Hold Information"
+msgstr "Informazioni sull'hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__id
+msgid "ID"
+msgstr "ID"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_exception_icon
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_exception_icon
+msgid "Icon"
+msgstr "Icona"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__activity_exception_icon
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icona per indicare un'attività di eccezione."
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__message_needaction
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Se selezionato, i nuovi messaggi richiedono la tua attenzione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__message_has_error
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__message_has_sms_error
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__message_has_error
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Se selezionato, alcuni messaggi presentano un errore di consegna."
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__impacted_beneficiaries
+msgid "Impacted Beneficiaries"
+msgstr "Beneficiari coinvolti"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__implementation_risks
+msgid "Implementation Risks"
+msgstr "Rischi di implementazione"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Inactive"
+msgstr "Inattivo"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_income_generation
+msgid "Income Generation/Household Security"
+msgstr "Generazione di reddito/Sicurezza del nucleo familiare"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Individual CIV"
+msgstr "CIV individuale"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Ineligible"
+msgstr "Non idoneo"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_infrastructure
+msgid "Infrastructure"
+msgstr "Infrastrutture"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__initial_planned_end_date
+msgid "Initial Planned End Date"
+msgstr "Data di fine pianificata iniziale"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/wizards/hold_wizard.py:0
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__intervention_id
+msgid "Intervention"
+msgstr "Intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Intervention Analytic Accounts"
+msgstr "Conti analitici dell'intervento"
+
+#. module: intervention_compassion
+#: model:ir.actions.act_window,name:intervention_compassion.open_categories_action
+msgid "Intervention Categories"
+msgstr "Categorie di interventi"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_category
+msgid "Intervention Category"
+msgstr "Categoria di intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Intervention Commitment Request"
+msgstr "Richiesta di impegno per l'intervento"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_commitment_wizard
+msgid "Intervention Commitment Wizard"
+msgstr "Procedura guidata di impegno dell'intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Intervention FCPs"
+msgstr "FCP dell'intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/global_intervention.py:0
+msgid "Intervention Hold Request"
+msgstr "Richiesta di hold per l'intervento"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_hold_wizard
+msgid "Intervention Hold Wizard"
+msgstr "Procedura guidata hold dell'intervento"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__intervention_status
+msgid "Intervention Status"
+msgstr "Stato dell'intervento"
+
+#. module: intervention_compassion
+#: model:ir.actions.act_window,name:intervention_compassion.open_subcategories_action
+msgid "Intervention Subcategories"
+msgstr "Sottocategorie di interventi"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_subcategory
+msgid "Intervention Subcategory"
+msgstr "Sottocategoria di intervento"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_deliverable
+msgid "Intervention deliverable"
+msgstr "Risultato atteso dell'intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Intervention hold cancelled"
+msgstr "Hold dell'intervento annullato"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_search
+msgid "Intervention search"
+msgstr "Ricerca interventi"
+
+#. module: intervention_compassion
+#: model:base.automation,name:intervention_compassion.intervention_sla_check_done
+msgid "Intervention: Check SLA Negotiation done"
+msgstr "Intervento: verifica negoziazione SLA completata"
+
+#. module: intervention_compassion
+#: model:base.automation,name:intervention_compassion.intervention_sla_check_wait
+msgid "Intervention: Check SLA Negotiation waiting"
+msgstr "Intervento: verifica negoziazione SLA in attesa"
+
+#. module: intervention_compassion
+#: model:base.automation,name:intervention_compassion.intervention_close_check
+msgid "Intervention: Close after end date"
+msgstr "Intervento: chiudi dopo la data di fine"
+
+#. module: intervention_compassion
+#: model:base.automation,name:intervention_compassion.intervention_active_check
+msgid "Intervention: Make active after start date"
+msgstr "Intervento: attiva dopo la data di inizio"
+
+#. module: intervention_compassion
+#: model:base.automation,name:intervention_compassion.intervention_notif_before_expire
+msgid "Intervention: Send notification before intervention on hold expires"
+msgstr ""
+"Intervento: invia una notifica prima della scadenza dell'hold "
+"dell'intervento"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/wizards/intervention_search.py:0
+#: model:ir.actions.act_window,name:intervention_compassion.open_view_intervention_tree
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__intervention_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_project__intervention_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_reservation__intervention_ids
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions_section
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.fcp_intervention_reservation_view
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_project_intervention_form
+msgid "Interventions"
+msgstr "Interventi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_is_follower
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_is_follower
+msgid "Is Follower"
+msgstr "E' Follower"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__is_fo_priority
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__is_fo_priority
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__is_fo_priority
+msgid "Is National Office priority"
+msgstr "È una priorità dell'Ufficio nazionale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__write_uid
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__write_uid
+msgid "Last Updated by"
+msgstr "Ultima modifica di"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__write_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__write_date
+msgid "Last Updated on"
+msgstr "Ultima modifica il"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__launch_reason
+msgid "Launch Reason"
+msgstr "Motivo del lancio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__lead_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__lead_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__lead_id
+msgid "Lead"
+msgstr "Lead"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_learning_materials
+msgid "Learning Materials"
+msgstr "Materiale didattico"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Let's find an Intervention!"
+msgstr "Cerchiamo un intervento!"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__service_level__level_1
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention_hold_wizard__service_level__level_1
+msgid "Level 1"
+msgstr "Livello 1"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__deliverable_level_1_ids
+msgid "Level 1 Deliverables"
+msgstr "Deliverable di livello 1"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__service_level__level_2
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention_hold_wizard__service_level__level_2
+msgid "Level 2"
+msgstr "Livello 2"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__deliverable_level_2_ids
+msgid "Level 2 Deliverables"
+msgstr "Deliverable di livello 2"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__service_level__level_3
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention_hold_wizard__service_level__level_3
+msgid "Level 3"
+msgstr "Livello 3"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__deliverable_level_3_ids
+msgid "Level 3 Deliverables"
+msgstr "Deliverable di livello 3"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__product_template_id
+msgid "Linked product"
+msgstr "Prodotto collegato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__local_contribution
+msgid "Local Contribution"
+msgstr "Contributo locale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__holding_partner_id
+msgid "Major holding partner"
+msgstr "Partner detentore principale"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_form
+msgid "Make a reservation"
+msgstr "Effettua una prenotazione"
+
+#. module: intervention_compassion
+#: model:res.groups,name:intervention_compassion.group_intervention
+msgid "Manage Interventions"
+msgstr "Gestire gli interventi"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_medical
+msgid "Medical"
+msgstr "Medico"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_has_error
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_has_error
+msgid "Message Delivery error"
+msgstr "Errore di consegna messaggio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_ids
+msgid "Messages"
+msgstr "Messaggi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__my_activity_date_deadline
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "La mia attività Scadenza"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__name
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_subcategory__name
+msgid "Name"
+msgstr "Nome"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__field_office_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__field_office_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__field_office_id
+msgid "National Office"
+msgstr "Ufficio nazionale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_project__nb_interventions
+msgid "Nb Interventions"
+msgstr "N. di interventi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_generic_intervention__fcp_type__new
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_global_intervention__fcp_type__new
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__fcp_type__new
+msgid "New"
+msgstr "Nuovo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_calendar_event_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Evento calendario della prossima attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_date_deadline
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Scadenza Prossima Attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_summary
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_summary
+msgid "Next Activity Summary"
+msgstr "Sommario prossime attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_type_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo Prossima Attività"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__next_year_opt_in
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__next_year_opt_in
+msgid "Next Year Opt In"
+msgstr "Adesione per l'anno prossimo"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid ""
+"No Analytic Account could be created. Please check that the Intervention has"
+" a Category with an Analytic Group and a Field Office set."
+msgstr ""
+"Non è stato possibile creare alcun conto analitico. Verifica che "
+"l'intervento abbia una categoria con un gruppo analitico e un ufficio sul "
+"campo impostato."
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "No Analytic Account created"
+msgstr "Nessun conto analitico creato"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/wizards/intervention_search.py:0
+msgid "No intervention found"
+msgstr "Nessun intervento trovato"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "No intervention id provided"
+msgstr "Nessun ID di intervento fornito"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_non_formal_education
+msgid "Non-Formal Education"
+msgstr "Educazione non formale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__sla_negotiation_status__--none--
+msgid "None"
+msgstr "Nessuno"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__not_funded_implications
+msgid "Not Funded Implications"
+msgstr "Conseguenze in caso di mancato finanziamento"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_reservation__number_intervention_reserved
+msgid "Number Intervention Reserved"
+msgstr "Numero di interventi riservati"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_needaction_counter
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Numero di Azioni"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_has_error_counter
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_has_error_counter
+msgid "Number of errors"
+msgstr "Numero di errori"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__message_needaction_counter
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Numero di messaggi che richiedono un'azione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__message_has_error_counter
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Numero di messaggi con errore di consegna"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__objectives
+msgid "Objectives"
+msgstr "Obiettivi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__on_hold
+msgid "On Hold"
+msgstr "In hold"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Ongoing CIV"
+msgstr "CIV continuativo"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Ongoing CIV FY Details"
+msgstr "Dettagli FY CIV continuativo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__other_activities
+msgid "Other Activities"
+msgstr "Altre attività"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_parent_education
+msgid "Parent Education"
+msgstr "Educazione dei genitori"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__parent_intervention
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__parent_intervention_name
+msgid "Parent Intervention"
+msgstr "Intervento principale"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Partially committed"
+msgstr "Parzialmente impegnato"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Partially held"
+msgstr "Parzialmente in hold"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__participant_expected_capacity
+msgid "Participant Expected Capacity"
+msgstr "Capacità prevista dei partecipanti"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__participant_maximum_capacity
+msgid "Participant Maximum Capacity"
+msgstr "Capacità massima dei partecipanti"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/generic_intervention.py:0
+msgid "Partner Ready Draft"
+msgstr "Bozza pronta per il partner"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Partners"
+msgstr "Partner"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__pdc_costs
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__pdc_costs
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__pdc_costs
+msgid "Pdc Costs"
+msgstr "Costi PDC"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__physical_activity_ids
+msgid "Physical activities"
+msgstr "Attività fisiche"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__planned_end_date
+msgid "Planned End Date"
+msgstr "Data di fine pianificata"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Previsions"
+msgstr "Previsioni"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__user_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__user_id
+msgid "Primary owner"
+msgstr "Responsabile principale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__problem_statement
+msgid "Problem Statement"
+msgstr "Descrizione del problema"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_product_template
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_product_product__intervention_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_product_template__intervention_id
+msgid "Product's source"
+msgstr "Origine del prodotto"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_generic_intervention__pdc_costs
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_global_intervention__pdc_costs
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__pdc_costs
+msgid "Program development costs"
+msgstr "Costi di sviluppo del programma"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_reservation
+msgid "Project Reservation"
+msgstr "Prenotazione del progetto"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__proposed_start_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__proposed_start_date
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__proposed_start_date
+msgid "Proposed Start Date"
+msgstr "Data di inizio proposta"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_global_intervention_form
+msgid "Put a hold"
+msgstr "Metti in hold"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Quick Search"
+msgstr "Ricerca rapida"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__rating_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__rating_ids
+msgid "Ratings"
+msgstr "Valutazioni"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__rejected
+msgid "Rejected"
+msgstr "Rifiutato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__remaining_amount_equal
+msgid "Remaining Amount Equal"
+msgstr "Importo rimanente uguale a"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__remaining_amount_to_raise
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__remaining_amount_to_raise
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__remaining_amount_to_raise
+msgid "Remaining Amount To Raise"
+msgstr "Importo rimanente da raccogliere"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__remaining_amount_greater
+msgid "Remaining amount greater than"
+msgstr "Importo rimanente superiore a"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__remaining_amount_lower
+msgid "Remaining amount lower than"
+msgstr "Importo rimanente inferiore a"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__requested_additional_funding
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__requested_additional_funding
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__requested_additional_funding
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_commitment_wizard__additional_fund_amount
+msgid "Requested Additional Funding"
+msgstr "Finanziamento aggiuntivo richiesto"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__compassion_reservation_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__reservation_id
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention_hold_wizard__action_type__reservation
+msgid "Reservation"
+msgstr "Prenotazione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__reservation_id
+msgid "Reservation ID"
+msgstr "ID prenotazione"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_reservation__reservation_type
+msgid "Reservation Type"
+msgstr "Tipo di prenotazione"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_reservation.py:0
+msgid "Reserved Interventions"
+msgstr "Interventi riservati"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Reset"
+msgstr "Azzeramento"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__activity_user_id
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__activity_user_id
+msgid "Responsible User"
+msgstr "Utente responsabile"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__state__sla
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "SLA Negotiation"
+msgstr "Negoziazione SLA"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__message_has_sms_error
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Errore di consegna degli SMS"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Schedule"
+msgstr "Pianificazione"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Search"
+msgstr "Ricerca"
+
+#. module: intervention_compassion
+#: model:ir.actions.act_window,name:intervention_compassion.search_intervention
+msgid "Search Interventions"
+msgstr "Cerca interventi"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__secondary_owner
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__secondary_owner
+msgid "Secondary Owner"
+msgstr "Responsabile secondario"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_intervention_commitment_wizard_form
+msgid "Send Commitment"
+msgstr "Invia l'impegno"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__service_level
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_hold_wizard__service_level
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_reservation__service_level
+msgid "Service Level"
+msgstr "Livello di servizio"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_reservation.py:0
+msgid ""
+"Service level must be between 1 and 3 for FCP Intervention reservations."
+msgstr ""
+"Il livello di servizio deve essere compreso tra 1 e 3 per le prenotazioni di"
+" interventi FCP."
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "Set an expiration date and service level"
+msgstr "Imposta una data di scadenza e un livello di servizio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__sla_comments
+msgid "Sla Comments"
+msgstr "Commenti SLA"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__sla_negotiation_status
+msgid "Sla Negotiation Status"
+msgstr "Stato della negoziazione SLA"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__sla_selection_complete
+msgid "Sla Selection Complete"
+msgstr "Selezione SLA completata"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__socio_activity_ids
+msgid "Sociological activities"
+msgstr "Attività sociologiche"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__solutions
+msgid "Solutions"
+msgstr "Soluzioni"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__spiritual_activity_ids
+msgid "Spiritual activities"
+msgstr "Attività spirituali"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_sponsorship_launch
+msgid "Sponsorship Launch"
+msgstr "Avvio di sostegni"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "Start"
+msgstr "Inizio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__start_date
+msgid "Start Date"
+msgstr "Data di inizio"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__start_no_later_than
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__start_no_later_than
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__start_no_later_than
+msgid "Start No Later Than"
+msgstr "Inizio al più tardi il"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__state
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "State"
+msgstr "Stato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__status_chooser
+msgid "Status Chooser"
+msgstr "Selezione dello stato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__status_selected
+msgid "Status Selected"
+msgstr "Stato selezionato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__activity_state
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Stato basato sulle attività:\n"
+"In ritardo: la data pianificata è scaduta\n"
+"Oggi: la data dell'attività è oggi\n"
+"Pianificata: attività future."
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Status selection"
+msgstr "Selezione dello stato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__subcategory_ids
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions_subcategories
+msgid "Subcategories"
+msgstr "Sottocategorie"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__subcategory_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__subcategory_ids
+msgid "Subcategory"
+msgstr "Sottocategoria"
+
+#. module: intervention_compassion
+#: model:ir.model.fields.selection,name:intervention_compassion.selection__compassion_intervention__intervention_status__submitted
+msgid "Submitted"
+msgstr "Inviato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__success_factors
+msgid "Success Factors"
+msgstr "Fattori di successo"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_survival
+msgid "Survival"
+msgstr "Sopravvivenza"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Survival (CSP)"
+msgstr "Sopravvivenza (CSP)"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/intervention_category.py:0
+msgid "Survival FY Details"
+msgstr "Dettagli FY Sopravvivenza"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__survival_slots
+msgid "Survival Slots"
+msgstr "Posti Survival"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "The commitment percentage has changed."
+msgstr "La percentuale di impegno è cambiata."
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__fo_proposed_sla_costs
+msgid "The costs proposed by the National Office for the SLA"
+msgstr "I costi proposti dall'Ufficio nazionale per lo SLA"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__approved_sla_costs
+msgid "The final approved Service Level Agreement Cost"
+msgstr "Il costo finale approvato dello Service Level Agreement"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid ""
+"The hold of %(intervention_name)s (%(intervention_id)s) was just cancelled."
+msgstr ""
+"L'hold di %(intervention_name)s (%(intervention_id)s) è appena stato "
+"annullato."
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "The information of this intervention have been updated"
+msgstr "Le informazioni di questo intervento sono state aggiornate"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "This intervention has been modified by amendment."
+msgstr "Questo intervento è stato modificato da un emendamento."
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_generic_intervention__track_funds_in_reports
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_global_intervention__track_funds_in_reports
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__track_funds_in_reports
+msgid ""
+"This intervention will be displayed in reports tracking funds received and "
+"expensed"
+msgstr ""
+"Questo intervento sarà visualizzato nei report di monitoraggio dei fondi "
+"ricevuti e spesi"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_tree
+msgid "Total"
+msgstr "Totale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__total_amendment
+msgid "Total Amendment"
+msgstr "Totale modifiche"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__total_cost
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__total_cost
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__total_cost
+msgid "Total Cost"
+msgstr "Costo totale"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__total_actual_cost_local
+msgid "Total cost (local currency)"
+msgstr "Costo totale (valuta locale)"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__track_funds_in_reports
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__track_funds_in_reports
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__track_funds_in_reports
+msgid "Track Funds In Reports"
+msgstr "Traccia i fondi nei report"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_generic_intervention__type
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_global_intervention__type
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__type
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_category__type
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_filter
+msgid "Type"
+msgstr "Tipo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__type_chooser
+msgid "Type Chooser"
+msgstr "Selezione del tipo"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__type_selected
+msgid "Type Selected"
+msgstr "Tipo selezionato"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__activity_exception_decoration
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo di attività di eccezione registrata."
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Type selection"
+msgstr "Selezione del tipo"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_search_form
+msgid "Update from quick search selection"
+msgstr "Aggiorna dalla selezione della ricerca rapida"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_search__use_advanced_search
+msgid "Use Advanced Search"
+msgstr "Usa la ricerca avanzata"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_vector_borne_interventions
+msgid "Vector Borne Interventions"
+msgstr "Interventi contro le malattie trasmesse da vettori"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_wash
+msgid "Wash"
+msgstr "WASH"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention__website_message_ids
+#: model:ir.model.fields,field_description:intervention_compassion.field_compassion_intervention_deliverable__website_message_ids
+msgid "Website Messages"
+msgstr "Messaggi sito web"
+
+#. module: intervention_compassion
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention__website_message_ids
+#: model:ir.model.fields,help:intervention_compassion.field_compassion_intervention_deliverable__website_message_ids
+msgid "Website communication history"
+msgstr "Storico comunicazione sito"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "You can only delete cancelled Interventions."
+msgstr "Puoi eliminare solo gli interventi annullati."
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid ""
+"You have been assigned to the Intervention Please update the intervention by"
+" setting an expiration date and service level."
+msgstr ""
+"Ti è stato assegnato l'intervento. Aggiorna l'intervento impostando una data"
+" di scadenza e un livello di servizio."
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_aids
+msgid "aids fund"
+msgstr "fondo AIDS"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_bible
+msgid "bible fund"
+msgstr "fondo Bibbia"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_child_development
+msgid "child development fund"
+msgstr "fondo sviluppo del bambino"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_christmas
+msgid "christmas fund"
+msgstr "fondo Natale"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_project_search
+msgid "donor funded fcps"
+msgstr "FCP finanziati da donatori"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_drf
+msgid "drf fund"
+msgstr "fondo DRF"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_project_search
+msgid "fcp with sponsorships"
+msgstr "FCP con sostegni"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_fund
+msgid "fund"
+msgstr "Fondo"
+
+#. module: intervention_compassion
+#: model_terms:ir.ui.view,arch_db:intervention_compassion.view_compassion_intervention_form
+msgid "get infos"
+msgstr "recupera le informazioni"
+
+#. module: intervention_compassion
+#. odoo-python
+#: code:addons/intervention_compassion/models/compassion_intervention.py:0
+msgid "got an Update"
+msgstr "ha ricevuto un aggiornamento"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_hvc_fund
+msgid "hvc fund"
+msgstr "fondo HVC"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_ldp
+msgid "ldp fund"
+msgstr "fondo LDP"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_local
+msgid "local fund"
+msgstr "fondo locale"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_medical_fund
+msgid "medical fund"
+msgstr "fondo medico"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_survival_fund
+msgid "survival fund"
+msgstr "fondo per la sopravvivenza"
+
+#. module: intervention_compassion
+#: model:res.groups,comment:intervention_compassion.group_intervention
+msgid "the user will have access to all interventions and related data."
+msgstr "l'utente avrà accesso a tutti gli interventi e ai dati correlati."
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_unrestricted
+msgid "unrestricted fund"
+msgstr "fondo non vincolato"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_usp
+msgid "unsponsored fund"
+msgstr "fondo per bambini senza sostenitore"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_vocational_fund
+msgid "vocational fund"
+msgstr "fondo per la formazione professionale"
+
+#. module: intervention_compassion
+#: model:account.analytic.plan,name:intervention_compassion.analytic_group_wash_fund
+msgid "wash fund"
+msgstr "fondo WASH"
