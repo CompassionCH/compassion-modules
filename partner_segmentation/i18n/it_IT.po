@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_14
@@ -308,7 +308,7 @@ msgid ""
 msgstr ""
 "<p>È fantastico che tu sia interessato ad avere più fatti, informazioni e numeri da noi! Da circa 70 anni noi di Compassion diamo molta importanza all'efficienza dei fondi investiti nella lotta contro la povertà estrema e per lo sviluppo dei bambini.\n"
 "</p>\n"
-"            <p>TGrazie per la tua fiducia. Ci impegniamo a informarti sull'impatto del tuo sostegno a favore dei bambini del Sud del mondo.\n"
+"            <p>Grazie per la tua fiducia. Ci impegniamo a informarti sull'impatto del tuo sostegno a favore dei bambini del Sud del mondo.\n"
 "</p>\n"
 "            <p>Lo sapevi? Garantiamo che almeno l'80% delle donazioni del sostegno - per i regali al tuo bambino e le donazioni di fondi fino al 100% - siano investite in progetti e programmi nei paesi del Sud. Grazie per il notevole impatto che hai già avuto.</p>\n"
 "            <p>Grazie per il tuo prezioso supporto.</p>\n"
@@ -322,7 +322,7 @@ msgid ""
 "            <p>Thank you for your precious support.</p>\n"
 "        "
 msgstr ""
-"<p>IÈ così bello che tu sia appassionato di movimenti su larga scala e che tu sia motivato e pronto a investire per portare un cambiamento significativo nella lotta contro la povertà estrema.\n"
+"<p>È così bello che tu sia appassionato di movimenti su larga scala e che tu sia motivato e pronto a investire per portare un cambiamento significativo nella lotta contro la povertà estrema.\n"
 "</p>\n"
 "            <p>Siamo entusiasti della tua determinazione a combattere le ingiustizie. Siamo così felici di includerti come parte del crescente numero di persone che si uniscono a noi nella lotta contro la povertà estrema. Ci impegniamo a fornire piattaforme dove tu possa difendere i bambini bisognosi, la lotta contro la povertà estrema e ispirare altri a unirsi a te.\n"
 "</p>\n"
@@ -471,7 +471,7 @@ msgstr "Ho donato denaro su base mensile o regolare"
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_2
 msgid "Donated money on a one-time basis"
-msgstr "Ho fatto donazioni ogni tanto"
+msgstr "Ho donato denaro una tantum"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_5
@@ -517,8 +517,7 @@ msgstr ""
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q4_labels
 msgid "I prefer to make a spiritual impact before anything else"
-msgstr ""
-"Preferisco avere un impatto fisico e cognitivo prima di ogni altra cosa"
+msgstr "Preferisco avere un impatto spirituale prima di ogni altra cosa"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q2_labels
@@ -550,7 +549,10 @@ msgstr "Se si tratta di altro, si prega di specificare:"
 msgid ""
 "If you were to find a charitable cause you loved or was really important to "
 "you, which of the following would describe you and your role in that cause?"
-msgstr "Quale delle seguenti descriverebbe te ?"
+msgstr ""
+"Se dovessi trovare una causa caritatevole che ami o che è veramente "
+"importante per te, quale delle seguenti descriverebbe te e il tuo ruolo in "
+"quella causa?"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__image
@@ -589,7 +591,7 @@ msgstr "Ultima modifica il"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__main_driver
 msgid "Main Driver"
-msgstr "Autista principale"
+msgstr "Fattore principale"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__max_checked_option
@@ -1005,4 +1007,4 @@ msgstr "illustrazione del segmento"
 #. module: partner_segmentation
 #: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_tree
 msgid "segment_total"
-msgstr "segmento_totale"
+msgstr "segment_total"

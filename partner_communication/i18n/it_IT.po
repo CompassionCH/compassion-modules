@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_ir_actions_server__partner_field
@@ -360,7 +360,7 @@ msgstr "Comunicazione Configurazione predefinita"
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_defaults
 msgid "Communication Defaults"
-msgstr "partner.communication.defaults"
+msgstr "Impostazioni predefinite delle comunicazioni"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_job
@@ -647,7 +647,7 @@ msgstr "Vietare la fusione"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__force_language
 msgid "Force Language"
-msgstr "Linguaggio della forza"
+msgstr "Forza la lingua"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config__user_id
@@ -789,7 +789,7 @@ msgid ""
 "to the communication."
 msgstr ""
 "Se impostato su Vero, il contrassegno OMR per l'aggiunta di un allegato dal "
-"retro 1 viene aggiunto alla comunicazione."
+"vassoio 1 viene aggiunto alla comunicazione."
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
@@ -914,7 +914,7 @@ msgstr "Manuale"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.download_print_wizard_form
 msgid "Merged Documents"
-msgstr "Documento unito"
+msgstr "Documenti uniti"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__merged_name
@@ -1031,12 +1031,12 @@ msgstr "Omr Monofacciale"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "Omr Top Mark X"
-msgstr "Omr top mark x"
+msgstr "Segno OMR superiore X"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_y
 msgid "Omr Top Mark Y"
-msgstr "Omr top mark y"
+msgstr "Segno OMR superiore Y"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
@@ -1054,7 +1054,7 @@ msgstr "Posta in uscita"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults__printer_output_tray_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__printer_output_tray_id
 msgid "Output Bin"
-msgstr "Cestino di uscita"
+msgstr "Vassoio di uscita"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__pdf_page_count
@@ -1229,7 +1229,7 @@ msgstr "Nome Pdf stampato"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__printer_output_tray_id
 msgid "Printer Output Bin"
-msgstr "Cestino di uscita"
+msgstr "Vassoio di uscita della stampante"
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__processing
@@ -1329,7 +1329,7 @@ msgstr "La data di programmazione deve essere futura"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__scheduled_date
 msgid "Schedule generation"
-msgstr "Generazione di programmi"
+msgstr "Pianifica la generazione"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__selection_domain
@@ -1410,7 +1410,7 @@ msgstr "Data di invio"
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_ir_actions_server
 msgid "Server Action"
-msgstr "Azione server"
+msgstr "Azione del server"
 
 #. module: partner_communication
 #: model:ir.ui.menu,name:partner_communication.menu_communication_settings_root
@@ -1586,7 +1586,7 @@ msgstr "Per chiamare"
 #: model:ir.model.fields,field_description:partner_communication.field_ir_cron__state
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__config_id
 msgid "Type"
-msgstr "Tipologia"
+msgstr "Tipo"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_ir_actions_server__state

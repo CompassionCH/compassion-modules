@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_adere
@@ -89,12 +89,12 @@ msgstr "Cebuano (Visayan)"
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__code_iso
 msgid "Code Iso"
-msgstr "Code iso"
+msgstr "Code ISO"
 
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_res_lang_compassion
 msgid "Compassion language"
-msgstr "res.lang.compassion"
+msgstr "Langue Compassion"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__create_uid
@@ -182,12 +182,12 @@ msgstr "Fille"
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__female_plural
 msgid "Female Plural"
-msgstr "Female plural"
+msgstr "Féminin pluriel"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__female_singular
 msgid "Female Singular"
-msgstr "Female singular"
+msgstr "Féminin singulier"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_filipino
@@ -322,7 +322,7 @@ msgstr "Lahu"
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__lang
 #: model:ir.model.fields,field_description:advanced_translation.field_res_lang_compassion__lang_id
 msgid "Lang"
-msgstr "Lang id"
+msgstr "Langue"
 
 #. module: advanced_translation
 #: model_terms:ir.ui.view,arch_db:advanced_translation.advanced_translation_view_search
@@ -389,12 +389,12 @@ msgstr "Garçon"
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__male_plural
 msgid "Male Plural"
-msgstr "Male plural"
+msgstr "Masculin pluriel"
 
 #. module: advanced_translation
 #: model:ir.model.fields,field_description:advanced_translation.field_ir_advanced_translation__male_singular
 msgid "Male Singular"
-msgstr "Male singular"
+msgstr "Masculin singulier"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_mandi
@@ -579,7 +579,7 @@ msgstr "Traduisible"
 #. module: advanced_translation
 #: model:ir.model,name:advanced_translation.model_translatable_model
 msgid "Translatable Model"
-msgstr "translatable.model"
+msgstr "Modèle traduisible"
 
 #. module: advanced_translation
 #: model:res.lang.compassion,name:advanced_translation.lang_compassion_tugen

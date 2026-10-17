@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_ir_actions_server__partner_field
@@ -210,14 +210,14 @@ msgstr "# Anhänge"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_1
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_1
 msgid "Attachment from tray 1"
-msgstr "Aufsatz aus Fach 1"
+msgstr "Anhang aus Fach 1"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_config_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults_omr_add_attachment_tray_2
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_add_attachment_tray_2
 msgid "Attachment from tray 2"
-msgstr "Aufsatz aus Fach 2"
+msgstr "Anhang aus Fach 2"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_attachment__attachment_id
@@ -261,7 +261,7 @@ msgstr "Bevor die Mitteilung gesendet wird"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__body_html
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_pdf_wizard__body_html
 msgid "Body Html"
-msgstr "Körper Html"
+msgstr "Nachrichtentext (HTML)"
 
 #. module: partner_communication
 #. odoo-python
@@ -298,7 +298,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/partner_communication/models/communication_job.py:0
 msgid "Cannot print multiple langs at the same time."
-msgstr "Es können nicht mehrere Langs gleichzeitig gedruckt werden."
+msgstr "Es können nicht mehrere Sprachen gleichzeitig gedruckt werden."
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_communication_snippet__category_id
@@ -363,7 +363,7 @@ msgstr "Kommunikation Konfiguration"
 #: model:ir.model.fields,field_description:partner_communication.field_res_partner__communication_count
 #: model:ir.model.fields,field_description:partner_communication.field_res_users__communication_count
 msgid "Communication Count"
-msgstr "Kommunikation zählen"
+msgstr "Anzahl Kommunikationen"
 
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_default_config
@@ -373,7 +373,7 @@ msgstr "Kommunikation Standardkonfiguration"
 #. module: partner_communication
 #: model:ir.model,name:partner_communication.model_partner_communication_defaults
 msgid "Communication Defaults"
-msgstr "partner.kommunikation.vorgaben"
+msgstr "Standardwerte der Kommunikation"
 
 #. module: partner_communication
 #: model:ir.actions.act_window,name:partner_communication.action_communication_job
@@ -519,10 +519,11 @@ msgid ""
 "printing,b64_data is the binary of the attachment"
 msgstr ""
 "Definieren Sie eine Funktion im Modell communication_job, die alle "
-"Anhangsinformationen für die Kommunikation in einem Diktat des folgenden "
-"Formats zurückgibt: {attach_name: [report_name, b64_data]}wobei attach_name "
-"der Name der erzeugten Datei ist, report_name der Name des für den Druck "
-"verwendeten Berichts ist, b64_data die Binärdatei des Anhangs ist"
+"Anhangsinformationen für die Kommunikation in einem Dictionary des folgenden"
+" Formats zurückgibt: {attach_name: [report_name, b64_data]}, wobei "
+"attach_name der Name der erzeugten Datei ist, report_name der Name des für "
+"den Druck verwendeten Berichts ist und b64_data die Binärdatei des Anhangs "
+"ist"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_res_partner__global_communication_delivery_preference
@@ -629,7 +630,7 @@ msgstr "Versagen"
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_settings_view
 msgid "Features"
-msgstr "Funzionalità"
+msgstr "Funktionen"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_follower_ids
@@ -739,7 +740,7 @@ msgstr "ID des von der Anlage verwendeten Berichts"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_exception_icon
 msgid "Icon"
-msgstr "Icona"
+msgstr "Symbol"
 
 #. module: partner_communication
 #: model:ir.model.fields,help:partner_communication.field_partner_communication_job__activity_exception_icon
@@ -908,7 +909,7 @@ msgstr "Zuletzt aktualisiert am"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__communication_job_ids
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_search
 msgid "Letters"
-msgstr "Lettere"
+msgstr "Briefe"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_download_print_job_wizard__letters_name
@@ -945,7 +946,7 @@ msgstr "Zusammengefasster Name"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_has_error
 msgid "Message Delivery error"
-msgstr "Error beim senden der Nachricht"
+msgstr "Fehler beim Senden der Nachricht"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__message_ids
@@ -990,7 +991,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__need_call
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__need_call
 msgid "Need Call"
-msgstr "Notruf"
+msgstr "Anruf erforderlich"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_calendar_event_id
@@ -1052,12 +1053,12 @@ msgstr "Omr Einseitig"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_x
 msgid "Omr Top Mark X"
-msgstr "Omr top mark x"
+msgstr "OMR-Marke oben X"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job_omr_top_mark_y
 msgid "Omr Top Mark Y"
-msgstr "Omr top mark y"
+msgstr "OMR-Marke oben Y"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.generate_communication_wizard_form
@@ -1075,7 +1076,7 @@ msgstr "Postausgang"
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_defaults__printer_output_tray_id
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_generate_wizard__printer_output_tray_id
 msgid "Output Bin"
-msgstr "Output Bin"
+msgstr "Ausgabefach"
 
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__pdf_page_count
@@ -1249,7 +1250,7 @@ msgstr "Gedruckter Pdf-Name"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__printer_output_tray_id
 msgid "Printer Output Bin"
-msgstr "Output Bin"
+msgstr "Ausgabefach des Druckers"
 
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_job__state__processing
@@ -1320,7 +1321,7 @@ msgstr "Ressourcen-IDs"
 #. module: partner_communication
 #: model:ir.model.fields,field_description:partner_communication.field_partner_communication_job__activity_user_id
 msgid "Responsible User"
-msgstr "Manager Veranstaltung"
+msgstr "Verantwortlicher Benutzer"
 
 #. module: partner_communication
 #: model_terms:ir.ui.view,arch_db:partner_communication.communication_job_form
@@ -1715,7 +1716,7 @@ msgstr "bearbeiten"
 #. module: partner_communication
 #: model:ir.model.fields.selection,name:partner_communication.selection__partner_communication_generate_wizard__state__generation
 msgid "generation"
-msgstr "Generation"
+msgstr "Generierung"
 
 #. module: partner_communication
 #: model:ir.actions.report,name:partner_communication.report_a4_communication

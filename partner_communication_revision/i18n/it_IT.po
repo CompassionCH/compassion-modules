@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.submit_revision_wizard_form
@@ -215,17 +215,17 @@ msgstr "Tipo di comunicazione"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__compare_lang
 msgid "Compare Lang"
-msgstr "Compare lang"
+msgstr "Lingua di confronto"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__compare_subject
 msgid "Compare Subject"
-msgstr "Compare subject"
+msgstr "Oggetto di confronto"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__compare_text
 msgid "Compare Text"
-msgstr "Compare text"
+msgstr "Testo di confronto"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -341,7 +341,7 @@ msgstr "Duplica la revisione"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__edit_value
 msgid "Edit Value"
-msgstr "Edit value"
+msgstr "Modifica valore"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -361,12 +361,12 @@ msgstr "Messaggi non riusciti"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__false_text
 msgid "False Text"
-msgstr "False text"
+msgstr "Testo se falso"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__final_text
 msgid "Final Text"
-msgstr "Final text"
+msgstr "Testo finale"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_keyword__final_text
@@ -406,7 +406,7 @@ msgstr "Ha un messaggio"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__html_id
 msgid "Html"
-msgstr "Html id"
+msgstr "HTML"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_cancel_proposition__id
@@ -460,7 +460,7 @@ msgstr "Indice"
 #. module: partner_communication_revision
 #: model:ir.model,name:partner_communication_revision.model_partner_communication_revision_install
 msgid "Install revision"
-msgstr "partner.communication.revision.install"
+msgstr "Installa revisione"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__is_editor
@@ -475,7 +475,7 @@ msgstr "E' Follower"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__is_master_version
 msgid "Is Master Version"
-msgstr "Is master version"
+msgstr "È la versione principale"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__is_old_version
@@ -485,7 +485,7 @@ msgstr "È una versione precedente"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__is_visible
 msgid "Is Visible"
-msgstr "Is visible"
+msgstr "È visibile"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,help:partner_communication_revision.field_partner_communication_keyword__is_visible
@@ -596,13 +596,13 @@ msgstr "Azione necessaria"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__nested_position
 msgid "Nested Position"
-msgstr "Nested position"
+msgstr "Posizione annidata"
 
 #. module: partner_communication_revision
 #. odoo-python
 #: code:addons/partner_communication_revision/models/communication_revision.py:0
 msgid "New"
-msgstr "Nuovo"
+msgstr "nuovo"
 
 #. module: partner_communication_revision
 #: model:ir.actions.act_window,name:partner_communication_revision.action_new_proposition
@@ -678,12 +678,12 @@ msgstr "Anteprima PDF"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__pdf_data
 msgid "Pdf Data"
-msgstr "Pdf data"
+msgstr "Dati PDF"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__pdf_name
 msgid "Pdf Name"
-msgstr "Pdf name"
+msgstr "Nome PDF"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields.selection,name:partner_communication_revision.selection__partner_communication_revision__state__pending
@@ -715,12 +715,12 @@ msgstr "Anteprima"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__preview_job_id
 msgid "Preview Job"
-msgstr "Preview job id"
+msgstr "Lavoro di anteprima"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__preview_text
 msgid "Preview Text"
-msgstr "Preview text"
+msgstr "Testo di anteprima"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_preview
@@ -735,13 +735,13 @@ msgstr "Proposta"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__proposition_correction
 msgid "Proposition Correction"
-msgstr "Proposition correction"
+msgstr "Correzione proposta"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__proposition_text
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_history__proposition_text
 msgid "Proposition Text"
-msgstr "Proposition text"
+msgstr "Testo proposto"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__rating_ids
@@ -751,13 +751,13 @@ msgstr "Valutazioni"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__raw_code
 msgid "Raw Code"
-msgstr "Raw code"
+msgstr "Codice grezzo"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__raw_subject
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_history__raw_subject
 msgid "Raw Subject"
-msgstr "Raw subject"
+msgstr "Oggetto grezzo"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_preview
@@ -772,7 +772,7 @@ msgstr "Sostituzione"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__res_id
 msgid "Res"
-msgstr "Res id"
+msgstr "Risorsa"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__user_id
@@ -794,14 +794,14 @@ msgstr "Revisore"
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__revision_id
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_submit_revision__revision_id
 msgid "Revision"
-msgstr "Revision id"
+msgstr "Revisione"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_config__revision_date
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__revision_date
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_history__revision_date
 msgid "Revision Date"
-msgstr "Revision date"
+msgstr "Data di revisione"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -813,7 +813,7 @@ msgstr "Istruzioni per la revisione"
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__revision_number
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_history__revision_number
 msgid "Revision Number"
-msgstr "Revision number"
+msgstr "Numero di revisione"
 
 #. module: partner_communication_revision
 #: model:ir.actions.act_window,name:partner_communication_revision.revision_history_action
@@ -859,12 +859,12 @@ msgstr "Imposta il traduttore"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__short_code
 msgid "Short Code"
-msgstr "Short code"
+msgstr "Codice breve"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__show_all_keywords
 msgid "Show All Keywords"
-msgstr "Show all keywords"
+msgstr "Mostra tutte le parole chiave"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.communication_config_form
@@ -874,7 +874,7 @@ msgstr "Mostra il testo attivo"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__simplified_text
 msgid "Simplified Text"
-msgstr "Simplified text"
+msgstr "Testo semplificato"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision_preview__name
@@ -921,7 +921,7 @@ msgstr "Oggetto"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_revision__subject_correction
 msgid "Subject Correction"
-msgstr "Subject correction"
+msgstr "Correzione dell'oggetto"
 
 #. module: partner_communication_revision
 #: model_terms:ir.ui.view,arch_db:partner_communication_revision.revision_form_proposition
@@ -1017,7 +1017,7 @@ msgstr "Imposta su vero"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_validate_proposition__translation_revision_id
 msgid "Translation Revision"
-msgstr "Translation revision id"
+msgstr "Revisione della traduzione"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_validate_proposition__translator_user_id
@@ -1027,7 +1027,7 @@ msgstr "Traduttore"
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__true_text
 msgid "True Text"
-msgstr "True text"
+msgstr "Testo se vero"
 
 #. module: partner_communication_revision
 #: model:ir.model.fields,field_description:partner_communication_revision.field_partner_communication_keyword__type

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
@@ -45,7 +45,7 @@ msgstr "A besoin d'une action"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__activation_date
 msgid "Activation Date"
-msgstr "Activation date"
+msgstr "Date d'activation"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__active
@@ -62,7 +62,7 @@ msgstr "Activités"
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_exception_decoration
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Activité d'exception de décoration"
+msgstr "Indicateur d'exception d'activité"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_state
@@ -318,7 +318,7 @@ msgstr "Contact"
 #: model:ir.ui.menu,name:sbc_compassion.menu_correspondence
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.view_contracts_correspondence_form
 msgid "Correspondence"
-msgstr "Correspondence id"
+msgstr "Correspondance"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_s2b_generator
@@ -344,7 +344,7 @@ msgstr "Zone de texte de correspondance"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_download_wizard
 msgid "Correspondence download wizard"
-msgstr "correspondence.download.wizard"
+msgstr "Assistant de téléchargement de correspondance"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_template
@@ -415,12 +415,12 @@ msgstr "Style CSS"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__current_line_index
 msgid "Current Line Index"
-msgstr "Current line index"
+msgstr "Index de la ligne courante"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__date
 msgid "Date"
-msgstr "Date "
+msgstr "Date"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__last_sponsor_letter
@@ -529,7 +529,7 @@ msgstr "Brouillon"
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__email
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__email
 msgid "E-Mail"
-msgstr "E-mail"
+msgstr "Courriel"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
@@ -561,7 +561,7 @@ msgstr "Encourageur"
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__english_text
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__english_text
 msgid "English Text"
-msgstr "English text"
+msgstr "Texte anglais"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__exception
@@ -586,7 +586,7 @@ msgstr "Champ vers JSON GMC"
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__file_name
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__fname
 msgid "File Name"
-msgstr "File name"
+msgstr "Nom du fichier"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
@@ -622,7 +622,7 @@ msgstr "Lettre finale"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__final_letter_url
 msgid "Final Letter Url"
-msgstr "Final letter url"
+msgstr "URL de la lettre finale"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__final_page_image
@@ -632,7 +632,7 @@ msgstr "Image de la page finale"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__final_page_url
 msgid "Final Page Url"
-msgstr "Final page url"
+msgstr "URL de la page finale"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.view_import_letter_review
@@ -642,7 +642,7 @@ msgstr "Terminé"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__first_write_date
 msgid "First Write Date"
-msgstr "First write date"
+msgstr "Date de première rédaction"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_first_letter
@@ -697,7 +697,7 @@ msgstr "Générer les lettres"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__generator_id
 msgid "Generator"
-msgstr "Generator id"
+msgstr "Générateur"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.letter_image_wizard_form
@@ -788,7 +788,7 @@ msgstr "Image"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_download
 msgid "Image Download"
-msgstr "Image download"
+msgstr "Téléchargement d'image"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_filename
@@ -798,7 +798,7 @@ msgstr "Nom du fichier image"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_preview
 msgid "Image Preview"
-msgstr "Image preview"
+msgstr "Aperçu de l'image"
 
 #. module: sbc_compassion
 #. odoo-python
@@ -810,7 +810,7 @@ msgstr "L'image demandée est introuvable à distance."
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__import_id
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__import_id
 msgid "Import"
-msgstr "Import id"
+msgstr "Import"
 
 #. module: sbc_compassion
 #: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
@@ -843,7 +843,7 @@ msgstr "Imports"
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__open
 msgid "In Review"
-msgstr "Ouverte"
+msgstr "En vérification"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence_last_writing_report__time_to_first_writing
@@ -858,7 +858,7 @@ msgstr "Est une lettre de Noël"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_final_letter
 msgid "Is Final Letter"
-msgstr "Is final letter"
+msgstr "Est la lettre finale"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_is_follower
@@ -929,13 +929,13 @@ msgstr "Dernière mise à jour le"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__last_write_date
 msgid "Last Write Date"
-msgstr "Last write date"
+msgstr "Date de dernière rédaction"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__last_writing_date
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_users__last_writing_date
 msgid "Last Writing Date"
-msgstr "Last writing date"
+msgstr "Date de dernière rédaction"
 
 #. module: sbc_compassion
 #: model:ir.actions.act_window,name:sbc_compassion.action_last_writing
@@ -1009,13 +1009,13 @@ msgstr "Préférence d'envoi des lettres"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__letter_format
 msgid "Letter Format"
-msgstr "Letter format"
+msgstr "Format de la lettre"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__letter_image
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__letter_file
 msgid "Letter Image"
-msgstr "Letter image"
+msgstr "Image de la lettre"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__letter_image_preview
@@ -1058,7 +1058,7 @@ msgstr ""
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_page
 msgid "Letter page"
-msgstr "correspondence.page"
+msgstr "Page de la lettre"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_paragraph
@@ -1124,7 +1124,7 @@ msgstr "Charger les fichiers"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__marked_for_rework
 msgid "Marked For Rework"
-msgstr "Marked for rework"
+msgstr "Marqué à retravailler"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__max_chars
@@ -1162,7 +1162,7 @@ msgstr "Messages"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_metadata
 msgid "Metadata of letter"
-msgstr "correspondence.metadata"
+msgstr "Métadonnées de la lettre"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__app
@@ -1225,12 +1225,12 @@ msgstr "Contrôle du contenu par le bureau national"
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__nb_letters
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_users__nb_letters
 msgid "Nb Letters"
-msgstr "Nb letters"
+msgstr "Nombre de lettres"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__nb_lines
 msgid "Nb Lines"
-msgstr "Nb lines"
+msgstr "Nombre de lignes"
 
 #. module: sbc_compassion
 #. odoo-python
@@ -1380,7 +1380,7 @@ msgstr "Original"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_letter_url
 msgid "Original Letter Url"
-msgstr "Original letter url"
+msgstr "URL de la lettre originale"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__original_page_image
@@ -1390,7 +1390,7 @@ msgstr "Image de la page originale"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__original_page_url
 msgid "Original Page Url"
-msgstr "Original page url"
+msgstr "URL de la page originale"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_text
@@ -1398,7 +1398,7 @@ msgstr "Original page url"
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__original_text
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__original_text
 msgid "Original Text"
-msgstr "Original text"
+msgstr "Texte original"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_language_id
@@ -1412,13 +1412,13 @@ msgstr "Langue source"
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__page_ids
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__page_id
 msgid "Page"
-msgstr "Page ids"
+msgstr "Page"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__page_index
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__page_index
 msgid "Page Index"
-msgstr "Page index"
+msgstr "Index de la page"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__page_number
@@ -1489,7 +1489,7 @@ msgstr "Langues parlées par le partenaire"
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__physical_attachments
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__physical_attachments
 msgid "Physical Attachments"
-msgstr "Physical attachments"
+msgstr "Pièces jointes physiques"
 
 #. module: sbc_compassion
 #. odoo-python
@@ -1511,7 +1511,7 @@ msgstr "Reporter"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__postpone_import_id
 msgid "Postpone Import"
-msgstr "Postpone import id"
+msgstr "Reporter l'import"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__preview
@@ -1589,7 +1589,7 @@ msgstr "Évaluations"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__read_url
 msgid "Read Url"
-msgstr "Read url"
+msgstr "URL de lecture"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__ready_to_be_printed
@@ -1620,7 +1620,7 @@ msgstr "Relation"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_ir_actions_report
 msgid "Report Action"
-msgstr "ir.actions.report.xml"
+msgstr "Action de rapport"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__report_needs_english_text
@@ -1684,7 +1684,7 @@ msgstr "Vérifier les Imports"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letters_review
 msgid "Review imported letters"
-msgstr "import.letters.review"
+msgstr "Réviser les lettres importées"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__reviewed
@@ -1694,12 +1694,12 @@ msgstr "Révisé"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__rework_comments
 msgid "Rework Comments"
-msgstr "Rework comments"
+msgstr "Commentaires de retravail"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__rework_reason
 msgid "Rework Reason"
-msgstr "Rework reason"
+msgstr "Motif du retravail"
 
 #. module: sbc_compassion
 #: model:ir.actions.act_window,name:sbc_compassion.action_s2b_generator
@@ -1710,7 +1710,7 @@ msgstr "Générateur Lettres S2B"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letter_line
 msgid "S2B Import Letter Line"
-msgstr "import.letter.line"
+msgstr "Ligne d'import de lettre S2B"
 
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letters_history
@@ -1720,12 +1720,12 @@ msgstr "Import de lettres S2B"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_import_letter_config
 msgid "S2B Letter Import Config"
-msgstr "import.letter.config"
+msgstr "Configuration d'import de lettres S2B"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__s2b_state
 msgid "S2B State"
-msgstr "S2b state"
+msgstr "Statut S2B"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__type__s2b
@@ -1747,7 +1747,7 @@ msgstr "Erreur d'envoi de SMS"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__scanned_date
 msgid "Scanned Date"
-msgstr "Scanned date"
+msgstr "Date de scan"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__letter
@@ -1773,7 +1773,7 @@ msgstr "Programmé"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__selection_domain
 msgid "Selection Domain"
-msgstr "Selection domain"
+msgstr "Domaine de sélection"
 
 #. module: sbc_compassion
 #: model:ir.actions.server,name:sbc_compassion.send_postponed_christmas_letters_cron_ir_actions_server
@@ -1907,7 +1907,7 @@ msgstr "État"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__status_date
 msgid "Status Date"
-msgstr "Status date"
+msgstr "Date du statut"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_state
@@ -1968,7 +1968,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__background
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__template_image
 msgid "Template Image"
-msgstr "Template image"
+msgstr "Image du modèle"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__no_template
@@ -1987,12 +1987,12 @@ msgstr ""
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__text_line_height
 msgid "Text Line Height"
-msgstr "Text line height"
+msgstr "Hauteur de ligne du texte"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__text_type
 msgid "Text Type"
-msgstr "Text type"
+msgstr "Type de texte"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__text_box_ids
@@ -2059,7 +2059,7 @@ msgstr "Cette page est déjà définie. Changez l'index."
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__time_to_first_writing
 msgid "Time To First Writing"
-msgstr "Time to first writing"
+msgstr "Délai avant la première rédaction"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__global_partner_translation_queue
@@ -2080,14 +2080,14 @@ msgstr "Position haut de l'objet en pourcentage (de la page)"
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_translate_date
 msgid "Translate Date"
-msgstr "Translate date"
+msgstr "Date de traduction"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__translated_text
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__translated_text
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__translated_text
 msgid "Translated Text"
-msgstr "Translated text"
+msgstr "Texte traduit"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__global_partner_translation_process
@@ -2120,7 +2120,7 @@ msgstr "Traducteur"
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__translator_email
 #: model:ir.model.fields,field_description:sbc_compassion.field_res_users__translator_email
 msgid "Translator Email"
-msgstr "Translator email"
+msgstr "Courriel du traducteur"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_recurring_contract__write_for_birthday_alert
@@ -2139,7 +2139,7 @@ msgstr "Type d'origine"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_correspondence_type
 msgid "Type of correspondence"
-msgstr "correspondence.type"
+msgstr "Type de correspondance"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_exception_decoration
@@ -2150,7 +2150,7 @@ msgstr "Type de l'activité d'exception enregistrée."
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__usage_count
 msgid "Usage Count"
-msgstr "Usage count"
+msgstr "Nombre d'utilisations"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,help:sbc_compassion.field_correspondence_template_page__background
@@ -2194,12 +2194,12 @@ msgstr "Largeur de l'objet en pourcentage (de la taille de la page)"
 #. module: sbc_compassion
 #: model:ir.model,name:sbc_compassion.model_letter_image_wizard
 msgid "Wizard for image letter"
-msgstr "letter.image.wizard"
+msgstr "Assistant pour lettre image"
 
 #. module: sbc_compassion
 #: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__write_for_birthday_alert
 msgid "Write For Birthday Alert"
-msgstr "Write for birthday alert"
+msgstr "Écrire pour l'alerte d'anniversaire"
 
 #. module: sbc_compassion
 #: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__compassion

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_segmentation
 #: model:survey.question.answer,value:partner_segmentation.pss_q7_14
@@ -281,8 +281,7 @@ msgid ""
 "            </div>\n"
 "        "
 msgstr ""
-"\n"
-"                    <ul>\n"
+"<ul>\n"
 "                        <li><a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">Neuigkeiten</a></li>\n"
 "                        <li><a href=\"https://compassion.ch/de/finanzen/\" target=\"_blank\">Die Finanzen von Compassion</a></li>\n"
 "                       <li><a href=\"https://compassion.ch/de/spenden/\" target=\"_blank\">Spendenmöglichkeiten</a></li>\n"
@@ -473,7 +472,7 @@ msgid ""
 "I do not personally need to share the gospel with others when helping a "
 "cause"
 msgstr ""
-"Es ist mir nicht wichtig, das ich persönlich das Evangelium mit anderen "
+"Es ist mir nicht wichtig, dass ich persönlich das Evangelium mit anderen "
 "teile, wenn ich eine Sache unterstütze"
 
 #. module: partner_segmentation
@@ -701,7 +700,7 @@ msgstr "Segment"
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_index
 msgid "Segment Index"
-msgstr "Segment-Index"
+msgstr "Segmentindex"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_size
@@ -727,7 +726,7 @@ msgstr "Segmentierung"
 #. module: partner_segmentation
 #: model_terms:survey.question,description:partner_segmentation.pss_question_7
 msgid "Select the answers that apply"
-msgstr "Welche der folgenden Schritte hast du schon unternommen?"
+msgstr "Wähle die zutreffenden Antworten aus"
 
 #. module: partner_segmentation
 #: model_terms:survey.question,description:partner_segmentation.pss_question_6
@@ -761,7 +760,7 @@ msgid ""
 "Someone who currently puts their professional skills and expertise to use for the cause, or\n"
 "            plans to use their skills and expertise in the future"
 msgstr ""
-"Ich setzte meine beruflichen Fähigkeiten und mein Fachwissen ein oder ich "
+"Ich setze meine beruflichen Fähigkeiten und mein Fachwissen ein oder ich "
 "plane, meine Fähigkeiten in Zukunft dafür einzusetzen"
 
 #. module: partner_segmentation
@@ -850,7 +849,7 @@ msgstr "Benutzereingaben"
 #. module: partner_segmentation
 #: model:ir.model,name:partner_segmentation.model_survey_user_input_line
 msgid "Survey User Input Line"
-msgstr "Benuzereingabe"
+msgstr "Benutzereingabe"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_count
@@ -953,7 +952,7 @@ msgstr "Welche der folgenden Schritte hast du schon unternommen?"
 #. module: partner_segmentation
 #: model:survey.question,title:partner_segmentation.pss_question_1
 msgid "Which of the following sentences do you agree more with ?"
-msgstr "Welchen der folgenden Aussagen zum Thema Spenden stimmst du eher zu?"
+msgstr "Welcher der folgenden Aussagen zum Thema Spenden stimmst du eher zu?"
 
 #. module: partner_segmentation
 #: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment_affinity__affinity

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: crm_request
 #. odoo-python
@@ -142,9 +142,7 @@ msgstr "Une demande de support nécessite votre attention"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_res_users__do_reminder_support_req
 msgid "Activate the reminder on support request"
-msgstr ""
-"Envoyer un rappel hebdomadaire à l’utilisateur pour une nouvelle demande de "
-"support ou une demande de support en attente"
+msgstr "Activer le rappel pour les demandes de support"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_stage__active
@@ -154,7 +152,8 @@ msgstr "Actif"
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_res_users
 msgid "Adds authentication for users from external platforms."
-msgstr "Utilisateurs"
+msgstr ""
+"Ajoute l'authentification pour les utilisateurs de plateformes externes."
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__alias_id
@@ -210,7 +209,7 @@ msgstr "Étapes de demande"
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__color
 msgid "Color index"
-msgstr "Color index"
+msgstr "Index de couleur"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__create_uid
@@ -369,7 +368,7 @@ msgstr ""
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_res_partner_match
 msgid "Match partner"
-msgstr "res.partner.match"
+msgstr "Correspondance de partenaire"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_name
@@ -467,7 +466,7 @@ msgstr "Répondre À"
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Reporter"
-msgstr "Reporter"
+msgstr "Rapporteur"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim
@@ -568,10 +567,9 @@ msgid ""
 "the text with the holiday name, start date, end date or the date at which we"
 " will be able to answer again."
 msgstr ""
-"Utilisez [holiday_name], [start_date], [end_date], [reply_date] et "
-"[signature] pour remplacer dans le texte par le nom des vacances, la date de"
-" début, la date de fin ou la date à laquelle nous serons en mesure de "
-"répondre à nouveau."
+"Utilisez [holiday_name], [start_date], [end_date] et [reply_date] pour "
+"remplacer dans le texte par le nom des vacances, la date de début, la date "
+"de fin ou la date à laquelle nous serons en mesure de répondre à nouveau."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_form
@@ -582,7 +580,7 @@ msgid ""
 "                        <br/>\n"
 "                        If you edit the default message, please don't forget to enter the translations as well! Use the preview to check the final result."
 msgstr ""
-"Utilisez [holiday_name], [start_date], [end_date], [reply_date] et [signature] pour remplacer dans le texte par le nom des vacances, la date de début, la date de fin ou la date à laquelle nous serons en mesure de répondre à nouveau.\n"
+"Utilisez [holiday_name], [start_date], [end_date] et [reply_date] pour remplacer dans le texte par le nom des vacances, la date de début, la date de fin ou la date à laquelle nous serons en mesure de répondre à nouveau.\n"
 "                        <br/>\n"
 "                        La salutation et la signature sont automatiquement générées et n'ont pas besoin d'être incluses ici.\n"
 "                        <br/>\n"

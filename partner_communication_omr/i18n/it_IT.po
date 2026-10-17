@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_add_attachment_tray_1
@@ -41,7 +41,7 @@ msgstr "Allegato Comunicazione"
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_defaults
 msgid "Communication Defaults"
-msgstr "partner.communication.defaults"
+msgstr "Impostazioni predefinite delle comunicazioni"
 
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_partner_communication_job
@@ -132,7 +132,7 @@ msgstr "L'OMR deve chiudere la busta"
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_single_sided
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_single_sided
 msgid "Omr Single Sided"
-msgstr "Omr single sided"
+msgstr "OMR solo fronte"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_top_mark_x
@@ -141,7 +141,7 @@ msgstr "Omr single sided"
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_top_mark_x
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_top_mark_x
 msgid "Omr Top Mark X"
-msgstr "Omr top mark x"
+msgstr "Segno OMR superiore X"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_config__omr_top_mark_y
@@ -150,12 +150,12 @@ msgstr "Omr top mark x"
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_generate_wizard__omr_top_mark_y
 #: model:ir.model.fields,field_description:partner_communication_omr.field_partner_communication_job__omr_top_mark_y
 msgid "Omr Top Mark Y"
-msgstr "Omr top mark y"
+msgstr "Segno OMR superiore Y"
 
 #. module: partner_communication_omr
 #: model:ir.model,name:partner_communication_omr.model_ir_actions_report
 msgid "Report Action"
-msgstr "ir.actions.report.xml"
+msgstr "Azione report"
 
 #. module: partner_communication_omr
 #: model:ir.model.fields,help:partner_communication_omr.field_partner_communication_attachment__is_last_to_print

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: thankyou_letters
 #: model:mail.template,body_html:thankyou_letters.thankyou_letter_template
@@ -564,7 +564,7 @@ msgstr "Attivo"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__add_success_story
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__add_success_story
 msgid "Add Success Story"
-msgstr "Add success story"
+msgstr "Aggiungi storia di successo"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__address_without_name
@@ -602,7 +602,7 @@ msgstr "Testo"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__success_sentence
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__body_text
 msgid "Body Text"
-msgstr "Body text"
+msgstr "Testo del corpo"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
@@ -618,7 +618,7 @@ msgstr "Spunta per disabilitare la lettera di ringraziamento per la donazione"
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_partner_communication_defaults
 msgid "Communication Defaults"
-msgstr "partner.communication.defaults"
+msgstr "Impostazioni predefinite delle comunicazioni"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_partner_communication_job
@@ -645,23 +645,23 @@ msgstr "Creato il"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__current_usage_count
 msgid "Current Usage Count"
-msgstr "Current usage count"
+msgstr "Numero di utilizzi attuale"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__date_communication
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users__date_communication
 msgid "Date Communication"
-msgstr "Date communication"
+msgstr "Data della comunicazione"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__date_start
 msgid "Date Start"
-msgstr "Date start"
+msgstr "Data di inizio"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__date_stop
 msgid "Date Stop"
-msgstr "Date stop"
+msgstr "Data di fine"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__display_name
@@ -727,7 +727,7 @@ msgstr "Generare comunicazioni"
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.success_story_search
 msgid "Group By"
-msgstr "Gruppo per"
+msgstr "Raggruppa per"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__id
@@ -768,7 +768,7 @@ msgstr "Fatture"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__is_active
 msgid "Is Active"
-msgstr "Is active"
+msgstr "È attivo"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_is_new_donor
@@ -778,12 +778,12 @@ msgstr "È un nuovo donatore"
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_account_move
 msgid "Journal Entry"
-msgstr "Diario di bordo"
+msgstr "Registrazione contabile"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_account_move_line
 msgid "Journal Item"
-msgstr "Articolo di giornale"
+msgstr "Movimento contabile"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__lang
@@ -820,7 +820,7 @@ msgstr "Nome"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__need_call
 msgid "Need Call"
-msgstr "Need call"
+msgstr "Richiede una chiamata"
 
 #. module: thankyou_letters
 #: model:ir.model.fields.selection,name:thankyou_letters.selection__success_story__state__new
@@ -830,12 +830,12 @@ msgstr "Nuovo"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__only_when_chosen
 msgid "Only When Chosen"
-msgstr "Only when chosen"
+msgstr "Solo se scelto"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner_title_order_index
 msgid "Order Index"
-msgstr "Order index"
+msgstr "Indice di ordinamento"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_partner_communication_generate_wizard
@@ -856,7 +856,7 @@ msgstr "Plurale"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__print_count
 msgid "Print Count"
-msgstr "Print count"
+msgstr "Numero di stampe"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__print_header
@@ -865,7 +865,7 @@ msgstr "Print count"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__print_header
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__print_header
 msgid "Print Header"
-msgstr "Print header"
+msgstr "Stampa intestazione"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__print_subject
@@ -874,17 +874,17 @@ msgstr "Print header"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__print_subject
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__print_subject
 msgid "Print Subject"
-msgstr "Print subject"
+msgstr "Stampa oggetto"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_product_template
 msgid "Product"
-msgstr "Modello del prodotto"
+msgstr "Prodotto"
 
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_product_product
 msgid "Product Variant"
-msgstr "Prodotto"
+msgstr "Variante prodotto"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
@@ -904,7 +904,7 @@ msgstr "Saluto"
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_thankyou_config__send_mode
 msgid "Send Mode"
-msgstr "Send mode"
+msgstr "Modalità di invio"
 
 #. module: thankyou_letters
 #: model_terms:ir.ui.view,arch_db:thankyou_letters.communication_job_tree_thankyou_donation_amount
@@ -940,7 +940,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__short_address
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users__short_address
 msgid "Short Address"
-msgstr "Short address"
+msgstr "Indirizzo breve"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_config__show_signature
@@ -949,7 +949,7 @@ msgstr "Short address"
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_generate_wizard__show_signature
 #: model:ir.model.fields,field_description:thankyou_letters.field_partner_communication_job__show_signature
 msgid "Show Signature"
-msgstr "Show signature"
+msgstr "Mostra firma"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users_signature_letter
@@ -997,7 +997,7 @@ msgstr "Storia di successo"
 #. module: thankyou_letters
 #: model:ir.model,name:thankyou_letters.model_success_story
 msgid "Success Story: story in a blue layout added in letters."
-msgstr "Success Story"
+msgstr "Storia di successo: storia con layout blu aggiunta nelle lettere."
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__success_story_id
@@ -1048,7 +1048,7 @@ msgstr "Chi ringrazia"
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_product__thanks_name
 #: model:ir.model.fields,field_description:thankyou_letters.field_product_template__thanks_name
 msgid "Thanks Name"
-msgstr "Thanks name"
+msgstr "Nome per il ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.actions.act_window,name:thankyou_letters.action_thank_you_config
@@ -1059,7 +1059,7 @@ msgstr "Configurazione dei ringraziamenti"
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_partner__thankyou_preference
 #: model:ir.model.fields,field_description:thankyou_letters.field_res_users__thankyou_preference
 msgid "Thankyou Preference"
-msgstr "Thankyou preference"
+msgstr "Preferenza di ringraziamento"
 
 #. module: thankyou_letters
 #: model:ir.model.fields,field_description:thankyou_letters.field_success_story__type

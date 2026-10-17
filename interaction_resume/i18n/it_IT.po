@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_needaction
@@ -89,7 +89,7 @@ msgstr "Lavoro di comunicazione"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__communication_type
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__communication_type
 msgid "Communication Type"
-msgstr "Communication type"
+msgstr "Tipo di comunicazione"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_res_partner
@@ -219,12 +219,12 @@ msgstr "Sesso"
 #. module: interaction_resume
 #: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
 msgid "Group By..."
-msgstr "Gruppo di..."
+msgstr "Raggruppa per..."
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__has_attachment
 msgid "Has Attachment"
-msgstr "Has attachment"
+msgstr "Ha un allegato"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__has_message
@@ -309,14 +309,14 @@ msgstr "Ultima pagina di recupero delle interazioni"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__write_uid
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Ultimo caricamento il"
+msgstr "Ultima modifica di"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__write_date
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__write_date
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__write_date
 msgid "Last Updated on"
-msgstr "Ultimo caricamento di"
+msgstr "Ultima modifica il"
 
 #. module: interaction_resume
 #: model:ir.model.fields,help:interaction_resume.field_res_partner__last_interaction_fetch_date
@@ -559,7 +559,7 @@ msgstr "Utente responsabile"
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_interaction_resume
 msgid "Resume of a given partner"
-msgstr "interaction.resume"
+msgstr "Riepilogo di un partner"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__sms
@@ -642,7 +642,7 @@ msgstr "L'interazione è stata aggiunta al riepilogo."
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__tracking_status
 msgid "Tracking Status"
-msgstr "Tracking status"
+msgstr "Stato di tracciamento"
 
 #. module: interaction_resume
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_exception_decoration

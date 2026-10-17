@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication_compassion
 #: model:mail.template,body_html:partner_communication_compassion.email_project_suspension_follow_up
@@ -2904,7 +2904,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_fo_disaster_alert__access_link
 msgid "Access Link"
-msgstr "Access link"
+msgstr "Lien d'accès"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_project_suspension_follow_up
@@ -3009,7 +3009,7 @@ msgstr "Communications"
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_hold
 msgid "Compassion hold"
-msgstr "compassion.hold"
+msgstr "Hold Compassion"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__completion_month
@@ -3067,7 +3067,7 @@ msgstr "Courriel"
 #. module: partner_communication_compassion
 #: model:ir.ui.menu,name:partner_communication_compassion.menu_mail_mail
 msgid "Emails"
-msgstr "E-mails"
+msgstr "Courriels"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_planned_exit
@@ -3276,7 +3276,7 @@ msgstr "Lettre manquante"
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_fo_disaster_alert
 msgid "National Office Disaster Alert"
-msgstr "Field Office Disaster Alert"
+msgstr "Alerte catastrophe du bureau national"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_biennial
@@ -3330,7 +3330,7 @@ msgstr "Ancien prénom"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__old_values
 msgid "Old Values"
-msgstr "Anciennes valeures"
+msgstr "Anciennes valeurs"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_partner_communication_generate_wizard
@@ -3351,7 +3351,7 @@ msgstr "Payeur"
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_partner__photo_delivery_preference
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_users__photo_delivery_preference
 msgid "Photo Delivery Preference"
-msgstr "Photo delivery preference"
+msgstr "Préférence d'envoi des photos"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_project_transition
@@ -3536,7 +3536,7 @@ msgstr "Non lu"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_job__utm_campaign_id
 msgid "Utm Campaign"
-msgstr "Utm campaign id"
+msgstr "Campagne UTM"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_planned_exit_notification

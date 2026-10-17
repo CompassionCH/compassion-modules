@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_needaction
@@ -31,7 +31,7 @@ msgstr "Activités"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_exception_decoration
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Activité d'exception de décoration"
+msgstr "Indicateur d'exception d'activité"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_state
@@ -89,7 +89,7 @@ msgstr "Job de communication"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__communication_type
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__communication_type
 msgid "Communication Type"
-msgstr "Communication type"
+msgstr "Type de communication"
 
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_res_partner
@@ -136,7 +136,7 @@ msgstr "Client"
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__date
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__date
 msgid "Date"
-msgstr "Date "
+msgstr "Date"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__deferred
@@ -146,7 +146,7 @@ msgstr "Différé"
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__delivered
 msgid "Delivered"
-msgstr "Delivré"
+msgstr "Livré"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__direction
@@ -224,7 +224,7 @@ msgstr "Grouper par..."
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__has_attachment
 msgid "Has Attachment"
-msgstr "Has attachment"
+msgstr "A une pièce jointe"
 
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__has_message
@@ -560,7 +560,7 @@ msgstr "Responsable"
 #. module: interaction_resume
 #: model:ir.model,name:interaction_resume.model_interaction_resume
 msgid "Resume of a given partner"
-msgstr "interaction.resume"
+msgstr "Résumé d'un partenaire donné"
 
 #. module: interaction_resume
 #: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__sms
@@ -643,7 +643,7 @@ msgstr "L'interaction a été ajoutée au résumé."
 #. module: interaction_resume
 #: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__tracking_status
 msgid "Tracking Status"
-msgstr "Tracking status"
+msgstr "Statut de suivi"
 
 #. module: interaction_resume
 #: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_exception_decoration

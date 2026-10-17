@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: partner_communication_compassion
 #: model:mail.template,body_html:partner_communication_compassion.email_project_suspension_follow_up
@@ -3024,7 +3024,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_fo_disaster_alert__access_link
 msgid "Access Link"
-msgstr "Access link"
+msgstr "Link di accesso"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_project_suspension_follow_up
@@ -3130,12 +3130,12 @@ msgstr "Comunicazioni"
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_hold
 msgid "Compassion hold"
-msgstr "compassion.hold"
+msgstr "Hold Compassion"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__completion_month
 msgid "Completion Month"
-msgstr "Completion month"
+msgstr "Mese di completamento"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_res_partner
@@ -3155,7 +3155,7 @@ msgstr "Nazione"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__current_values
 msgid "Current Values"
-msgstr "Current values"
+msgstr "Valori attuali"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_project__last_suspension_communication_date
@@ -3247,7 +3247,7 @@ msgstr "Pagatore del regalo"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_correspondence__has_valid_language
 msgid "Has Valid Language"
-msgstr "Has valid language"
+msgstr "Ha una lingua valida"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.b2s_email_not_read
@@ -3264,7 +3264,7 @@ msgstr ""
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_household
 msgid "Household"
-msgstr "Casa"
+msgstr "Nucleo familiare"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_child_notes
@@ -3337,7 +3337,7 @@ msgstr "Lettera"
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_partner__letter_delivery_preference
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_users__letter_delivery_preference
 msgid "Letter Delivery Preference"
-msgstr "Letter delivery preference"
+msgstr "Preferenza di consegna delle lettere"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_birthdate
@@ -3393,7 +3393,7 @@ msgstr "Lettera mancante"
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_fo_disaster_alert
 msgid "National Office Disaster Alert"
-msgstr "Field Office Disaster Alert"
+msgstr "Allarme catastrofe dell'Ufficio Nazionale"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_biennial
@@ -3442,12 +3442,12 @@ msgstr "Vecchia data di nascita"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__old_firstname
 msgid "Old Firstname"
-msgstr "Old firstname"
+msgstr "Nome precedente"
 
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_compassion_child__old_values
 msgid "Old Values"
-msgstr "Old values"
+msgstr "Valori precedenti"
 
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_partner_communication_generate_wizard
@@ -3468,7 +3468,7 @@ msgstr "Pagatore"
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_partner__photo_delivery_preference
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_res_users__photo_delivery_preference
 msgid "Photo Delivery Preference"
-msgstr "Photo delivery preference"
+msgstr "Preferenza di consegna delle foto"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_project_transition
@@ -3567,7 +3567,7 @@ msgstr "Origine"
 #. module: partner_communication_compassion
 #: model:ir.model,name:partner_communication_compassion.model_compassion_child
 msgid "Sponsored Child"
-msgstr "Bambino sponsorizzato"
+msgstr "Bambino sostenuto"
 
 #. module: partner_communication_compassion
 #: model:mail.template,name:partner_communication_compassion.email_sponsorship_dossier
@@ -3650,7 +3650,7 @@ msgstr "Non letto"
 #. module: partner_communication_compassion
 #: model:ir.model.fields,field_description:partner_communication_compassion.field_partner_communication_job__utm_campaign_id
 msgid "Utm Campaign"
-msgstr "Utm campaign id"
+msgstr "Campagna Utm"
 
 #. module: partner_communication_compassion
 #: model:mail.template,subject:partner_communication_compassion.email_planned_exit_notification

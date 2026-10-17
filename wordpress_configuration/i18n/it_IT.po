@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__child_gift_url
@@ -85,12 +85,12 @@ msgstr "Password"
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__sponsorship_url
 msgid "Sponsorship Url"
-msgstr "URL di sponsorizzazione"
+msgstr "URL di sostegno"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__survival_sponsorship_url
 msgid "Survival Sponsorship Url"
-msgstr "Url di sponsorizzazione per la sopravvivenza"
+msgstr "Url di sostegno mamme e neonati"
 
 #. module: wordpress_configuration
 #: model:ir.model.fields,field_description:wordpress_configuration.field_wordpress_configuration__user

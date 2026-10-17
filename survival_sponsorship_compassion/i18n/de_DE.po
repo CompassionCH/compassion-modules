@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
@@ -21,7 +21,7 @@ msgid ""
 "(Inherited from product template) The product can be sold as a survival "
 "sponsorship one"
 msgstr ""
-"(Geerbt von der Produktvorlage) Das Produkt kann als Überlebenssponsoring "
+"(Geerbt von der Produktvorlage) Das Produkt kann als Survival-Patenschaft "
 "verkauft werden."
 
 #. module: survival_sponsorship_compassion
@@ -175,37 +175,37 @@ msgstr "Anzahl Survival-Patenschaften für eine Kirche UND ihre Mitglieder."
 #. module: survival_sponsorship_compassion
 #: model:ir.model.constraint,message:survival_sponsorship_compassion.constraint_product_product_field_office_product_unique
 msgid "Only one product can exists for a given field office"
-msgstr "Es kann nur ein Produkt für eine bestimmte Außenstelle geben"
+msgstr "Es kann nur ein Produkt für ein bestimmtes Landesbüro geben"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_product_template
 msgid "Product"
-msgstr "Produktvorlage"
+msgstr "Produkt"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_product_product
 msgid "Product Variant"
-msgstr "Produkt"
+msgstr "Produktvariante"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract
 msgid "Recurring contract"
-msgstr "Wiederkehrender Vertrag"
+msgstr "Laufender Vertrag"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model,name:survival_sponsorship_compassion.model_recurring_contract_line
 msgid "Recurring contract line"
-msgstr "A contract line"
+msgstr "Wiederkehrende Vertragslinie"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__slot_used
 msgid "Slot Used"
-msgstr "Verwendeter Steckplatz"
+msgstr "Verwendeter Platz"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_recurring_contract__type
 msgid "Sponsorship type"
-msgstr "Typ"
+msgstr "Art der Patenschaft"
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.product_survival_sponsorship_view
@@ -241,7 +241,7 @@ msgstr "Survival-Patenschaft"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_field_office_id
 msgid "Survival Sponsorship Field office"
-msgstr "Survival Patenschaft Außenstelle"
+msgstr "Survival-Patenschaft Landesbüro"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_number
@@ -252,7 +252,7 @@ msgstr "Nummer der Überlebenspatenschaft"
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_product__survival_sponsorship_sale
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "Survival Sponsorship Sale"
-msgstr "Survival Sponsoring Verkauf"
+msgstr "Survival-Patenschaft Verkauf"
 
 #. module: survival_sponsorship_compassion
 #. odoo-python
@@ -267,7 +267,7 @@ msgstr "Survival-Patenschaften"
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_reformat_all_phonenumbers__survival_sponsorship_warn_user_ids
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_config_settings__survival_sponsorship_warn_user_ids
 msgid "Survival sponsorship product places owner"
-msgstr "Überlebenspatenschaft Produkt platziert Eigentümer"
+msgstr "Eigentümer der Plätze für Überlebenspatenschaftsprodukte"
 
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,field_description:survival_sponsorship_compassion.field_res_partner__survival_sponsorship_count
@@ -283,7 +283,7 @@ msgstr "Survival-Patenschaften"
 #. module: survival_sponsorship_compassion
 #: model:ir.model.fields,help:survival_sponsorship_compassion.field_product_template__survival_sponsorship_sale
 msgid "The product can be sold as a survival sponsorship one"
-msgstr "Das Produkt kann als Überlebenssponsoring verkauft werden."
+msgstr "Das Produkt kann als Survival-Patenschaft verkauft werden."
 
 #. module: survival_sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:survival_sponsorship_compassion.contract_limit_csp_view

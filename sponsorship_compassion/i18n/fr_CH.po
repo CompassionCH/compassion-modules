@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_res_partner_invoice_line_button_form
@@ -68,9 +68,8 @@ msgid ""
 "All the emails and documents sent to this contact will be translated in this"
 " language."
 msgstr ""
-"Si la langue sélectionnée est chargée dans le système, tous les documents de"
-" ce contact seront imprimés dans cette langue. Dans le cas contraire, ils le"
-" seront en anglais."
+"Tous les emails et documents envoyés à ce contact seront traduits dans cette"
+" langue."
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_origin__analytic_id
@@ -101,7 +100,7 @@ msgstr "Anonymiser les partenaires"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group_bvr_reference
 msgid "BVR Ref"
-msgstr "BVR Ref"
+msgstr "Réf. BVR"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -113,7 +112,7 @@ msgstr "Deux fois par an"
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "Bimonthly"
-msgstr "Bimensuel"
+msgstr "Tous les deux mois"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__sponsorship_gift_type__gmc_sponsorship_gift_type__birthday
@@ -182,7 +181,7 @@ msgstr "Assistant de mise en Hold d'enfant"
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_child_pictures_download_wizard
 msgid "Child Picture Download Wizard"
-msgstr "child.pictures.download.wizard"
+msgstr "Assistant de téléchargement de photos d'enfants"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
@@ -321,7 +320,7 @@ msgstr "Engagement"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__commitment_number
 msgid "Commitment Number"
-msgstr "Partner Contract Number"
+msgstr "Numéro d'engagement"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_child__company_id
@@ -342,7 +341,7 @@ msgstr "Identifiant global"
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_gmc_message_constituent
 #: model:ir.ui.menu,name:sponsorship_compassion.menu_message_partner
 msgid "Constituent"
-msgstr "Constituent"
+msgstr "Constituant"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_res_partner
@@ -364,7 +363,7 @@ msgstr "Contact avec le parrain/ambassadeur"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_group__contains_sponsorship
 msgid "Contains sponsorship"
-msgstr "Contiens parrainage"
+msgstr "Contient parrainage"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_compassion_project__contract_ids
@@ -488,7 +487,7 @@ msgstr "Contrat actuel pour la génération de factures"
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_donation_filter
 msgid "Date"
-msgstr "Date "
+msgstr "Date"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__legal_agreement_date
@@ -605,7 +604,7 @@ msgstr "Oubliez-moi"
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/contracts.py:0
 msgid "Four-monthly"
-msgstr "Quatre fois par an"
+msgstr "Tous les quatre mois"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
@@ -620,7 +619,7 @@ msgstr "Église partenaire"
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__fullshot
 msgid "Fullshot"
-msgstr "Fullshot"
+msgstr "Photo en pied"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__fully_managed
@@ -641,7 +640,7 @@ msgstr "Fonds non désigné"
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__fund
 msgid "Fund donation"
-msgstr "Don au fond"
+msgstr "Don au fonds"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -702,7 +701,7 @@ msgstr "Assistant de génération de cadeaux"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gift_partner_id
 msgid "Gift Partner"
-msgstr "Id du partenaire"
+msgstr "Partenaire pour les cadeaux"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_generate_gift_wizard__product_id
@@ -733,7 +732,7 @@ msgstr "Répartition"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_global_id
 msgid "Gmc Commitment"
-msgstr "Global id"
+msgstr "Numéro GMC"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__gmc_correspondent_commitment_id
@@ -780,7 +779,7 @@ msgstr "A été parrainé"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract_has_mandate
 msgid "Has Mandate"
-msgstr "As un mandat"
+msgstr "A un mandat"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__child_pictures_download_wizard__type__headshot
@@ -925,12 +924,12 @@ msgstr "Écriture comptable"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_end_contract_wizard__keep_child_on_hold
 msgid "Keep Child On Hold"
-msgstr "Garder l'enfant en attente"
+msgstr "Garder l'enfant en hold"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
 msgid "Last 3 Months"
-msgstr "Derniers 3 mois"
+msgstr "3 derniers mois"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_recurring_contract_filter_graph
@@ -963,7 +962,7 @@ msgstr "Générer les factures"
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.child_pictures_download_wizard_form
 msgid "Make Zip"
-msgstr "Make Zip"
+msgstr "Créer un zip"
 
 #. module: sponsorship_compassion
 #. odoo-python
@@ -1080,7 +1079,7 @@ msgstr "Nombre de parrainages"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_children
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__number_children
 msgid "Number of children"
-msgstr "Number sponsorships"
+msgstr "Nombre d'enfants"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_girl
@@ -1104,7 +1103,7 @@ msgstr "Nombre de lettres au bénéficiaire"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner_sr_nb_b2s_letter
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users_sr_nb_b2s_letter
 msgid "Number of letters to sponsor"
-msgstr "Nombre de lettres au sponsor"
+msgstr "Nombre de lettres au parrain"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_nb_meal
@@ -1116,7 +1115,7 @@ msgstr "Nombre de repas servis"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__number_sponsorships
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__number_sponsorships
 msgid "Number of sponsorships"
-msgstr "Number sponsorships"
+msgstr "Nombre de parrainages"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.recurring_contract_simple_tree
@@ -1258,12 +1257,12 @@ msgstr "Parrainage précédent"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_sponsorship_gift_type__product_id
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.view_donation_filter
 msgid "Product"
-msgstr "Modèle de produit"
+msgstr "Produit"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_product_product
 msgid "Product Variant"
-msgstr "Produit"
+msgstr "Variante de produit"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_product_product__categ_name
@@ -1320,7 +1319,7 @@ msgstr "Assistant de fin de contrat récurrent"
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_recurring_contract_line
 msgid "Recurring contract line"
-msgstr "A contract line"
+msgstr "Ligne de contrat récurrente"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__related_active_sponsorships
@@ -1357,8 +1356,8 @@ msgid ""
 "Select the due month for Christmas invoices. Invoices are created in the "
 "preceding month and dated in the selected month."
 msgstr ""
-"Choisissez le mois au cours duquel les factures de Noël seront générées. La "
-"date d'échéance sera un mois après."
+"Choisissez le mois d'échéance des factures de Noël. Les factures sont créées"
+" le mois précédent et datées du mois sélectionné."
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__send_gifts_to
@@ -1401,7 +1400,7 @@ msgid ""
 " gift. The invoice is set two months before child's birthday."
 msgstr ""
 "Fixer le montant pour créer automatiquement une facture chaque année pour le"
-" cadeau d'anniversaire. La facture est crée deux mois avant l'anniversaire "
+" cadeau d'anniversaire. La facture est créée deux mois avant l'anniversaire "
 "de l'enfant"
 
 #. module: sponsorship_compassion
@@ -1423,7 +1422,7 @@ msgstr "Parrainer l'enfant"
 #. odoo-python
 #: code:addons/sponsorship_compassion/wizards/child_hold_wizard.py:0
 msgid "Sponsor the child on hold"
-msgstr "Parrainer l'enfant en attente"
+msgstr "Parrainer l'enfant en hold"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_compassion_child
@@ -1474,7 +1473,7 @@ msgstr "Type de cadeau de parrainage"
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_recurring_contract__sponsorship_line_id
 msgid "Sponsorship Line"
-msgstr "Sponsorship line id"
+msgstr "Ligne de parrainage"
 
 #. module: sponsorship_compassion
 #: model_terms:ir.ui.view,arch_db:sponsorship_compassion.sponsorship_report_form
@@ -1561,7 +1560,7 @@ msgstr "Reprise"
 #. module: sponsorship_compassion
 #: model:recurring.contract.end.reason,name:sponsorship_compassion.end_reason_subreject
 msgid "Subreject"
-msgstr "Subreject"
+msgstr "Reprise refusée"
 
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_partner_supporter
@@ -1671,7 +1670,7 @@ msgstr "Total"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_donation
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_total_donation
 msgid "Total donations"
-msgstr "Factures"
+msgstr "Total des dons"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_time_fcp
@@ -1728,13 +1727,13 @@ msgstr "Erreur inconnue"
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__unrec_items
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__unrec_items
 msgid "Unrec Items"
-msgstr "Enlever la réconciliation"
+msgstr "Écritures non lettrées"
 
 #. module: sponsorship_compassion
 #. odoo-python
 #: code:addons/sponsorship_compassion/models/res_partner.py:0
 msgid "Unreconciled Items"
-msgstr "Enlever la réconciliation"
+msgstr "Écritures non lettrées"
 
 #. module: sponsorship_compassion
 #: model:ir.model.fields,help:sponsorship_compassion.field_recurring_contract__hold_expiration_date

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_needaction
@@ -101,12 +101,12 @@ msgstr "Numero allegati"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__auto_process
 msgid "Auto Process"
-msgstr "Auto process"
+msgstr "Elaborazione automatica"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__batch_send
 msgid "Batch Send"
-msgstr "Batch send"
+msgstr "Invio in batch"
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
@@ -198,7 +198,7 @@ msgstr "Configurazione"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_answer_wrapper
 msgid "Connect Answer Wrapper"
-msgstr "Connect answer wrapper"
+msgstr "Wrapper risposta Connect"
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_gmc_message
@@ -208,22 +208,22 @@ msgstr "Messaggio Connect"
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_connect_multipicklist
 msgid "Connect Multipicklist"
-msgstr "connect.multipicklist"
+msgstr "Multipicklist Connect"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_outgoing_wrapper
 msgid "Connect Outgoing Wrapper"
-msgstr "Connect outgoing wrapper"
+msgstr "Wrapper in uscita Connect"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__connect_schema
 msgid "Connect Schema"
-msgstr "Connect schema"
+msgstr "Schema Connect"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_service
 msgid "Connect Service"
-msgstr "Connect service"
+msgstr "Servizio Connect"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__content
@@ -292,7 +292,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__end_date
 msgid "End Date"
-msgstr "End date"
+msgstr "Data di fine"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__exclude_from_json
@@ -318,7 +318,7 @@ msgstr "Fallimento"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__failure_method
 msgid "Failure Method"
-msgstr "Failure method"
+msgstr "Metodo in caso di errore"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failure_reason
@@ -348,7 +348,7 @@ msgstr "Tipo Campo"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__field_types_supported
 msgid "Field Types Supported"
-msgstr "Field types supported"
+msgstr "Tipi di campo supportati"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__relational_field
@@ -408,12 +408,12 @@ msgstr "GET"
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__action_id
 #: model:ir.ui.menu,name:message_center_compassion.menu_message_action
 msgid "GMC Action"
-msgstr "gmc.action"
+msgstr "Azione GMC"
 
 #. module: message_center_compassion
 #: model:ir.model,name:message_center_compassion.model_gmc_action_connect
 msgid "GMC Action Connect"
-msgstr "gmc.action.connect"
+msgstr "Azione GMC Connect"
 
 #. module: message_center_compassion
 #: model:ir.actions.act_window,name:message_center_compassion.action_gmc_action_connect
@@ -440,7 +440,7 @@ msgstr "Coda GMC attiva"
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__name
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__name
 msgid "GMC name"
-msgstr "GMC Message"
+msgstr "Nome GMC"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_gpid
@@ -456,12 +456,12 @@ msgstr "Nome GP"
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__operator
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__gmc_name
 msgid "Gmc Name"
-msgstr "Gmc name"
+msgstr "Nome GMC"
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
 msgid "Group By..."
-msgstr "Gruppo di..."
+msgstr "Raggruppa per..."
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__has_message
@@ -561,7 +561,7 @@ msgstr "Messaggi in arrivo"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__incoming_method
 msgid "Incoming Method"
-msgstr "Incoming method"
+msgstr "Metodo in entrata"
 
 #. module: message_center_compassion
 #. odoo-python
@@ -644,7 +644,7 @@ msgstr "Ultima modifica il"
 #. module: message_center_compassion
 #: model:res.groups,name:message_center_compassion.group_gmc_manager
 msgid "Manager"
-msgstr "GMC Manager"
+msgstr "Responsabile"
 
 #. module: message_center_compassion
 #: model:ir.actions.act_window,name:message_center_compassion.action_compassion_mapping_tree
@@ -910,7 +910,7 @@ msgstr "Priorità"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__process_date
 msgid "Process Date"
-msgstr "Process date"
+msgstr "Data di elaborazione"
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
@@ -978,17 +978,17 @@ msgstr "Campo relazionale"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__request_id
 msgid "Request ID"
-msgstr "Unique request ID"
+msgstr "ID richiesta"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__request_type
 msgid "Request Type"
-msgstr "Request type"
+msgstr "Tipo di richiesta"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__res_name
 msgid "Res Name"
-msgstr "Res name"
+msgstr "Nome della risorsa"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__object_id
@@ -1089,7 +1089,7 @@ msgstr "Impostazioni"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__start_date
 msgid "Start Date"
-msgstr "Start date"
+msgstr "Data di inizio"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__state
@@ -1118,7 +1118,7 @@ msgstr ""
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__sub_mapping_id
 msgid "Sub mapping"
-msgstr "Sub-mapping"
+msgstr "Sotto-mappatura"
 
 #. module: message_center_compassion
 #. odoo-python
@@ -1140,7 +1140,7 @@ msgstr "Riuscito"
 #. module: message_center_compassion
 #: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__success_method
 msgid "Success Method"
-msgstr "Success method"
+msgstr "Metodo in caso di successo"
 
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_action__connect_answer_wrapper
@@ -1209,7 +1209,7 @@ msgstr "True se più oggetti possono essere inviati con un unico messaggio"
 #. module: message_center_compassion
 #: model:ir.model.fields,help:message_center_compassion.field_gmc_action_connect__ignored
 msgid "True if the received connect_schema should be ignored"
-msgstr "True se lo connect_schema ricevuto deve essere ignorato"
+msgstr "True se il connect_schema ricevuto deve essere ignorato"
 
 #. module: message_center_compassion
 #: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter

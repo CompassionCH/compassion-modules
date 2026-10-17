@@ -10,20 +10,20 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__body_json
 msgid "Body Json"
-msgstr "Body json"
+msgstr "Corpo JSON"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__message_type_url
 msgid "Connect Schema"
-msgstr "Connect schema"
+msgstr "Schema Connect"
 
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__create_uid
@@ -78,7 +78,7 @@ msgstr "Risultato"
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__result_code
 msgid "Result Code"
-msgstr "Result code"
+msgstr "Codice risultato"
 
 #. module: onramp_simulator
 #: model_terms:ir.ui.view,arch_db:onramp_simulator.onramp_simulator_form
@@ -88,7 +88,7 @@ msgstr "Invia"
 #. module: onramp_simulator
 #: model:ir.model.fields,field_description:onramp_simulator.field_onramp_simulator__server_url
 msgid "Server Url"
-msgstr "Server url"
+msgstr "URL del server"
 
 #. module: onramp_simulator
 #: model:ir.ui.menu,name:onramp_simulator.menu_simulator

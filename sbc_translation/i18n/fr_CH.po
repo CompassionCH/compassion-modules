@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-10-16 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. module: sbc_translation
 #: model:website,contact_us_button_url:sbc_translation.translation_website
@@ -104,7 +104,8 @@ msgstr "Actif"
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_res_users
 msgid "Adds authentication for users from external platforms."
-msgstr "Utilisateurs"
+msgstr ""
+"Ajoute l'authentification pour les utilisateurs de plateformes externes."
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__all_letter_ids
@@ -176,7 +177,7 @@ msgstr "Compétence en matière de traduction"
 #. module: sbc_translation
 #: model:ir.model,name:sbc_translation.model_translation_user
 msgid "Compassion Translator"
-msgstr "Traducteur de compassion"
+msgstr "Traducteur Compassion"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__competence_id
@@ -294,7 +295,7 @@ msgstr "Élevé"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__id
 msgid "ID"
-msgstr "ID"
+msgstr "Identifiant"
 
 #. module: sbc_translation
 #: model:ir.model.fields,help:sbc_translation.field_translation_user__force_validation
@@ -472,7 +473,7 @@ msgstr "Nombre de traducteurs"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__counting
 msgid "Number of translated letters"
-msgstr "Nombre de traducteurs"
+msgstr "Nombre de lettres traduites"
 
 #. module: sbc_translation
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_simple_translation_form
@@ -674,7 +675,7 @@ msgstr "Total des traductions"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_date
 msgid "Translate Date"
-msgstr "Traduire la date"
+msgstr "Date de traduction"
 
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_correspondence__translate_done
