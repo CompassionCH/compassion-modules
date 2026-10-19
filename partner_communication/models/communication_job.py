@@ -213,6 +213,12 @@ class CommunicationJob(models.Model):
     )
     body_html = fields.Html(sanitize=False, compute="_compute_content", store=True)
     pdf_page_count = fields.Integer("Page count", readonly=True)
+    attachments_object_ids = fields.Char(
+        help="Resource ids used when the attachments were generated. Used to "
+        "regenerate the attachments only when the resources changed.",
+        copy=False,
+        readonly=True,
+    )
     subject = fields.Char(compute="_compute_content", store=True)
     email_from = fields.Char(compute="_compute_content", store=True)
     reply_to = fields.Char(compute="_compute_content", store=True)
@@ -457,7 +463,8 @@ class CommunicationJob(models.Model):
             send_mode = job.config_id.get_inform_mode(job.partner_id)
 
             if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-                job.send_mode = send_mode[0]
+                # The pages are counted once below, not at each write
+                job.with_context(skip_pdf_count=True).send_mode = send_mode[0]
             if (
                 "auto_send" not in vals
                 and "default_auto_send" not in self.env.context
@@ -770,29 +777,45 @@ class CommunicationJob(models.Model):
         return "\n".join([t.strip() for t in text.split("\n")])
 
     def refresh_text(self):
-        self.mapped("attachment_ids").unlink()
-        failed = self.set_attachments()
-        (self - failed)._compute_content()
-        (self - failed).filtered(lambda j: j.state == "failure").write(
-            {"state": "pending"}
-        )
+        """Regenerate the text. The attachments are only regenerated if the
+        resources of the communication changed since they were generated.
+        """
+        outdated = self.filtered(lambda j: j.attachments_object_ids != j.object_ids)
+        outdated.mapped("attachment_ids").unlink()
+        failed = outdated.set_attachments()
+        jobs = self - failed
+        # Counting the pages renders the PDF: it is done once, in a queue job
+        jobs.with_context(skip_pdf_count=True)._compute_content()
+        jobs.filtered(lambda j: j.state == "failure").write({"state": "pending"})
+        jobs._schedule_page_count()
         return True
+
+    def _schedule_page_count(self):
+        for job in self.filtered(lambda j: j.report_id and j.send_mode == "physical"):
+            job.with_delay_sh(
+                "count_pdf_page",
+                channel="root.partner_communication",
+                identity_key=f"{self._name}.count_pdf_page.{job.id}",
+                priority=500,
+            )
 
     def quick_refresh(self):
         # Only refresh text and subject, all at once
         jobs = self.filtered("email_template_id").filtered("object_ids")
-        lang = self.env.context.get("lang_preview", jobs.mapped("partner_id.lang"))
         template = jobs.mapped("email_template_id")
         if len(template) > 1:
             raise UserError(_("This is only possible for one template at time"))
-        values = template.with_context(template_preview_lang=lang)._generate_template(
-            jobs.ids, ["body_html", "subject"]
-        )
-        for job, vals in zip(jobs, values.values(), strict=True):
+        # Without preview language, each job is rendered in its partner language
+        lang = self.env.context.get("lang_preview")
+        if lang:
+            template = template.with_context(template_preview_lang=lang)
+        values = template._generate_template(jobs.ids, ["body_html", "subject"])
+        # Skip the page count, it would render the PDF (wkhtmltopdf) at each write
+        for job in jobs.with_context(skip_pdf_count=True):
             job.write(
                 {
-                    "body_html": vals["body_html"],
-                    "subject": vals["subject"],
+                    "body_html": values[job.id]["body_html"],
+                    "subject": values[job.id]["subject"],
                 }
             )
         return True
@@ -881,6 +904,8 @@ class CommunicationJob(models.Model):
                             }
                         )
                     failed += job
+                    continue
+            job.attachments_object_ids = job.object_ids
         self._compute_ir_attachments()
         return failed
 
