@@ -1175,6 +1175,22 @@ class CommunicationJob(models.Model):
             orphans.unlink()
             job_attachments.unlink()
             self.env.cr.commit()  # pylint: disable=invalid-commit
+        # Print results saved directly on jobs without any wrapper
+        while time.time() < deadline:
+            printed = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_field", "=", "printed_pdf_data"),
+                    ("create_date", "<", cutoff),
+                ],
+                limit=batch,
+            )
+            if not printed:
+                break
+            removed += len(printed)
+            freed += sum(printed.mapped("file_size"))
+            printed.unlink()
+            self.env.cr.commit()  # pylint: disable=invalid-commit
         _logger.info(
             "Vacuum old attachments: removed %s attachments, freed %.1f MB",
             removed,

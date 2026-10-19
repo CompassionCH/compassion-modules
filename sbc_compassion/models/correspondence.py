@@ -995,11 +995,11 @@ class Correspondence(models.Model):
                     ("child_id", "=", child),
                 ]
             )
-            # Prefer the live sponsorship: bound to a cancelled/draft duplicate,
+            # Prefer the live sponsorship: bound to an inactive duplicate,
             # send_communication drops the letter and it never gets published.
-            sponsorship = sponsorships.sorted(
-                lambda s: s.state in ("cancelled", "draft")
-            )[:1]
+            # The sort is stable, so the newest contract wins within a state.
+            state_rank = {"active": 0, "terminated": 1, "waiting": 2}
+            sponsorship = sponsorships.sorted(lambda s: state_rank.get(s.state, 3))[:1]
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
 
