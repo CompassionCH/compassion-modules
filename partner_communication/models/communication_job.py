@@ -788,6 +788,8 @@ class CommunicationJob(models.Model):
         values = template.with_context(template_preview_lang=lang)._generate_template(
             jobs.ids, ["body_html", "subject"]
         )
+        # Skip the page count, it would render the PDF (wkhtmltopdf) at each write
+        jobs = jobs.with_context(skip_pdf_count=True)
         for job, vals in zip(jobs, values.values(), strict=True):
             job.write(
                 {

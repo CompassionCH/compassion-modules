@@ -54,7 +54,8 @@ class ChangeTextWizard(models.TransientModel):
             engine="qweb",
             options={"post_process": True},
         )
-        for comm in communications:
+        # Skip the page count, it would render the PDF (wkhtmltopdf) at each write
+        for comm in communications.with_context(skip_pdf_count=True):
             comm.body_html = new_texts[comm.id]
 
         return True
