@@ -1,0 +1,1398 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* message_center_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_needaction
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_needaction
+msgid "Action Needed"
+msgstr "Aktion notwendig"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__description
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__description
+msgid "Action to execute"
+msgstr "Auszuführende Aktion"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_ids
+msgid "Activities"
+msgstr "Aktivitäten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_exception_decoration
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Aktivität Ausnahme Dekoration"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_state
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_state
+msgid "Activity State"
+msgstr "Status der Aktivität"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_type_icon
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivitätsart-Symbol"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__allow_null
+msgid "Allow Null"
+msgstr "Null erlauben"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__allow_relational_creation
+msgid "Allow Relational Creation"
+msgstr "Relationale Erstellung erlauben"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__allow_null
+msgid "Allow empty values when no relation is found."
+msgstr "Leere Werte erlauben, wenn keine Relation gefunden wird."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "Ambiguous mapping name %s"
+msgstr "Mehrdeutiger Mapping-Name %s"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__answer
+msgid "Answer"
+msgstr "Antwort"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_api_key
+msgid "Api Key"
+msgstr "API-Schlüssel"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_fastapi_endpoint__app
+msgid "App"
+msgstr "App"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__compassion_field_to_json__relational_write_mode__append
+msgid "Append"
+msgstr "Anhängen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_attachment_count
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_attachment_count
+msgid "Attachment Count"
+msgstr "# Anhänge"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__auto_process
+msgid "Auto Process"
+msgstr "Automatisch verarbeiten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__batch_send
+msgid "Batch Send"
+msgstr "Sammelversand"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_recurring_contract_cancel_gifts_on_termination
+msgid "Cancel pending gifts if sponsorship is terminated"
+msgstr "Ausstehende Geschenke stornieren, wenn die Patenschaft beendet wird"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/gmc_message.py:0
+msgid "Cannot parse object ids for messages with different models."
+msgstr ""
+"Objekt-IDs für Nachrichten mit unterschiedlichen Modellen können nicht "
+"verarbeitet werden."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/gmc_message.py:0
+msgid ""
+"Cannot process several actions at the same time. Please process each message"
+" type individually."
+msgstr ""
+"Mehrere Aktionen können nicht gleichzeitig verarbeitet werden. Bitte "
+"verarbeite jeden Nachrichtentyp einzeln."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__job_channel
+msgid ""
+"Channel associated to perform the job. If empty, the default channel will be"
+" used (root.gmc_pool)."
+msgstr ""
+"Kanal, in dem der Job ausgeführt wird. Wenn leer, wird der Standardkanal "
+"verwendet (root.gmc_pool)."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_child_id
+msgid "Child"
+msgstr "Kind"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_client
+msgid "Client"
+msgstr "Client"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid "Compassion"
+msgstr "Compassion"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid "Compassion Connect"
+msgstr "Compassion Connect"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_compassion_mapped_model
+msgid "Compassion Mapping"
+msgstr "Compassion-Zuordnung"
+
+#. module: message_center_compassion
+#: model:ir.module.category,name:message_center_compassion.module_category_message_center
+msgid "Compassion Message Center"
+msgstr "Compassion-Nachrichtenzentrale"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_compassion_query_filter
+msgid "Compassion Query"
+msgstr "Compassion-Abfrage"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_compassion_query_operator
+msgid "Compassion Query Operator"
+msgstr "Compassion-Abfrageoperator"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfig-Einstellungen"
+
+#. module: message_center_compassion
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_config
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_answer_wrapper
+msgid "Connect Answer Wrapper"
+msgstr "Connect-Antwort-Wrapper"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_gmc_message
+msgid "Connect Message"
+msgstr "Connect-Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_connect_multipicklist
+msgid "Connect Multipicklist"
+msgstr "Connect-Mehrfachauswahlliste"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_outgoing_wrapper
+msgid "Connect Outgoing Wrapper"
+msgstr "Connect-Ausgangs-Wrapper"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__connect_schema
+msgid "Connect Schema"
+msgstr "Connect-Schema"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__connect_service
+msgid "Connect Service"
+msgstr "Connect-Dienst"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__content
+msgid "Content"
+msgstr "Inhalt"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__create_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__create_uid
+msgid "Created by"
+msgstr "Angelegt von"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__create_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__priority
+msgid ""
+"Define the priority at which the messages associated with this action will "
+"be treated. The more you're close to one the faster it will be proceeded."
+msgstr ""
+"Legt die Priorität fest, mit der die Nachrichten dieser Aktion behandelt "
+"werden. Je näher bei eins, desto schneller werden sie verarbeitet."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__delivery_service_api_key
+msgid "Delivery Service Api Key"
+msgstr "API-Schlüssel des Delivery-Dienstes"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__display_name
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__relational_write_mode
+msgid "Either overwrite relations or add the new values to the relation"
+msgstr ""
+"Relationen entweder überschreiben oder die neuen Werte zur Relation "
+"hinzufügen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__end_date
+msgid "End Date"
+msgstr "Enddatum"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__exclude_from_json
+msgid "Exclude From Json"
+msgstr "Von JSON ausschliessen"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__failed_message_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failed_message_ids
+msgid "Failed Messages"
+msgstr "Fehlgeschlagene Nachrichten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__failure
+msgid "Failure"
+msgstr "Fehler"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__failure_method
+msgid "Failure Method"
+msgstr "Methode bei Fehler"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__failure_reason
+msgid "Failure details"
+msgstr "Fehlerdetails"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_fastapi_endpoint
+msgid "FastAPI Endpoint"
+msgstr "FastAPI-Endpunkt"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__field_id
+msgid "Field"
+msgstr "Feld"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__field_name
+msgid "Field Name"
+msgstr "Feldname"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__field_type
+msgid "Field Type"
+msgstr "Feldtyp"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__field_types_supported
+msgid "Field Types Supported"
+msgstr "Unterstützte Feldtypen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__relational_field
+msgid ""
+"Field name to use for fetching relational records (with mapped function)"
+msgstr ""
+"Feldname zum Abrufen relationaler Datensätze (mit der Funktion mapped)"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_compassion_field_to_json
+msgid "Field to GMC Json"
+msgstr "Feld zu GMC-JSON"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__file
+msgid "File"
+msgstr "Datei"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_follower_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_follower_ids
+msgid "Followers"
+msgstr "Beobachter"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_partner_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Beobachter (Partner)"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_type_icon
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Fontawesome-Icon, z. B. fa-tasks"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__from_json_conversion
+msgid "From Json Conversion"
+msgstr "Konvertierung von JSON"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__odoo_field
+msgid "Full name to the odoo value (ex: child_id.household_id.member_ids.role"
+msgstr ""
+"Vollständiger Name des Odoo-Wertes (z. B. "
+"child_id.household_id.member_ids.role)"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__request_type__get
+msgid "GET"
+msgstr "GET"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_gmc_action
+#: model:ir.model,name:message_center_compassion.model_gmc_action
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__action_id
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_action
+msgid "GMC Action"
+msgstr "GMC-Aktion"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_gmc_action_connect
+msgid "GMC Action Connect"
+msgstr "GMC-Aktion Connect"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_gmc_action_connect
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_action_connect
+msgid "GMC Action to Connect"
+msgstr "GMC-Aktion zu Connect"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__action_id
+msgid "GMC Message"
+msgstr "GMC-Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_gmc_message_process
+msgid "GMC Pool Process Wizard"
+msgstr "Assistent für GMC-Pool-Verarbeitung"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__delivery_service_status
+msgid "GMC Queue active"
+msgstr "GMC-Warteschlange aktiv"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__name
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__name
+msgid "GMC name"
+msgstr "GMC-Name"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_gpid
+msgid "GP ID"
+msgstr "GP-ID"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_gpname
+msgid "GP Name"
+msgstr "GP-Name"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__operator
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__gmc_name
+msgid "Gmc Name"
+msgstr "GMC-Name"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Group By..."
+msgstr "Gruppieren nach ..."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__has_message
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__has_message
+msgid "Has Message"
+msgstr "Hat Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__headers
+msgid "Headers"
+msgstr "Kopftexte"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__id
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_exception_icon
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_exception_icon
+msgid "Icon"
+msgstr "Symbol"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_exception_icon
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Symbol, um eine Ausnahmeaktivität anzuzeigen."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_needaction
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_has_error
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+"Das Senden mancher Nachrichten ist fehlgeschlagen wenn dieses Fenster "
+"angekreuzt ist."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__allow_relational_creation
+msgid ""
+"If set to true, new records will be created if no matching records are found"
+" with the given JSON values"
+msgstr ""
+"Wenn aktiviert, werden neue Datensätze erstellt, falls zu den angegebenen "
+"JSON-Werten keine passenden Datensätze gefunden werden"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__ignored
+msgid "Ignored"
+msgstr "Ignoriert"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_import_json_wizard_form
+msgid "Import"
+msgstr "Importieren"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_import_json_mapping_wizard
+msgid "Import GMC Mapping Wizard"
+msgstr "Assistent für GMC-Mapping-Import"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_view_import_json_wizard_form
+#: model:ir.ui.menu,name:message_center_compassion.menu_import_json_wizard
+msgid "Import Mapping"
+msgstr "Mapping importieren"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Incoming"
+msgstr "Eingehend"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__direction__in
+msgid "Incoming Message"
+msgstr "Eingehende Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_gmc_message_incoming_form
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_incoming
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_incoming_all
+msgid "Incoming Messages"
+msgstr "Eingehende Nachrichten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__incoming_method
+msgid "Incoming Method"
+msgstr "Eingangsmethode"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/gmc_action.py:0
+msgid "Invalid action (%(direction)s, %(model)s)."
+msgstr "Ungültige Aktion (%(direction)s, %(model)s)."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "Invalid data for JSON field %s. Expected a dictionary or a string."
+msgstr ""
+"Ungültige Daten für JSON-Feld %s. Ein Dictionary oder ein String wurde "
+"erwartet."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_is_follower
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_is_follower
+msgid "Is Follower"
+msgstr "Ist Beobachter"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__json_spec_ids
+msgid "JSON Specifications"
+msgstr "JSON-Spezifikationen"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "JSON data must be a dictionary."
+msgstr "JSON-Daten müssen ein Dictionary sein."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "JSON data must contain the following keys: name, model and mapping"
+msgstr ""
+"JSON-Daten müssen folgende Schlüssel enthalten: name, model und mapping"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__job_channel
+msgid "Job Channel"
+msgstr "Job-Kanal"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_action_form
+msgid "Job queue configuration"
+msgstr "Konfiguration der Job-Warteschlange"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__json_name
+msgid "Json Field Name"
+msgstr "JSON-Feldname"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__write_uid
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action_connect__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_process__write_date
+#: model:ir.model.fields,field_description:message_center_compassion.field_import_json_mapping_wizard__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: message_center_compassion
+#: model:res.groups,name:message_center_compassion.group_gmc_manager
+msgid "Manager"
+msgstr "GMC Manager"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_compassion_mapping_tree
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__mapping_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__mapping_id
+#: model:ir.ui.menu,name:message_center_compassion.menu_compassion_mapping
+#: model:ir.ui.menu,name:message_center_compassion.menu_compassion_mapping_tree
+msgid "Mapping"
+msgstr "Mapping"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_compassion_mapping
+msgid "Mapping for GMC Connect"
+msgstr "Mapping für GMC Connect"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "Mapping must be a dictionary"
+msgstr "Das Mapping muss ein Dictionary sein"
+
+#. module: message_center_compassion
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_center
+msgid "Message Center"
+msgstr "Nachrichtenzentrale"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__date
+msgid "Message Date"
+msgstr "Nachrichtendatum"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_has_error
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_has_error
+msgid "Message Delivery error"
+msgstr "Fehler beim Senden der Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__direction
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__direction
+msgid "Message Direction"
+msgstr "Nachrichtenrichtung"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_gmc_message_form
+msgid "Message Pool"
+msgstr "Nachrichtenpool"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_ids
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_ids
+msgid "Messages"
+msgstr "Mitteilungen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__model
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__model_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__model
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__model
+msgid "Model"
+msgstr "Modell"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "Model does not exist : %s"
+msgstr "Modell existiert nicht: %s"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__my_activity_date_deadline
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Meine Aktivität Deadline"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_mapping__name
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_operator__name
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__name
+msgid "Name"
+msgstr "Bezeichnung"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__new
+msgid "New"
+msgstr "Neu"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_calendar_event_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Kalenderereignis der nächsten Aktivität"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_date_deadline
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Nächste Aktivitätsfrist"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_summary
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_summary
+msgid "Next Activity Summary"
+msgstr "Zusammenfassung nächste Aktion"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_type_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nächster Aktivitätstyp"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__no_outgoing_data
+msgid "No Outgoing Data"
+msgstr "Keine ausgehenden Daten"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid "No mapping found with name %s"
+msgstr "Kein Mapping mit dem Namen %s gefunden"
+
+#. module: message_center_compassion
+#: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_form
+#: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_incoming_form
+#: model_terms:ir.actions.act_window,help:message_center_compassion.action_gmc_message_outgoing_form
+msgid "No messages."
+msgstr "Keine Nachrichten."
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid "Notification configuration"
+msgstr "Benachrichtigungseinstellungen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_needaction_counter
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Anzahl der Aktionen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__message_has_error_counter
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__message_has_error_counter
+msgid "Number of errors"
+msgstr "Anzahl der Fehler"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_needaction_counter
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__message_has_error_counter
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__odoo_failure
+msgid "Odoo Failure"
+msgstr "Odoo-Fehler"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__odoo_field
+msgid "Odoo Field"
+msgstr "Odoo-Feld"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__field_id
+msgid "Odoo field"
+msgstr "Odoo-Feld"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__search_key
+msgid ""
+"Odoo field name that will be used to search for an existing relational "
+"record. If not specified, it will assume a single value is given and will "
+"search according the relational_field set."
+msgstr ""
+"Name des Odoo-Feldes, mit dem nach einem bestehenden relationalen Datensatz "
+"gesucht wird. Wenn nicht angegeben, wird von einem einzelnen Wert "
+"ausgegangen und anhand des gesetzten relationalen Feldes gesucht."
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__fastapi_endpoint__app__onramp
+msgid "Onramp Endpoint"
+msgstr "Onramp-Endpunkt"
+
+#. module: message_center_compassion
+#: model:ir.model,name:message_center_compassion.model_onramp_service
+msgid "Onramp Service"
+msgstr "Onramp-Dienst"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__operator_id
+msgid "Operator"
+msgstr "Operator"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Outgoing"
+msgstr "Ausgehend"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__direction__out
+msgid "Outgoing Message"
+msgstr "Ausgehende Nachricht"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_gmc_message_outgoing_form
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_outgoing
+#: model:ir.ui.menu,name:message_center_compassion.menu_message_outgoing_all
+msgid "Outgoing Messages"
+msgstr "Ausgehende Nachrichten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__compassion_field_to_json__relational_write_mode__overwrite
+msgid "Overwrite"
+msgstr "Überschreiben"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__request_type__post
+msgid "POST"
+msgstr "POST"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_action__request_type__put
+msgid "PUT"
+msgstr "PUT"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__partner_id
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Partner"
+msgstr "Partner"
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__pending
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Pending"
+msgstr "Anstehend"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/tools/onramp_connector.py:0
+msgid ""
+"Please give connect_client, connect_secret, connect_token_server in your "
+"Odoo configuration file."
+msgstr ""
+"Bitte gib connect_client, connect_secret und connect_token_server in deiner "
+"Odoo-Konfigurationsdatei an."
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__postponed
+msgid "Postponed"
+msgstr "Verschoben"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__priority
+msgid "Priority"
+msgstr "Priorität"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__process_date
+msgid "Process Date"
+msgstr "Verarbeitungsdatum"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
+msgid "Process Message"
+msgstr "Nachricht verarbeiten"
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_message_pool_process
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
+msgid "Process Messages"
+msgstr "Nachrichten verarbeiten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__no_outgoing_data
+msgid "Put to true to force sending empty message"
+msgstr "Auf True setzen, um das Senden einer leeren Nachricht zu erzwingen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__from_json_conversion
+msgid ""
+"Python function that will convert the JSON value to its  correct value in "
+"Odoo. Use `json_value` as the value to be processed. You should return the "
+"final Odoo value."
+msgstr ""
+"Python-Funktion, die den JSON-Wert in den korrekten Wert in Odoo umwandelt. "
+"Verwende `json_value` als zu verarbeitenden Wert. Du musst den endgültigen "
+"Odoo-Wert zurückgeben."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__to_json_conversion
+msgid ""
+"Python function that will convert the value for its JSON representation. Use"
+" `odoo_value` as the raw value of the Odoofield. You should return the final"
+" JSON value."
+msgstr ""
+"Python-Funktion, die den Wert in seine JSON-Darstellung umwandelt. Verwende "
+"`odoo_value` als Rohwert des Odoo-Feldes. Du musst den endgültigen JSON-Wert"
+" zurückgeben."
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
+msgid "Related"
+msgstr "Zugehörig"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__object_ids
+msgid "Related records"
+msgstr "Zugehörige Datensätze"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__relational_field
+msgid "Relational Field"
+msgstr "Relationales Feld"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__relational_write_mode
+msgid "Relational Write Mode"
+msgstr "Schreibmodus für Relation"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__relational_field_id
+msgid "Relational field"
+msgstr "Relationales Feld"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__request_id
+msgid "Request ID"
+msgstr "Anfrage-ID"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__request_type
+msgid "Request Type"
+msgstr "Anfrageart"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__res_name
+msgid "Res Name"
+msgstr "Name des Datensatzes"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__object_id
+msgid "Resource"
+msgstr "Ressource (Objekt)"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_connect_multipicklist__activity_user_id
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__activity_user_id
+msgid "Responsible User"
+msgstr "Verantwortlicher Benutzer"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid ""
+"Returns the egress status of Onramp (CI). True indicates that CI OnRamp is "
+"enabled to make REST calls to the GP OnRamp. False indicates that CI OnRamp "
+"will queue messages, and will NOT make REST calls to the GP OnRamp."
+msgstr ""
+"Gibt den Egress-Status von Onramp (CI) zurück. True bedeutet, dass CI OnRamp"
+" REST-Aufrufe an den GP OnRamp senden darf. False bedeutet, dass CI OnRamp "
+"Nachrichten in die Warteschlange stellt und KEINE REST-Aufrufe an den GP "
+"OnRamp sendet."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_res_config_settings__delivery_service_status
+msgid ""
+"Returns the egress status of Onramp (CI). True indicates that CI OnRamp is "
+"enabled to make REST calls to the GP OnRamp. False indicates that CI OnRamp "
+"will queue messages,and will NOT make REST calls to the GP OnRamp."
+msgstr ""
+"Gibt den Egress-Status von Onramp (CI) zurück. True bedeutet, dass CI OnRamp"
+" REST-Aufrufe an den GP OnRamp senden darf. False bedeutet, dass CI OnRamp "
+"Nachrichten in die Warteschlange stellt und KEINE REST-Aufrufe an den GP "
+"OnRamp sendet."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__search_key
+msgid "Search Key"
+msgstr "Suchschlüssel"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__search_relational_record
+msgid "Search Relational Record"
+msgstr "Relationalen Datensatz suchen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__connect_secret
+msgid "Secret"
+msgstr "Secret"
+
+#. module: message_center_compassion
+#: model:ir.module.category,description:message_center_compassion.module_category_message_center
+msgid "Send/Receive and manage messages between GPA and GMC"
+msgstr "Nachrichten zwischen GPA und GMC senden/empfangen und verwalten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_query_filter__value
+msgid "Separate values with ;"
+msgstr "Werte mit ; trennen"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/tools/onramp_connector.py:0
+msgid "Session is not initialized."
+msgstr "Die Sitzung ist nicht initialisiert."
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
+msgid "Set back to New"
+msgstr "Auf Neu zurücksetzen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__field_id
+msgid ""
+"Set in which field the Odoo value will be retrieved/stored. If not set, the "
+"JSON value won't be converted into Odoo data.In case of sub mapping, this "
+"should only be a relational field that will be used to compute the sub "
+"values. If empty, the sub values will be determined from the same record as "
+"the parent."
+msgstr ""
+"Legt fest, in welchem Feld der Odoo-Wert abgerufen/gespeichert wird. Wenn "
+"nicht gesetzt, wird der JSON-Wert nicht in Odoo-Daten konvertiert. Bei einem"
+" Untermapping sollte dies nur ein relationales Feld sein, das zur Berechnung"
+" der Unterwerte verwendet wird. Wenn leer, werden die Unterwerte aus "
+"demselben Datensatz wie dem übergeordneten bestimmt."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__auto_process
+msgid "Set to True for processing the message as soon as it is created."
+msgstr ""
+"Auf True setzen, um die Nachricht sofort nach der Erstellung zu verarbeiten."
+
+#. module: message_center_compassion
+#: model:ir.actions.act_window,name:message_center_compassion.action_message_center_settings
+#: model:ir.ui.menu,name:message_center_compassion.compassion_settings_menu
+msgid "Settings"
+msgstr "Einstellungen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__start_date
+msgid "Start Date"
+msgstr "Anfangsdatum"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message__state
+msgid "State"
+msgstr "Status"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Status"
+msgstr "Status"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_state
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status basierend auf Aktivitäten\n"
+"Überfällig: Fälligkeitsdatum bereits überschritten\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
+"Geplant: anstehende Aktivitäten."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__sub_mapping_id
+msgid "Sub mapping"
+msgstr "Untermapping"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapped_model.py:0
+msgid ""
+"Sub mapping field should be a relational field onto a model which supports "
+"GMC mappings."
+msgstr ""
+"Das Untermapping-Feld muss ein relationales Feld auf ein Modell sein, das "
+"GMC-Mappings unterstützt."
+
+#. module: message_center_compassion
+#: model:ir.model.fields.selection,name:message_center_compassion.selection__gmc_message__state__success
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_form
+msgid "Success"
+msgstr "Erfolgreich"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_action__success_method
+msgid "Success Method"
+msgstr "Methode bei Erfolg"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__connect_answer_wrapper
+msgid "Tag in which answer is found (for outgoing messages)"
+msgstr "Tag, in dem die Antwort steht (bei ausgehenden Nachrichten)"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__connect_outgoing_wrapper
+msgid "Tag in which multiple messages can be encapsulated"
+msgstr "Tag, in dem mehrere Nachrichten zusammengefasst werden können"
+
+#. module: message_center_compassion
+#: model:res.groups,comment:message_center_compassion.group_gmc_manager
+msgid "The user can configure the message center of Compassion."
+msgstr ""
+"Der Benutzer kann die Nachrichtenzentrale von Compassion konfigurieren."
+
+#. module: message_center_compassion
+#: model:res.groups,comment:message_center_compassion.group_gmc_user
+msgid ""
+"The user will have access to the message center of Compassion and process "
+"messages received from GMC."
+msgstr ""
+"Der Benutzer hat Zugriff auf die Nachrichtenzentrale von Compassion und kann"
+" von GMC empfangene Nachrichten verarbeiten."
+
+#. module: message_center_compassion
+#: model:ir.model.constraint,message:message_center_compassion.constraint_compassion_field_to_json_unique
+msgid "This field is already mapped"
+msgstr "Dieses Feld ist bereits zugeordnet"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
+msgid "This will execute the action defined for each new message in the pool."
+msgstr ""
+"Dies führt die Aktion aus, die für jede neue Nachricht im Pool definiert "
+"ist."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__sub_mapping_id
+msgid ""
+"This will nest a dictionary in the JSON and use given mappingto compute the "
+"value."
+msgstr ""
+"Dies verschachtelt ein Dictionary im JSON und verwendet das angegebene "
+"Mapping, um den Wert zu berechnen."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_field_to_json__to_json_conversion
+msgid "To Json Conversion"
+msgstr "Konvertierung nach JSON"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/tools/onramp_connector.py:0
+msgid "Token validation failed."
+msgstr "Token-Validierung fehlgeschlagen."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_res_config_settings__translate_notify_ids
+msgid "Translate missing GMC values"
+msgstr "Fehlende GMC-Werte übersetzen"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__batch_send
+msgid "True if multiple objects can be sent through a single message"
+msgstr ""
+"True, wenn mehrere Objekte in einer einzigen Nachricht gesendet werden "
+"können"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action_connect__ignored
+msgid "True if the received connect_schema should be ignored"
+msgstr "True, wenn das empfangene connect_schema ignoriert werden soll"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.view_gmc_message_filter
+msgid "Type"
+msgstr "Typ"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_connect_multipicklist__activity_exception_decoration
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Art der aufgezeichneten Ausnahmeaktivität."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__connect_service
+msgid "URL endpoint for sending messages to GMC"
+msgstr "URL-Endpunkt zum Senden von Nachrichten an GMC"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message__object_ids
+msgid ""
+"Used for incoming messages containing several records. (ids separated by "
+"commas)"
+msgstr ""
+"Wird für eingehende Nachrichten mit mehreren Datensätzen verwendet. (IDs "
+"durch Kommas getrennt)"
+
+#. module: message_center_compassion
+#: model:res.groups,name:message_center_compassion.group_gmc_user
+msgid "User"
+msgstr "Benutzer"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.compassion_settings
+msgid "Users to notify when GMC terms are untranslated"
+msgstr ""
+"Benutzer, die benachrichtigt werden, wenn GMC-Begriffe nicht übersetzt sind"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_compassion_query_filter__value
+msgid "Value"
+msgstr "Wert"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__exclude_from_json
+msgid ""
+"Value won't be converted to JSON if checked (data_to_json).The JSON value "
+"can still be converted into Odoo value (json_to_data)."
+msgstr ""
+"Der Wert wird bei Aktivierung nicht in JSON konvertiert (data_to_json). Der "
+"JSON-Wert kann weiterhin in einen Odoo-Wert konvertiert werden "
+"(json_to_data)."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,field_description:message_center_compassion.field_gmc_message_website_message_ids
+msgid "Website Messages"
+msgstr "Website Nachrichten"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_message_website_message_ids
+msgid "Website communication history"
+msgstr "Website Kommunikationshistorie"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_compassion_field_to_json__search_relational_record
+msgid ""
+"When converting JSON to data, set to true if you should lookup for a "
+"matching record given the JSON value. If not activated, the field won't be "
+"used in the conversion."
+msgstr ""
+"Beim Konvertieren von JSON in Daten aktivieren, wenn anhand des JSON-Wertes "
+"nach einem passenden Datensatz gesucht werden soll. Wenn nicht aktiviert, "
+"wird das Feld bei der Konvertierung nicht verwendet."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid ""
+"You can only add mapping to models that inherit compassion.mapped.model\n"
+"%s doesn't support mappings."
+msgstr ""
+"Du kannst Mappings nur zu Modellen hinzufügen, die compassion.mapped.model erben.\n"
+"%s unterstützt keine Mappings."
+
+#. module: message_center_compassion
+#: model:ir.model.constraint,message:message_center_compassion.constraint_gmc_action_connect_connect_schema_uniq
+msgid "You cannot have two actions with same connect schema."
+msgstr "Du kannst nicht zwei Aktionen mit demselben Connect-Schema haben."
+
+#. module: message_center_compassion
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_christian_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_chronic_illness_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_future_hope_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_hobby_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_household_duty_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_major_course_study_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_physical_disability_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_project_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_property_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_school_subject_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_child_vocational_training_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_compassion_intervention_deliverable_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_connect_month_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_connect_multipicklist_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_correspondence_type_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_church_facility_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_church_ministry_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_church_utility_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_cognitive_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_community_occupation_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_diet_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_involvement_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_lifecycle_reason_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_mobile_device_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_physical_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_program_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_property_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_school_cost_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_sociological_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_spiritual_activity_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fcp_suspension_extension_reason_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fo_disaster_loss_name_uniq
+#: model:ir.model.constraint,message:message_center_compassion.constraint_fo_high_risk_name_uniq
+msgid "You cannot have two picklist values with same name."
+msgstr "Du kannst nicht zwei Auswahlwerte mit demselben Namen haben."
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/models/compassion_mapping.py:0
+msgid ""
+"[%(mapping_name)s] Invalid mapping: field %(field_name)s in %(odoo_model)s "
+"doesn't exist"
+msgstr ""
+"[%(mapping_name)s] Ungültiges Mapping: Das Feld %(field_name)s existiert in "
+"%(odoo_model)s nicht"
+
+#. module: message_center_compassion
+#. odoo-python
+#: code:addons/message_center_compassion/tools/onramp_connector.py:0
+msgid ""
+"connect_fake is enabled but the %(message_type)s %(service_name)s request is"
+" not supported by the fake Compassion Connect service."
+msgstr ""
+"connect_fake ist aktiviert, aber die Anfrage %(message_type)s "
+"%(service_name)s wird vom simulierten Compassion-Connect-Dienst nicht "
+"unterstützt."
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__incoming_method
+msgid ""
+"method called on the object when receiving incoming message (will pass the "
+"received json as parameter as dictionary)"
+msgstr ""
+"Methode, die auf dem Objekt aufgerufen wird, wenn eine eingehende Nachricht "
+"empfangen wird (das empfangene JSON wird als Dictionary übergeben)"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__failure_method
+msgid "method called on the object when the response contain error"
+msgstr ""
+"Methode, die auf dem Objekt aufgerufen wird, wenn die Antwort einen Fehler "
+"enthält"
+
+#. module: message_center_compassion
+#: model:ir.model.fields,help:message_center_compassion.field_gmc_action__success_method
+msgid ""
+"method to call on the object upon success delivery (will pass the received "
+"answer as parameter as dictionary)"
+msgstr ""
+"Methode, die bei erfolgreicher Zustellung auf dem Objekt aufgerufen wird "
+"(die empfangene Antwort wird als Dictionary übergeben)"
+
+#. module: message_center_compassion
+#: model_terms:ir.ui.view,arch_db:message_center_compassion.message_pool_process
+msgid "or"
+msgstr "oder"

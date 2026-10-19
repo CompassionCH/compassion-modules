@@ -1,0 +1,2286 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sbc_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:14+0000\n"
+"PO-Revision-Date: 2026-10-16 19:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "<b>%age%</b>: Child age (3,4,5,...)"
+msgstr "<b>%age%</b>: Alter des Kindes (3,4,5,...)"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "<b>%child%</b>: Child firstname"
+msgstr "<b>%child%</b>: Vorname des Kindes"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "<b>%firstname%</b>: Sponsor firstname"
+msgstr "<b>%firstname%</b>: Vorname des Paten"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "<b>%lastname%</b>: Sponsor lastname"
+msgstr "<b>%lastname%</b>: Nachname des Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_needaction
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_needaction
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_needaction
+msgid "Action Needed"
+msgstr "Aktion notwendig"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__activation_date
+msgid "Activation Date"
+msgstr "Aktivierungsdatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__active
+msgid "Active"
+msgstr "Aktiv"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_ids
+msgid "Activities"
+msgstr "Aktivitäten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_exception_decoration
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Aktivität Ausnahme Dekoration"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_state
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_state
+msgid "Activity State"
+msgstr "Status der Aktivität"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_type_icon
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivitätsart-Symbol"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__data
+msgid "Add a file"
+msgstr "Datei hinzufügen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__additional_page_id
+msgid "Additional page"
+msgstr "Zusätzliche Seite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_template__is_christmas_letter
+msgid ""
+"All the letters with this template will be held if not sentduring the "
+"Christmas period (defined in the settings)"
+msgstr ""
+"Alle Briefe mit dieser Vorlage werden zurückgehalten, wenn sie nicht während"
+" der Weihnachtszeit (in den Einstellungen definiert) gesendet werden"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__pending
+msgid "Analyzing Files"
+msgstr "Dateien werden analysiert"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+msgid ""
+"Another import with the same configuration is already open. Please finish it"
+" before creating a new one."
+msgstr ""
+"Ein anderer Import mit derselben Konfiguration ist bereits offen. Bitte "
+"schliesse ihn ab, bevor du einen neuen erstellst."
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_template_origin_form
+msgid "Archived"
+msgstr "Archiviert"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_attachment_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__image_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__original_attachment_ids
+msgid "Attached images"
+msgstr "Angehängte Bilder"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_attachment_count
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_attachment_count
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_attachment_count
+msgid "Attachment Count"
+msgstr "# Anhänge"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_metadata__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__attachments_description
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__attachments_description
+msgid "Attachments Description"
+msgstr "Beschreibung der Anhänge"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Available keywords:"
+msgstr "Verfügbare Schlüsselwörter:"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__avatar_128
+msgid "Avatar 128"
+msgstr "Avatar 128"
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l1
+msgid "B2S - L1"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l2
+msgid "B2S - L2"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l3
+msgid "B2S - L3"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l4
+msgid "B2S - L4"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l5
+msgid "B2S - L5"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_l6
+msgid "B2S - L6"
+msgstr ""
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.b2s_additional_page_template
+msgid "B2S Additional translation page"
+msgstr "B2S Zusätzliche Übersetzungsseite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__type__b2s
+msgid "B2S Layout"
+msgstr "B2S-Layout"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__b2s_state
+msgid "B2S State"
+msgstr "B2S-Status"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__beneficiary_language_ids
+msgid "Beneficiary Language"
+msgstr "Sprache des Begünstigten"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "Beneficiary To Supporter"
+msgstr "Teilnehmer an Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__body
+msgid "Body"
+msgstr "Nachrichtentext"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__campaign_id
+msgid "Campaign"
+msgstr "Kampagne"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__child_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__child_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__child_id
+msgid "Child"
+msgstr "Kind"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__child_letter_ids
+msgid "Child letters"
+msgstr "Briefe des Kindes"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Child spoken languages"
+msgstr "Gesprochene Sprachen des Kindes"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Christmas Hold"
+msgstr "Weihnachts-Hold"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Christmas Letter put on hold outside of Christmas Period."
+msgstr "Weihnachtsbrief ausserhalb der Weihnachtszeit auf Hold gesetzt."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Christmas period started"
+msgstr "Weihnachtszeit begonnen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__cloudinary_final_letter_url
+msgid "Cloudinary Final Letter Url"
+msgstr "Cloudinary-URL des endgültigen Briefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__cloudinary_final_page_url
+msgid "Cloudinary Final Page Url"
+msgstr "Cloudinary-URL der endgültigen Seite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__cloudinary_original_letter_url
+msgid "Cloudinary Original Letter Url"
+msgstr "Cloudinary-URL des Originalbriefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__cloudinary_original_page_url
+msgid "Cloudinary Original Page Url"
+msgstr "Cloudinary-URL der Originalseite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__communication_type_ids
+msgid "Communication type"
+msgstr "Art der Kommunikation"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__website
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__website
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__website
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__website
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__website
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__website
+msgid "Compassion website"
+msgstr "Compassion-Website"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__composition_process
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__composition_process
+msgid "Composition Process"
+msgstr "Zusammenstellung"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfig-Einstellungen"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_gmc_message
+msgid "Connect Message"
+msgstr "Connect-Nachricht"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_correspondence_form
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__correspondence_id
+#: model:ir.ui.menu,name:sbc_compassion.correspondence_config
+#: model:ir.ui.menu,name:sbc_compassion.menu_correspondence
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_contracts_correspondence_form
+msgid "Correspondence"
+msgstr "Korrespondenz"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_s2b_generator
+msgid "Correspondence Generator"
+msgstr "Korrespondenz-Generator"
+
+#. module: sbc_compassion
+#: model:ir.actions.report,name:sbc_compassion.report_correspondence
+msgid "Correspondence Report"
+msgstr "Korrespondenzbericht"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_correspondence_template_form
+#: model:ir.ui.menu,name:sbc_compassion.menu_correspondence_template
+msgid "Correspondence Templates"
+msgstr "Korrespondenzvorlagen"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_text_box
+msgid "Correspondence Text Box"
+msgstr "Korrespondenz-Textfeld"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_download_wizard
+msgid "Correspondence download wizard"
+msgstr "Assistent zum Herunterladen der Korrespondenz"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_template
+msgid "Correspondence template"
+msgstr "Korrespondenzvorlage"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_template_page
+msgid "Correspondence template page"
+msgstr "Korrespondenz-Vorlagenseite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__relationship__correspondent
+msgid "Correspondent"
+msgstr "Korrespondent"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__count
+msgid "Count"
+msgstr "Anzahl"
+
+#. module: sbc_compassion
+#: model_terms:ir.actions.act_window,help:sbc_compassion.action_compassion_correspondence_form
+msgid "Create new document"
+msgstr "Neues Dokument erstellen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__create_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__create_uid
+msgid "Created by"
+msgstr "Angelegt von"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__create_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__css_style
+msgid "Css Style"
+msgstr "CSS-Stil"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__current_line_index
+msgid "Current Line Index"
+msgstr "Aktueller Zeilenindex"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__date
+msgid "Date"
+msgstr "Datum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__last_sponsor_letter
+msgid "Date of last sponsor letter"
+msgstr "Datum des letzten Briefs des Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__last_letter
+msgid "Days since sponsor wrote"
+msgstr "Tage seit dem letzten Brief des Paten"
+
+#. module: sbc_compassion
+#: model:correspondence.template,name:sbc_compassion.default_template
+msgid "Default Template"
+msgstr "Standardvorlage"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_res_partner_letter_delivery_preference
+msgid "Delivery preference for Child Letters"
+msgstr "Zustellpräferenz für Kinderbriefe"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_last_writing_search
+msgid "Didn't write in first 3 months"
+msgstr "Hat in den ersten 3 Monaten nicht geschrieben"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_last_writing_search
+msgid "Didn't write since 6 months"
+msgstr "Hat seit 6 Monaten nicht geschrieben"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__direction
+msgid "Direction"
+msgstr "Richtung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__display_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__failed_file_name
+msgid "Displays the name of the files that failed the PDF analysis."
+msgstr ""
+"Zeigt die Namen der Dateien an, bei denen die PDF-Analyse fehlgeschlagen "
+"ist."
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__state__done
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__done
+msgid "Done"
+msgstr "Erledigt"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__download_data
+msgid "Download Data"
+msgstr "Daten zum Herunterladen"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_download_letter
+msgid "Download archive"
+msgstr "Archiv herunterladen"
+
+#. module: sbc_compassion
+#: model:ir.actions.server,name:sbc_compassion.download_old_correspondence_cron_ir_actions_server
+msgid "Download old correspondence"
+msgstr "Alte Korrespondenz herunterladen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__dpi
+msgid "Dpi"
+msgstr "DPI"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/wizards/get_letter_image_wizard.py:0
+msgid "Dpi value must be between 96 and 1200"
+msgstr "Der DPI-Wert muss zwischen 96 und 1200 liegen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__draft
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__state__draft
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__draft
+msgid "Draft"
+msgstr "Entwurf"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__email
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__email
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__email
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__email
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__email
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__email
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__edit
+msgid "Edit mode"
+msgstr "Bearbeitungsmodus"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__email
+msgid "Email"
+msgstr "E-Mail"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__email_read
+msgid "Email Read"
+msgstr "Geöffnet"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__relationship__encourager
+msgid "Encourager"
+msgstr "Ermutiger/in"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__english_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__english_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__english_text
+msgid "English Text"
+msgstr "Englischer Text"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__exception
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__exception
+msgid "Exception"
+msgstr "Ausnahme"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__failed_message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__failed_message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__failed_message_ids
+msgid "Failed Messages"
+msgstr "Fehlgeschlagene Nachrichten"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_compassion_field_to_json
+msgid "Field to GMC Json"
+msgstr "Feld zu GMC-JSON"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__file_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__file_name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__fname
+msgid "File Name"
+msgstr "Dateiname"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Files"
+msgstr "Dateien"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__import_line_ids
+msgid "Files to process"
+msgstr "Zu verarbeitende Dateien"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__failed_file_name
+msgid "Files with errors"
+msgstr "Dateien mit Fehlern"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Filter birthday month"
+msgstr "Nach Geburtstagsmonat filtern"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__image__final
+msgid "Final"
+msgstr "Endgültig"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Final Letter"
+msgstr "Endgültiger Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__final_letter_url
+msgid "Final Letter Url"
+msgstr "URL des endgültigen Briefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__final_page_image
+msgid "Final Page Image"
+msgstr "Bild der endgültigen Seite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__final_page_url
+msgid "Final Page Url"
+msgstr "URL der endgültigen Seite"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_import_letter_review
+msgid "Finish"
+msgstr "Abschliessen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__first_write_date
+msgid "First Write Date"
+msgstr "Erstes Schreibdatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_first_letter
+msgid "First letter from Participant"
+msgstr "Erster Brief des Teilnehmers"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__fname
+msgid "Fname"
+msgstr "Fname"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_follower_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_follower_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_follower_ids
+msgid "Followers"
+msgstr "Beobachter"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_partner_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_partner_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Beobachter (Partner)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_type_icon
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Fontawesome-Icon, z. B. fa-tasks"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__format
+msgid "Format"
+msgstr "Format"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_compassion_project
+msgid "Frontline Church Partner"
+msgstr "Partnerkirche"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__gender
+msgid "Gender"
+msgstr "Geschlecht"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Generate Letters"
+msgstr "Briefe erstellen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__generator_id
+msgid "Generator"
+msgstr "Generator"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.letter_image_wizard_form
+msgid "Get image"
+msgstr "Bild abrufen"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_download_wizard_form
+msgid "Get letters"
+msgstr "Briefe abrufen"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_last_writing_search
+msgid "Group By"
+msgstr "Gruppiert nach..."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__has_message
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__has_message
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__has_message
+msgid "Has Message"
+msgstr "Hat Nachricht"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__height
+msgid "Height (%)"
+msgstr "Höhe (%)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__height
+msgid "Height of the object in percents (of the page size)"
+msgstr "Höhe des Objekts in Prozent (der Seitengrösse)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__id
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_exception_icon
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_exception_icon
+msgid "Icon"
+msgstr "Symbol"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_exception_icon
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Symbol, um eine Ausnahmeaktivität anzuzeigen."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__message_needaction
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__message_needaction
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__message_has_error
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__message_has_sms_error
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__message_has_error
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__message_has_sms_error
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__message_has_error
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+"Das Senden mancher Nachrichten ist fehlgeschlagen wenn dieses Fenster "
+"angekreuzt ist."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image
+msgid "Image"
+msgstr "Bild"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_download
+msgid "Image Download"
+msgstr "Bild herunterladen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_filename
+msgid "Image Filename"
+msgstr "Bilddateiname"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__image_preview
+msgid "Image Preview"
+msgstr "Bildvorschau"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/wizards/get_letter_image_wizard.py:0
+msgid "Image requested was not found remotely."
+msgstr "Das angeforderte Bild wurde auf dem Server nicht gefunden."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__import_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__import_id
+msgid "Import"
+msgstr "Import"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Import Letters"
+msgstr "Briefe importieren"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__config_id
+msgid "Import settings"
+msgstr "Importeinstellungen"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Imported Letters"
+msgstr "Importierte Briefe"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__letters_ids
+msgid "Imported letters"
+msgstr "Importierte Briefe"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_import_letters_action
+#: model:ir.ui.menu,name:sbc_compassion.import_letters_menu
+msgid "Imports"
+msgstr "Importe"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__open
+msgid "In Review"
+msgstr "In Prüfung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_last_writing_report__time_to_first_writing
+msgid "In days"
+msgstr "In Tagen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__is_christmas_letter
+msgid "Is Christmas Letter"
+msgstr "Ist Weihnachtsbrief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__is_final_letter
+msgid "Is Final Letter"
+msgstr "Ist endgültiger Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_is_follower
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_is_follower
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_is_follower
+msgid "Is Follower"
+msgstr "Ist Beobachter"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__kit_identifier
+msgid "Kit id"
+msgstr "Kit-ID"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__language_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__letter_language_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__language_id
+msgid "Language"
+msgstr "Sprache"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__no_lang
+msgid "Language not Detected"
+msgstr "Sprache nicht erkannt"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Large Gift Thank You"
+msgstr "Dankeschön für grosses Geschenk"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__write_uid
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_download_wizard__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__write_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__last_write_date
+msgid "Last Write Date"
+msgstr "Letztes Schreibdatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__last_writing_date
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__last_writing_date
+msgid "Last Writing Date"
+msgstr "Letztes Schreibdatum"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_last_writing
+#: model:ir.ui.menu,name:sbc_compassion.menu_open_last_writing
+msgid "Last Writing Report"
+msgstr "Bericht zum letzten Schreiben"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_last_writing_report
+msgid "Last writing report"
+msgstr "Bericht zum letzten Schreiben"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__layout
+msgid "Layout"
+msgstr "Layout"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-1s11-1
+msgid "Layout 1"
+msgstr "Layout 1"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-2s01-1
+msgid "Layout 2"
+msgstr "Layout 2"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-3s01-1
+msgid "Layout 3"
+msgstr "Layout 3"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-4s01-1
+msgid "Layout 4"
+msgstr "Layout 4"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-5s01-1
+msgid "Layout 5"
+msgstr "Layout 5"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__layout__ch-a-6s11-1
+msgid "Layout 6"
+msgstr "Layout 6"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__x_min
+msgid "Left position (%)"
+msgstr "Position links (%)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__x_min
+msgid "Left position of the object in percents (of the page)"
+msgstr "Linke Position des Objekts in Prozent (der Seite)"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_gmc_message_create_letter
+#: model:ir.model,name:sbc_compassion.model_correspondence
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__current_line_id
+#: model:ir.ui.menu,name:sbc_compassion.menu_message_letter_create
+msgid "Letter"
+msgstr "Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner_letter_delivery_preference
+msgid "Letter Delivery Preference"
+msgstr "Bevorzugte Zustellung der Briefe"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__letter_format
+msgid "Letter Format"
+msgstr "Briefformat"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__letter_image
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__letter_file
+msgid "Letter Image"
+msgstr "Briefbild"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__letter_image_preview
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__letter_image
+msgid "Letter Image Preview"
+msgstr "Vorschau des Briefbilds"
+
+#. module: sbc_compassion
+#: model:ir.ui.menu,name:sbc_compassion.import_letter_config_menu
+msgid "Letter Import"
+msgstr "Briefimport"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.import_letter_config_action
+msgid "Letter Import Config"
+msgstr "Briefimport-Konfiguration"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Letter content"
+msgstr "Inhalt des Briefes"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Letter image preview"
+msgstr "Briefbild-Vorschau"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__on_hold
+msgid ""
+"Letter is in the 'Exception' state only because it was deliberately queued "
+"(e.g. project suspended, Christmas period), not because of an actual error. "
+"Held letters remain visible to the sponsor."
+msgstr ""
+"Der Brief befindet sich nur im Status «Ausnahme», weil er bewusst "
+"zurückgestellt wurde (z. B. Projekt ausgesetzt, Weihnachtszeit) und nicht "
+"wegen eines tatsächlichen Fehlers. Zurückgehaltene Briefe bleiben für den "
+"Paten sichtbar."
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_page
+msgid "Letter page"
+msgstr "Briefseite"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_paragraph
+msgid "Letter paragraph"
+msgstr "Briefabsatz"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_reformat_all_phonenumbers__letter_responsible
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_config_settings__letter_responsible
+msgid "Letter translation check unsuccessful"
+msgstr "Übersetzungsprüfung des Briefs fehlgeschlagen"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Letter was put on hold"
+msgstr "Brief wurde auf Hold gesetzt"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Letter was put on hold because the project is suspended"
+msgstr "Brief wurde auf Hold gesetzt, weil das Projekt ausgesetzt ist"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/contracts.py:0
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__letter_ids
+#: model:ir.ui.menu,name:sbc_compassion.menu_sponsorship_letters
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_contracts_correspondence_form
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_partner_form_sbc
+msgid "Letters"
+msgstr "Briefe"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence_s2b_generator.py:0
+msgid "Letters are being generated in background."
+msgstr "Die Briefe werden im Hintergrund erstellt."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+msgid "Letters are being imported in background."
+msgstr "Die Briefe werden im Hintergrund importiert."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__line_size
+msgid "Line Size"
+msgstr "Zeilenlänge"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__text_line_height
+msgid "Line height in pixels"
+msgstr "Zeilenhöhe in Pixel"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Load Files"
+msgstr "Dateien laden"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__marked_for_rework
+msgid "Marked For Rework"
+msgstr "Zur Überarbeitung markiert"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__max_chars
+msgid "Max Chars"
+msgstr "Max. Zeichen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__max_chars
+msgid ""
+"Maximum number of characters allowed in the box. If the text exceeds this "
+"limit, it will be moved into the next box of the template."
+msgstr ""
+"Maximale Anzahl Zeichen im Feld. Überschreitet der Text diese Grenze, wird "
+"er in das nächste Feld der Vorlage verschoben."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__medium_id
+msgid "Medium"
+msgstr "Mittel"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_has_error
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_has_error
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_has_error
+msgid "Message Delivery error"
+msgstr "Fehler beim Senden der Nachricht"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_ids
+msgid "Messages"
+msgstr "Mitteilungen"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_metadata
+msgid "Metadata of letter"
+msgstr "Metadaten des Briefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__app
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__app
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__app
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__app
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__app
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__app
+msgid "Mobile app"
+msgstr "Mobile App"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__month
+msgid "Month"
+msgstr "Monat"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__my_activity_date_deadline
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Meine Aktivität Deadline"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__mycompassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__mycompassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__mycompassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__mycompassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__mycompassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__mycompassion
+msgid "MyCompassion"
+msgstr "MyCompassion"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__name
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__name
+msgid "Name"
+msgstr "Bezeichnung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__field_office_translation_queue
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__field_office_translation_queue
+msgid "National Office Translation Queue"
+msgstr "Übersetzungswarteschlange des Landesbüros"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__field_office_transcribing_translation_and_content_check_process
+msgid "National Office content check"
+msgstr "Inhaltsprüfung des Landesbüros"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__nb_letters
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__nb_letters
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__nb_letters
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__nb_letters
+msgid "Nb Letters"
+msgstr "Anzahl Briefe"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__nb_lines
+msgid "Nb Lines"
+msgstr "Anzahl Zeilen"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "New Sponsor Letter"
+msgstr "Brief eines neuen Paten"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_import_letter_review
+msgid "Next"
+msgstr "Weiter"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_calendar_event_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Kalenderereignis der nächsten Aktivität"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_date_deadline
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Nächste Aktivitätsfrist"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_summary
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_summary
+msgid "Next Activity Summary"
+msgstr "Zusammenfassung nächste Aktion"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_type_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nächster Aktivitätstyp"
+
+#. module: sbc_compassion
+#: model_terms:ir.actions.act_window,help:sbc_compassion.action_gmc_message_create_letter
+msgid "No messages."
+msgstr "Keine Nachrichten."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid ""
+"No valid kit id was returned. This is most probably because the sponsorship "
+"is not known."
+msgstr ""
+"Es wurde keine gültige Kit-ID zurückgegeben. Das liegt höchstwahrscheinlich "
+"daran, dass die Patenschaft nicht bekannt ist."
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__physical_attachments__not_sent
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__physical_attachments__not_sent
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__physical_attachments__not_sent
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__physical_attachments__not_sent
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__physical_attachments__not_sent
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__physical_attachments__not_sent
+msgid "Not sent"
+msgstr "Nicht gesendet"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_needaction_counter
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_needaction_counter
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Anzahl der Aktionen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__line_size
+msgid ""
+"Number of characters allowed per line. This will be used to compute how many"
+" characters a line break count as."
+msgstr ""
+"Anzahl Zeichen pro Zeile. Damit wird berechnet, wie viele Zeichen ein "
+"Zeilenumbruch zählt."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_has_error_counter
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_has_error_counter
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_has_error_counter
+msgid "Number of errors"
+msgstr "Anzahl der Fehler"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__nber_letters
+msgid "Number of files"
+msgstr "Anzahl Dateien"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__sr_nb_s2b_letter
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__sr_nb_s2b_letter
+msgid "Number of letters to beneficiary"
+msgstr "Anzahl Briefe an Begünstigte"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__sr_nb_b2s_letter
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__sr_nb_b2s_letter
+msgid "Number of letters to sponsor"
+msgstr "Anzahl Briefe an Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__message_needaction_counter
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__message_needaction_counter
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__message_has_error_counter
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__message_has_error_counter
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__nbr_pages
+msgid "Number of pages"
+msgstr "Seitenzahl"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__ok
+msgid "OK"
+msgstr "OK"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__on_hold
+msgid "On Hold"
+msgstr "On Hold"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_view_search
+msgid "Open"
+msgstr "Offen"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Open Letters"
+msgstr "Briefe öffnen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_text_box__text_type__original
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__image__original
+msgid "Original"
+msgstr "Original"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_letter_url
+msgid "Original Letter Url"
+msgstr "URL des Originalbriefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__original_page_image
+msgid "Original Page Image"
+msgstr "Bild der Originalseite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__original_page_url
+msgid "Original Page Url"
+msgstr "URL der Originalseite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__original_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__original_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__original_text
+msgid "Original Text"
+msgstr "Originaltext"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__original_language_id
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Original language"
+msgstr "Originalsprache"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence_template_page.py:0
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__page_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__page_id
+msgid "Page"
+msgstr "Seite"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__page_index
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__page_index
+msgid "Page Index"
+msgstr "Seitenindex"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_letter_image_wizard__page_number
+msgid "Page Number"
+msgstr "Seitenzahl"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__background
+msgid "Page background"
+msgstr "Seitenhintergrund"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__page_ids
+msgid "Pages"
+msgstr "Seiten"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_template_origin_form
+msgid "Pages layout"
+msgstr "Seitenlayout"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__paragraph_ids
+msgid "Paragraphs"
+msgstr "Absätze"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Participant"
+msgstr "Teilnehmer/in"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Participant Initiated"
+msgstr "Vom Teilnehmer initiiert"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__direction__beneficiary_to_supporter
+msgid "Participant to supporter"
+msgstr "Teilnehmer an Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__partner_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__partner_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__partner_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__partner_id
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "Partner"
+msgstr "Korrespondent"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__no_child_partner
+msgid "Partner or Child not Found"
+msgstr "Partner oder Kind nicht gefunden"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Partner spoken languages"
+msgstr "Gesprochene Sprachen des Partners"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_metadata__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__physical_attachments
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__physical_attachments
+msgid "Physical Attachments"
+msgstr "Physische Anhänge"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Please attach a scan or fill in the text."
+msgstr "Bitte hänge einen Scan an oder gib den Text ein."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/wizards/import_review.py:0
+msgid "Please review this import before going to the next."
+msgstr "Bitte prüfe diesen Import, bevor du zum nächsten übergehst."
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_import_letter_review
+msgid "Postpone"
+msgstr "Zurückstellen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__postpone_import_id
+msgid "Postpone Import"
+msgstr "Zurückgestellter Import"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__preview
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__state__preview
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Preview"
+msgstr "Vorschau"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__preview
+msgid "Preview of the letter"
+msgstr "Vorschau des Briefs"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__progress
+msgid "Progress"
+msgstr "Fortschritt"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Project suspended"
+msgstr "Projekt ausgesetzt"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__published_to_global_partner
+msgid "Published"
+msgstr "Veröffentlicht"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "Published state"
+msgstr "Veröffentlichungsstatus"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__translation_and_quality_check_complete
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__translation_and_quality_check_complete
+msgid "Quality Check Done"
+msgstr "Qualitätsprüfung abgeschlossen"
+
+#. module: sbc_compassion
+#: model:ir.actions.server,name:sbc_compassion.action_quality_check_failed_menu
+msgid "Quality Check Failed"
+msgstr "Qualitätskontrolle fehlgeschlagen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__quality_check_process
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__quality_check_process
+msgid "Quality Check Process"
+msgstr "Qualitätsprüfung läuft"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__quality_check_queue
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__quality_check_queue
+msgid "Quality Check Queue"
+msgstr "Warteschlange Qualitätsprüfung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__quality_check_unsuccessful
+msgid "Quality check failed"
+msgstr "Qualitätsprüfung fehlgeschlagen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__quality_check_unsuccessful
+msgid "Quality check unsuccessful"
+msgstr "Qualitätsprüfung fehlgeschlagen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__rating_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__rating_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__rating_ids
+msgid "Ratings"
+msgstr "Bewertungen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__read_url
+msgid "Read Url"
+msgstr "Lese-URL"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__ready_to_be_printed
+msgid "Ready to be printed"
+msgstr "Druckbereit"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__state__ready
+msgid "Ready to import"
+msgstr "Bereit zum Import"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Reciprocal Letter"
+msgstr "Antwortbrief"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Laufender Vertrag"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__relationship
+msgid "Relationship"
+msgstr "Beziehung"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_ir_actions_report
+msgid "Report Action"
+msgstr "Berichtsaktion"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__report_needs_english_text
+msgid "Report Needs English Text"
+msgstr "Bericht benötigt englischen Text"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__report_needs_final_text
+msgid "Report Needs Final Text"
+msgstr "Bericht benötigt endgültigen Text"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__report_needs_original_text
+msgid "Report Needs Original Text"
+msgstr "Bericht benötigt Originaltext"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__report_needs_overlay
+msgid "Report Needs Overlay"
+msgstr "Bericht benötigt Overlay"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__activity_user_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__activity_user_id
+msgid "Responsible User"
+msgstr "Verantwortlicher Benutzer"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__resubmit_id
+msgid "Resubmit"
+msgstr "Erneut einreichen"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Resubmit Letter"
+msgstr "Brief erneut einreichen"
+
+#. module: sbc_compassion
+#: model:ir.actions.server,name:sbc_compassion.resubmit_letter_action
+msgid "Resubmit to GMC"
+msgstr "Erneut an GMC senden"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_retrieve_image
+msgid "Retrieve image"
+msgstr "Bild abrufen"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/wizards/get_letter_image_wizard.py:0
+msgid "Retrieve letter image"
+msgstr "Briefbild abrufen"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.import_letters_history_form
+msgid "Review Imports"
+msgstr "Importe prüfen"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_letters_review
+msgid "Review imported letters"
+msgstr "Importierte Briefe prüfen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__reviewed
+msgid "Reviewed"
+msgstr "Geprüft"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__rework_comments
+msgid "Rework Comments"
+msgstr "Kommentare zur Überarbeitung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__rework_reason
+msgid "Rework Reason"
+msgstr "Grund für die Überarbeitung"
+
+#. module: sbc_compassion
+#: model:ir.actions.act_window,name:sbc_compassion.action_s2b_generator
+#: model:ir.ui.menu,name:sbc_compassion.s2b_generator_menu
+msgid "S2B Generator"
+msgstr "S2B-Generator"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_letter_line
+msgid "S2B Import Letter Line"
+msgstr "S2B-Briefimportzeile"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_letters_history
+msgid "S2B Letter Import"
+msgstr "S2B-Briefimport"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_import_letter_config
+msgid "S2B Letter Import Config"
+msgstr "S2B-Briefimport-Konfiguration"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__s2b_state
+msgid "S2B State"
+msgstr "S2B-Status"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_template__type__s2b
+msgid "S2B Template"
+msgstr "S2B-Vorlage"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__in_translation
+msgid "SDL FO Translation"
+msgstr "SDL-Übersetzung des Landesbüros"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__message_has_sms_error
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__message_has_sms_error
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Zustellungsfehler"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__scanned_date
+msgid "Scanned Date"
+msgstr "Scandatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__letter
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__letter
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__letter
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__letter
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__letter
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__letter
+msgid "Scanned Letter"
+msgstr "Gescannter Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__received_in_the_system
+msgid "Scanned in"
+msgstr "Eingescannt"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Scheduled"
+msgstr "Geplant"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__selection_domain
+msgid "Selection Domain"
+msgstr "Auswahldomäne"
+
+#. module: sbc_compassion
+#: model:ir.actions.server,name:sbc_compassion.send_postponed_christmas_letters_cron_ir_actions_server
+msgid "Send postponed Christmas letters cron "
+msgstr "Cron: Zurückgestellte Weihnachtsbriefe senden "
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__physical_attachments__sent_by_mail
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__physical_attachments__sent_by_mail
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__physical_attachments__sent_by_mail
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__physical_attachments__sent_by_mail
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__physical_attachments__sent_by_mail
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__physical_attachments__sent_by_mail
+msgid "Sent by mail"
+msgstr "Per Post gesendet"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__printed_and_sent_to_icp
+msgid "Sent to FCP"
+msgstr "An Kinderzentrum gesendet"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__sequence
+msgid "Sequence"
+msgstr "Reihenfolge"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Small Gift Thank You"
+msgstr "Dankeschön für kleines Geschenk"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+msgid "Some letters are not ready"
+msgstr "Einige Briefe sind nicht bereit"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__source
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__source_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_metadata__source
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__source
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__source
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__source
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__source
+msgid "Source"
+msgstr "Quelle"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__supporter_languages_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__spoken_lang_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__spoken_lang_ids
+msgid "Spoken languages"
+msgstr "Gesprochene Sprachen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__relationship__sponsor
+msgid "Sponsor"
+msgstr "Finde ein Patenkind"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_letter_image
+msgid "Sponsor Letter Scan"
+msgstr "Brief-Scan des Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__sponsor_needs_final_letter
+msgid "Sponsor Needs Final Letter"
+msgstr "Pate benötigt endgültigen Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__sponsor_letter_ids
+msgid "Sponsor letters"
+msgstr "Briefe des Paten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__child_id
+msgid "Sponsored child"
+msgstr "Patenkind"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__sponsorship_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__sponsorship_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__sponsorship_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__sponsorship_id
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "Sponsorship"
+msgstr "Patenschaft"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__no_sponsorship
+msgid "Sponsorship not Found"
+msgstr "Patenschaft nicht gefunden"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__sponsorship_state
+msgid "Sponsorship state"
+msgstr "Status der Patenschaft"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__sponsorship_type
+msgid "Sponsorship type"
+msgstr "Art der Patenschaft"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__sponsorship_ids
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.s2b_generator_form
+msgid "Sponsorships"
+msgstr "Patenschaften"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Spread text to pages"
+msgstr "Text auf Seiten verteilen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__state
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__state
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__state
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "State"
+msgstr "Status"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__status
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__state
+msgid "Status"
+msgstr "Status"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__status_date
+msgid "Status Date"
+msgstr "Statusdatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_state
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status basierend auf Aktivitäten\n"
+"Überfällig: Fälligkeitsdatum bereits überschritten\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
+"Geplant: anstehende Aktivitäten."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence_s2b_generator.py:0
+#: code:addons/sbc_compassion/models/import_letters_history.py:0
+msgid "Success"
+msgstr "Erfolgreich"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Supporter"
+msgstr "Pate"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "Supporter Letter"
+msgstr "Brief des Paten"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_view_search
+msgid "Supporter To Beneficiary"
+msgstr "Paten an Teilnehmer"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__direction__supporter_to_beneficiary
+msgid "Supporter to participant"
+msgstr "Paten an Teilnehmer"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_metadata__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_config__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letter_line__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__template_id
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_review__template_id
+msgid "Template"
+msgstr "Vorlage"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_s2b_generator__background
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__template_image
+msgid "Template Image"
+msgstr "Vorlagenbild"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__status__no_template
+msgid "Template not Detected"
+msgstr "Vorlage nicht erkannt"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_template__additional_page_id
+msgid ""
+"Template used in case the S2B text is too long to fit on the standard two-"
+"sided page."
+msgstr ""
+"Vorlage, die verwendet wird, falls der S2B-Text zu lang für die normale "
+"zweiseitige Seite ist."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__text_line_height
+msgid "Text Line Height"
+msgstr "Zeilenhöhe des Textes"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__text_type
+msgid "Text Type"
+msgstr "Texttyp"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template_page__text_box_ids
+msgid "Text boxes"
+msgstr "Textfelder"
+
+#. module: sbc_compassion
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_kit_identifier
+msgid "The kit id already exists in database."
+msgstr "Die Kit-ID existiert bereits in der Datenbank."
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/models/correspondence.py:0
+msgid "The letter can now be sent."
+msgstr "Der Brief kann jetzt gesendet werden."
+
+#. module: sbc_compassion
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_page_final_page_url
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_page_original_page_url
+msgid "The pages already exists in database."
+msgstr "Die Seiten existieren bereits in der Datenbank."
+
+#. module: sbc_compassion
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_paragraph_unique_paragraph
+msgid "The paragraph already exists."
+msgstr "Der Absatz existiert bereits."
+
+#. module: sbc_compassion
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_uuid
+msgid "The uuid already exists in database."
+msgstr "Die UUID existiert bereits in der Datenbank."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__campaign_id
+msgid ""
+"This is a name that helps you keep track of your different campaign efforts,"
+" e.g. Fall_Drive, Christmas_Special"
+msgstr ""
+"Diese Bezeichnung hilft Ihnen bei der Analyse Ihres Kampagnenerfolgs, z.B.: "
+"Herbstangebot, Weihnachtsangebot"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__medium_id
+msgid "This is the method of delivery, e.g. Postcard, Email, or Banner Ad"
+msgstr ""
+"Dies ist die Art der Zustellung, z.B. Postkarte, E-Mail oder Bannerwerbung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__source_id
+msgid ""
+"This is the source of the link, e.g. Search Engine, another domain, or name "
+"of email list"
+msgstr ""
+"Dies ist die Quelle des Links, z. B. eine Suchmaschine, eine andere Domain "
+"oder der Name einer E-Mail-Liste"
+
+#. module: sbc_compassion
+#: model:ir.model.constraint,message:sbc_compassion.constraint_correspondence_template_page_unique_page
+msgid "This page is already defined. Change the index."
+msgstr "Diese Seite ist bereits definiert. Ändere den Index."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_last_writing_report__time_to_first_writing
+msgid "Time To First Writing"
+msgstr "Zeit bis zum ersten Brief"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__global_partner_translation_queue
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__global_partner_translation_queue
+msgid "To Translate"
+msgstr "Zu übersetzen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__y_min
+msgid "Top position (%)"
+msgstr "Position oben (%)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__y_min
+msgid "Top position of the object in percents (of the page)"
+msgstr "Obere Position des Objekts in Prozent (der Seite)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_translate_date
+msgid "Translate Date"
+msgstr "Übersetzungsdatum"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__translated_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_page__translated_text
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_paragraph__translated_text
+msgid "Translated Text"
+msgstr "Übersetzter Text"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__global_partner_translation_process
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__global_partner_translation_process
+msgid "Translating"
+msgstr "Wird übersetzt"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_text_box__text_type__translation
+msgid "Translation"
+msgstr "Übersetzung"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__b2s_state__translation_check_unsuccessful
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__s2b_state__translation_check_unsuccessful
+msgid "Translation check unsuccessful"
+msgstr "Übersetzungsprüfung fehlgeschlagen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__translation_language_id
+msgid "Translation language"
+msgstr "Übersetzungssprache"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__translator
+msgid "Translator"
+msgstr "Übersetzer"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_partner__translator_email
+#: model:ir.model.fields,field_description:sbc_compassion.field_res_users__translator_email
+msgid "Translator Email"
+msgstr "Übersetzer-E-Mail"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_recurring_contract__write_for_birthday_alert
+msgid ""
+"True when child will have birthday in less than 3 months andsponsor has not "
+"written in this period."
+msgstr ""
+"Wahr, wenn das Kind in weniger als 3 Monaten Geburtstag hat und der Pate in "
+"diesem Zeitraum nicht geschrieben hat."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__type
+msgid "Type"
+msgstr "Typ"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_correspondence_type
+msgid "Type of correspondence"
+msgstr "Art der Korrespondenz"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__activity_exception_decoration
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Art der aufgezeichneten Ausnahmeaktivität."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_template__usage_count
+msgid "Usage Count"
+msgstr "Anzahl Verwendungen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_template_page__background
+msgid "Use 300 DPI images"
+msgstr "Verwende Bilder mit 300 DPI"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__uuid
+msgid "Uuid"
+msgstr "UUID"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.view_correspondence_form
+msgid "Validate"
+msgstr "Bestätigen"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence__website_message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_type__website_message_ids
+#: model:ir.model.fields,field_description:sbc_compassion.field_import_letters_history__website_message_ids
+msgid "Website Messages"
+msgstr "Website Nachrichten"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence__website_message_ids
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_type__website_message_ids
+#: model:ir.model.fields,help:sbc_compassion.field_import_letters_history__website_message_ids
+msgid "Website communication history"
+msgstr "Website Kommunikationshistorie"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_correspondence_text_box__width
+msgid "Width (%)"
+msgstr "Breite (%)"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_text_box__width
+msgid "Width of the object in percents (of the page size)"
+msgstr "Breite des Objekts in Prozent (der Seitengrösse)"
+
+#. module: sbc_compassion
+#: model:ir.model,name:sbc_compassion.model_letter_image_wizard
+msgid "Wizard for image letter"
+msgstr "Assistent für Bildbriefe"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,field_description:sbc_compassion.field_recurring_contract__write_for_birthday_alert
+msgid "Write For Birthday Alert"
+msgstr "Hinweis: Brief zum Geburtstag schreiben"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__source__compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_metadata__source__compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence_s2b_generator__source__compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_config__source__compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letter_line__source__compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__import_letters_history__source__compassion
+msgid "Written by Compassion"
+msgstr "Von Compassion geschrieben"
+
+#. module: sbc_compassion
+#: model_terms:ir.ui.view,arch_db:sbc_compassion.correspondence_download_wizard_form
+msgid "You can download an archive file from here."
+msgstr "Du kannst eine Archivdatei von hier herunterladen."
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_correspondence_s2b_generator__body
+msgid ""
+"You can use the following tags to replace with values :\n"
+"\n"
+"* %child%: child name\n"
+"* %age%: child age (1, 2, 3, ...)\n"
+"* %firstname%: sponsor firstname\n"
+"* %lastname%: sponsor lastname\n"
+msgstr ""
+"Du kannst die folgenden Tags verwenden, die durch Werte ersetzt werden:\n"
+"\n"
+"* %child%: Name des Kindes\n"
+"* %age%: Alter des Kindes (1, 2, 3, ...)\n"
+"* %firstname%: Vorname des Paten\n"
+"* %lastname%: Nachname des Paten\n"
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/tools/onramp_connector.py:0
+msgid "[%(error_status)s] %(letter_url)s"
+msgstr ""
+
+#. module: sbc_compassion
+#. odoo-python
+#: code:addons/sbc_compassion/wizards/download_letters.py:0
+msgid "_letters.zip"
+msgstr "_briefe.zip"
+
+#. module: sbc_compassion
+#: model:ir.model.fields,help:sbc_compassion.field_res_partner__translator_email
+#: model:ir.model.fields,help:sbc_compassion.field_res_users__translator_email
+msgid "e-mail address used in SDL"
+msgstr "In SDL verwendete E-Mail-Adresse"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__format__jpeg
+msgid "jpeg"
+msgstr "jpeg"
+
+#. module: sbc_compassion
+#: model:ir.actions.report,print_report_name:sbc_compassion.report_correspondence
+msgid "object.name or object.kit_identifier"
+msgstr "object.name or object.kit_identifier"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__letter_format__pdf
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__format__pdf
+msgid "pdf"
+msgstr "PDF"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__format__png
+msgid "png"
+msgstr "png"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__letter_image_wizard__format__tif
+msgid "tif"
+msgstr "tif"
+
+#. module: sbc_compassion
+#: model:ir.model.fields.selection,name:sbc_compassion.selection__correspondence__letter_format__zip
+msgid "zip"
+msgstr "zip"
