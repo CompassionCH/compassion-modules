@@ -374,7 +374,7 @@ msgstr "<p>Wunderbar -  du bist begeistert von weltweiten Bewegungen und motivie
 #. module: partner_compassion
 #: model:res.partner.segment,survey_result:partner_segmentation.hands_on_helpers
 msgid "<p>It’s so great that you love to get involved and volunteer your time for those who are less fortunate!</p>\n"
-"            <p>We are so glad to have you as part of the big Compassion community. Thanks to you and around 8000 partner churches in 25 countries we are currently releasing over 2.2 million children from poverty.</p>\n"
+"            <p>We are so glad to have you as part of the big Compassion community. Thanks to you and around 8700 partner churches in 29 countries we are currently releasing over 2.3 million children from poverty.</p>\n"
 "            <p>Join us by putting our faith into action through engaging and being connected with our volunteer team.</p>\n"
 "            <p>Here are some links you might find useful:</p>\n"
 "            <ul>\n"
@@ -384,7 +384,7 @@ msgid "<p>It’s so great that you love to get involved and volunteer your time 
 "            <p>Thank you for your precious support.</p>\n"
 "        "
 msgstr "<p>Es ist großartig, dass du dich so gerne engagierst und deine Zeit für die Menschen einsetzt, die weniger Glück haben!</p>\n"
-"            <p>Wir sind so froh, dich als Teil der großen Compassion-Gemeinschaft zu haben. Dank dir und rund 8000 Partnerkirchen in 25 Ländern befreien wir derzeit über 2,2 Millionen Kinder aus der Armut.</p>\n"
+"            <p>Wir sind so froh, dich als Teil der großen Compassion-Gemeinschaft zu haben. Dank dir und rund 8700 Partnerkirchen in 29 Ländern befreien wir derzeit über 2,3 Millionen Kinder aus der Armut.</p>\n"
 "            <p>Mach mit, indem du unseren Glauben in die Tat umsetzt, indem du dich engagierst und mit unserem Freiwilligenteam verbunden bist.</p>\n"
 "            <p>Hier sind einige Links, die du vielleicht nützlich findest:</p>\n"
 "            <ul>\n"
@@ -397,13 +397,13 @@ msgstr "<p>Es ist großartig, dass du dich so gerne engagierst und deine Zeit f�
 #. module: partner_compassion
 #: model:res.partner.segment,survey_result:partner_segmentation.compassionate_caregiver
 msgid "<p>It’s so great that your faith inspires your generous giving. It’s also delightful that you seek to know your sponsored child and Compassion on a deeper, more personal level. Thank you from the bottom of our hearts.\n"
-"Thanks to our holistic approach to child development, we commit to a personal and all-round support to the child on a physical, cognitive, socio-emotional and spiritual level through one of the 8000 Compassion partner churches.\n"
+"Thanks to our holistic approach to child development, we commit to a personal and all-round support to the child on a physical, cognitive, socio-emotional and spiritual level through one of the 8700 Compassion partner churches.\n"
 "</p>\n"
 "            <p>You can join us by making a spiritual impact in the lives of children in need through prayer and even get children in your surroundings involved in this endeavour. </p>\n"
 "            <p>Thank you for your precious support.</p>\n"
 "        "
 msgstr "<p>Es ist großartig, dass dein Glaube dich zu deinen großzügigen Spenden inspiriert. Es ist auch schön, dass du dein Patenkind und Compassion auf einer tieferen, persönlicheren Ebene kennenlernen möchtest. Wir danken dir von ganzem Herzen.\n"
-"Dank unseres ganzheitlichen Ansatzes für die Entwicklung von Kindern engagieren wir uns für eine persönliche und umfassende Unterstützung des Kindes auf körperlicher, kognitiver, sozio-emotionaler und geistlicher Ebene durch eine der 8000 Compassion-Partnerkirchen.\n"
+"Dank unseres ganzheitlichen Ansatzes für die Entwicklung von Kindern engagieren wir uns für eine persönliche und umfassende Unterstützung des Kindes auf körperlicher, kognitiver, sozio-emotionaler und geistlicher Ebene durch eine der 8700 Compassion-Partnerkirchen.\n"
 "</p>\n"
 "            <p>Du kannst dich uns anschließen, indem du durch dein Gebet einen geistlichen Einfluss auf das Leben von Kindern in Not ausübst und sogar Kinder in deiner Umgebung in dieses Vorhaben einbeziehst. </p>\n"
 "            <p>Wir danken dir für deine wertvolle Unterstützung.</p>\n"
