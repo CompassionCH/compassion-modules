@@ -74,72 +74,83 @@
         name="model_id"
         ref="partner_communication.model_partner_communication_job"
       />
-            <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field
-        name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Sponsorship completion</field>
+            <field name="email_from">"{{ object.user_id.company_id.with_context(lang=object.partner_id.lang).commercial_name if 'commercial_name' in object.user_id.company_id._fields else object.user_id.company_id.name }}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">{{object.partner_id and object.partner_id.email and object.partner_id.id or False }}</field>
+            <field name="subject">End of your sponsorship for {{object.get_objects().get_list('child_id.local_id', 3)}}</field>
             <field name="body_html" type="html">
-                <div>
-                    % set sponsorships = object.get_objects()
-                    % set child = sponsorships.mapped('child_id')
-                    % set one = len(child) == 1
-                    % set name = child.get_list('preferred_name', 3, 'your children')
-                    % if one:
-                        % set lifecycle = child.mapped('lifecycle_ids') and child.mapped('lifecycle_ids')[0]
-                    % endif
-                    % set sub = sponsorships.mapped('sub_sponsorship_id.child_id')
-                </div>
+                    <t t-set="sponsorships" t-value="object.get_objects()"/>
+                    <t t-set="child" t-value="sponsorships.mapped('child_id')"/>
+                    <t t-set="one_child" t-value="len(child) == 1"/>
+                    <t t-set="nb_weeks" t-value="sponsorships[:1].contract_duration // 7"/>
+                    <t t-set="nb_years" t-value="(sponsorships[:1].contract_duration // 364) or 1"/>
+                    <t t-set="field" t-value="child[:1].field_office_id"/>
+                    <t t-set="hours_fcp" t-value="field.fcp_hours_week * nb_weeks"/>
+                    <t t-set="meals" t-value="field.fcp_meal_week * nb_weeks"/>
+                    <t t-set="medical" t-value="field.fcp_medical_check * nb_years"/>
+                    <t t-set="checkup" t-value="'check-up' if medical == 1 else 'check-ups'"/>
+                    <t t-set="name" t-value="child.get_list('preferred_name', 3, 'your children')"/>
+                    <t t-set="he" t-value="child.get('he')"/>
+                    <t t-set="He" t-value="he[:1].upper() + he[1:]"/>
+                    <t t-set="hopes" t-value="child.mapped('lifecycle_ids')[:1].get_list('future_hope_ids.value')"/>
+                    <t t-set="last_letter" t-value="sponsorships[:1].child_letter_ids[:1]"/>
+                    <t t-set="mycompassion_url" t-value="'https://www.mycompassion.ch'"/>
+                    <t t-set="number_unacceptable_conditions" t-value="object.get_snippet('number_unacceptable_conditions', strip_html=True)"/>
+                    <t t-set="number_deaths_under_5" t-value="object.get_snippet('number_deaths_under_5', strip_html=True)"/>
+                    <t t-set="age_deaths_under_5" t-value="object.get_snippet('age_deaths_under_5', strip_html=True)"/>
                 <p>
-                    ${object.partner_id.salutation},
-                    <br />
-                    <br />
-                    We would like to sincerely thank you for investing in the life of ${name}, ${child.get_list('local_id')}.
-                    We have received encouraging news from the local project:  After many years of support from the local church staff and you as a sponsor, <b
-          >${name} is now reaching the end of the sponsorship program and ${child.get('is')} thriving on ${child.get('his')} own as a young adult.</b>
-                    <br />
-                    <br />
-                    % if one:
-                        The local staff has reported to us that ${name}'s current goals are: ${lifecycle.get_list('future_hope_ids.value')}.
-                        Due to your commitment to ${name}, much of ${child.get('his')} achievements can be attributed to your generosity.
-                        <br />
-                        <br />
-                    % else:
-                        <ul>
-                            % for one_child in child:
-                                % set lifecycle = one_child.mapped('lifecycle_ids') and one_child.mapped('lifecycle_ids')[0]
-                                <li
-            >${one_child.preferred_name}'s current goals are: ${lifecycle.get_list('future_hope_ids.value')}.</li>
-                            % endfor
-                        </ul>
-                    % endif
-                    Thanks to your regular support, ${name} ${child.get('was')} able to attend school, receive clothing, medical treatment, and balanced, nutritious meals. ${child.get('he').title()} ${child.get('was')} also able to participate in activities that have helped ${child.get('him')} in ${child.get('his')} development both socially and spiritually.
-                    We are convinced that these seeds you have sown will bear fruit in ${child.get('his')} life. In addition, ${child.get('his')} family ${child.get('has')} also benefited from the support of your sponsorship. They have been encouraged and have also participated in various activities and trainings organized by the project.
-                    <br />
-                    <br />
-                    % if object.partner_id in sponsorships.mapped('correspondent_id'):
-                        Please feel free to send a farewell letter to ${name} to encourage ${child.get('him')} as ${child.get('he')} ${'enters' if one else 'enter'} the next chapter in ${child.get('his')} life.
-                        <br />
-                        <br />
-                    % if sub:
-                        % if one:
-                            As you already know, the plight of children living in poverty is enormous.  For instance, ${sub.preferred_name} in ${sub.project_id.country_id.name} is one of them.  Would you consider and be ready to sponsor ${sub.get('him')}?  We would like to send you information about ${sub.preferred_name} within 15 days to begin a new sponsorship. However, if you would like to support a child from another country, have questions, concerns, or would no longer like to be a sponsor, please do not hesitate to contact us. We can be reached by phone at 031 552 21 25 or by e-mail at: ${object.user_id.company_id.email}
-                        % else:
-                            As you already know, the plight of children living in poverty is enormous.  For instance, ${sub[0].preferred_name} in ${sub[0].project_id.country_id.name} is one of them.  Would you consider and be ready to sponsor ${sub.get('him')}?  We would like to send you information about ${sub[0].preferred_name} and other children in need within 15 days to begin new sponsorships. However, if you have questions, concerns, or would no longer like to be a sponsor, please do not hesitate to contact us. We can be reached by phone at 031 552 21 25 or by e-mail at: ${object.user_id.company_id.email}
-                        % endif
-                    % else:
-                        We acknowledge that you don't want to take another sponsorship. If you established a permanent order for the sponsorship payment, don't forget to cancel it.
-                    % endif
-                    <br />
-                    <br />
-                    We are grateful to work with you and all our sponsors to help free more and more children from extreme poverty every day.
-                    <br />
-                    <br />
+                    <t t-out="object.partner_id.salutation"/>,
+                </p>
+                <p>
+                    We are delighted to inform you that after many years of support, <t t-out="name"/> <t t-out="'is' if one_child else 'are'"/> coming to the end of <t t-out="child.get('his')"/> sponsorship.
+                </p>
+                <p>
+                    <b>
+                        <t t-out="'Now a young adult' if one_child else 'Now young adults'"/>, <t t-out="he"/> <t t-out="'has' if one_child else 'have'"/> become <t t-out="'a responsible person' if one_child else 'responsible people'"/>, ready to face life with hope and confidence. Isn't that great?
+                    </b>
+                </p>
+                <t t-if="one_child and hopes">
+                    <p>
+                        The local staff have told us that <t t-out="name"/>'s goals are to <t t-out="hopes"/>.
+                    </p>
+                </t>
+                <p t-if="one_child">
+                    During your sponsorship, <t t-out="he"/> spent <t t-out="hours_fcp"/> hours at the child development center of the local church. The staff took care of <t t-out="child.get('him')"/> with love and gave <t t-out="child.get('him')"/> hope for <t t-out="child.get('his')"/> future. <t t-out="He"/> received <t t-out="meals"/> meals and benefited from <t t-out="medical"/> medical <t t-out="checkup"/>.
+                    <t t-if="child[:1].age &gt;= 7">
+                        <t t-out="He"/> <t t-out="child.get('was')"/> able to go to school and be encouraged to develop <t t-out="child.get('his')"/> talents.
+                    </t>
+                    Finally, <t t-out="he"/> discovered that someone on the other side of the world cared about <t t-out="child.get('him')"/>. Thank you so much!
+                </p>
+                <p t-else="">
+                    During your sponsorship, the staff of the child development center of the local church took care of <t t-out="name"/> with love and gave them hope for their future. Finally, they discovered that someone on the other side of the world cared about them. Thank you so much!
+                </p>
+                <t t-if="object.partner_id in sponsorships.mapped('correspondent_id')">
+                    <t t-if="2 in last_letter.communication_type_ids.ids and not last_letter.sent_date">
+                        <p>
+                            This is an emotional moment, as we are sending you<t t-if="object.send_mode == 'physical'">, enclosed,</t> <t t-out="child.get('his')"/> last letter.
+                        </p>
+                    </t>
+                    <p>
+                        You are welcome to write a last letter to <t t-out="name"/> to say goodbye to <t t-out="child.get('him')"/> and encourage <t t-out="child.get('him')"/> for the future. You can write it easily on <a t-att-href="mycompassion_url">MyCompassion</a>.
+                    </p>
+                </t>
+                <p>
+                    Thank you for investing in the life of a child and their family, bringing about lasting change.
+                </p>
+                <t t-if="sponsorships[:1].sds_state in (&quot;sub&quot;, &quot;sub_waiting&quot;)">
+                <p>
+                    Our fight against extreme poverty continues. <t t-out="number_unacceptable_conditions"/> million children still live in unacceptable conditions. <t t-out="number_deaths_under_5"/> children under <t t-out="age_deaths_under_5"/> die every day. We cannot stand by in the face of this injustice. That is why we will soon send you a proposal for a new sponsorship.
+                </p>
+                </t>
+                <p>
+                    Together, we are changing the world, one child at a time.
+                </p>
+                <p>
                     Best regards,
                 </p>
+                <t t-if="object.send_mode == 'digital'">
+                    <p t-out="object.sudo().user_id.signature"/>
+                </t>
             </field>
         </record>
 
@@ -150,76 +161,111 @@
         name="model_id"
         ref="partner_communication.model_partner_communication_job"
       />
-            <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field
-        name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Sponsorship cancellation</field>
+            <field name="email_from">"{{ object.user_id.company_id.with_context(lang=object.partner_id.lang).commercial_name if 'commercial_name' in object.user_id.company_id._fields else object.user_id.company_id.name }}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">{{object.partner_id and object.partner_id.email and object.partner_id.id or False }}</field>
+            <field name="subject">Important information about {{object.get_objects().get_list('child_id.preferred_name', 3, 'your sponsored children', translate=False)}}</field>
             <field name="body_html" type="html">
-                <div>
-                    % set sponsorships = object.get_objects()
-                    % set child = sponsorships.mapped('child_id')
-                    % set one = len(child) == 1
-                    % set name = child.get_list('preferred_name', 3, 'your children')
-                    % if one:
-                        % set lifecycle = child.mapped('lifecycle_ids') and child.mapped('lifecycle_ids')[0]
-                    % endif
-                    % set sub = sponsorships.mapped('sub_sponsorship_id.child_id')
-                </div>
+                    <t t-set="sponsorships" t-value="object.get_objects()"/>
+                    <t t-set="child" t-value="sponsorships.mapped('child_id')"/>
+                    <t t-set="one_child" t-value="len(child) == 1"/>
+                    <t t-set="nb_weeks" t-value="sponsorships[:1].contract_duration // 7"/>
+                    <t t-set="nb_years" t-value="(sponsorships[:1].contract_duration // 364) or 1"/>
+                    <t t-set="field" t-value="child[:1].field_office_id"/>
+                    <t t-set="hours_fcp" t-value="field.fcp_hours_week * nb_weeks"/>
+                    <t t-set="meals" t-value="field.fcp_meal_week * nb_weeks"/>
+                    <t t-set="lunch" t-value="'meal' if meals == 1 else 'meals'"/>
+                    <t t-set="medical" t-value="field.fcp_medical_check * nb_years"/>
+                    <t t-set="checkup" t-value="'medical check-up' if medical == 1 else 'medical check-ups'"/>
+                    <t t-set="name" t-value="child.get_list('preferred_name', 3, translate=False)"/>
+                    <t t-set="he" t-value="child.get('he')"/>
+                    <t t-set="He" t-value="he[:1].upper() + he[1:]"/>
+                    <t t-set="his" t-value="child.get('his')"/>
+                    <t t-set="His" t-value="his[:1].upper() + his[1:]"/>
+                    <t t-set="him" t-value="child.get('him')"/>
+                    <t t-set="lifecycle" t-value="child.mapped('lifecycle_ids')[:1]"/>
+                    <t t-set="hopes" t-value="one_child and lifecycle.get_list('future_hope_ids.value')"/>
+                    <t t-set="good_reason" t-value="one_child and lifecycle.with_context(lang=&quot;en_US&quot;).request_reason in (&quot;beneficiary pursuing career opportunity&quot;, &quot;conflicts with school or work schedule&quot;, &quot;family circumstances have changed positively so that child no longer needs compassion's assistance&quot;, &quot;no longer needs our assistance&quot;)"/>
+                    <t t-set="reason" t-value="lifecycle.translate('request_reason').replace('Name', name)"/>
+                    <t t-set="last_letter" t-value="sponsorships[:1].child_letter_ids[:1]"/>
+                    <t t-set="mycompassion_url" t-value="'https://www.mycompassion.ch'"/>
+                    <t t-set="number_unacceptable_conditions" t-value="object.get_snippet('number_unacceptable_conditions', strip_html=True)"/>
+                    <t t-set="number_deaths_under_5" t-value="object.get_snippet('number_deaths_under_5', strip_html=True)"/>
+                    <t t-set="age_deaths_under_5" t-value="object.get_snippet('age_deaths_under_5', strip_html=True)"/>
+                <p t-out="object.partner_id.salutation"/>
+                <t t-if="not one_child">
                 <p>
-                    ${object.partner_id.salutation},
-                    <br />
-                    <br />
-                    We would like to sincerely thank you for investing in the life of ${name}, ${child.get_list('local_id')}.
-                    A sponsorship ends usually when the child reaches the end of the school. Unfortunately it can happen sometimes that the sponsorship ends before, unexpectedly.
-                    <br />
-                    % if one:
-                        We received the news that ${child.get('your sponsored child')} ${name} has ended the sponsorship because ${lifecycle.translate('request_reason')}.
-                        <br />
-                    % else:
-                        We received the news that ${child.get('your sponsored child')} have ended the sponsorship, with the following reasons:
-                        <ul>
-                            % for one_child in child:
-                                % set lifecycle = one_child.mapped('lifecycle_ids') and one_child.mapped('lifecycle_ids')[0]
-                                <li
-            >${one_child.preferred_name} : ${lifecycle.translate('request_reason')}.</li>
-                            % endfor
-                        </ul>
-                    % endif
-                    We are sorry that the sponsorship of ${name} is ending this fast this way. We are though certain that your support was crucial in ${child.get('his')} life, and these seeds you have sown will bear fruit.
-                    <br />
-                    <br />
-                    % if one:
-                        The local staff has reported to us that ${name}'s current goals are: ${lifecycle.get_list('future_hope_ids.value')}.
-                        Due to your commitment to ${name}, much of ${child.get('his')} achievements can be attributed to your generosity.
-                        <br />
-                        <br />
-                    % endif
-                    Thanks to your regular support, ${name} ${child.get('was')} able to attend school, receive clothing, medical treatment, and balanced, nutritious meals. ${child.get('he').title()} ${child.get('was')} also able to participate in activities that have helped ${child.get('him')} in ${child.get('his')} development both socially and spiritually.
-                    We are convinced that these seeds you have sown will bear fruit in ${child.get('his')} life. In addition, ${child.get('his')} family ${child.get('has')} also benefited from the support of your sponsorship. They have been encouraged and have also participated in various activities and trainings organized by the project.
-                    <br />
-                    Keeping ${name} in your prayers is a beautiful way of guiding ${child.get('him')} on ${child.get('his')} path.
-                    <br />
-                    <br />
-                    % if sub:
-                        % if one:
-                            As you already know, the plight of children living in poverty is enormous.  For instance, ${sub.preferred_name} in ${sub.project_id.country_id.name} is one of them.  Would you consider and be ready to sponsor ${sub.get('him')}?  We would like to send you information about ${sub.preferred_name} within 15 days to begin a new sponsorship. However, if you would like to support a child from another country, have questions, concerns, or would no longer like to be a sponsor, please do not hesitate to contact us. We can be reached by phone at 031 552 21 25 or by e-mail at: ${object.user_id.company_id.email}
-                        % else:
-                            As you already know, the plight of children living in poverty is enormous.  For instance, ${sub[0].preferred_name} in ${sub[0].project_id.country_id.name} is one of them.  Would you consider and be ready to sponsor ${sub.get('him')}?  We would like to send you information about ${sub[0].preferred_name} and other children in need within 15 days to begin new sponsorships. However, if you have questions, concerns, or would no longer like to be a sponsor, please do not hesitate to contact us. We can be reached by phone at 031 552 21 25 or by e-mail at: ${object.user_id.company_id.email}
-                        % endif
-                    % else:
-                        We acknowledge that you don't want to take another sponsorship. If you established a permanent order for the sponsorship payment, don't forget to cancel it.
-                    % endif
-                    <br />
-                    <br />
-                    Thank you so much for joining us in our goal to release more children from extreme poverty each day.
-                    <br />
-                    <br />
-                    Yours sincerely
+                    We have received unexpected news from our staff: the sponsorships of <t t-out="name"/> will come to an end early, for the following reasons:
                 </p>
+                <ul>
+                    <t t-foreach="child" t-as="c">
+                        <t t-set="child_reason" t-value="c.mapped('lifecycle_ids')[:1].translate('request_reason')"/>
+                        <li t-if="child_reason"><t t-out="c.preferred_name"/>: <t t-out="child_reason"/></li>
+                    </t>
+                </ul>
+                </t>
+                <p t-if="one_child">
+                    <t t-if="good_reason">
+                        We have good news! <t t-out="name"/> will come to the end of <t t-out="his"/> sponsored journey early, because <t t-out="reason"/>.
+                        <t t-if="hopes">
+                            <t t-out="His"/> goal is to <t t-out="hopes"/>. Isn't that great?
+                        </t>
+                    </t>
+                    <t t-else="">
+                        We have received unexpected news from our staff <t t-out="field.country_id.in_preposition"/> <t t-out="field.country_id.name"/>. <t t-out="name"/> will come to the end of <t t-out="his"/> sponsored journey early, because <t t-out="reason"/>.
+                    </t>
+                </p>
+                <p t-if="one_child">
+                    During your sponsorship, <t t-out="name"/> spent <t t-out="hours_fcp"/> hours at the child center of the local church. The staff took care of <t t-out="him"/> with love and gave <t t-out="him"/> hope for <t t-out="his"/> future. <t t-out="He"/> received <t t-out="meals"/> <t t-out="lunch"/> and benefited from <t t-out="medical"/> <t t-out="checkup"/>.
+                    <t t-if="child[:1].age &gt;= 7">
+                        <t t-out="He"/> <t t-out="child.get('was')"/> able to go to school and be encouraged to develop <t t-out="his"/> talents.
+                    </t>
+                    Finally, <t t-out="he"/> discovered that someone on the other side of the world cared about <t t-out="him"/>. <b>Thank you so much!</b>
+                </p>
+                <p t-else="">
+                    During your sponsorship, the staff of the child center of the local church took care of <t t-out="name"/> with love and gave them hope for their future. Finally, they discovered that someone on the other side of the world cared about them. <b>Thank you so much!</b>
+                </p>
+                <p t-if="good_reason">
+                    We understand that this news might come as a surprise to you, but we hope that you will still be able to rejoice with us.
+                </p>
+                <t t-if="not good_reason">
+                    <p>
+                        We understand that this news might come as a surprise to you. In circumstances of extreme poverty, the life situation sometimes changes in ways that we are not accustomed to. We are very sorry that your sponsorship with <t t-out="name"/> has abruptly ended.
+                    </p>
+                    <p>
+                        Your investment will continue to impact and inspire <t t-out="him"/> and <t t-out="his"/> family. <t t-out="name"/> is doing well.
+                        <t t-if="hopes">
+                            <t t-out="His"/> goal is to <t t-out="hopes"/>. Isn't that great?
+                        </t>
+                    </p>
+                </t>
+                <t t-if="object.partner_id in sponsorships.mapped('correspondent_id')">
+                    <t t-if="2 in last_letter.communication_type_ids.ids and not last_letter.sent_date">
+                        <p>
+                            This is an emotional moment, as we are sending you<t t-if="object.send_mode == 'physical'">, enclosed,</t> <t t-out="his"/> <t t-out="'last letter' if one_child else 'last letters'"/>.
+                        </p>
+                    </t>
+                    <p>
+                        You are welcome to write a last letter to <t t-out="name"/> to say goodbye to <t t-out="him"/> and encourage <t t-out="him"/> for the future. You can write it easily on <a t-att-href="mycompassion_url">MyCompassion</a>.
+                    </p>
+                </t>
+                <p>
+                    Thank you for changing the life of a child and <t t-out="his"/> family in a sustainable way!
+                </p>
+                <t t-if="sponsorships[:1].sds_state in (&quot;sub&quot;, &quot;sub_waiting&quot;)">
+                    <p>
+                        Our fight against extreme poverty continues! <t t-out="number_unacceptable_conditions"/> million children still live in unacceptable conditions. <t t-out="number_deaths_under_5"/> children under the age of <t t-out="age_deaths_under_5"/> die every day. We seek to tackle this urgency. With this in mind, we will soon suggest another child for you to sponsor.
+                    </p>
+                </t>
+                <p>
+                    Together, we are changing the world! One child at a time.
+                </p>
+                <p>
+                    Best regards,
+                </p>
+                <t t-if="object.send_mode == &quot;digital&quot;">
+                    <p t-out="object.user_id.signature"/>
+                </t>
             </field>
         </record>
 
