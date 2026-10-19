@@ -6,37 +6,130 @@
         name="model_id"
         ref="partner_communication.model_partner_communication_job"
       />
+            <field name="email_from">"{{ object.user_id.company_id.with_context(lang=object.partner_id.lang).commercial_name if 'commercial_name' in object.user_id.company_id._fields else object.user_id.company_id.name }}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">{{object.partner_id and object.partner_id.email and object.partner_id.id or False }}</field>
+            <field name="subject">A new letter has arrived from {{object.get_objects().mapped('child_id').get_list('preferred_name', 3, 'your children', False)}}!</field>
+            <field name="body_html" type="html">
+                    <t t-set="letter" t-value="object.get_objects()"/>
+                    <t t-set="child" t-value="letter.mapped('child_id')"/>
+                    <t t-set="urls" t-value="list(dict.fromkeys(letter.filtered('read_url').mapped('read_url')))"/>
+                    <t t-set="mycompassion_url" t-value="'https://www.mycompassion.ch'"/>
+                    <t t-set="field_office_ids" t-value="child.mapped('field_office_id').ids"/>
+                    <t t-set="restricted" t-value="1 in field_office_ids or 19 in field_office_ids"/>
+                    <t t-set="number_years" t-value="object.get_snippet('number_years', strip_html=True)"/>
+                    <t t-set="years_uc" t-value="object.get_snippet('years_uc', strip_html=True)"/>
+                <p t-out="object.partner_id.salutation"/>
+                <p>
+                    We are very happy to inform you that a new letter has arrived from <t t-out="child.get_list('preferred_name', 3, child.get_number()) or child.get_list('firstname', 3, child.get_number())"/>!
+                </p>
+                <t t-if="object.send_mode != 'physical'">
+                    <p>
+                        You can download the letter by clicking on the link.* Enjoy reading:
+                    </p>
+                    <ul>
+                        <t t-foreach="urls" t-as="l">
+                            <li>
+                                <a t-att-href="l">
+                                    <t t-out="l"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                    <blockquote>
+                            <small>*If you have trouble downloading the letter, you can open it on <a t-att-href="mycompassion_url">MyCompassion</a>.</small>
+                        </blockquote>
+                </t>
+                <p>
+                    <t t-out="years_uc"/> <t t-out="number_years"/> years of experience show us the importance of letters for the development of the children.
+                </p>
+                <p>
+                    Thank you in advance for taking a few minutes to reply to <t t-out="'the enclosed letter' if object.send_mode == 'physical' else 'this letter'"/>. You can respond online via <a t-att-href="mycompassion_url">MyCompassion</a>.
+                </p>
+                <t t-if="restricted">
+                    <p>
+                        Important information about writing to your sponsored <t t-out="'child' if len(child) == 1 else 'children'"/> can be found here:
+                    </p>
+                    <div style="margin:20px auto; text-align: center;">
+                        <a href="https://compassion.ch/medias/onboarding/BD_SL_child_communication_de.pdf" style="padding: 12px 18px; font-size: 12px; line-height: 18px; color: #FFFFFF; border-color:#0054A6; text-decoration: none; display: inline-block; margin-bottom: 0px; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; white-space: nowrap; background-image: none; background-color: #0054A6; border: 1px solid #0054A6; border-radius:3px" title="">
+                            See special recommendations
+                        </a>
+                    </div>
+                </t>
+                <p>
+                    Please do not hesitate to contact us with regards to any questions you may have in relation to exchanging letters.
+                </p>
+                <p>
+                    Best regards,
+                </p>
+                <t t-if="object.send_mode == 'digital'">
+                    <p t-out="object.user_id.short_signature if 'short_signature' in object.user_id._fields else object.user_id.name"/>
+                </t>
+            </field>
+        </record>
+        <!-- Final letter -->
+        <record id="final_letter" model="mail.template">
+            <field name="name">B2S Final Letter</field>
             <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="reply_to">${object.user_id.company_id.email}</field>
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="email_from">"{{ object.user_id.company_id.with_context(lang=object.partner_id.lang).commercial_name if 'commercial_name' in object.user_id.company_id._fields else object.user_id.company_id.name }}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
             <field
         name="partner_to"
-      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field
-        name="subject"
-      >You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
+      >{{object.partner_id and object.partner_id.email and object.partner_id.id or False }}</field>
+            <field name="subject">Last letter from {{object.get_objects().mapped('child_id').get_list('preferred_name', 3, 'your children', False)}}!</field>
             <field name="body_html" type="html">
-                <div>
-                    % set letter = object.get_objects()
-                    % set child = letter.mapped('child_id')
-                    % set s = '' if len(child) == 1 else 's'
-                </div>
+                  <t t-set="letter" t-value="object.get_objects()"/>
+                  <t t-set="child" t-value="letter.mapped('child_id')"/>
+                  <t t-set="firstname" t-value="child.get_list('preferred_name', 3, 'your children', False)"/>
+                  <t t-set="s" t-value="'' if len(letter) == 1 else 's'"/>
+                  <t t-set="partner" t-value="object.partner_id"/>
+                  <t t-set="has_sub" t-value="&quot;active&quot; in &quot;,&quot;.join(letter.mapped(&quot;sponsorship_id.sub_sponsorship_id.state&quot;))"/>
+                  <t t-set="urls" t-value="list(dict.fromkeys(letter.filtered('read_url').mapped('read_url')))"/>
+                  <t t-set="mycompassion_url" t-value="'https://www.mycompassion.ch'"/>
+                  <t t-set="number_unacceptable_conditions" t-value="object.get_snippet('number_unacceptable_conditions', strip_html=True)"/>
                 <p>
-                    We are pleased to send you a new letter from ${child.get_list('firstname', 3, child.get_number())}!
-                    <br />
-                    % if object.send_mode == 'digital':
-                        Download your letters here:
-                        <ul>
-                            % for l in list(set(letter.filtered('read_url').mapped('read_url'))):
-                           <li>
-                               <a href='${l}'>${l}</a>
-                           </li>
-                           % endfor
-                        </ul>
-                        <br />
-                    % endif
+                  <t t-out="partner.salutation"/>,
                 </p>
+                <p>
+                  The years have passed, <t t-out="firstname"/> <t t-out="child.get('has')"/> grown up and <t t-out="child.get('his')"/> sponsorship is completed. It's also an emotional time, because this will be the last letter from <t t-out="child.get('your sponsored child')"/>.
+                </p>
+                <t t-if="object.send_mode != 'physical'">
+                  <p>
+                    Download your letter<t t-out="s"/> here:*
+                  </p>
+                  <ul>
+                    <t t-foreach="urls" t-as="l">
+                      <li>
+                        <a t-att-href="l">
+                          <t t-out="l"/>
+                        </a>
+                      </li>
+                    </t>
+                  </ul>
+                  <blockquote>
+                          <small>*If you have trouble downloading the letter, you can open it on <a t-att-href="mycompassion_url">MyCompassion</a>.</small>
+                      </blockquote>
+                </t>
+                <p>
+                  For <t t-out="firstname"/> begins a new period of life. We encourage you to continue to pray for <t t-out="child.get('him')"/> to seek blessings and preservation. <t t-out="object.success_sentence if 'success_sentence' in object._fields else ''"/>
+                </p>
+                <t t-if="not has_sub">
+                  <p>
+                    The fight against extreme poverty continues. There are still <t t-out="number_unacceptable_conditions"/> million children living in unacceptable circumstances. Do you agree to support another child in need through a new sponsorship? You can support an older child for a shorter period of time or take over the sponsorship for a younger child. You can find more information on our website: www.compassion.ch or call us at 031 552 21 25.
+                  </p>
+                </t>
+                <p>
+                  We thank you greatly, once again, for all that you have invested in the life of <t t-out="firstname"/>. We are sure you have changed <t t-out="child.get('his')"/> life forever.
+                </p>
+                <p>
+                  Best regards,
+                </p>
+                <t t-if="object.send_mode == 'digital'">
+                  <p t-out="object.user_id.sudo().signature"/>
+                </t>
             </field>
         </record>
         <record id="mail_onboarding_first_letter" model="mail.template">

@@ -27,7 +27,7 @@
         name="send_mode_pref_field"
       >letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="new_letter" />
+            <field name="email_template_id" ref="final_letter" />
             <field
         name="report_id"
         ref="partner_communication.report_a4_communication"
