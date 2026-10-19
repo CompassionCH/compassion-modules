@@ -442,26 +442,26 @@ class Correspondence(models.Model):
 
     def action_remove_local_translate(self):
         """
-        Remove a letter from local translation platform and change state of
-        letter in Odoo without triggering automated publishing or emails.
+        Remove a letter from local translation platform. The letter is kept in
+        Exception and is not sent to anyone; the letter responsible gets a to-do.
         :return: bool
         """
         self.ensure_one()
-
-        # Reset both B2S and S2B to a clean neutral state and clear translation metadata
+        reason = _("Removed from translation platform")
         self.write(
             {
-                "state": "Received in the system",
+                "state": "Exception",
                 "translator": False,
                 "new_translator_id": False,
                 "translation_status": False,
             }
         )
-
-        # Only S2B requires internal kit bundling
-        if self.direction == "Supporter To Beneficiary":
-            self.create_commkit()
-
+        self.message_post(
+            body=reason, message_type="comment", subtype_xmlid="mail.mt_note"
+        )
+        responsible = self.env["res.config.settings"].get_param("letter_responsible")
+        if responsible:
+            self._make_activity(reason, responsible)
         return True
 
     def save_translation(self, letter_elements, translator_id=None, submit=False):
