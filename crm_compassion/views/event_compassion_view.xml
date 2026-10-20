@@ -55,6 +55,13 @@
             <form>
                 <header>
                     <button
+                            name="action_track_expenses"
+                            type="object"
+                            string="Track expenses"
+                            invisible="analytic_id"
+                            help="Analytic account following the expenses of this event"
+                    />
+                    <button
                             name="allocate_children_action"
                             type="object"
                             string="Allocate children"

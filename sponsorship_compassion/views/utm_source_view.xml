@@ -16,8 +16,50 @@
         <field name="model">utm.source</field>
         <field name="inherit_id" ref="utm.utm_source_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button
+            name="action_track_expenses"
+            type="object"
+            string="Track expenses"
+            help="Analytic account following the expenses of this source"
+          />
+                </header>
+            </xpath>
             <field name="name" position="after">
                 <field name="category" />
+                <field name="cost_account_ids" widget="many2many_tags" readonly="1" />
+            </field>
+        </field>
+    </record>
+
+    <record id="utm_campaign_view_form_expenses" model="ir.ui.view">
+        <field name="name">utm.campaign.form.expenses</field>
+        <field name="model">utm.campaign</field>
+        <field name="inherit_id" ref="utm.utm_campaign_view_form" />
+        <field name="arch" type="xml">
+            <field name="stage_id" position="before">
+                <button
+          name="action_track_expenses"
+          type="object"
+          string="Track expenses"
+          help="Analytic account following the expenses of this campaign"
+        />
+            </field>
+            <field name="tag_ids" position="after">
+                <field name="cost_account_ids" widget="many2many_tags" readonly="1" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_analytic_account_form_utm" model="ir.ui.view">
+        <field name="name">account.analytic.account.form.utm</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form" />
+        <field name="arch" type="xml">
+            <field name="plan_id" position="after">
+                <field name="campaign_id" />
+                <field name="source_id" />
             </field>
         </field>
     </record>

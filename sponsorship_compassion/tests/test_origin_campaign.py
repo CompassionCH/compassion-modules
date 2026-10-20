@@ -139,3 +139,21 @@ class TestOriginCampaign(TransactionCase):
         website = self.env.ref("utm.utm_medium_website")
         contract = self._contract(source_id=concert.id, medium_id=website.id)
         self.assertEqual(contract.medium_id, website)
+
+    def test_track_expenses(self):
+        plan = self.env["account.analytic.plan"].create(
+            {"name": "Origin campaign costs"}
+        )
+        self.env["ir.config_parameter"].sudo().set_param(
+            "sponsorship_compassion.cost_analytic_plan_id", str(plan.id)
+        )
+        action = self.magazine.action_track_expenses()
+        account = self.magazine.cost_account_ids
+        self.assertEqual(action["res_id"], account.id)
+        self.assertEqual(account.plan_id, plan)
+        # Opening it again gives the same account
+        self.magazine.action_track_expenses()
+        self.assertEqual(self.magazine.cost_account_ids, account)
+        edition = self.env["utm.source"].create({"name": "Origin campaign edition"})
+        edition.action_track_expenses()
+        self.assertEqual(edition.cost_account_ids.source_id, edition)

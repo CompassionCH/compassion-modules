@@ -23,3 +23,5 @@ from . import (
     sponsorship_gift_type,
 )
 from . import utm_source
+from . import account_analytic_account
+from . import utm_campaign

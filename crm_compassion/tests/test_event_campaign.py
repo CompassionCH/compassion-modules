@@ -172,3 +172,16 @@ class TestEventCampaign(TransactionCase):
         self.assertFalse(concert.analytic_id)
         self.assertTrue(concert.origin_id)
         concert.name = "Campaign test gospel renamed"
+
+    def test_track_expenses(self):
+        plan = self.env["account.analytic.plan"].create({"name": "Campaign test costs"})
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", "sport")
+        params.set_param("sponsorship_compassion.cost_analytic_plan_id", str(plan.id))
+        concert = self._event(name="Campaign test costly concert")
+        self.assertFalse(concert.analytic_id)
+        concert.action_track_expenses()
+        account = concert.analytic_id
+        self.assertEqual(account.plan_id, plan)
+        self.assertEqual(account.source_id, concert.source_id)
+        self.assertEqual(account.event_id, concert)

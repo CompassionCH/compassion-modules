@@ -57,6 +57,17 @@ class UtmSource(models.Model):
         help="Kind of occasion that brought the sponsorship or donation, for the "
         "fundraising reports.",
     )
+    cost_account_ids = fields.One2many(
+        "account.analytic.account", "source_id", "Cost accounts"
+    )
+
+    def action_track_expenses(self):
+        """Open the cost account of the source, created when it has none."""
+        self.ensure_one()
+        accounts = self.cost_account_ids or self.env[
+            "account.analytic.account"
+        ]._create_cost_account(self.name, source=self)
+        return accounts._action_open()
 
     def _guess_medium(self):
         """The medium of what this source brings, "Other" when unknown (empty

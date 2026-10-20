@@ -582,6 +582,20 @@ class EventCompassion(models.Model):
             "source_id": self.source_id.id,
         }
 
+    def action_track_expenses(self):
+        """Give the event a cost account when it has none: its expenses are
+        followed by the analytic accounting, its income by its UTM source."""
+        self.ensure_one()
+        if not self.analytic_id:
+            account = self.env["account.analytic.account"]._create_cost_account(
+                self.full_name,
+                campaign=self.campaign_id if self._is_peer_to_peer() else None,
+                source=self.source_id,
+            )
+            account.event_id = self
+            self.with_context(no_sync=True).analytic_id = account
+        return self.analytic_id._action_open()
+
     def _is_peer_to_peer(self):
         """Participants of a peer-to-peer fundraising event raise funds on their
         own page: the event is the campaign, each fundraiser a source."""
