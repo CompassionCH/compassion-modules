@@ -10,6 +10,10 @@
 
 from odoo import fields, models
 
+# wkhtmltopdf renders the px line heights about 25% taller than what the
+# max_chars and height of the boxes were designed for.
+WKHTMLTOPDF_LINE_HEIGHT_SCALE = 0.8
+
 
 class CorrespondenceTextBox(models.Model):
     _name = "correspondence.text.box"
@@ -59,11 +63,12 @@ class CorrespondenceTextBox(models.Model):
         Get the overlay style for the given box, used on the Qweb-Report.
         """
         for text_box in self:
+            line_height = text_box.text_line_height * WKHTMLTOPDF_LINE_HEIGHT_SCALE
             text_box.css_style = f"""
                 position: absolute;
-                top: {self.y_min}%;
-                left: {self.x_min}%;
-                width: {self.width}%;
-                height: {self.height}%;
-                line-height: {self.text_line_height}px;
+                top: {text_box.y_min}%;
+                left: {text_box.x_min}%;
+                width: {text_box.width}%;
+                height: {text_box.height}%;
+                line-height: {line_height}px;
             """
