@@ -246,9 +246,12 @@ class Correspondence(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
-            "views": [[False, "form"]],
+            # A form_view_ref in the context would also apply to the wizards
+            # opened from this form (e.g. Retrieve image).
+            "views": [
+                [self.env.ref("sbc_compassion.view_correspondence_form").id, "form"]
+            ],
             "res_id": self.id,
-            "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
     def process_letter(self):
