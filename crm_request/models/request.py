@@ -137,7 +137,17 @@ class CrmClaim(models.Model):
             custom_values = {}
 
         alias_char = parseaddr(msg.get("to"))[1].split("@")[0]
-        alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
+        # The "To" header may not hold the alias address (forward, Bcc...).
+        # An empty name would match every record-level alias.
+        alias = self.env["mail.alias"]
+        if alias_char:
+            alias = alias.search(
+                [
+                    ("alias_name", "=", alias_char),
+                    ("alias_model_id.model", "=", self._name),
+                ],
+                limit=1,
+            )
 
         # Find the corresponding type
         subject = msg.get("subject", "")
