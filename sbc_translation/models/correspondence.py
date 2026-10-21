@@ -83,7 +83,7 @@ class Correspondence(models.Model):
     )
 
     @api.model
-    def _read_group_translation_status(self, statuses, domain, order):
+    def _read_group_translation_status(self, statuses, domain):
         return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
