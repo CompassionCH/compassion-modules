@@ -680,6 +680,10 @@ class Correspondence(models.Model):
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
+        # The report overlays the original text on the template pages, so the
+        # text must be spread on as many pages as needed to fit the text boxes.
+        for letter in letters.filtered("report_needs_original_text"):
+            letter.spread_text_to_pages()
         # Make sure the translation language is set correctly.
         letters._check_translation_language()
         for letter in letters:
