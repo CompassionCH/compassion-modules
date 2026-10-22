@@ -261,7 +261,10 @@ class CrmClaim(models.Model):
                 # Sync partner fields
                 partner = request.partner_id
                 if request.email_from:
-                    if partner.email and request.email_from:
+                    if partner.email and (
+                        partner.email.strip().lower()
+                        != request.email_from.strip().lower()
+                    ):
                         # Create an alias if the email differs
                         partner_alias = self.env["res.partner"].create(
                             {
@@ -271,7 +274,7 @@ class CrmClaim(models.Model):
                             }
                         )
                         request.partner_id = partner_alias
-                    else:
+                    elif not partner.email:
                         partner.email = request.email_from
                 if request.partner_phone and not partner.phone:
                     partner.phone = request.partner_phone
