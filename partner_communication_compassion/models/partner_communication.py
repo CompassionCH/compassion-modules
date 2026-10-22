@@ -51,10 +51,13 @@ class PartnerCommunication(models.Model):
                         subject=_("Missing letter"),
                     )
                     continue
-        else:
-            # Attach directly a zip in the letters
-            letters.attach_zip()
         return attachments
+
+    def get_letters_zip_url(self):
+        """Download link for a zip of all letters of the communication."""
+        self.ensure_one()
+        letter = self.get_objects()[:1]
+        return f"{self.get_base_url()}/b2s_image/letters?letter_uuid={letter.uuid}"
 
     def final_letter_attachment(self):
         """Include PDF of final letter if any exists. Remove any other correspondence

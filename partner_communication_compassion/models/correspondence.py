@@ -84,24 +84,6 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def attach_zip(self):
-        """
-        When a partner gets multiple letters, we make a zip and attach it
-        to the first letter, so that he can only download this zip.
-        :return: True
-        """
-        if len(self) > 5:
-            _zip = (
-                self.env["correspondence.download.wizard"]
-                .with_context(active_model=self._name, active_ids=self.ids)
-                .create({})
-            )
-            _zip.get_letters()
-            self.write({"sponsor_letter_scan": False})
-            letter_attach = self[:1]
-            letter_attach.write({"sponsor_letter_scan": _zip.download_data})
-        return True
-
     def publish_b2s_letter(self):
         # Prepare the communication when a letter is published
         res = super().publish_b2s_letter()
