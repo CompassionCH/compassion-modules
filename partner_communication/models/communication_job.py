@@ -924,8 +924,12 @@ class CommunicationJob(models.Model):
 
     def preview_pdf_report(self):
         self.ensure_one()
+        # The printing JS handler only reads force_print_to_client from the action
+        # context: without it, reports set to "Send to Printer" are printed.
         return self.report_id.with_context(
-            lang=self.partner_id.lang, must_skip_send_to_printer=True
+            lang=self.partner_id.lang,
+            must_skip_send_to_printer=True,
+            force_print_to_client=True,
         ).report_action(self.ids, config=False)
 
     def download_data(self):
