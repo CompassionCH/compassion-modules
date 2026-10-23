@@ -24,13 +24,18 @@ class B2sLettersController(http.Controller):
         letters = letter.communication_id.get_objects()
         if letters._name != "correspondence":
             raise NotFound()
-        buffer = BytesIO()
-        _fill_archive(buffer, letters)
+        stored_zip = letter.communication_id._get_letters_zip()[:1]
+        if stored_zip:
+            data = stored_zip.raw
+        else:
+            buffer = BytesIO()
+            _fill_archive(buffer, letters)
+            data = buffer.getvalue()
         if request.env.user.share:
             letters.write({"email_read": fields.Datetime.now()})
         fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
         return request.make_response(
-            buffer.getvalue(),
+            data,
             [
                 ("Content-Type", "application/zip"),
                 ("Content-Disposition", content_disposition(fname)),

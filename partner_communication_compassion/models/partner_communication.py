@@ -10,13 +10,19 @@
 import base64
 import logging
 from io import BytesIO
+from zipfile import ZipFile
 
+from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import MissingError
 
+from odoo.addons.sbc_compassion.controllers.b2s_image import _fill_archive
+
 _logger = logging.getLogger(__name__)
+
+LETTERS_ZIP = "letters.zip"
 
 
 class PartnerCommunication(models.Model):
@@ -58,6 +64,58 @@ class PartnerCommunication(models.Model):
         self.ensure_one()
         letter = self.get_objects()[:1]
         return f"{self.get_base_url()}/b2s_image/letters?letter_uuid={letter.uuid}"
+
+    def _send_mail_asynchronous(self):
+        if self.config_id.model == "correspondence" and len(self.get_objects()) > 5:
+            if self.env.context.get("queue_job__no_delay"):
+                # Zipping the letters takes minutes: never in a web request
+                return self.with_context(queue_job__no_delay=False).with_delay_sh(
+                    "_send_mail_asynchronous",
+                    channel="root.partner_communication",
+                    priority=50,
+                    identity_key=f"{self._name}._send_mail.{self.id}",
+                )
+            self._store_letters_zip()
+        return super()._send_mail_asynchronous()
+
+    def _store_letters_zip(self):
+        """Prepare the zip linked in the e-mail: the letters are rendered on the fly,
+        too slow to do it when the sponsor clicks the link."""
+        self._get_letters_zip().unlink()
+        letters = self.get_objects()
+        buffer = BytesIO()
+        _fill_archive(buffer, letters)
+        if len(ZipFile(buffer).namelist()) < len(letters):
+            # A letter is not available yet: the link builds the zip when clicked
+            _logger.warning("Letters zip of communication %s is incomplete", self.id)
+            return
+        self.env["ir.attachment"].create(
+            {
+                "name": LETTERS_ZIP,
+                "res_model": self._name,
+                "res_id": self.id,
+                "raw": buffer.getvalue(),
+            }
+        )
+
+    def _get_letters_zip(self):
+        return self.env["ir.attachment"].search(
+            [
+                ("res_model", "=", self._name),
+                ("res_id", "=", self.id),
+                ("name", "=", LETTERS_ZIP),
+            ]
+        )
+
+    @api.model
+    def _cron_delete_letters_zip(self):
+        self.env["ir.attachment"].search(
+            [
+                ("res_model", "=", self._name),
+                ("name", "=", LETTERS_ZIP),
+                ("create_date", "<", fields.Datetime.now() - relativedelta(days=90)),
+            ]
+        ).unlink()
 
     def final_letter_attachment(self):
         """Include PDF of final letter if any exists. Remove any other correspondence
