@@ -10,6 +10,7 @@
 import base64
 import logging
 from io import BytesIO
+from zipfile import ZipFile
 
 from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -81,8 +82,13 @@ class PartnerCommunication(models.Model):
         """Prepare the zip linked in the e-mail: the letters are rendered on the fly,
         too slow to do it when the sponsor clicks the link."""
         self._get_letters_zip().unlink()
+        letters = self.get_objects()
         buffer = BytesIO()
-        _fill_archive(buffer, self.get_objects())
+        _fill_archive(buffer, letters)
+        if len(ZipFile(buffer).namelist()) < len(letters):
+            # A letter is not available yet: the link builds the zip when clicked
+            _logger.warning("Letters zip of communication %s is incomplete", self.id)
+            return
         self.env["ir.attachment"].create(
             {
                 "name": LETTERS_ZIP,
