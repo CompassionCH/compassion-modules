@@ -12,4 +12,14 @@
             <field name="interval_type">days</field>
             <field name="active" eval="True" />
         </record>
+        <record id="ir_cron_delete_letters_zip" model="ir.cron">
+            <field name="name">Communication: delete letters zip older than 90 days</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job" />
+            <field name="state">code</field>
+            <field name="code">model._cron_delete_letters_zip()</field>
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True" />
+        </record>
 </odoo>
