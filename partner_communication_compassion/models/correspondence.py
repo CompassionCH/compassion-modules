@@ -152,6 +152,7 @@ class Correspondence(models.Model):
         first_letter_template = self.env.ref(module + "config_onboarding_first_letter")
         final_template = self.env.ref(module + "child_letter_final_config")
         new_template = self.env.ref(module + "child_letter_config")
+        moment_template = self.env.ref(module + "child_letter_moment_config")
         old_template = self.env.ref(module + "child_letter_old_config")
         old_limit = datetime.today() - relativedelta(months=2)
 
@@ -174,8 +175,15 @@ class Correspondence(models.Model):
                 lambda letter: letter.create_date < old_limit
             )
             new_letters -= old_letters
+            moment_letters = (
+                self.browse()
+                if is_first
+                else new_letters.filtered("is_compassion_moment")
+            )
+            new_letters -= moment_letters
 
             final_letters._generate_communication(final_template)
+            moment_letters._generate_communication(moment_template)
             new_letters._generate_communication(
                 first_letter_template if is_first else new_template
             )

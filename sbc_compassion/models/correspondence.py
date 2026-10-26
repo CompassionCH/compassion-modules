@@ -30,6 +30,9 @@ from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
+# Template sent by GMC for the Compassion Moment B2S letters
+COMPASSION_MOMENT_TEMPLATE = "MX-C-1S10"
+
 ROWS_PER_ATTACHMENT_PAGE = 2
 
 
@@ -204,6 +207,10 @@ class Correspondence(models.Model):
         string="Number of pages", compute="_compute_nbr_pages", store=True
     )
     template_id = fields.Many2one("correspondence.template", "Template")
+    is_compassion_moment = fields.Boolean(
+        help="The B2S letter comes from GMC with the Compassion Moment template "
+        f"{COMPASSION_MOMENT_TEMPLATE}",
+    )
 
     # 4. Additional information
     ###########################
@@ -978,6 +985,7 @@ class Correspondence(models.Model):
     def json_to_data(self, json, mapping_name=None):
         template_name = json.pop("Template", "CH-A-6S11-1")
         odoo_data = super().json_to_data(json, mapping_name)
+        odoo_data["is_compassion_moment"] = template_name == COMPASSION_MOMENT_TEMPLATE
 
         if not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(

@@ -67,6 +67,74 @@
                 </t>
             </field>
         </record>
+        <!-- New letter: Compassion Moment (GMC template MX-C-1S10) -->
+        <record id="new_letter_compassion_moment" model="mail.template">
+            <field name="name">B2S Compassion Moment</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="email_from">"{{ object.user_id.company_id.with_context(lang=object.partner_id.lang).commercial_name if 'commercial_name' in object.user_id.company_id._fields else object.user_id.company_id.name }}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">{{object.partner_id and object.partner_id.email and object.partner_id.id or False }}</field>
+            <field name="subject">A new message has arrived from the center of {{object.get_objects().mapped('child_id').get_list('preferred_name', 3, 'your children', False)}}</field>
+            <field name="body_html" type="html">
+                    <t t-set="letter" t-value="object.get_objects()"/>
+                    <t t-set="child" t-value="letter.mapped('child_id')"/>
+                    <t t-set="urls" t-value="list(dict.fromkeys(letter.filtered('read_url').mapped('read_url')))"/>
+                    <t t-set="mycompassion_url" t-value="'https://www.mycompassion.ch'"/>
+                    <t t-set="field_office_ids" t-value="child.mapped('field_office_id').ids"/>
+                    <t t-set="restricted" t-value="1 in field_office_ids or 19 in field_office_ids"/>
+                    <t t-set="number_years" t-value="object.get_snippet('number_years', strip_html=True)"/>
+                    <t t-set="years_uc" t-value="object.get_snippet('years_uc', strip_html=True)"/>
+                <p t-out="object.partner_id.salutation"/>
+                <p>
+                    We're happy to share that we just received a new picture from <t t-out="child.get_list('preferred_name', 3, child.get_number()) or child.get_list('firstname', 3, child.get_number())"/>'s child development center!
+                </p>
+                <t t-if="object.send_mode != 'physical'">
+                    <p>
+                        You can download the message by clicking on the link.* Enjoy reading:
+                    </p>
+                    <ul>
+                        <t t-foreach="urls" t-as="l">
+                            <li>
+                                <a t-att-href="l">
+                                    <t t-out="l"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                    <blockquote>
+                            <small>*If you have trouble downloading the message, you can open it on <a t-att-href="mycompassion_url">MyCompassion</a>.</small>
+                        </blockquote>
+                </t>
+                <p>
+                    <t t-out="years_uc"/> <t t-out="number_years"/> years of experience show us the importance of letters for the development of the children.
+                </p>
+                <p>
+                    Thank you in advance for taking a few minutes to reply. You can respond online via <a t-att-href="mycompassion_url">MyCompassion</a>.
+                </p>
+                <t t-if="restricted">
+                    <p>
+                        Important information about writing to your sponsored <t t-out="'child' if len(child) == 1 else 'children'"/> can be found here:
+                    </p>
+                    <div style="margin:20px auto; text-align: center;">
+                        <a href="https://compassion.ch/medias/onboarding/BD_SL_child_communication_de.pdf" style="padding: 12px 18px; font-size: 12px; line-height: 18px; color: #FFFFFF; border-color:#0054A6; text-decoration: none; display: inline-block; margin-bottom: 0px; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; white-space: nowrap; background-image: none; background-color: #0054A6; border: 1px solid #0054A6; border-radius:3px" title="">
+                            See special recommendations
+                        </a>
+                    </div>
+                </t>
+                <p>
+                    Please do not hesitate to contact us with regards to any questions you may have in relation to exchanging letters.
+                </p>
+                <p>
+                    Best regards,
+                </p>
+                <t t-if="object.send_mode == 'digital'">
+                    <p t-out="object.user_id.short_signature if 'short_signature' in object.user_id._fields else object.user_id.name"/>
+                </t>
+            </field>
+        </record>
         <!-- Final letter -->
         <record id="final_letter" model="mail.template">
             <field name="name">B2S Final Letter</field>
