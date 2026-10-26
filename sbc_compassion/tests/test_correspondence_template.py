@@ -55,11 +55,27 @@ class TestTextSpreading(TransactionCase):
         self.assertTrue(all(len(page) <= 110 for page in pages))
 
     def test_spread_word_longer_than_box(self):
-        url = "https://example.com/" + "a" * 5000
-        pages = self._spread(f"Look at {url} please")
-        self.assertGreater(len(pages), 1)
-        text = "".join("".join(page.replace("...", "").split()) for page in pages)
-        self.assertEqual(text, f"Lookat{url}please")
+        url = "https://example.com/" + "".join(str(i % 10) for i in range(1500))
+        pages = self._spread(f"Look at {url} please", max_chars=690)
+        self.assertGreater(len(pages), 2)
+        # Apart from the words around it, the URL must only be split between pages
+        # and never contain a space.
+        url_parts = []
+        for page in pages:
+            parts = [
+                w for w in page.split() if w not in ("Look", "at", "please", "...")
+            ]
+            self.assertLessEqual(len(parts), 1, f"Space inserted in URL: {page}")
+            url_parts.extend(parts)
+        self.assertEqual("".join(url_parts), url)
+
+    def test_oversized_word_chunks_are_not_separated_by_spaces(self):
+        url = "https://example.com/" + "".join(str(i % 10) for i in range(1500))
+        fits, overflow = self.paragraph._finalize_text(
+            *self.paragraph._split_text(url, 690, 30)
+        )
+        self.assertEqual(fits, url[:689])
+        self.assertEqual(overflow, url[689:])
 
     def test_nothing_fits_keeps_text(self):
         fits, overflow = self.paragraph._finalize_text([], ["word"])
