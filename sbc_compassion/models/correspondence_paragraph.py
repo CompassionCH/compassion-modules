@@ -98,7 +98,20 @@ class CorrespondenceParagraph(models.Model):
         total_chars = 0
         lbr_replace = "$" * line_length
 
+        words = []
+        # A word longer than the box (long URL, text without spaces) would never
+        # fit and would be pushed to the next page forever: we split it.
+        max_word_length = max(max_chars - 1, 1)
         for word in text.replace("\n", " " + lbr_replace + " ").split():
+            if word != lbr_replace and len(word) > max_word_length:
+                words.extend(
+                    word[i : i + max_word_length]
+                    for i in range(0, len(word), max_word_length)
+                )
+            else:
+                words.append(word)
+
+        for word in words:
             is_lbr = word == lbr_replace
             word_length = len(word) if not is_lbr else line_length - current_line_length
             current_line_length += word_length + 1
@@ -113,7 +126,15 @@ class CorrespondenceParagraph(models.Model):
         return text_that_fits, text_that_overflows
 
     def _finalize_text(self, text_that_fits, text_that_overflows):
-        if text_that_overflows and text_that_fits:
+        if not text_that_fits:
+            # Nothing fits in the box: keep the text here, moving it to the next
+            # page would only repeat the same overflow.
+            return " ".join(text_that_overflows), ""
+        real_words = [word for word in text_that_fits if word != "..."]
+        if text_that_overflows and len(real_words) > 1:
+            # Moving the last word to the next page marks the cut with "...".
+            # With a single word, it would leave the page without any text and
+            # make no progress.
             last_word = text_that_fits.pop()
             text_that_overflows.insert(0, last_word)
             text_that_overflows.insert(0, "...")
