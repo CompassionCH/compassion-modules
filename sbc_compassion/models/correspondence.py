@@ -458,6 +458,15 @@ class Correspondence(models.Model):
             else:
                 letter.letter_format = False
 
+    def _refresh_letter_format(self):
+        """
+        Recompute the format and the file name from the scanned files. The compute
+        reads the whole scan of every letter: call it on small batches (jobs).
+        """
+        for fname in ("letter_format", "file_name"):
+            self.env.add_to_compute(self._fields[fname], self)
+            self.flush_recordset([fname])
+
     def _get_uuid(self):
         return str(uuid.uuid4())
 
