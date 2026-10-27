@@ -8,11 +8,16 @@
 ##############################################################################
 from odoo.tests import Form, TransactionCase
 
+from odoo.addons.sponsorship_compassion.tests.test_contract_lines_onchange import (
+    ensure_standard_products,
+)
+
 
 class TestCspLines(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        ensure_standard_products(cls.env)
         cls.partner_1 = cls.env["res.partner"].create({"name": "CSP Sponsor"})
         cls.sp_group = cls.env["recurring.contract.group"].create(
             {"partner_id": cls.partner_1.id}

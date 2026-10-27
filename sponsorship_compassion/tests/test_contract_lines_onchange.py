@@ -9,6 +9,16 @@
 from odoo.tests import Form, TransactionCase
 
 
+def ensure_standard_products(env):
+    """The products of the standard sponsorship lines: demo data of this
+    module, data of the countries' modules. They must exist once."""
+    for code in ("sponsorship", "fund_gen"):
+        if not env["product.template"].search_count([("default_code", "=", code)]):
+            env["product.product"].create(
+                {"name": f"{code} test", "default_code": code}
+            )
+
+
 class TestContractLinesOnchange(TransactionCase):
     """The standard lines of a child sponsorship, set again when its payment
     options are chosen in the form."""
@@ -16,6 +26,7 @@ class TestContractLinesOnchange(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        ensure_standard_products(cls.env)
         cls.partner_1 = cls.env["res.partner"].create({"name": "Sponsor Lines"})
         cls.sp_group = cls.env["recurring.contract.group"].create(
             {"partner_id": cls.partner_1.id}
