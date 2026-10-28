@@ -701,17 +701,25 @@ class Correspondence(models.Model):
 
     def get_translated_elements(self):
         res = []
+        # Translations into English are saved in the english_text field (see
+        # save_translation). Supporter letters have no english text from GMC.
+        english_target = (
+            self.direction == "Supporter To Beneficiary"
+            and self.translation_language_id.code_iso == "eng"
+        )
         for i, page in enumerate(self.page_ids):
             for paragraph in page.paragraph_ids:
                 res.append(
                     {
                         "type": "paragraph",
                         "id": paragraph.id,
-                        "content": paragraph.translated_text,
+                        "content": paragraph.english_text
+                        if english_target
+                        else paragraph.translated_text,
                         "comments": paragraph.comments,
-                        "source": paragraph.english_text
-                        or paragraph.original_text
-                        or "",
+                        "source": paragraph.original_text
+                        if english_target
+                        else paragraph.english_text or paragraph.original_text or "",
                     }
                 )
             if i < len(self.page_ids) - 1:
