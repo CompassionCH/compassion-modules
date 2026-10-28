@@ -885,6 +885,12 @@ class Correspondence(models.Model):
             ", ".join(self.mapped("child_id.local_id")),
         )
 
+    def _is_ready_for_sponsor(self):
+        """Tells if a published B2S letter can be communicated to the sponsor.
+        Extended by modules that hold letters back (e.g. translation)."""
+        self.ensure_one()
+        return True
+
     def get_pdf(self):
         """
         Retrieves the PDF of the letter, trying different sources in order.
