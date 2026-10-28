@@ -207,14 +207,12 @@ class TranslationUser(models.Model):
     def _evaluate_badges(self):
         """Evaluates and grants badges for this translator."""
         for translator in self:
-            if not translator.user_id:
-                continue
             corr_count = translator.nb_translated_letters or 0
             streak_count = translator.current_streak or 0
 
             unlocked_ids = (
-                self.env["sbc.translation.user.badge"]
-                .search([("user_id", "=", translator.user_id.id)])
+                self.env["translation.user.badge"]
+                .search([("translator_id", "=", translator.id)])
                 .mapped("badge_id")
                 .ids
             )
@@ -242,9 +240,9 @@ class TranslationUser(models.Model):
                         should_unlock = True
 
                 if should_unlock:
-                    existing = self.env["sbc.translation.user.badge"].search_count(
+                    existing = self.env["translation.user.badge"].search_count(
                         [
-                            ("user_id", "=", translator.user_id.id),
+                            ("translator_id", "=", translator.id),
                             ("badge_id", "=", badge.id),
                         ]
                     )
@@ -253,18 +251,18 @@ class TranslationUser(models.Model):
                         # award (e.g. the cron) must not make the submission fail.
                         try:
                             with mute_logger("odoo.sql_db"), self.env.cr.savepoint():
-                                self.env["sbc.translation.user.badge"].sudo().create(
+                                self.env["translation.user.badge"].sudo().create(
                                     {
-                                        "user_id": translator.user_id.id,
+                                        "translator_id": translator.id,
                                         "badge_id": badge.id,
                                     }
                                 )
                         except IntegrityError:
                             # Already awarded at the same time by another process
                             _logger.debug(
-                                "Badge %s already awarded to user %s",
+                                "Badge %s already awarded to translator %s",
                                 badge.id,
-                                translator.user_id.id,
+                                translator.id,
                             )
 
     @api.model_create_multi
@@ -369,11 +367,11 @@ class TranslationUser(models.Model):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
 
         Badge = self.env["translation.badge"]
-        UserBadge = self.env["sbc.translation.user.badge"]
+        UserBadge = self.env["translation.user.badge"]
         Correspondence = self.env["correspondence"]
 
         unlocked_badge_ids = (
-            UserBadge.search([("user_id", "=", self.user_id.id)]).mapped("badge_id").ids
+            UserBadge.search([("translator_id", "=", self.id)]).mapped("badge_id").ids
         )
         all_badges = Badge.with_context(active_test=False).search(
             ["|", ("active", "=", True), ("id", "in", unlocked_badge_ids)],

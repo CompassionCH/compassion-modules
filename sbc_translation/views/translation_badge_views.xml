@@ -45,7 +45,7 @@
                         <page string="Granted to">
                             <field name="user_badge_ids">
                                 <list>
-                                    <field name="user_id"/>
+                                    <field name="translator_id"/>
                                     <field name="unlocked_date"/>
                                 </list>
                             </field>

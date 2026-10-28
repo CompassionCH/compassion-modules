@@ -35,7 +35,7 @@ class TranslationBadge(models.Model):
     end_date = fields.Date(string="Campaign End Date")
 
     user_badge_ids = fields.One2many(
-        "sbc.translation.user.badge", "badge_id", string="Granted to", readonly=True
+        "translation.user.badge", "badge_id", string="Granted to", readonly=True
     )
 
     _sql_constraints = [
@@ -60,11 +60,11 @@ class TranslationBadge(models.Model):
 
 
 class TranslationUserBadge(models.Model):
-    _name = "sbc.translation.user.badge"
-    _description = "User Unlocked Badges"
+    _name = "translation.user.badge"
+    _description = "Translator Unlocked Badges"
 
-    user_id = fields.Many2one(
-        "res.users",
+    translator_id = fields.Many2one(
+        "translation.user",
         required=True,
         index=True,
         ondelete="cascade",
@@ -83,8 +83,8 @@ class TranslationUserBadge(models.Model):
 
     _sql_constraints = [
         (
-            "unique_user_badge",
-            "UNIQUE(user_id, badge_id)",
-            "A user can only unlock a specific badge once.",
+            "unique_translator_badge",
+            "UNIQUE(translator_id, badge_id)",
+            "A translator can only unlock a specific badge once.",
         )
     ]
