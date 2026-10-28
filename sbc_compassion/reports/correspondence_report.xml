@@ -55,7 +55,7 @@
                 >
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_original_text"
+                    t-if="letter.report_needs_original_text and text_box.fetch_style('original_text')"
                     t-att-style="text_box.fetch_style('original_text')"
                   >
                                         <t
@@ -67,7 +67,7 @@
                                     </div>
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_final_text"
+                    t-if="letter.report_needs_final_text and text_box.fetch_style('translated_text')"
                     t-att-style="text_box.fetch_style('translated_text')"
                   >
                                         <t
@@ -79,7 +79,7 @@
                                     </div>
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_english_text"
+                    t-if="letter.report_needs_english_text and text_box.fetch_style('english_text')"
                     t-att-style="text_box.fetch_style('english_text')"
                   >
                                         <t
