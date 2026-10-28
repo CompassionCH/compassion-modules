@@ -61,7 +61,7 @@ class TranslationBadge(models.Model):
 
 class TranslationUserBadge(models.Model):
     _name = "translation.user.badge"
-    _description = "Translator Unlocked Badges"
+    _description = "User Unlocked Badges"
 
     translator_id = fields.Many2one(
         "translation.user",
@@ -83,8 +83,8 @@ class TranslationUserBadge(models.Model):
 
     _sql_constraints = [
         (
-            "unique_translator_badge",
+            "unique_user_badge",
             "UNIQUE(translator_id, badge_id)",
-            "A translator can only unlock a specific badge once.",
+            "A user can only unlock a specific badge once.",
         )
     ]

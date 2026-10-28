@@ -207,6 +207,8 @@ class TranslationUser(models.Model):
     def _evaluate_badges(self):
         """Evaluates and grants badges for this translator."""
         for translator in self:
+            if not translator.user_id:
+                continue
             corr_count = translator.nb_translated_letters or 0
             streak_count = translator.current_streak or 0
 
@@ -260,9 +262,9 @@ class TranslationUser(models.Model):
                         except IntegrityError:
                             # Already awarded at the same time by another process
                             _logger.debug(
-                                "Badge %s already awarded to translator %s",
+                                "Badge %s already awarded to user %s",
                                 badge.id,
-                                translator.id,
+                                translator.user_id.id,
                             )
 
     @api.model_create_multi
