@@ -609,6 +609,9 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = ",".join(map(str, object_ids))
         elif object_ids:
             vals["object_ids"] = str(object_ids)
+        if "send_mode" in vals:
+            # The attachments depend on the send mode: regenerate them
+            vals["attachments_object_ids"] = False
 
         super().write(vals)
 
