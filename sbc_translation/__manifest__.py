@@ -35,11 +35,7 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules",
-    "depends": [
-        "sbc_compassion",
-        "partner_contact_birthdate",
-        "portal",
-    ],
+    "depends": ["sbc_compassion", "partner_contact_birthdate", "portal"],
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",

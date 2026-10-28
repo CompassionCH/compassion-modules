@@ -55,8 +55,9 @@ class TranslationUser(models.Model):
     )
     avatar = fields.Binary(related="partner_id.image_128")
     force_validation = fields.Boolean(
-        help="If checked, all translations submitted by this user will require "
-        "validation by a supervisor, regardless of their verified skills"
+        help="If checked, all translations submitted by this user will "
+        "require validation by a supervisor, regardless of their verified"
+        "skills",
     )
 
     _sql_constraints = [
@@ -275,7 +276,10 @@ class TranslationUser(models.Model):
         user_group = self.env.ref("sbc_translation.group_user")
         for translator in records:
             translator.user_id.write(
-                {"groups_id": [(4, user_group.id)], "translator_id": translator.id}
+                {
+                    "groups_id": [(4, user_group.id)],
+                    "translator_id": translator.id,
+                }
             )
         return records
 
@@ -529,4 +533,5 @@ class TranslationUser(models.Model):
 
 class ResUsers(models.Model):
     _inherit = "res.users"
+
     translator_id = fields.Many2one("translation.user", "Translator")
