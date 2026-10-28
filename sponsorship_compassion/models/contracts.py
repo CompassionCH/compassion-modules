@@ -202,7 +202,9 @@ class SponsorshipContract(models.Model):
     @api.onchange("group_id")
     def _get_correct_pricelist(self):
         contract_type = self.type or self.env.context.get("default_type", "O")
-        if "S" in contract_type:
+        # Child sponsorships only: a survival sponsorship (CSP) keeps the lines
+        # of its country, chosen before its payment options.
+        if contract_type in SPONSORSHIP_TYPE_LIST:
             self.contract_line_ids = self._get_sponsorship_standard_lines(
                 contract_type in ["SC", "SWP"]
             )
