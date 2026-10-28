@@ -171,7 +171,7 @@ class TranslationUser(models.Model):
                 translator.current_streak = 0
                 continue
 
-            translator_tz = translator.user_id.tz or self.env.user.tz or "UTC"
+            translator_tz = translator.user_id.tz or "Europe/Zurich"
             tz_context = translator.with_context(tz=translator_tz)
 
             active_dates = set()
