@@ -137,7 +137,17 @@ class CrmClaim(models.Model):
             custom_values = {}
 
         alias_char = parseaddr(msg.get("to"))[1].split("@")[0]
-        alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
+        # The "To" header may not hold the alias address (forward, Bcc...).
+        # An empty name would match every record-level alias.
+        alias = self.env["mail.alias"]
+        if alias_char:
+            alias = alias.search(
+                [
+                    ("alias_name", "=", alias_char),
+                    ("alias_model_id.model", "=", self._name),
+                ],
+                limit=1,
+            )
 
         # Find the corresponding type
         subject = msg.get("subject", "")
@@ -251,7 +261,10 @@ class CrmClaim(models.Model):
                 # Sync partner fields
                 partner = request.partner_id
                 if request.email_from:
-                    if partner.email and request.email_from:
+                    if partner.email and (
+                        partner.email.strip().lower()
+                        != request.email_from.strip().lower()
+                    ):
                         # Create an alias if the email differs
                         partner_alias = self.env["res.partner"].create(
                             {
@@ -261,7 +274,7 @@ class CrmClaim(models.Model):
                             }
                         )
                         request.partner_id = partner_alias
-                    else:
+                    elif not partner.email:
                         partner.email = request.email_from
                 if request.partner_phone and not partner.phone:
                     partner.phone = request.partner_phone

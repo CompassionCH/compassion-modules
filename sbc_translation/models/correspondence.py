@@ -83,7 +83,7 @@ class Correspondence(models.Model):
     )
 
     @api.model
-    def _read_group_translation_status(self, statuses, domain, order):
+    def _read_group_translation_status(self, statuses, domain):
         return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
@@ -246,9 +246,12 @@ class Correspondence(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
-            "views": [[False, "form"]],
+            # A form_view_ref in the context would also apply to the wizards
+            # opened from this form (e.g. Retrieve image).
+            "views": [
+                [self.env.ref("sbc_compassion.view_correspondence_form").id, "form"]
+            ],
             "res_id": self.id,
-            "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
     def process_letter(self):
@@ -701,17 +704,25 @@ class Correspondence(models.Model):
 
     def get_translated_elements(self):
         res = []
+        # Translations into English are saved in the english_text field (see
+        # save_translation). Supporter letters have no english text from GMC.
+        english_target = (
+            self.direction == "Supporter To Beneficiary"
+            and self.translation_language_id.code_iso == "eng"
+        )
         for i, page in enumerate(self.page_ids):
             for paragraph in page.paragraph_ids:
                 res.append(
                     {
                         "type": "paragraph",
                         "id": paragraph.id,
-                        "content": paragraph.translated_text,
+                        "content": paragraph.english_text
+                        if english_target
+                        else paragraph.translated_text,
                         "comments": paragraph.comments,
-                        "source": paragraph.english_text
-                        or paragraph.original_text
-                        or "",
+                        "source": paragraph.original_text
+                        if english_target
+                        else paragraph.english_text or paragraph.original_text or "",
                     }
                 )
             if i < len(self.page_ids) - 1:

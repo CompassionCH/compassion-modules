@@ -10,6 +10,7 @@
 import base64
 import logging
 import re
+import time
 import unicodedata
 from collections import defaultdict
 from html.parser import HTMLParser
@@ -212,6 +213,12 @@ class CommunicationJob(models.Model):
     )
     body_html = fields.Html(sanitize=False, compute="_compute_content", store=True)
     pdf_page_count = fields.Integer("Page count", readonly=True)
+    attachments_object_ids = fields.Char(
+        help="Resource ids used when the attachments were generated. Used to "
+        "regenerate the attachments only when the resources changed.",
+        copy=False,
+        readonly=True,
+    )
     subject = fields.Char(compute="_compute_content", store=True)
     email_from = fields.Char(compute="_compute_content", store=True)
     reply_to = fields.Char(compute="_compute_content", store=True)
@@ -456,7 +463,8 @@ class CommunicationJob(models.Model):
             send_mode = job.config_id.get_inform_mode(job.partner_id)
 
             if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-                job.send_mode = send_mode[0]
+                # The pages are counted once below, not at each write
+                job.with_context(skip_pdf_count=True).send_mode = send_mode[0]
             if (
                 "auto_send" not in vals
                 and "default_auto_send" not in self.env.context
@@ -769,29 +777,45 @@ class CommunicationJob(models.Model):
         return "\n".join([t.strip() for t in text.split("\n")])
 
     def refresh_text(self):
-        self.mapped("attachment_ids").unlink()
-        failed = self.set_attachments()
-        (self - failed)._compute_content()
-        (self - failed).filtered(lambda j: j.state == "failure").write(
-            {"state": "pending"}
-        )
+        """Regenerate the text. The attachments are only regenerated if the
+        resources of the communication changed since they were generated.
+        """
+        outdated = self.filtered(lambda j: j.attachments_object_ids != j.object_ids)
+        outdated.mapped("attachment_ids").unlink()
+        failed = outdated.set_attachments()
+        jobs = self - failed
+        # Counting the pages renders the PDF: it is done once, in a queue job
+        jobs.with_context(skip_pdf_count=True)._compute_content()
+        jobs.filtered(lambda j: j.state == "failure").write({"state": "pending"})
+        jobs._schedule_page_count()
         return True
+
+    def _schedule_page_count(self):
+        for job in self.filtered(lambda j: j.report_id and j.send_mode == "physical"):
+            job.with_delay_sh(
+                "count_pdf_page",
+                channel="root.partner_communication",
+                identity_key=f"{self._name}.count_pdf_page.{job.id}",
+                priority=500,
+            )
 
     def quick_refresh(self):
         # Only refresh text and subject, all at once
         jobs = self.filtered("email_template_id").filtered("object_ids")
-        lang = self.env.context.get("lang_preview", jobs.mapped("partner_id.lang"))
         template = jobs.mapped("email_template_id")
         if len(template) > 1:
             raise UserError(_("This is only possible for one template at time"))
-        values = template.with_context(template_preview_lang=lang)._generate_template(
-            jobs.ids, ["body_html", "subject"]
-        )
-        for job, vals in zip(jobs, values.values(), strict=True):
+        # Without preview language, each job is rendered in its partner language
+        lang = self.env.context.get("lang_preview")
+        if lang:
+            template = template.with_context(template_preview_lang=lang)
+        values = template._generate_template(jobs.ids, ["body_html", "subject"])
+        # Skip the page count, it would render the PDF (wkhtmltopdf) at each write
+        for job in jobs.with_context(skip_pdf_count=True):
             job.write(
                 {
-                    "body_html": vals["body_html"],
-                    "subject": vals["subject"],
+                    "body_html": values[job.id]["body_html"],
+                    "subject": values[job.id]["subject"],
                 }
             )
         return True
@@ -880,6 +904,8 @@ class CommunicationJob(models.Model):
                             }
                         )
                     failed += job
+                    continue
+            job.attachments_object_ids = job.object_ids
         self._compute_ir_attachments()
         return failed
 
@@ -898,8 +924,12 @@ class CommunicationJob(models.Model):
 
     def preview_pdf_report(self):
         self.ensure_one()
+        # The printing JS handler only reads force_print_to_client from the action
+        # context: without it, reports set to "Send to Printer" are printed.
         return self.report_id.with_context(
-            lang=self.partner_id.lang, must_skip_send_to_printer=True
+            lang=self.partner_id.lang,
+            must_skip_send_to_printer=True,
+            force_print_to_client=True,
         ).report_action(self.ids, config=False)
 
     def download_data(self):
@@ -1053,8 +1083,8 @@ class CommunicationJob(models.Model):
     def _notify_get_reply_to(
         self, default=None, records=None, company=None, doc_names=None
     ):
-        res = dict.fromkeys(self.ids)
-        for job in self:
+        res = dict.fromkeys(self.ids, default)
+        for job in self.filtered("email_template_id"):
             res.update(job.email_template_id._render_field("reply_to", job.ids))
         return res
 
@@ -1129,7 +1159,7 @@ class CommunicationJob(models.Model):
             (config_lang.printer_input_tray_id.system_name, behaviour["input_tray"])
         )
 
-        to_print = report._render_qweb_pdf(report.xml_id, res_ids=self.ids)
+        to_print = report._render_qweb_pdf(report, res_ids=self.ids)
         printer = behaviour["printer"].with_context(lang=lang)
         if behaviour["action"] == "server" and printer:
             # Get pdf should directly send it to the printer
@@ -1140,3 +1170,59 @@ class CommunicationJob(models.Model):
             self[:1].printed_pdf_data = base64.b64encode(to_print[0])
 
         return print_options
+
+    @api.model
+    def vacuum_old_attachments(self, years=2, batch=500, max_seconds=120):
+        """Delete the attachments of communication jobs older than `years`.
+
+        T3374: the previous DB-only cron deleted every match in a single
+        transaction. Once a busy week crossed the rolling cutoff it could no
+        longer finish within the 300s cron limit, and each kill discarded the
+        work and retried the same slice forever. Committing per batch means a
+        timeout keeps what was already deleted.
+        """
+        cutoff = fields.Datetime.subtract(fields.Datetime.now(), years=years)
+        removed = 0
+        freed = 0
+        deadline = time.time() + max_seconds
+        while time.time() < deadline:
+            jobs = self.search(
+                [("date", "<", cutoff), ("attachment_ids", "!=", False)],
+                order="date asc",
+                limit=batch,
+            )
+            if not jobs:
+                break
+            job_attachments = jobs.mapped("attachment_ids")
+            orphans = self.env["ir.attachment"].search(
+                [("res_model", "=", self._name), ("res_id", "in", jobs.ids)]
+            ) - job_attachments.mapped("attachment_id")
+            removed += len(orphans) + len(job_attachments)
+            freed += sum(orphans.mapped("file_size")) + sum(
+                job_attachments.mapped("attachment_id.file_size")
+            )
+            orphans.unlink()
+            job_attachments.unlink()
+            self.env.cr.commit()  # pylint: disable=invalid-commit
+        # Print results saved directly on jobs without any wrapper
+        while time.time() < deadline:
+            printed = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_field", "=", "printed_pdf_data"),
+                    ("create_date", "<", cutoff),
+                ],
+                limit=batch,
+            )
+            if not printed:
+                break
+            removed += len(printed)
+            freed += sum(printed.mapped("file_size"))
+            printed.unlink()
+            self.env.cr.commit()  # pylint: disable=invalid-commit
+        _logger.info(
+            "Vacuum old attachments: removed %s attachments, freed %.1f MB",
+            removed,
+            freed / 1e6,
+        )
+        return True

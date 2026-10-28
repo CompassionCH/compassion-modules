@@ -185,7 +185,11 @@ class GenerateCommunicationWizard(models.TransientModel):
                 template.subject, "partner.communication.job", communication.ids
             )
             new_text = template._render_template(
-                template.body_html, "partner.communication.job", communication.ids
+                template.body_html,
+                "partner.communication.job",
+                communication.ids,
+                engine="qweb",
+                options={"post_process": True},
             )
             communication.body_html = new_text[communication.id]
             communication.subject = new_subject[communication.id]

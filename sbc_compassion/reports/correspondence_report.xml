@@ -18,6 +18,10 @@
 .container {
   padding: 0;
 }
+.overlay p {
+  margin: 0 0 5mm;
+  min-height: 1em;
+}
       </style>
             <t t-foreach="docs" t-as="letter">
                 <t t-foreach="letter.page_ids" t-as="page">
@@ -91,8 +95,16 @@
                     </div>
                 </t>
                 <t t-if="len(letter.page_ids) % 2 == 1">
-                    <div class="page p-2" style="page-break-after: always">
-                        <p />
+                    <div class="page" style="page-break-after: always">
+                        <t
+                t-set="back_background"
+                t-value="letter.direction == 'Supporter To Beneficiary' and letter.template_id.page_ids[1:2].background"
+              />
+                        <img
+                t-if="back_background"
+                t-attf-src="data:image/jpeg;base64,{{back_background}}"
+                class="w-100"
+              />
                     </div>
                 </t>
                 <t t-if="letter.report_needs_original_text">
