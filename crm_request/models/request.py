@@ -99,7 +99,16 @@ class CrmClaim(models.Model):
         if not self.user_id:
             self.user_id = self.env.user
 
-        template_id = self.categ_id.template_id.id
+        template = self.categ_id.template_id
+        template_id = template.id
+        # The composer ignores the template when a body is given (T3547):
+        # render the template answer ourselves, above the quoted message.
+        if template:
+            answer = template.with_context(
+                salutation_language=self.language
+            )._generate_template(self.ids, {"body_html"})[self.id]["body_html"]
+        else:
+            answer = self.partner_id.salutation
         ctx = {
             "default_model": "crm.claim",
             "default_res_ids": self.ids,
@@ -111,10 +120,7 @@ class CrmClaim(models.Model):
             "use_email_alias": self.reply_to or self.email_from,
             "mark_so_as_sent": True,
             "salutation_language": self.language,
-            "default_body": prepend_html_content(
-                self.quoted_reply,
-                self.partner_id.salutation,
-            ),
+            "default_body": prepend_html_content(self.quoted_reply, answer),
         }
 
         return {
