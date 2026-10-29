@@ -106,3 +106,37 @@ class TestCrmClaimCategories(SingleTransactionCase):
         )
         self.assertNotIn("Template answer", str(composer.body))
         self.assertIn("Where is my letter?", str(composer.body))
+
+    def test_reply_template_in_request_language(self):
+        """The template answer is rendered in the request's language, not in
+        the language of the staff member who replies (T3547)."""
+        self.env["res.lang"]._activate_lang("de_DE")
+        partner = self.env["res.partner"].create(
+            {"name": "T3547 German requester", "email": "t3547-de@example.org"}
+        )
+        template = self.env["mail.template"].create(
+            {
+                "name": "T3547 translated answer",
+                "model_id": self.env.ref("crm_claim.model_crm_claim").id,
+                "lang": "{{ object.env.context.get('salutation_language') }}",
+                "body_html": "<p>Answer in English</p>",
+            }
+        )
+        template.with_context(lang="de_DE").body_html = "<p>Antwort auf Deutsch</p>"
+        category = self.env["crm.claim.category"].create(
+            {"name": "T3547 translated category", "template_id": template.id}
+        )
+        request = self.env["crm.claim"].create(
+            {
+                "name": "T3547 Frage",
+                "partner_id": partner.id,
+                "language": "de_DE",
+                "categ_id": category.id,
+            }
+        )
+
+        body = str(
+            request.with_context(lang="en_US").action_reply()["context"]["default_body"]
+        )
+        self.assertIn("Antwort auf Deutsch", body)
+        self.assertNotIn("Answer in English", body)
