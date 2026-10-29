@@ -32,7 +32,7 @@ class B2sLettersController(http.Controller):
             _fill_archive(buffer, letters)
             data = buffer.getvalue()
         if request.env.user.share:
-            letters.write({"email_read": fields.Datetime.now()})
+            letters.mark_email_read()
         fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
         return request.make_response(
             data,

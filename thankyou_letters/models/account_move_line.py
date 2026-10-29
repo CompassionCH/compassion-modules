@@ -156,6 +156,10 @@ class AccountInvoiceLine(models.Model):
                 existing_comm = existing_comm.create(comm_vals)
 
             if new_communication_config == communication_config:
-                self.mapped("move_id").write({"communication_id": existing_comm.id})
+                # Only the moves that change: rewriting the others only
+                # conflicts with the jobs working on the same invoices.
+                self.mapped("move_id").filtered(
+                    lambda move, comm=existing_comm: move.communication_id != comm
+                ).write({"communication_id": existing_comm.id})
             generated_comms += existing_comm
         return generated_comms.ids
