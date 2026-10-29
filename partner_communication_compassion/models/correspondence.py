@@ -87,12 +87,16 @@ class Correspondence(models.Model):
     def publish_b2s_letter(self):
         # Prepare the communication when a letter is published
         res = super().publish_b2s_letter()
-        self.with_delay_sh(
+        # Letters held back (e.g. waiting for translation) are sent once ready
+        ready_letters = self.filtered(lambda letter: letter._is_ready_for_sponsor())
+        if not ready_letters:
+            return res
+        ready_letters.with_delay_sh(
             "send_communication",
             channel="root.partner_communication",
             priority=100,
             description="Send B2S letter communication",
-            identity_key=f"sbc.send_communication.{self.ids}",
+            identity_key=f"sbc.send_communication.{ready_letters.ids}",
         )
         return res
 

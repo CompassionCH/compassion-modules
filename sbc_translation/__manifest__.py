@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "SBC Translation Platform",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.1.2",
     "category": "Compassion",
     "summary": "SBC - Translation Platform",
     "sequence": 150,
@@ -48,6 +48,8 @@
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
+        "views/translation_badge_views.xml",
+        "data/ir_cron.xml",
     ],
     "demo": [],
     "installable": True,

@@ -254,7 +254,7 @@ class Correspondence(models.Model):
             "res_id": self.id,
         }
 
-    def process_letter(self):
+    def publish_b2s_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
@@ -268,25 +268,25 @@ class Correspondence(models.Model):
             langs_match = letter._sponsor_can_read_letter()
 
             # Is the letter still in the translation process?
-            translation_hold = (
-                letter.translation_status in ["to do", "in progress", "to validate"]
-                or letter.translation_issue
-            )
+            translation_hold = letter._is_in_translation()
 
             if (langs_match and not translation_hold) or force_publish:
-                super(Correspondence, letter).process_letter()
+                super(Correspondence, letter).publish_b2s_letter()
             else:
-                try:
-                    letter.download_attach_letter_image()
-                except UserError:
-                    _logger.warning(
-                        f"Could not download image for letter {letter.id}, "
-                        f"but proceeding to translation queue."
-                    )
                 # (re)send to translation queue ONLY if not on hold
                 if not translation_hold:
                     letter.action_send_local_translate()
         return True
+
+    def _is_in_translation(self):
+        self.ensure_one()
+        return bool(
+            self.translation_status in ["to do", "in progress", "to validate"]
+            or self.translation_issue
+        )
+
+    def _is_ready_for_sponsor(self):
+        return super()._is_ready_for_sponsor() and not self._is_in_translation()
 
     def calculate_translation_priority(self):
         """
@@ -643,6 +643,14 @@ class Correspondence(models.Model):
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
+        else:
+            # Translation is done: publish the B2S letter to the sponsor
+            self.with_user(SUPERUSER_ID).with_context(
+                force_publish=True
+            ).publish_b2s_letter()
+
+        if self.new_translator_id:
+            self.new_translator_id.sudo()._evaluate_badges()
 
     def list_letters(self):
         """API call to fetch letters to translate"""
