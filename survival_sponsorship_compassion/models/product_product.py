@@ -201,10 +201,11 @@ class ProductProduct(models.Model):
         for product in self:
             if not (product.slot_used >= 80 and product.survival_sponsorship_sale):
                 continue
-            # slot_used changes with every contract line: warn only once.
-            if product.activity_ids.filtered(lambda a, s=summary: a.summary == s):
-                continue
-            for user in users:
+            # slot_used changes with every contract line: warn each user only once.
+            warned = product.activity_ids.filtered(
+                lambda a, s=summary: a.summary == s
+            ).user_id
+            for user in users - warned:
                 product.activity_schedule(
                     date_deadline=datetime.today() + relativedelta(days=7),
                     summary=summary,
