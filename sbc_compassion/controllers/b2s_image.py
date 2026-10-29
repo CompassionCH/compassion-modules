@@ -8,7 +8,6 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime
 from io import BytesIO
 from os import path
 from zipfile import ZipFile
@@ -79,7 +78,7 @@ class RestController(http.Controller):
         correspondence = correspondence_obj.search([("uuid", "=", letter_uuid)])
         if not correspondence:
             raise NotFound()
-        correspondence.email_read = datetime.now()
+        correspondence.mark_email_read()
         disposition = disposition or "attachment"
         if disposition not in ("attachment", "inline"):
             raise BadRequest()
