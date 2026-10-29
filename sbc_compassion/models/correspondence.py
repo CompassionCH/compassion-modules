@@ -17,6 +17,7 @@ import uuid
 from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
+from psycopg2 import OperationalError
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
@@ -771,6 +772,34 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def mark_email_read(self):
+        """Set the date at which the letters were first read through the e-mail
+        link. A letter opened again keeps its first date.
+
+        This must never prevent a sponsor from seeing the letter: when another
+        transaction is updating the same letters, the date is set later by a job.
+        """
+        unread = self.filtered(lambda letter: not letter.email_read)
+        if not unread:
+            return True
+        read_date = fields.Datetime.now()
+        try:
+            with self.env.cr.savepoint():
+                unread._set_email_read(read_date)
+        except OperationalError:
+            _logger.info(
+                "Letters %s: concurrent update, marking as read later", unread.ids
+            )
+            unread.with_delay_sh("_set_email_read", read_date)
+        return True
+
+    def _set_email_read(self, read_date):
+        """Also run as a job: letters read in the meantime keep their date."""
+        self.filtered(lambda letter: not letter.email_read).write(
+            {"email_read": read_date}
+        )
+        return True
+
     def validate(self):
         for letter in self:
             if letter.state == "Draft":
