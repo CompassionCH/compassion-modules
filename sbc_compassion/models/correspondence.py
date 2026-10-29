@@ -794,8 +794,14 @@ class Correspondence(models.Model):
         return True
 
     def _set_email_read(self, read_date):
-        """Also run as a job: letters read in the meantime keep their date."""
-        self.filtered(lambda letter: not letter.email_read).write(
+        """Also run as a job: letters read in the meantime keep their date.
+
+        A job runs as the user who queued it, which is the public user for a
+        sponsor opening the link without being logged in. The callers (the
+        letter download controllers) already use sudo for this, but a job does
+        not keep it, so the access is restored here.
+        """
+        self.sudo().filtered(lambda letter: not letter.email_read).write(
             {"email_read": read_date}
         )
         return True

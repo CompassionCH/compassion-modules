@@ -11,10 +11,13 @@
 import base64
 import logging
 import os
+from datetime import datetime
 from os import path
 from unittest.mock import patch
 
 from psycopg2 import OperationalError
+
+from odoo import fields
 
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
     BaseSponsorshipTest,
@@ -65,13 +68,26 @@ class TestSbcCompassion(BaseSponsorshipTest):
     def test_mark_email_read_keeps_first_read_date(self):
         letter = self._create_letter()
         self.assertFalse(letter.email_read)
+        first_read = datetime(2026, 1, 1, 10, 0, 0)
+        second_read = datetime(2026, 1, 1, 10, 0, 5)
 
-        letter.mark_email_read()
-        first_read = letter.email_read
-        self.assertTrue(first_read)
-
-        letter.mark_email_read()
+        with patch.object(fields.Datetime, "now", return_value=first_read):
+            letter.mark_email_read()
         self.assertEqual(letter.email_read, first_read)
+
+        with patch.object(fields.Datetime, "now", return_value=second_read):
+            letter.mark_email_read()
+        self.assertEqual(letter.email_read, first_read)
+
+    def test_set_email_read_works_for_the_public_user(self):
+        """The fallback job runs as the user who queued it (public user)"""
+        letter = self._create_letter()
+        read_date = datetime(2026, 1, 1, 10, 0, 0)
+        public_user = self.env.ref("base.public_user")
+
+        letter.with_user(public_user)._set_email_read(read_date)
+
+        self.assertEqual(letter.email_read, read_date)
 
     def test_mark_email_read_falls_back_to_a_job(self):
         letter = self._create_letter()
