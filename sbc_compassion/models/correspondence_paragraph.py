@@ -81,8 +81,12 @@ class CorrespondenceParagraph(models.Model):
         self.ensure_one()
         text_box = self.get_text_box(field_name)
         text = self[field_name]
-        if not text_box or not text:
+        if not text:
             return text, ""
+        if not text_box:
+            # The page has no box for this text (e.g. B2S L4/L6 print the
+            # translation on page 2 only): move it to the next box.
+            return "", text
         try:
             return text_box.split_text(text)
         except Exception:

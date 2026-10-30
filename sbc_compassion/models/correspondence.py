@@ -1272,17 +1272,24 @@ class Correspondence(models.Model):
             return flat_images
         return images
 
-    def spread_text_to_pages(self):
+    def spread_text_to_pages(self, fields_to_check=None):
         """
         Used for the report generation.
         We spread the text to the pages to be used in the report
         depending on the text box sizes.
         """
         self.ensure_one()
-        fields_to_check = ["original_text", "english_text", "translated_text"]
+        fields_to_check = fields_to_check or [
+            "original_text",
+            "english_text",
+            "translated_text",
+        ]
         new_page = self.env["correspondence.page"]
 
         for field in fields_to_check:
+            if not self._has_text_box(field):
+                # The text would be moved to new pages forever.
+                continue
             overflow = ""
             for page in self.page_ids:
                 overflow = self._process_page_text(page, field, overflow)
@@ -1291,9 +1298,13 @@ class Correspondence(models.Model):
                 new_page = self._create_new_page(new_page, field, overflow)
 
         if new_page:
-            self.spread_text_to_pages()
+            self.spread_text_to_pages(fields_to_check)
 
         return True
+
+    def _has_text_box(self, field):
+        text_type = "Original" if field == "original_text" else "Translation"
+        return text_type in self.page_ids.template_id.text_box_ids.mapped("text_type")
 
     def _process_page_text(self, page, field, overflow):
         for paragraph in page.paragraph_ids:

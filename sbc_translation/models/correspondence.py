@@ -644,6 +644,8 @@ class Correspondence(models.Model):
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
         else:
+            if self.report_needs_final_text:
+                self.with_user(SUPERUSER_ID).spread_text_to_pages(["translated_text"])
             # Translation is done: publish the B2S letter to the sponsor
             self.with_user(SUPERUSER_ID).with_context(
                 force_publish=True
