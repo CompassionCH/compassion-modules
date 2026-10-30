@@ -1306,21 +1306,12 @@ class Correspondence(models.Model):
         return overflow
 
     def _handle_overflow(self, paragraph, field, overflow):
-        text_box = paragraph.get_text_box(field)
-        total_length = len(overflow) + len(paragraph[field]) + (text_box.line_size or 0)
-
-        if total_length <= (text_box.max_chars or 0):
-            paragraph[field] = f"{overflow}\n\n{paragraph[field]}"
-            overflow = ""
-        else:
-            next_box_text = paragraph[field]
-            paragraph[field] = overflow
-            text, overflow = paragraph.check_overflow(field)
-            if overflow:
-                overflow = f"{overflow}\n\n{next_box_text}"
-                paragraph[field] = text
-            else:
-                overflow = next_box_text
+        if paragraph[field]:
+            overflow = f"{overflow}\n\n{paragraph[field]}"
+        paragraph[field] = overflow
+        text, overflow = paragraph.check_overflow(field)
+        if overflow:
+            paragraph[field] = text
         return overflow
 
     def _create_new_page(self, new_page, field, overflow):

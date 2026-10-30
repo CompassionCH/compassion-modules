@@ -18,6 +18,12 @@
 .container {
   padding: 0;
 }
+/* Must match the text layout measured in correspondence_text_box.py */
+.overlay {
+  font-family: "Lato";
+  font-size: 16px;
+  word-wrap: break-word;
+}
 .overlay p {
   margin: 0 0 5mm;
   min-height: 1em;
@@ -59,7 +65,7 @@
                     t-att-style="text_box.fetch_style('original_text')"
                   >
                                         <t
-                      t-foreach="text_box.original_text.split('\n')"
+                      t-foreach="(text_box.original_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
@@ -71,7 +77,7 @@
                     t-att-style="text_box.fetch_style('translated_text')"
                   >
                                         <t
-                      t-foreach="text_box.translated_text.split('\n')"
+                      t-foreach="(text_box.translated_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
@@ -83,7 +89,7 @@
                     t-att-style="text_box.fetch_style('english_text')"
                   >
                                         <t
-                      t-foreach="text_box.english_text.split('\n')"
+                      t-foreach="(text_box.english_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
