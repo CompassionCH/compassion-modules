@@ -1346,6 +1346,8 @@ class Correspondence(models.Model):
                     ("kit_identifier", "=", False),
                     ("state", "=", "Exception"),
                     ("on_hold", "=", True),
+                    # Released with the project reactivation instead
+                    ("child_id.project_id.hold_s2b_letters", "!=", True),
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
