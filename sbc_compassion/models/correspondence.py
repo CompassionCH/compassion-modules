@@ -1304,7 +1304,11 @@ class Correspondence(models.Model):
 
     def _has_text_box(self, field):
         text_type = "Original" if field == "original_text" else "Translation"
-        return text_type in self.page_ids.template_id.text_box_ids.mapped("text_type")
+        # Same templates as the pages created to hold the overflow
+        templates = self.page_ids.template_id | self.template_id.page_ids
+        if self.direction == "Beneficiary To Supporter":
+            templates |= self.template_id.additional_page_id
+        return text_type in templates.text_box_ids.mapped("text_type")
 
     def _process_page_text(self, page, field, overflow):
         for paragraph in page.paragraph_ids:
