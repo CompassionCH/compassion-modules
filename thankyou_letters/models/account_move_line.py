@@ -85,7 +85,14 @@ class AccountInvoiceLine(models.Model):
 
         all_thanks_config_ids = (
             self.env["partner.communication.config"]
-            .search([("send_mode_pref_field", "like", "thankyou_preference")])
+            .search(
+                [
+                    ("send_mode_pref_field", "like", "thankyou_preference"),
+                    # Other configs (e.g. third party letters on res.partner)
+                    # share the preference field but not the model.
+                    ("model_id.model", "=", self._name),
+                ]
+            )
             .ids
         )
 
