@@ -133,7 +133,7 @@ class CorrespondenceTextBox(models.Model):
         for index, paragraph in enumerate(paragraphs):
             lines = self._wrap_lines(paragraph.split(), max_width)
             if lines:
-                nb_lines = int((max_height - height) // line_height)
+                nb_lines = max(0, int((max_height - height) // line_height))
                 height += len(lines) * line_height
             else:
                 # An empty paragraph keeps the height of one character.
@@ -194,6 +194,20 @@ class CorrespondenceTextBox(models.Model):
                 and _text_width(_join_words(last_line + [CUT_MARK])) > max_width
             ):
                 overflow_words.insert(0, last_line.pop())
+            # A single word too wide for the mark is cut to make room for it.
+            word = last_line[-1]
+            keep = len(word)
+            while (
+                keep > 1
+                and _text_width(
+                    _join_words(last_line[:-1] + [type(word)(word[:keep]), CUT_MARK])
+                )
+                > max_width
+            ):
+                keep -= 1
+            if keep < len(word):
+                last_line[-1] = type(word)(word[:keep])
+                overflow_words.insert(0, _WordChunk(word[keep:]))
             last_line.append(CUT_MARK)
             # It starts the next page: no previous chunk to be glued to.
             overflow_words[0] = str(overflow_words[0])
