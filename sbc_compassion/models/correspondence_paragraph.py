@@ -83,7 +83,12 @@ class CorrespondenceParagraph(models.Model):
         text = self[field_name]
         if not text_box or not text:
             return text, ""
-        return text_box.split_text(text)
+        try:
+            return text_box.split_text(text)
+        except Exception:
+            # Never block the creation of a letter: keep the text uncut instead.
+            _logger.exception("Could not measure the text of paragraph %s", self.id)
+            return text, ""
 
     def get_text_box(self, field_name):
         """

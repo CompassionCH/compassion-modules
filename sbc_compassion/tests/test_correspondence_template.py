@@ -1,5 +1,7 @@
 from odoo.tests import TransactionCase
 
+from ..models.correspondence_text_box import PAGE_WIDTH_PX
+
 
 class TestCorrespondenceTemplate(TransactionCase):
     def test_copy_template_shares_text_boxes(self):
@@ -52,6 +54,8 @@ class TestTextSpreading(TransactionCase):
         pages = []
         for _i in range(1000):
             fits, overflow = self.text_box.split_text(text)
+            # What is kept on a page must really fit in the box.
+            self.assertEqual(self.text_box.split_text(fits), (fits, ""))
             pages.append(fits)
             if not overflow:
                 return pages
@@ -89,6 +93,17 @@ class TestTextSpreading(TransactionCase):
             self.assertLessEqual(len(parts), 1, f"Space inserted in URL: {page}")
             url_parts.extend(parts)
         self.assertEqual("".join(url_parts), url)
+
+    def test_paragraph_filling_the_box(self):
+        # The margin after a paragraph filling the box leaves no room for the next
+        box = self.text_box
+        max_width = box.width / 100 * PAGE_WIDTH_PX
+        words = []
+        while len(box._wrap_lines(words + ["lorem"], max_width)) <= 30:
+            words.append("lorem")
+        first = " ".join(words)
+        pages = self._spread(first + "\n" + "second paragraph " * 20)
+        self.assertEqual(pages[0], first)
 
     def test_nothing_fits_keeps_text(self):
         self.text_box.height = 1

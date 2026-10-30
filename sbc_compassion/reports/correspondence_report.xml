@@ -65,7 +65,7 @@
                     t-att-style="text_box.fetch_style('original_text')"
                   >
                                         <t
-                      t-foreach="text_box.original_text.split('\n')"
+                      t-foreach="(text_box.original_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
@@ -77,7 +77,7 @@
                     t-att-style="text_box.fetch_style('translated_text')"
                   >
                                         <t
-                      t-foreach="text_box.translated_text.split('\n')"
+                      t-foreach="(text_box.translated_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
@@ -89,7 +89,7 @@
                     t-att-style="text_box.fetch_style('english_text')"
                   >
                                         <t
-                      t-foreach="text_box.english_text.split('\n')"
+                      t-foreach="(text_box.english_text or '').split('\n')"
                       t-as="p"
                     >
                                             <p t-out="p" />
