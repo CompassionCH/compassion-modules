@@ -14,22 +14,6 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 
-class _WordChunk(str):
-    """
-    Part of a word that was too long for a text box. It continues the previous
-    chunk, so it is joined to it without a space.
-    """
-
-
-def _join_words(words):
-    text = ""
-    for word in words:
-        if text and not isinstance(word, _WordChunk):
-            text += " "
-        text += word
-    return text
-
-
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
 
@@ -97,71 +81,9 @@ class CorrespondenceParagraph(models.Model):
         self.ensure_one()
         text_box = self.get_text_box(field_name)
         text = self[field_name]
-        max_chars = text_box.max_chars
-        line_length = text_box.line_size
-
-        if not max_chars or not line_length or not text:
+        if not text_box or not text:
             return text, ""
-
-        text_that_fits, text_that_overflows = self._split_text(
-            text, max_chars, line_length
-        )
-        return self._finalize_text(text_that_fits, text_that_overflows)
-
-    def _split_text(self, text, max_chars, line_length):
-        text_that_fits = []
-        text_that_overflows = []
-        current_line_length = 0
-        total_chars = 0
-        lbr_replace = "$" * line_length
-
-        words = []
-        # A word longer than the box (long URL, text without spaces) would never
-        # fit and would be pushed to the next page forever: we split it in chunks
-        # that are glued back together when the text is joined.
-        max_word_length = max(max_chars - 1, 1)
-        for word in text.replace("\n", " " + lbr_replace + " ").split():
-            if word != lbr_replace and len(word) > max_word_length:
-                words.append(word[:max_word_length])
-                words.extend(
-                    _WordChunk(word[i : i + max_word_length])
-                    for i in range(max_word_length, len(word), max_word_length)
-                )
-            else:
-                words.append(word)
-
-        for word in words:
-            is_lbr = word == lbr_replace
-            is_chunk = isinstance(word, _WordChunk)
-            word_length = len(word) if not is_lbr else line_length - current_line_length
-            separator_length = 0 if is_chunk else 1
-            current_line_length += word_length + separator_length
-            if current_line_length >= line_length:
-                current_line_length = 0
-            total_chars += word_length + separator_length
-            if total_chars <= max_chars:
-                text_that_fits.append(word if not is_lbr else "\n")
-            else:
-                text_that_overflows.append(word if not is_lbr else "\n")
-
-        return text_that_fits, text_that_overflows
-
-    def _finalize_text(self, text_that_fits, text_that_overflows):
-        if not text_that_fits:
-            # Nothing fits in the box: keep the text here, moving it to the next
-            # page would only repeat the same overflow.
-            return _join_words(text_that_overflows), ""
-        real_words = [word for word in text_that_fits if word != "..."]
-        if text_that_overflows and len(real_words) > 1:
-            # Moving the last word to the next page marks the cut with "...".
-            # With a single word, it would leave the page without any text and
-            # make no progress.
-            # It starts the next page: no previous chunk to be glued to.
-            last_word = str(text_that_fits.pop())
-            text_that_overflows.insert(0, last_word)
-            text_that_overflows.insert(0, "...")
-            text_that_fits.append("...")
-        return _join_words(text_that_fits), _join_words(text_that_overflows)
+        return text_box.split_text(text)
 
     def get_text_box(self, field_name):
         """
