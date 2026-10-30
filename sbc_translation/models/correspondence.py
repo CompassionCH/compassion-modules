@@ -644,8 +644,7 @@ class Correspondence(models.Model):
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
         else:
-            if self.report_needs_final_text:
-                self.with_user(SUPERUSER_ID).spread_text_to_pages(["translated_text"])
+            self.with_user(SUPERUSER_ID).spread_translation()
             # Translation is done: publish the B2S letter to the sponsor
             self.with_user(SUPERUSER_ID).with_context(
                 force_publish=True
@@ -653,6 +652,13 @@ class Correspondence(models.Model):
 
         if self.new_translator_id:
             self.new_translator_id.sudo()._evaluate_badges()
+
+    def spread_translation(self):
+        """Fit the translation in the boxes of the letters printing it on
+        their original image."""
+        for letter in self.filtered("report_needs_final_text"):
+            letter.spread_text_to_pages(["translated_text"])
+        return True
 
     def list_letters(self):
         """API call to fetch letters to translate"""
