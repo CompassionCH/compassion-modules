@@ -1,0 +1,1612 @@
+{
+ "version": 21,
+ "sheets": [
+  {
+   "id": "fundraising-dashboard",
+   "name": "Dashboard",
+   "colNumber": 10,
+   "rowNumber": 66,
+   "rows": {
+    "11": {
+     "size": 40
+    },
+    "28": {
+     "size": 40
+    },
+    "43": {
+     "size": 40
+    }
+   },
+   "cols": {
+    "0": {
+     "size": 230
+    },
+    "1": {
+     "size": 110
+    },
+    "2": {
+     "size": 130
+    },
+    "3": {
+     "size": 120
+    },
+    "4": {
+     "size": 90
+    },
+    "5": {
+     "size": 90
+    },
+    "6": {
+     "size": 90
+    },
+    "7": {
+     "size": 90
+    },
+    "8": {
+     "size": 90
+    },
+    "9": {
+     "size": 80
+    }
+   },
+   "merges": [],
+   "cells": {
+    "A12": {
+     "content": "[Funding gap by country](odoo://ir_menu_xml_id/intervention_fundraising.menu_fundraising_gap)"
+    },
+    "F12": {
+     "content": "[Interventions by funding level](odoo://ir_menu_xml_id/intervention_fundraising.menu_fundraising_gap)"
+    },
+    "A29": {
+     "content": "[Funding gap by category](odoo://ir_menu_xml_id/intervention_fundraising.menu_fundraising_gap)"
+    },
+    "A44": {
+     "content": "[Interventions to fund (largest gap first)](odoo://ir_menu_xml_id/intervention_fundraising.menu_fundraising_gap)"
+    },
+    "A45": {
+     "content": "=_t(\"Intervention\")"
+    },
+    "A46": {
+     "content": "=ODOO.LIST(1,1,\"name\")"
+    },
+    "A47": {
+     "content": "=ODOO.LIST(1,2,\"name\")"
+    },
+    "A48": {
+     "content": "=ODOO.LIST(1,3,\"name\")"
+    },
+    "A49": {
+     "content": "=ODOO.LIST(1,4,\"name\")"
+    },
+    "A50": {
+     "content": "=ODOO.LIST(1,5,\"name\")"
+    },
+    "A51": {
+     "content": "=ODOO.LIST(1,6,\"name\")"
+    },
+    "A52": {
+     "content": "=ODOO.LIST(1,7,\"name\")"
+    },
+    "A53": {
+     "content": "=ODOO.LIST(1,8,\"name\")"
+    },
+    "A54": {
+     "content": "=ODOO.LIST(1,9,\"name\")"
+    },
+    "A55": {
+     "content": "=ODOO.LIST(1,10,\"name\")"
+    },
+    "A56": {
+     "content": "=ODOO.LIST(1,11,\"name\")"
+    },
+    "A57": {
+     "content": "=ODOO.LIST(1,12,\"name\")"
+    },
+    "A58": {
+     "content": "=ODOO.LIST(1,13,\"name\")"
+    },
+    "A59": {
+     "content": "=ODOO.LIST(1,14,\"name\")"
+    },
+    "A60": {
+     "content": "=ODOO.LIST(1,15,\"name\")"
+    },
+    "A61": {
+     "content": "=ODOO.LIST(1,16,\"name\")"
+    },
+    "A62": {
+     "content": "=ODOO.LIST(1,17,\"name\")"
+    },
+    "A63": {
+     "content": "=ODOO.LIST(1,18,\"name\")"
+    },
+    "A64": {
+     "content": "=ODOO.LIST(1,19,\"name\")"
+    },
+    "A65": {
+     "content": "=ODOO.LIST(1,20,\"name\")"
+    },
+    "B45": {
+     "content": "=_t(\"Country\")"
+    },
+    "B46": {
+     "content": "=ODOO.LIST(1,1,\"country_id\")"
+    },
+    "B47": {
+     "content": "=ODOO.LIST(1,2,\"country_id\")"
+    },
+    "B48": {
+     "content": "=ODOO.LIST(1,3,\"country_id\")"
+    },
+    "B49": {
+     "content": "=ODOO.LIST(1,4,\"country_id\")"
+    },
+    "B50": {
+     "content": "=ODOO.LIST(1,5,\"country_id\")"
+    },
+    "B51": {
+     "content": "=ODOO.LIST(1,6,\"country_id\")"
+    },
+    "B52": {
+     "content": "=ODOO.LIST(1,7,\"country_id\")"
+    },
+    "B53": {
+     "content": "=ODOO.LIST(1,8,\"country_id\")"
+    },
+    "B54": {
+     "content": "=ODOO.LIST(1,9,\"country_id\")"
+    },
+    "B55": {
+     "content": "=ODOO.LIST(1,10,\"country_id\")"
+    },
+    "B56": {
+     "content": "=ODOO.LIST(1,11,\"country_id\")"
+    },
+    "B57": {
+     "content": "=ODOO.LIST(1,12,\"country_id\")"
+    },
+    "B58": {
+     "content": "=ODOO.LIST(1,13,\"country_id\")"
+    },
+    "B59": {
+     "content": "=ODOO.LIST(1,14,\"country_id\")"
+    },
+    "B60": {
+     "content": "=ODOO.LIST(1,15,\"country_id\")"
+    },
+    "B61": {
+     "content": "=ODOO.LIST(1,16,\"country_id\")"
+    },
+    "B62": {
+     "content": "=ODOO.LIST(1,17,\"country_id\")"
+    },
+    "B63": {
+     "content": "=ODOO.LIST(1,18,\"country_id\")"
+    },
+    "B64": {
+     "content": "=ODOO.LIST(1,19,\"country_id\")"
+    },
+    "B65": {
+     "content": "=ODOO.LIST(1,20,\"country_id\")"
+    },
+    "C45": {
+     "content": "=_t(\"Category\")"
+    },
+    "C46": {
+     "content": "=ODOO.LIST(1,1,\"category_id\")"
+    },
+    "C47": {
+     "content": "=ODOO.LIST(1,2,\"category_id\")"
+    },
+    "C48": {
+     "content": "=ODOO.LIST(1,3,\"category_id\")"
+    },
+    "C49": {
+     "content": "=ODOO.LIST(1,4,\"category_id\")"
+    },
+    "C50": {
+     "content": "=ODOO.LIST(1,5,\"category_id\")"
+    },
+    "C51": {
+     "content": "=ODOO.LIST(1,6,\"category_id\")"
+    },
+    "C52": {
+     "content": "=ODOO.LIST(1,7,\"category_id\")"
+    },
+    "C53": {
+     "content": "=ODOO.LIST(1,8,\"category_id\")"
+    },
+    "C54": {
+     "content": "=ODOO.LIST(1,9,\"category_id\")"
+    },
+    "C55": {
+     "content": "=ODOO.LIST(1,10,\"category_id\")"
+    },
+    "C56": {
+     "content": "=ODOO.LIST(1,11,\"category_id\")"
+    },
+    "C57": {
+     "content": "=ODOO.LIST(1,12,\"category_id\")"
+    },
+    "C58": {
+     "content": "=ODOO.LIST(1,13,\"category_id\")"
+    },
+    "C59": {
+     "content": "=ODOO.LIST(1,14,\"category_id\")"
+    },
+    "C60": {
+     "content": "=ODOO.LIST(1,15,\"category_id\")"
+    },
+    "C61": {
+     "content": "=ODOO.LIST(1,16,\"category_id\")"
+    },
+    "C62": {
+     "content": "=ODOO.LIST(1,17,\"category_id\")"
+    },
+    "C63": {
+     "content": "=ODOO.LIST(1,18,\"category_id\")"
+    },
+    "C64": {
+     "content": "=ODOO.LIST(1,19,\"category_id\")"
+    },
+    "C65": {
+     "content": "=ODOO.LIST(1,20,\"category_id\")"
+    },
+    "D45": {
+     "content": "=_t(\"Fundraiser\")"
+    },
+    "D46": {
+     "content": "=ODOO.LIST(1,1,\"fundraiser_id\")"
+    },
+    "D47": {
+     "content": "=ODOO.LIST(1,2,\"fundraiser_id\")"
+    },
+    "D48": {
+     "content": "=ODOO.LIST(1,3,\"fundraiser_id\")"
+    },
+    "D49": {
+     "content": "=ODOO.LIST(1,4,\"fundraiser_id\")"
+    },
+    "D50": {
+     "content": "=ODOO.LIST(1,5,\"fundraiser_id\")"
+    },
+    "D51": {
+     "content": "=ODOO.LIST(1,6,\"fundraiser_id\")"
+    },
+    "D52": {
+     "content": "=ODOO.LIST(1,7,\"fundraiser_id\")"
+    },
+    "D53": {
+     "content": "=ODOO.LIST(1,8,\"fundraiser_id\")"
+    },
+    "D54": {
+     "content": "=ODOO.LIST(1,9,\"fundraiser_id\")"
+    },
+    "D55": {
+     "content": "=ODOO.LIST(1,10,\"fundraiser_id\")"
+    },
+    "D56": {
+     "content": "=ODOO.LIST(1,11,\"fundraiser_id\")"
+    },
+    "D57": {
+     "content": "=ODOO.LIST(1,12,\"fundraiser_id\")"
+    },
+    "D58": {
+     "content": "=ODOO.LIST(1,13,\"fundraiser_id\")"
+    },
+    "D59": {
+     "content": "=ODOO.LIST(1,14,\"fundraiser_id\")"
+    },
+    "D60": {
+     "content": "=ODOO.LIST(1,15,\"fundraiser_id\")"
+    },
+    "D61": {
+     "content": "=ODOO.LIST(1,16,\"fundraiser_id\")"
+    },
+    "D62": {
+     "content": "=ODOO.LIST(1,17,\"fundraiser_id\")"
+    },
+    "D63": {
+     "content": "=ODOO.LIST(1,18,\"fundraiser_id\")"
+    },
+    "D64": {
+     "content": "=ODOO.LIST(1,19,\"fundraiser_id\")"
+    },
+    "D65": {
+     "content": "=ODOO.LIST(1,20,\"fundraiser_id\")"
+    },
+    "E45": {
+     "content": "=_t(\"Deadline\")"
+    },
+    "E46": {
+     "content": "=ODOO.LIST(1,1,\"fundraising_deadline\")"
+    },
+    "E47": {
+     "content": "=ODOO.LIST(1,2,\"fundraising_deadline\")"
+    },
+    "E48": {
+     "content": "=ODOO.LIST(1,3,\"fundraising_deadline\")"
+    },
+    "E49": {
+     "content": "=ODOO.LIST(1,4,\"fundraising_deadline\")"
+    },
+    "E50": {
+     "content": "=ODOO.LIST(1,5,\"fundraising_deadline\")"
+    },
+    "E51": {
+     "content": "=ODOO.LIST(1,6,\"fundraising_deadline\")"
+    },
+    "E52": {
+     "content": "=ODOO.LIST(1,7,\"fundraising_deadline\")"
+    },
+    "E53": {
+     "content": "=ODOO.LIST(1,8,\"fundraising_deadline\")"
+    },
+    "E54": {
+     "content": "=ODOO.LIST(1,9,\"fundraising_deadline\")"
+    },
+    "E55": {
+     "content": "=ODOO.LIST(1,10,\"fundraising_deadline\")"
+    },
+    "E56": {
+     "content": "=ODOO.LIST(1,11,\"fundraising_deadline\")"
+    },
+    "E57": {
+     "content": "=ODOO.LIST(1,12,\"fundraising_deadline\")"
+    },
+    "E58": {
+     "content": "=ODOO.LIST(1,13,\"fundraising_deadline\")"
+    },
+    "E59": {
+     "content": "=ODOO.LIST(1,14,\"fundraising_deadline\")"
+    },
+    "E60": {
+     "content": "=ODOO.LIST(1,15,\"fundraising_deadline\")"
+    },
+    "E61": {
+     "content": "=ODOO.LIST(1,16,\"fundraising_deadline\")"
+    },
+    "E62": {
+     "content": "=ODOO.LIST(1,17,\"fundraising_deadline\")"
+    },
+    "E63": {
+     "content": "=ODOO.LIST(1,18,\"fundraising_deadline\")"
+    },
+    "E64": {
+     "content": "=ODOO.LIST(1,19,\"fundraising_deadline\")"
+    },
+    "E65": {
+     "content": "=ODOO.LIST(1,20,\"fundraising_deadline\")"
+    },
+    "F45": {
+     "content": "=_t(\"Cost\")"
+    },
+    "F46": {
+     "content": "=ODOO.LIST(1,1,\"cost\")"
+    },
+    "F47": {
+     "content": "=ODOO.LIST(1,2,\"cost\")"
+    },
+    "F48": {
+     "content": "=ODOO.LIST(1,3,\"cost\")"
+    },
+    "F49": {
+     "content": "=ODOO.LIST(1,4,\"cost\")"
+    },
+    "F50": {
+     "content": "=ODOO.LIST(1,5,\"cost\")"
+    },
+    "F51": {
+     "content": "=ODOO.LIST(1,6,\"cost\")"
+    },
+    "F52": {
+     "content": "=ODOO.LIST(1,7,\"cost\")"
+    },
+    "F53": {
+     "content": "=ODOO.LIST(1,8,\"cost\")"
+    },
+    "F54": {
+     "content": "=ODOO.LIST(1,9,\"cost\")"
+    },
+    "F55": {
+     "content": "=ODOO.LIST(1,10,\"cost\")"
+    },
+    "F56": {
+     "content": "=ODOO.LIST(1,11,\"cost\")"
+    },
+    "F57": {
+     "content": "=ODOO.LIST(1,12,\"cost\")"
+    },
+    "F58": {
+     "content": "=ODOO.LIST(1,13,\"cost\")"
+    },
+    "F59": {
+     "content": "=ODOO.LIST(1,14,\"cost\")"
+    },
+    "F60": {
+     "content": "=ODOO.LIST(1,15,\"cost\")"
+    },
+    "F61": {
+     "content": "=ODOO.LIST(1,16,\"cost\")"
+    },
+    "F62": {
+     "content": "=ODOO.LIST(1,17,\"cost\")"
+    },
+    "F63": {
+     "content": "=ODOO.LIST(1,18,\"cost\")"
+    },
+    "F64": {
+     "content": "=ODOO.LIST(1,19,\"cost\")"
+    },
+    "F65": {
+     "content": "=ODOO.LIST(1,20,\"cost\")"
+    },
+    "G45": {
+     "content": "=_t(\"Received\")"
+    },
+    "G46": {
+     "content": "=ODOO.LIST(1,1,\"received\")"
+    },
+    "G47": {
+     "content": "=ODOO.LIST(1,2,\"received\")"
+    },
+    "G48": {
+     "content": "=ODOO.LIST(1,3,\"received\")"
+    },
+    "G49": {
+     "content": "=ODOO.LIST(1,4,\"received\")"
+    },
+    "G50": {
+     "content": "=ODOO.LIST(1,5,\"received\")"
+    },
+    "G51": {
+     "content": "=ODOO.LIST(1,6,\"received\")"
+    },
+    "G52": {
+     "content": "=ODOO.LIST(1,7,\"received\")"
+    },
+    "G53": {
+     "content": "=ODOO.LIST(1,8,\"received\")"
+    },
+    "G54": {
+     "content": "=ODOO.LIST(1,9,\"received\")"
+    },
+    "G55": {
+     "content": "=ODOO.LIST(1,10,\"received\")"
+    },
+    "G56": {
+     "content": "=ODOO.LIST(1,11,\"received\")"
+    },
+    "G57": {
+     "content": "=ODOO.LIST(1,12,\"received\")"
+    },
+    "G58": {
+     "content": "=ODOO.LIST(1,13,\"received\")"
+    },
+    "G59": {
+     "content": "=ODOO.LIST(1,14,\"received\")"
+    },
+    "G60": {
+     "content": "=ODOO.LIST(1,15,\"received\")"
+    },
+    "G61": {
+     "content": "=ODOO.LIST(1,16,\"received\")"
+    },
+    "G62": {
+     "content": "=ODOO.LIST(1,17,\"received\")"
+    },
+    "G63": {
+     "content": "=ODOO.LIST(1,18,\"received\")"
+    },
+    "G64": {
+     "content": "=ODOO.LIST(1,19,\"received\")"
+    },
+    "G65": {
+     "content": "=ODOO.LIST(1,20,\"received\")"
+    },
+    "H45": {
+     "content": "=_t(\"Pledged\")"
+    },
+    "H46": {
+     "content": "=ODOO.LIST(1,1,\"pledged\")"
+    },
+    "H47": {
+     "content": "=ODOO.LIST(1,2,\"pledged\")"
+    },
+    "H48": {
+     "content": "=ODOO.LIST(1,3,\"pledged\")"
+    },
+    "H49": {
+     "content": "=ODOO.LIST(1,4,\"pledged\")"
+    },
+    "H50": {
+     "content": "=ODOO.LIST(1,5,\"pledged\")"
+    },
+    "H51": {
+     "content": "=ODOO.LIST(1,6,\"pledged\")"
+    },
+    "H52": {
+     "content": "=ODOO.LIST(1,7,\"pledged\")"
+    },
+    "H53": {
+     "content": "=ODOO.LIST(1,8,\"pledged\")"
+    },
+    "H54": {
+     "content": "=ODOO.LIST(1,9,\"pledged\")"
+    },
+    "H55": {
+     "content": "=ODOO.LIST(1,10,\"pledged\")"
+    },
+    "H56": {
+     "content": "=ODOO.LIST(1,11,\"pledged\")"
+    },
+    "H57": {
+     "content": "=ODOO.LIST(1,12,\"pledged\")"
+    },
+    "H58": {
+     "content": "=ODOO.LIST(1,13,\"pledged\")"
+    },
+    "H59": {
+     "content": "=ODOO.LIST(1,14,\"pledged\")"
+    },
+    "H60": {
+     "content": "=ODOO.LIST(1,15,\"pledged\")"
+    },
+    "H61": {
+     "content": "=ODOO.LIST(1,16,\"pledged\")"
+    },
+    "H62": {
+     "content": "=ODOO.LIST(1,17,\"pledged\")"
+    },
+    "H63": {
+     "content": "=ODOO.LIST(1,18,\"pledged\")"
+    },
+    "H64": {
+     "content": "=ODOO.LIST(1,19,\"pledged\")"
+    },
+    "H65": {
+     "content": "=ODOO.LIST(1,20,\"pledged\")"
+    },
+    "I45": {
+     "content": "=_t(\"Gap\")"
+    },
+    "I46": {
+     "content": "=ODOO.LIST(1,1,\"gap\")"
+    },
+    "I47": {
+     "content": "=ODOO.LIST(1,2,\"gap\")"
+    },
+    "I48": {
+     "content": "=ODOO.LIST(1,3,\"gap\")"
+    },
+    "I49": {
+     "content": "=ODOO.LIST(1,4,\"gap\")"
+    },
+    "I50": {
+     "content": "=ODOO.LIST(1,5,\"gap\")"
+    },
+    "I51": {
+     "content": "=ODOO.LIST(1,6,\"gap\")"
+    },
+    "I52": {
+     "content": "=ODOO.LIST(1,7,\"gap\")"
+    },
+    "I53": {
+     "content": "=ODOO.LIST(1,8,\"gap\")"
+    },
+    "I54": {
+     "content": "=ODOO.LIST(1,9,\"gap\")"
+    },
+    "I55": {
+     "content": "=ODOO.LIST(1,10,\"gap\")"
+    },
+    "I56": {
+     "content": "=ODOO.LIST(1,11,\"gap\")"
+    },
+    "I57": {
+     "content": "=ODOO.LIST(1,12,\"gap\")"
+    },
+    "I58": {
+     "content": "=ODOO.LIST(1,13,\"gap\")"
+    },
+    "I59": {
+     "content": "=ODOO.LIST(1,14,\"gap\")"
+    },
+    "I60": {
+     "content": "=ODOO.LIST(1,15,\"gap\")"
+    },
+    "I61": {
+     "content": "=ODOO.LIST(1,16,\"gap\")"
+    },
+    "I62": {
+     "content": "=ODOO.LIST(1,17,\"gap\")"
+    },
+    "I63": {
+     "content": "=ODOO.LIST(1,18,\"gap\")"
+    },
+    "I64": {
+     "content": "=ODOO.LIST(1,19,\"gap\")"
+    },
+    "I65": {
+     "content": "=ODOO.LIST(1,20,\"gap\")"
+    },
+    "J45": {
+     "content": "=_t(\"Coverage %\")"
+    },
+    "J46": {
+     "content": "=ODOO.LIST(1,1,\"coverage\")"
+    },
+    "J47": {
+     "content": "=ODOO.LIST(1,2,\"coverage\")"
+    },
+    "J48": {
+     "content": "=ODOO.LIST(1,3,\"coverage\")"
+    },
+    "J49": {
+     "content": "=ODOO.LIST(1,4,\"coverage\")"
+    },
+    "J50": {
+     "content": "=ODOO.LIST(1,5,\"coverage\")"
+    },
+    "J51": {
+     "content": "=ODOO.LIST(1,6,\"coverage\")"
+    },
+    "J52": {
+     "content": "=ODOO.LIST(1,7,\"coverage\")"
+    },
+    "J53": {
+     "content": "=ODOO.LIST(1,8,\"coverage\")"
+    },
+    "J54": {
+     "content": "=ODOO.LIST(1,9,\"coverage\")"
+    },
+    "J55": {
+     "content": "=ODOO.LIST(1,10,\"coverage\")"
+    },
+    "J56": {
+     "content": "=ODOO.LIST(1,11,\"coverage\")"
+    },
+    "J57": {
+     "content": "=ODOO.LIST(1,12,\"coverage\")"
+    },
+    "J58": {
+     "content": "=ODOO.LIST(1,13,\"coverage\")"
+    },
+    "J59": {
+     "content": "=ODOO.LIST(1,14,\"coverage\")"
+    },
+    "J60": {
+     "content": "=ODOO.LIST(1,15,\"coverage\")"
+    },
+    "J61": {
+     "content": "=ODOO.LIST(1,16,\"coverage\")"
+    },
+    "J62": {
+     "content": "=ODOO.LIST(1,17,\"coverage\")"
+    },
+    "J63": {
+     "content": "=ODOO.LIST(1,18,\"coverage\")"
+    },
+    "J64": {
+     "content": "=ODOO.LIST(1,19,\"coverage\")"
+    },
+    "J65": {
+     "content": "=ODOO.LIST(1,20,\"coverage\")"
+    }
+   },
+   "styles": {
+    "A12": 1,
+    "F12": 1,
+    "A29": 1,
+    "A44": 1,
+    "A45": 2,
+    "B45": 2,
+    "C45": 2,
+    "D45": 2,
+    "E45": 2,
+    "F45": 2,
+    "G45": 2,
+    "H45": 2,
+    "I45": 2,
+    "J45": 2
+   },
+   "formats": {
+    "F46": 1,
+    "F47": 1,
+    "F48": 1,
+    "F49": 1,
+    "F50": 1,
+    "F51": 1,
+    "F52": 1,
+    "F53": 1,
+    "F54": 1,
+    "F55": 1,
+    "F56": 1,
+    "F57": 1,
+    "F58": 1,
+    "F59": 1,
+    "F60": 1,
+    "F61": 1,
+    "F62": 1,
+    "F63": 1,
+    "F64": 1,
+    "F65": 1,
+    "G46": 1,
+    "G47": 1,
+    "G48": 1,
+    "G49": 1,
+    "G50": 1,
+    "G51": 1,
+    "G52": 1,
+    "G53": 1,
+    "G54": 1,
+    "G55": 1,
+    "G56": 1,
+    "G57": 1,
+    "G58": 1,
+    "G59": 1,
+    "G60": 1,
+    "G61": 1,
+    "G62": 1,
+    "G63": 1,
+    "G64": 1,
+    "G65": 1,
+    "H46": 1,
+    "H47": 1,
+    "H48": 1,
+    "H49": 1,
+    "H50": 1,
+    "H51": 1,
+    "H52": 1,
+    "H53": 1,
+    "H54": 1,
+    "H55": 1,
+    "H56": 1,
+    "H57": 1,
+    "H58": 1,
+    "H59": 1,
+    "H60": 1,
+    "H61": 1,
+    "H62": 1,
+    "H63": 1,
+    "H64": 1,
+    "H65": 1,
+    "I46": 1,
+    "I47": 1,
+    "I48": 1,
+    "I49": 1,
+    "I50": 1,
+    "I51": 1,
+    "I52": 1,
+    "I53": 1,
+    "I54": 1,
+    "I55": 1,
+    "I56": 1,
+    "I57": 1,
+    "I58": 1,
+    "I59": 1,
+    "I60": 1,
+    "I61": 1,
+    "I62": 1,
+    "I63": 1,
+    "I64": 1,
+    "I65": 1
+   },
+   "borders": {
+    "A12:D12": 1,
+    "F12:J12": 1,
+    "A29:J29": 1,
+    "A44:J44": 1,
+    "A45:J45": 1
+   },
+   "conditionalFormats": [
+    {
+     "id": "c1a0b6e2-0020-4f00-9000-000000000020",
+     "ranges": [
+      "J46:J65"
+     ],
+     "rule": {
+      "type": "DataBarRule",
+      "color": 11066560,
+      "rangeValues": "J46:J65"
+     }
+    }
+   ],
+   "figures": [
+    {
+     "id": "c1a0b6e2-0001-4f00-9000-000000000001",
+     "x": 0,
+     "y": 11,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Cost (CHF)",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#EFF6FF",
+      "keyValue": "Data!C1",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0002-4f00-9000-000000000002",
+     "x": 200,
+     "y": 11,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Received",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#EFF6FF",
+      "keyValue": "Data!C2",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0003-4f00-9000-000000000003",
+     "x": 400,
+     "y": 11,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Pledged, not received",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#EFF6FF",
+      "keyValue": "Data!C3",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false,
+      "baseline": "Data!C10",
+      "baselineDescr": "in discussion"
+     }
+    },
+    {
+     "id": "c1a0b6e2-0004-4f00-9000-000000000004",
+     "x": 600,
+     "y": 11,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Funding gap",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#FEF3F2",
+      "keyValue": "Data!C4",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0005-4f00-9000-000000000005",
+     "x": 800,
+     "y": 11,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Coverage",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#EFF6FF",
+      "keyValue": "Data!C5",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false,
+      "baseline": "Data!C11",
+      "baselineDescr": ""
+     }
+    },
+    {
+     "id": "c1a0b6e2-0006-4f00-9000-000000000006",
+     "x": 0,
+     "y": 130,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Not funded",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#FFFFFF",
+      "keyValue": "Data!C6",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0007-4f00-9000-000000000007",
+     "x": 200,
+     "y": 130,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Partially funded",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#FFFFFF",
+      "keyValue": "Data!C7",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0008-4f00-9000-000000000008",
+     "x": 400,
+     "y": 130,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Fully funded",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#FFFFFF",
+      "keyValue": "Data!C8",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0009-4f00-9000-000000000009",
+     "x": 600,
+     "y": 130,
+     "width": 190,
+     "height": 109,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Cost unknown",
+       "color": "#434343",
+       "bold": true
+      },
+      "background": "#FFFFFF",
+      "keyValue": "Data!C9",
+      "baselineMode": "text",
+      "baselineColorDown": "#DC6965",
+      "baselineColorUp": "#00A04A",
+      "humanize": false
+     }
+    },
+    {
+     "id": "c1a0b6e2-0010-4f00-9000-000000000010",
+     "x": 0,
+     "y": 300,
+     "width": 500,
+     "height": 345,
+     "tag": "chart",
+     "data": {
+      "title": {
+       "text": ""
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "none",
+      "metaData": {
+       "groupBy": [
+        "country_id"
+       ],
+       "measure": "gap",
+       "order": "DESC",
+       "resModel": "intervention.fundraising.report",
+       "mode": "bar"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": [
+        "&",
+        [
+         "fundraising_state",
+         "=",
+         "open"
+        ],
+        [
+         "state",
+         "in",
+         [
+          "committed",
+          "active"
+         ]
+        ]
+       ],
+       "groupBy": [
+        "country_id"
+       ],
+       "orderBy": []
+      },
+      "type": "odoo_bar",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "fieldMatching": {
+       "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+        "chain": "country_id",
+        "type": "many2one"
+       },
+       "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+        "chain": "category_id",
+        "type": "many2one"
+       },
+       "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+        "chain": "fundraiser_id",
+        "type": "many2one"
+       }
+      }
+     }
+    },
+    {
+     "id": "c1a0b6e2-0011-4f00-9000-000000000011",
+     "x": 510,
+     "y": 300,
+     "width": 490,
+     "height": 345,
+     "tag": "chart",
+     "data": {
+      "title": {
+       "text": ""
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "top",
+      "metaData": {
+       "groupBy": [
+        "funding_level"
+       ],
+       "measure": "__count",
+       "order": null,
+       "resModel": "intervention.fundraising.report",
+       "mode": "pie"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": [
+        "&",
+        [
+         "fundraising_state",
+         "=",
+         "open"
+        ],
+        [
+         "state",
+         "in",
+         [
+          "committed",
+          "active"
+         ]
+        ]
+       ],
+       "groupBy": [
+        "funding_level"
+       ],
+       "orderBy": []
+      },
+      "type": "odoo_pie",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "fieldMatching": {
+       "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+        "chain": "country_id",
+        "type": "many2one"
+       },
+       "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+        "chain": "category_id",
+        "type": "many2one"
+       },
+       "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+        "chain": "fundraiser_id",
+        "type": "many2one"
+       }
+      }
+     }
+    },
+    {
+     "id": "c1a0b6e2-0012-4f00-9000-000000000012",
+     "x": 0,
+     "y": 708,
+     "width": 1000,
+     "height": 300,
+     "tag": "chart",
+     "data": {
+      "title": {
+       "text": ""
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "none",
+      "metaData": {
+       "groupBy": [
+        "category_id"
+       ],
+       "measure": "gap",
+       "order": "DESC",
+       "resModel": "intervention.fundraising.report",
+       "mode": "bar"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": [
+        "&",
+        [
+         "fundraising_state",
+         "=",
+         "open"
+        ],
+        [
+         "state",
+         "in",
+         [
+          "committed",
+          "active"
+         ]
+        ]
+       ],
+       "groupBy": [
+        "category_id"
+       ],
+       "orderBy": []
+      },
+      "type": "odoo_bar",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "fieldMatching": {
+       "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+        "chain": "country_id",
+        "type": "many2one"
+       },
+       "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+        "chain": "category_id",
+        "type": "many2one"
+       },
+       "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+        "chain": "fundraiser_id",
+        "type": "many2one"
+       }
+      }
+     }
+    }
+   ],
+   "tables": [],
+   "areGridLinesVisible": false,
+   "isVisible": true,
+   "headerGroups": {
+    "ROW": [],
+    "COL": []
+   },
+   "dataValidationRules": [],
+   "comments": {}
+  },
+  {
+   "id": "fundraising-data",
+   "name": "Data",
+   "colNumber": 5,
+   "rowNumber": 20,
+   "rows": {},
+   "cols": {
+    "0": {
+     "size": 180
+    }
+   },
+   "merges": [],
+   "cells": {
+    "A1": {
+     "content": "=_t(\"Cost\")"
+    },
+    "B1": {
+     "content": "=IFERROR(PIVOT.VALUE(1,\"cost\"),0)"
+    },
+    "C1": {
+     "content": "=IF(ABS(B1)>=1000000,CONCATENATE(ROUND(B1/1000000,2),\"m\"),FORMAT.LARGE.NUMBER(B1))"
+    },
+    "A2": {
+     "content": "=_t(\"Received\")"
+    },
+    "B2": {
+     "content": "=IFERROR(PIVOT.VALUE(1,\"received\"),0)"
+    },
+    "C2": {
+     "content": "=IF(ABS(B2)>=1000000,CONCATENATE(ROUND(B2/1000000,2),\"m\"),FORMAT.LARGE.NUMBER(B2))"
+    },
+    "A3": {
+     "content": "=_t(\"Pledged, not received\")"
+    },
+    "B3": {
+     "content": "=IFERROR(PIVOT.VALUE(1,\"pledged\"),0)"
+    },
+    "C3": {
+     "content": "=IF(ABS(B3)>=1000000,CONCATENATE(ROUND(B3/1000000,2),\"m\"),FORMAT.LARGE.NUMBER(B3))"
+    },
+    "A4": {
+     "content": "=_t(\"Funding gap\")"
+    },
+    "B4": {
+     "content": "=IFERROR(PIVOT.VALUE(1,\"gap\"),0)"
+    },
+    "C4": {
+     "content": "=IF(ABS(B4)>=1000000,CONCATENATE(ROUND(B4/1000000,2),\"m\"),FORMAT.LARGE.NUMBER(B4))"
+    },
+    "A5": {
+     "content": "=_t(\"Coverage\")"
+    },
+    "B5": {
+     "content": "=IFERROR((B2+B3)/B1,0)"
+    },
+    "C5": {
+     "content": "=CONCATENATE(ROUND(B5*100,0),\"%\")"
+    },
+    "A6": {
+     "content": "=_t(\"Not funded\")"
+    },
+    "B6": {
+     "content": "=IFERROR(PIVOT.VALUE(2,\"__count\",\"funding_level\",\"not\"),0)"
+    },
+    "C6": {
+     "content": "=B6"
+    },
+    "A7": {
+     "content": "=_t(\"Partially funded\")"
+    },
+    "B7": {
+     "content": "=IFERROR(PIVOT.VALUE(2,\"__count\",\"funding_level\",\"partially\"),0)"
+    },
+    "C7": {
+     "content": "=B7"
+    },
+    "A8": {
+     "content": "=_t(\"Fully funded\")"
+    },
+    "B8": {
+     "content": "=IFERROR(PIVOT.VALUE(2,\"__count\",\"funding_level\",\"fully\"),0)"
+    },
+    "C8": {
+     "content": "=B8"
+    },
+    "A9": {
+     "content": "=_t(\"Cost unknown\")"
+    },
+    "B9": {
+     "content": "=IFERROR(PIVOT.VALUE(2,\"__count\",\"funding_level\",\"unknown\"),0)"
+    },
+    "C9": {
+     "content": "=B9"
+    },
+    "A10": {
+     "content": "=_t(\"In discussion\")"
+    },
+    "B10": {
+     "content": "=IFERROR(PIVOT.VALUE(1,\"in_discussion\"),0)"
+    },
+    "C10": {
+     "content": "=IF(ABS(B10)>=1000000,CONCATENATE(ROUND(B10/1000000,2),\"m\"),FORMAT.LARGE.NUMBER(B10))"
+    },
+    "A11": {
+     "content": "=_t(\"CIVs open\")"
+    },
+    "B11": {
+     "content": "=SUM(B6:B9)"
+    },
+    "C11": {
+     "content": "=CONCATENATE(B11,_t(\" interventions\"))"
+    }
+   },
+   "styles": {},
+   "formats": {},
+   "borders": {},
+   "conditionalFormats": [],
+   "figures": [],
+   "tables": [],
+   "areGridLinesVisible": true,
+   "isVisible": false,
+   "headerGroups": {
+    "ROW": [],
+    "COL": []
+   },
+   "dataValidationRules": [],
+   "comments": {}
+  }
+ ],
+ "styles": {
+  "1": {
+   "textColor": "#01666b",
+   "bold": true,
+   "fontSize": 16
+  },
+  "2": {
+   "textColor": "#434343",
+   "bold": true,
+   "fontSize": 11
+  }
+ },
+ "formats": {
+  "1": "#,##0"
+ },
+ "borders": {
+  "1": {
+   "bottom": {
+    "style": "thin",
+    "color": "#CCCCCC"
+   }
+  }
+ },
+ "revisionId": "START_REVISION",
+ "uniqueFigureIds": true,
+ "settings": {
+  "locale": {
+   "name": "English (US)",
+   "code": "en_US",
+   "thousandsSeparator": "'",
+   "decimalSeparator": ".",
+   "dateFormat": "dd/mm/yyyy",
+   "timeFormat": "hh:mm:ss",
+   "formulaArgSeparator": ",",
+   "weekStart": 1
+  }
+ },
+ "pivots": {
+  "1": {
+   "type": "ODOO",
+   "id": "1",
+   "formulaId": "1",
+   "name": "Totals",
+   "model": "intervention.fundraising.report",
+   "domain": [
+    "&",
+    [
+     "fundraising_state",
+     "=",
+     "open"
+    ],
+    [
+     "state",
+     "in",
+     [
+      "committed",
+      "active"
+     ]
+    ]
+   ],
+   "context": {},
+   "fieldMatching": {
+    "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+     "chain": "country_id",
+     "type": "many2one"
+    },
+    "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+     "chain": "category_id",
+     "type": "many2one"
+    },
+    "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+     "chain": "fundraiser_id",
+     "type": "many2one"
+    }
+   },
+   "measures": [
+    {
+     "id": "cost",
+     "fieldName": "cost"
+    },
+    {
+     "id": "received",
+     "fieldName": "received"
+    },
+    {
+     "id": "pledged",
+     "fieldName": "pledged"
+    },
+    {
+     "id": "gap",
+     "fieldName": "gap"
+    },
+    {
+     "id": "in_discussion",
+     "fieldName": "in_discussion"
+    }
+   ],
+   "columns": [],
+   "rows": [],
+   "sortedColumn": null
+  },
+  "2": {
+   "type": "ODOO",
+   "id": "2",
+   "formulaId": "2",
+   "name": "By funding level",
+   "model": "intervention.fundraising.report",
+   "domain": [
+    "&",
+    [
+     "fundraising_state",
+     "=",
+     "open"
+    ],
+    [
+     "state",
+     "in",
+     [
+      "committed",
+      "active"
+     ]
+    ]
+   ],
+   "context": {},
+   "fieldMatching": {
+    "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+     "chain": "country_id",
+     "type": "many2one"
+    },
+    "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+     "chain": "category_id",
+     "type": "many2one"
+    },
+    "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+     "chain": "fundraiser_id",
+     "type": "many2one"
+    }
+   },
+   "measures": [
+    {
+     "id": "__count",
+     "fieldName": "__count"
+    }
+   ],
+   "columns": [],
+   "rows": [
+    {
+     "fieldName": "funding_level"
+    }
+   ],
+   "sortedColumn": null
+  }
+ },
+ "pivotNextId": 3,
+ "customTableStyles": {},
+ "odooVersion": 12,
+ "globalFilters": [
+  {
+   "id": "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11",
+   "type": "relation",
+   "label": "Country",
+   "modelName": "res.country",
+   "defaultValue": [],
+   "defaultValueDisplayNames": []
+  },
+  {
+   "id": "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22",
+   "type": "relation",
+   "label": "Category",
+   "modelName": "compassion.intervention.category",
+   "defaultValue": [],
+   "defaultValueDisplayNames": []
+  },
+  {
+   "id": "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33",
+   "type": "relation",
+   "label": "Fundraiser",
+   "modelName": "res.users",
+   "defaultValue": [],
+   "defaultValueDisplayNames": []
+  }
+ ],
+ "lists": {
+  "1": {
+   "id": "1",
+   "name": "Interventions to fund",
+   "model": "intervention.fundraising.report",
+   "columns": [
+    "name",
+    "country_id",
+    "category_id",
+    "fundraiser_id",
+    "fundraising_deadline",
+    "cost",
+    "received",
+    "pledged",
+    "gap",
+    "coverage"
+   ],
+   "domain": [
+    "&",
+    "&",
+    [
+     "fundraising_state",
+     "=",
+     "open"
+    ],
+    [
+     "state",
+     "in",
+     [
+      "committed",
+      "active"
+     ]
+    ],
+    [
+     "funding_level",
+     "!=",
+     "unknown"
+    ]
+   ],
+   "context": {},
+   "orderBy": [
+    {
+     "name": "gap",
+     "asc": false
+    }
+   ],
+   "fieldMatching": {
+    "2b3c0f1e-6a7d-4c1b-9a51-0f7e3c2d4a11": {
+     "chain": "country_id",
+     "type": "many2one"
+    },
+    "5d8e2a4b-1c9f-4e6a-8b72-3a1d5c6e7f22": {
+     "chain": "category_id",
+     "type": "many2one"
+    },
+    "9a1b3c5d-7e2f-4a6b-8c4d-2e6f8a1b3c33": {
+     "chain": "fundraiser_id",
+     "type": "many2one"
+    }
+   }
+  }
+ },
+ "listNextId": 2,
+ "chartOdooMenusReferences": {
+  "c1a0b6e2-0001-4f00-9000-000000000001": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0002-4f00-9000-000000000002": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0003-4f00-9000-000000000003": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0004-4f00-9000-000000000004": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0005-4f00-9000-000000000005": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0006-4f00-9000-000000000006": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0007-4f00-9000-000000000007": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0008-4f00-9000-000000000008": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0009-4f00-9000-000000000009": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0010-4f00-9000-000000000010": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0011-4f00-9000-000000000011": "intervention_fundraising.menu_fundraising_gap",
+  "c1a0b6e2-0012-4f00-9000-000000000012": "intervention_fundraising.menu_fundraising_gap"
+ }
+}

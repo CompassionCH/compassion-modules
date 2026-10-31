@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="intervention_fundraising_report_view_list" model="ir.ui.view">
+        <field name="name">intervention.fundraising.report.list</field>
+        <field name="model">intervention.fundraising.report</field>
+        <field name="arch" type="xml">
+            <list
+        create="0"
+        edit="0"
+        delete="0"
+        decoration-success="funding_level == 'fully'"
+        decoration-warning="funding_level == 'partially'"
+        decoration-muted="funding_level == 'unknown'"
+      >
+                <field name="currency_id" column_invisible="1" />
+                <field name="intervention_code" optional="show" />
+                <field name="name" />
+                <field name="country_id" />
+                <field name="category_id" optional="show" />
+                <field name="fundraiser_id" widget="many2one_avatar_user" optional="show" />
+                <field name="fundraising_priority" widget="priority" readonly="1" />
+                <field name="fundraising_deadline" />
+                <field name="cost_source" optional="hide" />
+                <field name="cost" sum="Total" />
+                <field name="received" sum="Total" />
+                <field name="pledged" sum="Total" />
+                <field name="in_discussion" sum="Total" optional="hide" />
+                <field name="gap" sum="Total" />
+                <field name="coverage" widget="progressbar" />
+                <field name="funding_level" widget="badge"
+          decoration-success="funding_level == 'fully'"
+          decoration-warning="funding_level == 'partially'"
+          decoration-danger="funding_level == 'not'"
+        />
+                <button name="action_open_intervention" type="object" icon="fa-external-link" title="Open the intervention" />
+            </list>
+        </field>
+    </record>
+
+    <record id="intervention_fundraising_report_view_pivot" model="ir.ui.view">
+        <field name="name">intervention.fundraising.report.pivot</field>
+        <field name="model">intervention.fundraising.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="country_id" type="row" />
+                <field name="funding_level" type="col" />
+                <field name="gap" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="intervention_fundraising_report_view_graph" model="ir.ui.view">
+        <field name="name">intervention.fundraising.report.graph</field>
+        <field name="model">intervention.fundraising.report</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="1">
+                <field name="country_id" />
+                <field name="gap" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="intervention_fundraising_report_view_search" model="ir.ui.view">
+        <field name="name">intervention.fundraising.report.search</field>
+        <field name="model">intervention.fundraising.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="intervention_code" />
+                <field name="country_id" />
+                <field name="category_id" />
+                <field name="fundraiser_id" />
+                <filter
+          name="open"
+          string="Open fundraising"
+          domain="[('fundraising_state', '=', 'open'), ('state', 'in', ['committed', 'active'])]"
+        />
+                <filter name="my" string="My interventions" domain="[('fundraiser_id', '=', uid)]" />
+                <separator />
+                <filter name="not_funded" string="Not funded" domain="[('funding_level', '=', 'not')]" />
+                <filter name="partially_funded" string="Partially funded" domain="[('funding_level', '=', 'partially')]" />
+                <filter name="fully_funded" string="Fully funded" domain="[('funding_level', '=', 'fully')]" />
+                <filter name="unknown" string="Cost unknown" domain="[('funding_level', '=', 'unknown')]" />
+                <separator />
+                <filter name="urgent" string="Urgent" domain="[('fundraising_priority', '=', '2')]" />
+                <filter
+          name="deadline_soon"
+          string="Deadline within 3 months"
+          domain="[('fundraising_deadline', '&lt;=', (context_today() + relativedelta(months=3)).strftime('%Y-%m-%d'))]"
+        />
+                <separator />
+                <filter name="closed" string="Closed fundraising" domain="[('fundraising_state', '!=', 'open')]" />
+                <group>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}" />
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}" />
+                    <filter name="group_fundraiser" string="Fundraiser" context="{'group_by': 'fundraiser_id'}" />
+                    <filter name="group_level" string="Funding level" context="{'group_by': 'funding_level'}" />
+                    <filter
+            name="group_closed_year"
+            string="Year closed"
+            context="{'group_by': 'fundraising_closed_date:year'}"
+          />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_intervention_fundraising_report" model="ir.actions.act_window">
+        <field name="name">Funding gap</field>
+        <field name="res_model">intervention.fundraising.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <record id="action_intervention_fundraising_archive" model="ir.actions.act_window">
+        <field name="name">Fundraising archive</field>
+        <field name="res_model">intervention.fundraising.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_closed': 1, 'search_default_group_closed_year': 1}</field>
+    </record>
+</odoo>

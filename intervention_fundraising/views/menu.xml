@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+    id="menu_fundraising"
+    name="Fundraising"
+    parent="crm.crm_menu_root"
+    sequence="3"
+    groups="group_fundraising_user"
+  />
+    <menuitem
+    id="menu_fundraising_gap"
+    parent="menu_fundraising"
+    action="action_intervention_fundraising_report"
+    sequence="10"
+  />
+    <menuitem
+    id="menu_fundraising_pledges"
+    parent="menu_fundraising"
+    action="action_intervention_pledges"
+    sequence="20"
+  />
+    <menuitem
+    id="menu_fundraising_donations"
+    parent="menu_fundraising"
+    action="action_intervention_fundraising_line"
+    sequence="30"
+  />
+    <menuitem
+    id="menu_fundraising_archive"
+    parent="menu_fundraising"
+    action="action_intervention_fundraising_archive"
+    sequence="40"
+  />
+    <menuitem
+    id="menu_fundraising_donor_types"
+    parent="crm.crm_menu_config"
+    action="action_intervention_donor_type"
+    sequence="50"
+    groups="group_fundraising_manager"
+  />
+</odoo>

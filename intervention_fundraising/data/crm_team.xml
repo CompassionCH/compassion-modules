@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="crm_team_fundraising" model="crm.team">
+        <field name="name">Intervention fundraising</field>
+        <field name="use_leads" eval="False" />
+        <field name="use_opportunities" eval="True" />
+        <field name="sequence">50</field>
+    </record>
+    <record id="crm_stage_pledge_identified" model="crm.stage">
+        <field name="name">Identified</field>
+        <field name="sequence">1</field>
+        <field name="team_id" ref="crm_team_fundraising" />
+    </record>
+    <record id="crm_stage_pledge_asked" model="crm.stage">
+        <field name="name">Ask made</field>
+        <field name="sequence">2</field>
+        <field name="team_id" ref="crm_team_fundraising" />
+    </record>
+    <record id="crm_stage_pledge_won" model="crm.stage">
+        <field name="name">Pledged</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="True" />
+        <field name="team_id" ref="crm_team_fundraising" />
+    </record>
+</odoo>

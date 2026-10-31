@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- noupdate: spreadsheet_dashboard_oca lets the users edit the dashboard -->
+<odoo noupdate="1">
+    <record id="spreadsheet_dashboard_group_fundraising" model="spreadsheet.dashboard.group">
+        <field name="name">Fundraising</field>
+        <field name="sequence">250</field>
+    </record>
+    <record id="spreadsheet_dashboard_fundraising" model="spreadsheet.dashboard">
+        <field name="name">Intervention fundraising</field>
+        <field
+      name="spreadsheet_binary_data"
+      type="base64"
+      file="intervention_fundraising/data/files/fundraising_dashboard.json"
+    />
+        <field
+      name="main_data_model_ids"
+      eval="[Command.link(ref('intervention_fundraising.model_intervention_fundraising_report'))]"
+    />
+        <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_fundraising" />
+        <field name="group_ids" eval="[Command.link(ref('group_fundraising_user'))]" />
+        <field name="sequence">10</field>
+        <field name="is_published">True</field>
+    </record>
+</odoo>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_compassion_intervention_form_fundraising" model="ir.ui.view">
+        <field name="name">compassion.intervention.form.fundraising</field>
+        <field name="model">compassion.intervention</field>
+        <field
+      name="inherit_id"
+      ref="intervention_compassion.view_compassion_intervention_form"
+    />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+          name="action_open_pledges"
+          type="object"
+          class="oe_stat_button"
+          icon="fa-handshake-o"
+        >
+                    <field name="pledge_count" widget="statinfo" string="Pledges" />
+                </button>
+                <button
+          name="action_open_donations"
+          type="object"
+          class="oe_stat_button"
+          icon="fa-gift"
+          string="Donations"
+        />
+            </div>
+            <xpath expr="//notebook/page[1]" position="before">
+                <page string="Fundraising" name="fundraising">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <field name="fundraising_state" widget="badge"
+              decoration-success="fundraising_state == 'funded'"
+              decoration-muted="fundraising_state == 'closed'"
+              decoration-info="fundraising_state == 'open'"
+            />
+                        <button
+              name="action_fundraising_funded"
+              type="object"
+              string="Fully funded"
+              class="btn-secondary btn-sm"
+              invisible="fundraising_state != 'open'"
+              groups="intervention_fundraising.group_fundraising_manager"
+              confirm="Mark the fundraising of this intervention as fully funded?"
+            />
+                        <button
+              name="action_close_fundraising"
+              type="object"
+              string="Close fundraising"
+              class="btn-secondary btn-sm"
+              invisible="fundraising_state != 'open'"
+              groups="intervention_fundraising.group_fundraising_manager"
+              confirm="Stop the fundraising of this intervention?"
+            />
+                        <button
+              name="action_reopen_fundraising"
+              type="object"
+              string="Reopen"
+              class="btn-link btn-sm"
+              invisible="fundraising_state == 'open'"
+              groups="intervention_fundraising.group_fundraising_manager"
+            />
+                        <span invisible="fundraising_state == 'open'" class="text-muted">
+                            by <field name="fundraising_closed_by" class="oe_inline" readonly="1" />
+                            on <field name="fundraising_closed_date" class="oe_inline" readonly="1" />
+                        </span>
+                    </div>
+                    <group>
+                        <group string="Funding">
+                            <field name="company_currency_id" invisible="1" />
+                            <field name="fundraising_team_id" invisible="1" />
+                            <label for="funding_cost" />
+                            <div class="o_row">
+                                <field name="funding_cost" invisible="funding_cost_source == 'unknown'" />
+                                <span invisible="funding_cost_source != 'unknown'" class="text-muted">Unknown</span>
+                                <field name="funding_cost_source" class="text-muted" />
+                            </div>
+                            <field
+                name="funding_usd_rate_date"
+                invisible="funding_cost_source != 'estimated'"
+              />
+                            <field name="funding_received" />
+                            <field name="funding_pledged" />
+                            <field name="funding_in_discussion" />
+                            <label for="funding_gap" />
+                            <div class="o_row">
+                                <field name="funding_gap" invisible="funding_cost_source == 'unknown'" />
+                                <span invisible="funding_cost_source != 'unknown'" class="text-muted">Unknown</span>
+                            </div>
+                            <field
+                name="funding_coverage"
+                widget="progressbar"
+                invisible="funding_cost_source == 'unknown'"
+              />
+                            <field name="funding_level" />
+                        </group>
+                        <group string="Approach">
+                            <field name="fundraiser_id" />
+                            <field name="fundraising_priority" widget="priority" />
+                            <field name="fundraising_deadline" />
+                            <field name="donor_type_ids" widget="many2many_tags" />
+                            <field name="earmarking" placeholder="Unknown" />
+                            <field name="benchmark_amount" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="clear_ask" placeholder="What we ask the donors for, in one sentence" />
+                        <field name="impact_summary" />
+                        <field
+              name="impact_calculation"
+              placeholder="Result of the impact calculation tool (to come)"
+            />
+                        <field name="not_funded_implications" string="If not funded" />
+                    </group>
+                    <separator string="Pledges" />
+                    <field
+            name="pledge_ids"
+            context="{'default_type': 'opportunity', 'default_team_id': fundraising_team_id}"
+          >
+                        <list editable="bottom" decoration-muted="not active">
+                            <field name="active" column_invisible="1" />
+                            <field name="company_currency" column_invisible="1" />
+                            <field name="type" column_invisible="1" />
+                            <field name="team_id" column_invisible="1" />
+                            <field name="name" column_invisible="1" required="0" />
+                            <field name="partner_id" required="1" />
+                            <field name="user_id" string="Relationship manager" />
+                            <field name="stage_id" domain="[('team_id', 'in', [team_id, False])]" />
+                            <field name="expected_revenue" string="Amount" sum="Total" />
+                            <field name="date_deadline" string="Expected" />
+                            <field name="pledge_received" sum="Total" />
+                            <field name="pledge_remaining" sum="Total" />
+                        </list>
+                    </field>
+                    <separator string="Stories" />
+                    <field name="fundraising_stories" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_compassion_intervention_filter_fundraising" model="ir.ui.view">
+        <field name="name">compassion.intervention.select.fundraising</field>
+        <field name="model">compassion.intervention</field>
+        <field
+      name="inherit_id"
+      ref="intervention_compassion.view_compassion_intervention_filter"
+    />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="fundraiser_id" />
+                <filter
+          name="fundraising_open"
+          string="Fundraising open"
+          domain="[('fundraising_state', '=', 'open'), ('state', 'in', ['committed', 'active'])]"
+        />
+            </xpath>
+        </field>
+    </record>
+</odoo>

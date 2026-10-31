@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="intervention_donor_type_view_list" model="ir.ui.view">
+        <field name="name">intervention.donor.type.list</field>
+        <field name="model">intervention.donor.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_intervention_donor_type" model="ir.actions.act_window">
+        <field name="name">Donor types</field>
+        <field name="res_model">intervention.donor.type</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+</odoo>

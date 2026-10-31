@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="module_category_fundraising" model="ir.module.category">
+        <field name="name">Fundraising</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="group_fundraising_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_fundraising" />
+        <field
+      name="implied_ids"
+      eval="[Command.link(ref('sales_team.group_sale_salesman'))]"
+    />
+        <field
+      name="comment"
+    >Relationship managers: record pledges and fill the fundraising information of the interventions.</field>
+    </record>
+    <record id="group_fundraising_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_fundraising" />
+        <field name="implied_ids" eval="[Command.link(ref('group_fundraising_user'))]" />
+        <field name="comment">Can close the fundraising of an intervention.</field>
+        <field
+      name="users"
+      eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"
+    />
+    </record>
+</odoo>

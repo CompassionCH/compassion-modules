@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="crm_lead_view_form_pledge" model="ir.ui.view">
+        <field name="name">crm.lead.form.pledge</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="arch" type="xml">
+            <group name="opportunity_partner" position="inside">
+                <field name="intervention_id" />
+                <field name="pledge_received" invisible="not intervention_id" />
+                <field name="pledge_remaining" invisible="not intervention_id" />
+            </group>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_pledge" model="ir.ui.view">
+        <field name="name">crm.lead.list.pledge</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active" decoration-success="stage_id and probability == 100">
+                <field name="active" column_invisible="1" />
+                <field name="probability" column_invisible="1" />
+                <field name="company_currency" column_invisible="1" />
+                <field name="intervention_id" />
+                <field name="partner_id" />
+                <field name="user_id" string="Relationship manager" widget="many2one_avatar_user" />
+                <field name="stage_id" />
+                <field name="expected_revenue" string="Amount" sum="Total" />
+                <field name="date_deadline" string="Expected" />
+                <field name="date_closed" string="Pledged on" />
+                <field name="pledge_received" sum="Total" />
+                <field name="pledge_remaining" sum="Total" />
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_lead_search_pledge" model="ir.ui.view">
+        <field name="name">crm.lead.search.pledge</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="intervention_id" />
+                <filter
+          name="pledges"
+          string="Pledges"
+          domain="[('intervention_id', '!=', False)]"
+        />
+                <filter name="group_intervention" string="Intervention" context="{'group_by': 'intervention_id'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_intervention_pledges" model="ir.actions.act_window">
+        <field name="name">Pledges</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,pivot,graph,activity</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field
+      name="context"
+      eval="{'default_type': 'opportunity', 'search_default_pledges': 1, 'default_team_id': ref('crm_team_fundraising')}"
+    />
+        <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter" />
+    </record>
+    <record id="action_intervention_pledges_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="crm_case_tree_view_pledge" />
+        <field name="act_window_id" ref="action_intervention_pledges" />
+    </record>
+    <record id="action_intervention_pledges_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="crm.crm_case_kanban_view_leads" />
+        <field name="act_window_id" ref="action_intervention_pledges" />
+    </record>
+</odoo>

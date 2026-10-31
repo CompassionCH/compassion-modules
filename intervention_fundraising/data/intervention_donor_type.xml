@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="donor_type_private" model="intervention.donor.type">
+        <field name="name">Private donor</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="donor_type_major" model="intervention.donor.type">
+        <field name="name">Major donor</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="donor_type_church" model="intervention.donor.type">
+        <field name="name">Church</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="donor_type_foundation" model="intervention.donor.type">
+        <field name="name">Foundation</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="donor_type_company" model="intervention.donor.type">
+        <field name="name">Company</field>
+        <field name="sequence">50</field>
+    </record>
+</odoo>
