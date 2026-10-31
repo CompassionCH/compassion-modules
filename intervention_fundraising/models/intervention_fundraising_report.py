@@ -151,7 +151,8 @@ class InterventionFundraisingReport(models.Model):
                         ELSE 'unknown' END AS cost_source,
                    f.cost, f.received, f.pledged, f.in_discussion,
                    f.cost - f.received - f.pledged AS gap,
-                   round(((f.received + f.pledged) / nullif(f.cost, 0) * 100)::numeric, 1)
+                   round(((f.received + f.pledged) / nullif(f.cost, 0) * 100)
+                         ::numeric, 1)
                        AS coverage,
                    CASE WHEN f.cost IS NULL THEN 'unknown'
                         WHEN f.received + f.pledged >= f.cost THEN 'fully'
