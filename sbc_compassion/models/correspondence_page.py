@@ -124,11 +124,13 @@ class CorrespondencePage(models.Model):
                 # Handle case where page index exceeds the number of template pages
                 new_index = (page.page_index - 1) % 2
                 modulo_page = template.page_ids[new_index : new_index + 1]
-                page_template = (
-                    modulo_page
-                    if page.correspondence_id.direction == "Supporter To Beneficiary"
-                    else template.additional_page_id or modulo_page
-                )
+                if page.correspondence_id.direction == "Supporter To Beneficiary":
+                    page_template = modulo_page
+                elif page.original_page_url:
+                    # Extra scanned page of the child: no text box over it
+                    page_template = template.page_ids.browse()
+                else:
+                    page_template = template.additional_page_id or modulo_page
             page.template_id = page_template
 
     def fetch_image(self):
