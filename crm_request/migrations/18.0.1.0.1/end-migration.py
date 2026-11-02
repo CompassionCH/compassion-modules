@@ -15,10 +15,11 @@ The other contacts are, depending on how they match the main one:
  - merged, in jobs as it is slow, if they are certainly the same person: same
    name and e-mail (1), same name and zip with an e-mail missing but not
    different (2), or rule 3 or 4 with the same e-mail;
- - otherwise turned into children of type "other" of the main contact, with
-   their relations moved to it, as for the aliases of the v14 migration;
+ - otherwise turned into e-mail aliases (type "email_alias") of the main
+   contact, with their relations moved to it, as for the aliases of the v14
+   migration;
  - left as they are and flagged with an activity on the main contact if they
-   are not directly matching it, or if several contacts have a user or a
+   are not directly matching it, or if several contacts have a user or an
    active sponsorship (never merged, never moved).
 """
 
@@ -269,7 +270,7 @@ def _describe_usage(partner):
 
 
 def _convert_to_children(env, converted):
-    """Turn the contacts in children of type other of their main contact, as
+    """Turn the contacts in e-mail aliases of their main contact, as
     the aliases of the v14 migration: their relations go to the main contact."""
     if not converted:
         return
@@ -283,7 +284,7 @@ def _convert_to_children(env, converted):
         dst = partners.browse(converted[src.id])
         redundant = cleanup.is_redundant(src, dst, cc_aliases)
         cr.execute(
-            "UPDATE res_partner SET parent_id = %s, type = 'other' WHERE id = %s",
+            "UPDATE res_partner SET parent_id = %s, type = 'email_alias' WHERE id = %s",
             (dst.id, src.id),
         )
         env.invalidate_all()

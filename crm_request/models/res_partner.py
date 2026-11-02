@@ -2,7 +2,7 @@ import logging
 
 from psycopg2 import OperationalError
 
-from odoo import models
+from odoo import fields, models
 
 from ..tools import partner_cleanup as cleanup
 
@@ -11,6 +11,12 @@ _logger = logging.getLogger(__name__)
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
+
+    type = fields.Selection(
+        selection_add=[("email_alias", "Email alias")],
+        # Never fall back to "contact", which would show the alias as a duplicate
+        ondelete={"email_alias": lambda records: records.write({"type": "other"})},
+    )
 
     def _merge_duplicates(self, duplicate_ids):
         """Job queued by the migration of the duplicated contacts (T3642): merge

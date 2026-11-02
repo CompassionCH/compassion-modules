@@ -10,8 +10,9 @@ contact, so here we clean them:
 - aliases that carry no information of their own (same or empty e-mail and
   address) are archived;
 - the others are kept active with their e-mail address, because incoming
-  requests are matched on it. They stay of type "other" and are hidden by
-  the "Main contacts" filter;
+  requests are matched on it;
+- all of them get the type "email_alias", which the "Main contacts" filter
+  hides from the contact lists;
 - aliases that have a user or a sponsorship are left untouched and flagged
   with an activity on their main contact, for a manual review.
 """
@@ -55,6 +56,10 @@ def migrate(cr, version):
             "UPDATE res_partner SET parent_id = %s WHERE id = %s",
             (main[alias.id], alias.id),
         )
+    cr.execute(
+        "UPDATE res_partner SET type = 'email_alias' WHERE id IN %s",
+        (tuple(aliases.ids),),
+    )
     env.invalidate_all()
     redundant.write({"active": False})
     # The name of an alias is the one of its main contact

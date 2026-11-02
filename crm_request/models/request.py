@@ -198,7 +198,7 @@ class CrmClaim(models.Model):
             if partner:
                 # An e-mail alias belongs to its main contact, who owns the
                 # request. The alias address stays in email_from for replies.
-                if partner.type == "other" and partner.parent_id:
+                if partner.type == "email_alias" and partner.parent_id:
                     partner = partner.parent_id
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
@@ -297,7 +297,7 @@ class CrmClaim(models.Model):
                         if not self.env["res.partner"].search_count(
                             [
                                 ("parent_id", "=", partner.id),
-                                ("type", "=", "other"),
+                                ("type", "=", "email_alias"),
                                 ("email", "=ilike", alias_email),
                             ]
                         ):
@@ -306,7 +306,7 @@ class CrmClaim(models.Model):
                                     "parent_id": partner.id,
                                     "name": partner.name,
                                     "email": alias_email,
-                                    "type": "other",
+                                    "type": "email_alias",
                                 }
                             )
                     elif not partner.email:

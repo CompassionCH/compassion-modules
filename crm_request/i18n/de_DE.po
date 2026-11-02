@@ -622,3 +622,8 @@ msgstr "Du kannst nur antworten, wenn du den Partner festgelegt hast."
 #: model:mail.template,subject:crm_request.assigned_contact_holiday_email_template
 msgid "Your assigned contact is in holiday"
 msgstr ""
+
+#. module: crm_request
+#: model:ir.model.fields.selection,name:crm_request.selection__res_partner__type__email_alias
+msgid "Email alias"
+msgstr "E-Mail-Alias"
