@@ -5,7 +5,6 @@ import re
 import unicodedata
 
 from markupsafe import Markup, escape
-from openupgradelib import openupgrade
 from psycopg2.errors import UniqueViolation
 
 from odoo import fields
@@ -26,7 +25,7 @@ REVIEW_USER_PARAM = "partner_auto_match.match_validation_responsible"
 # Key set in the databases migrated from v14, which partner_auto_match ignores
 LEGACY_REVIEW_USER_PARAM = "cms_form_compassion.match_validation_responsible"
 # Name given by the "duplicate" action of Odoo to a copy
-COPY_NAME = re.compile(r"\((copie|copy|kopie)\)", re.IGNORECASE)
+COPY_NAME = re.compile(r"\((copie|copy|kopie|copia)\)", re.IGNORECASE)
 
 
 def fix_review_user_param(env):
@@ -156,86 +155,97 @@ def apply_aliases(env, main, redundant, with_email):
 
     - the ones without data of their own are archived;
     - the ones with an e-mail of their own, and the archived ones, become
-      aliases (type e-mail alias), the others keep their type, as they are real
-      addresses;
+      aliases (type e-mail alias);
+    - the others, with an address or a phone number of their own, get the type
+      "other", so that Odoo does not synchronize their address with the one of
+      the main contact (it does for the type "contact");
     - a blank or copied name becomes the name of the main contact.
+
+    The stored computed fields (complete name...) are then recomputed.
     """
     cr = env.cr
     cr.executemany(
         "UPDATE res_partner SET parent_id = %s WHERE id = %s",
         [(main_id, alias_id) for alias_id, main_id in main.items()],
     )
-    alias_ids = tuple(redundant | with_email)
-    if alias_ids:
-        cr.execute(
-            "UPDATE res_partner SET type = 'email_alias' WHERE id IN %s", (alias_ids,)
-        )
+    aliases = redundant | with_email
+    others = set(main) - aliases
+    for partner_type, ids in (("email_alias", aliases), ("other", others)):
+        if ids:
+            cr.execute(
+                "UPDATE res_partner SET type = %s WHERE id IN %s",
+                (partner_type, tuple(ids)),
+            )
     if redundant:
         cr.execute(
             "UPDATE res_partner SET active = false WHERE id IN %s", (tuple(redundant),)
         )
-    _rename_like_main(env, main)
+    _rename_like_main(cr, main)
+    # Everything was written with SQL: refresh the fields that depend on it
+    env.invalidate_all()
+    moved = env["res.partner"].with_context(active_test=False).browse(list(main))
+    moved.modified(["parent_id", "type", "active", "name"])
+    env.flush_all()
 
 
-def _rename_like_main(env, main):
-    """A blank or copied name of an alias becomes the name of its main contact.
-    The name columns are copied with SQL, then the stored computed fields that
-    depend on the name (complete name...) are recomputed, without any write."""
-    cr = env.cr
+def _rename_like_main(cr, main):
+    """A blank or copied name of an alias becomes the name of its main contact,
+    in one statement. The name columns are copied, the caller refreshes the
+    fields that depend on them."""
     cr.execute("SELECT id, name FROM res_partner WHERE id IN %s", (tuple(main),))
     to_rename = [
-        alias_id
+        (alias_id, main[alias_id])
         for alias_id, name in cr.fetchall()
         if not (name or "").strip() or COPY_NAME.search(name)
     ]
     if not to_rename:
         return
-    copy_columns = SQL(", ").join(
-        SQL("%s = m.%s", SQL.identifier(c), SQL.identifier(c))
-        for c in sorted(_existing_columns(cr, ["name", "firstname", "lastname"]))
-    )
-    for alias_id in to_rename:
-        cr.execute(
-            SQL(
-                "UPDATE res_partner a SET %s FROM res_partner m "
-                "WHERE m.id = %s AND a.id = %s",
-                copy_columns,
-                main[alias_id],
-                alias_id,
-            )
+    cr.execute(
+        SQL(
+            """
+            UPDATE res_partner a SET %s
+            FROM (VALUES %s) AS v(alias_id, main_id)
+            JOIN res_partner m ON m.id = v.main_id
+            WHERE a.id = v.alias_id
+            """,
+            SQL(", ").join(
+                SQL("%s = m.%s", SQL.identifier(c), SQL.identifier(c))
+                for c in sorted(
+                    _existing_columns(cr, ["name", "firstname", "lastname"])
+                )
+            ),
+            SQL(", ").join(
+                SQL("(%s, %s)", alias, contact) for alias, contact in to_rename
+            ),
         )
-    env.invalidate_all()
-    renamed = env["res.partner"].with_context(active_test=False).browse(to_rename)
-    renamed.modified(["name"])
-    env.flush_all()
+    )
 
 
 # ----------------------------------------------------------------------------
 # Move the relations of a contact to another one
 # ----------------------------------------------------------------------------
-def move_relations(cr, main):
+def move_relations(env, main):
     """Point every foreign key and reference of the partners (keys of ``main``)
-    to their main contact (values). On a unique constraint, a row that only
-    links the two (many2many table) is dropped when the main contact already has
-    it, any other row stays on the partner. Both cases are logged."""
+    to their main contact (values).
+
+    The foreign keys are the ones the merge wizard looks for. The wizard moves
+    the records of one contact at a time, which takes seconds for each of them:
+    here the same tables are updated once for all the contacts.
+
+    Nothing is deleted. A row that would be a duplicate of one of the main
+    contact (unique constraint) stays on the alias, and is logged.
+    """
     if not main:
         return
+    cr = env.cr
     cr.execute("CREATE TEMPORARY TABLE t3642_alias (alias_id int, main_id int)")
     cr.executemany("INSERT INTO t3642_alias VALUES (%s, %s)", list(main.items()))
-    cr.execute(
-        """
-        SELECT cl.relname, att.attname
-        FROM pg_constraint con
-        JOIN pg_class cl ON cl.oid = con.conrelid
-        JOIN pg_attribute att ON att.attrelid = con.conrelid
-                              AND att.attnum = con.conkey[1]
-        WHERE con.contype = 'f' AND con.confrelid = 'res_partner'::regclass
-        AND array_length(con.conkey, 1) = 1
-        AND cl.relname NOT IN ('res_partner', 'interaction_resume')
-        AND cl.relname NOT LIKE 'base_partner_merge_%'
-        """
-    )
-    for table, column in cr.fetchall():
+    wizard = env["base.partner.merge.automatic.wizard"]
+    for table, column in wizard._get_fk_on("res_partner"):
+        if table in ("res_partner", "interaction_resume") or table.startswith(
+            "base_partner_merge_"
+        ):
+            continue
         _update(cr, table, column)
     # res_partner itself: commercial partner and the other children of an alias
     _update(cr, "res_partner", "commercial_partner_id")
@@ -255,19 +265,34 @@ def _conditions(table, column, model_col=None):
     return where
 
 
-def _is_link_table(cr, table):
-    """A table that only links two records (many2many relation)."""
+def _link_column(cr, table, column):
+    """The other column of a table that only links two records (many2many)."""
     cr.execute(
-        "SELECT count(*) FROM information_schema.columns WHERE table_name = %s",
+        "SELECT column_name FROM information_schema.columns WHERE table_name = %s",
         (table,),
     )
-    return cr.fetchone()[0] <= 2
+    columns = [row[0] for row in cr.fetchall()]
+    if len(columns) == 2 and column in columns:
+        return next(c for c in columns if c != column)
+    return None
 
 
 def _update(cr, table, column, model_col=None):
     """Move the rows of ``table`` from the aliases to their main contact.
     ``model_col`` is set for tables that reference a record by (model, id)."""
     where = _conditions(table, column, model_col)
+    other = None if model_col else _link_column(cr, table, column)
+    if other:
+        # Like the merge wizard: skip what the main contact already has
+        where = SQL(
+            "%s AND NOT EXISTS (SELECT 1 FROM %s w WHERE w.%s = a.main_id "
+            "AND w.%s = ___t.%s)",
+            where,
+            SQL.identifier(table),
+            SQL.identifier(column),
+            SQL.identifier(other),
+            SQL.identifier(other),
+        )
     try:
         with mute_logger("odoo.sql_db"), cr.savepoint():
             cr.execute(
@@ -278,12 +303,29 @@ def _update(cr, table, column, model_col=None):
                     where,
                 )
             )
-        return
     except UniqueViolation:
         _logger.info("T3642: conflict on %s.%s, moving row by row", table, column)
-    # Some rows are already on the main contact: go one by one
-    link_table = _is_link_table(cr, table)
-    dropped = kept = 0
+        _update_one_by_one(cr, table, column, model_col)
+        return
+    if other:
+        cr.execute(
+            SQL(
+                "SELECT count(*) FROM %s ___t JOIN t3642_alias a ON %s",
+                SQL.identifier(table),
+                _conditions(table, column, model_col),
+            )
+        )
+        if kept := cr.fetchone()[0]:
+            _logger.info(
+                "T3642: %s rows of %s.%s stay on the alias, the main contact has them",
+                kept,
+                table,
+                column,
+            )
+
+
+def _update_one_by_one(cr, table, column, model_col=None):
+    kept = 0
     cr.execute("SELECT alias_id, main_id FROM t3642_alias")
     for alias_id, main_id in cr.fetchall():
         row_where = SQL("___t.%s = %s", SQL.identifier(column), alias_id)
@@ -303,29 +345,14 @@ def _update(cr, table, column, model_col=None):
                     )
                 )
         except UniqueViolation:
-            if link_table:
-                cr.execute(
-                    SQL(
-                        "DELETE FROM %s ___t WHERE %s", SQL.identifier(table), row_where
-                    )
-                )
-                dropped += cr.rowcount
-            else:
-                kept += 1
-    if dropped:
-        _logger.warning(
-            "T3642: %s rows of %s.%s dropped, the main contact already has them",
-            dropped,
-            table,
-            column,
-        )
+            kept += 1
     if kept:
         _logger.warning(
-            "T3642: %s rows of %s.%s kept on the alias, they conflict with a row of "
+            "T3642: rows of %s.%s kept on %s alias(es), they conflict with a row of "
             "the main contact",
-            kept,
             table,
             column,
+            kept,
         )
 
 
@@ -416,8 +443,6 @@ def fix_visitors(env, partner_ids):
         for visitor in partner_visitors[1:]:
             visitor._merge_visitor(partner_visitors[0])
     # At most one visitor remains for each partner
-    if not openupgrade.table_exists(env.cr, "website_visitor"):
-        return
     env.cr.execute(
         """
         UPDATE website_visitor v SET access_token = v.partner_id::text

@@ -283,6 +283,6 @@ def _convert_to_children(env, converted):
         return
     cr = env.cr
     redundant, with_email = cleanup.classify_aliases(cr, converted)
-    cleanup.move_relations(cr, converted)
+    cleanup.move_relations(env, converted)
     cleanup.apply_aliases(env, converted, redundant, with_email)
     cleanup.reset_interactions(cr, set(converted) | set(converted.values()))

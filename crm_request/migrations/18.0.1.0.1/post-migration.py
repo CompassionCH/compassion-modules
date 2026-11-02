@@ -45,7 +45,8 @@ def migrate(cr, version):
     if not aliases:
         return
     # Some aliases are attached to another alias: go up to the main contact
-    main_contact = {a.id: _get_main_contact(a, set(aliases.ids)) for a in aliases}
+    alias_ids = set(aliases.ids)
+    main_contact = {a.id: _get_main_contact(a, alias_ids) for a in aliases}
     main = {alias_id: contact.id for alias_id, contact in main_contact.items()}
     redundant, with_email = cleanup.classify_aliases(cr, main)
     _logger.info(
@@ -56,7 +57,7 @@ def migrate(cr, version):
         len(with_email),
         len(aliases) - len(redundant) - len(with_email),
     )
-    cleanup.move_relations(cr, main)
+    cleanup.move_relations(env, main)
     cleanup.apply_aliases(env, main, redundant, with_email)
     cleanup.reset_interactions(cr, set(main) | set(main.values()))
 

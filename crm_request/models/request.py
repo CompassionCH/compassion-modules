@@ -275,6 +275,11 @@ class CrmClaim(models.Model):
         """
         - Push partner to associated mail messages
         """
+        if values.get("partner_id"):
+            # A request belongs to the main contact, not to one of its aliases
+            partner = self.env["res.partner"].browse(values["partner_id"])
+            if partner.type == "email_alias" and partner.parent_id:
+                values = {**values, "partner_id": partner.parent_id.id}
         super().write(values)
 
         if values.get("partner_id"):
@@ -285,9 +290,6 @@ class CrmClaim(models.Model):
                 ).write({"author_id": values["partner_id"]})
                 # Sync partner fields
                 partner = request.partner_id
-                if partner.type == "email_alias" and partner.parent_id:
-                    # The other address of an alias belongs to its main contact
-                    partner = partner.parent_id
                 # email_from can be "John <john@example.com>"
                 email = email_normalize(request.email_from)
                 if email:
@@ -296,12 +298,17 @@ class CrmClaim(models.Model):
                         # Keep the other address as an alias of the partner, so
                         # that the next e-mails from it are matched. The request
                         # stays on the main contact, replies use email_from.
-                        if not self.env["res.partner"].search_count(
-                            [
-                                ("parent_id", "=", partner.id),
-                                ("type", "=", "email_alias"),
-                                ("email_normalized", "=", email),
-                            ]
+                        # An archived alias is not created again
+                        if (
+                            not self.env["res.partner"]
+                            .with_context(active_test=False)
+                            .search_count(
+                                [
+                                    ("parent_id", "=", partner.id),
+                                    ("type", "=", "email_alias"),
+                                    ("email_normalized", "=", email),
+                                ]
+                            )
                         ):
                             self.env["res.partner"].create(
                                 {
