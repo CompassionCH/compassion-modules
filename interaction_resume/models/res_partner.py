@@ -40,6 +40,17 @@ class Partner(models.Model):
     )
     last_interaction_fetch_page = fields.Integer(required=True, default=0)
 
+    def _get_email_aliases(self):
+        """Contacts attached to these partners to hold another e-mail address
+        of the same person (type "email_alias"). They are normally hidden from
+        the contact lists, and their interactions belong to the main contact.
+        """
+        return (
+            self.env["res.partner"]
+            .with_context(active_test=False)
+            .search([("parent_id", "in", self.ids), ("type", "=", "email_alias")])
+        )
+
     def open_interaction(self):
         self.ensure_one()
         if not self.interaction_resume_ids:
@@ -78,8 +89,10 @@ class Partner(models.Model):
             "mailing.trace",
             "partner.log.other.interaction",
         ]
+        # Computed once for the sources of every model
+        aliases = self._get_email_aliases()
         for model in models:
-            self.env[model].sudo().fetch_interaction(self, since, until)
+            self.env[model].sudo().fetch_interaction(self, since, until, aliases)
         self.last_interaction_fetch_date = fields.Datetime.now()
         self.last_interaction_fetch_page = page
         return True
