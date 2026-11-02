@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class InteractionSource(models.AbstractModel):
@@ -21,9 +22,15 @@ class InteractionSource(models.AbstractModel):
         @param since:
         @param until:
         """
-        search_domain = self._get_interaction_partner_domain(partner)
-        if not search_domain:
+        # The e-mail aliases of a contact are part of the same person
+        domains = [
+            domain
+            for alias in partner | partner._get_email_aliases()
+            if (domain := self._get_interaction_partner_domain(alias))
+        ]
+        if not domains:
             return True
+        search_domain = expression.OR(domains)
         records = self.search(
             [
                 *search_domain,

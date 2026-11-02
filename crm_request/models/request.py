@@ -196,6 +196,10 @@ class CrmClaim(models.Model):
                 {"email": email_normalize(defaults["email_from"])}
             )[:1]
             if partner:
+                # An e-mail alias belongs to its main contact, who owns the
+                # request. The alias address stays in email_from for replies.
+                if partner.type == "other" and partner.parent_id:
+                    partner = partner.parent_id
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
 
@@ -286,15 +290,25 @@ class CrmClaim(models.Model):
                         partner.email.strip().lower()
                         != request.email_from.strip().lower()
                     ):
-                        # Create an alias if the email differs
-                        partner_alias = self.env["res.partner"].create(
-                            {
-                                "parent_id": partner.id,
-                                "email": request.email_from,
-                                "type": "other",
-                            }
-                        )
-                        request.partner_id = partner_alias
+                        # Keep the other address as an alias of the partner, so
+                        # that the next e-mails from it are matched. The request
+                        # stays on the main contact, replies use email_from.
+                        alias_email = request.email_from.strip()
+                        if not self.env["res.partner"].search_count(
+                            [
+                                ("parent_id", "=", partner.id),
+                                ("type", "=", "other"),
+                                ("email", "=ilike", alias_email),
+                            ]
+                        ):
+                            self.env["res.partner"].create(
+                                {
+                                    "parent_id": partner.id,
+                                    "name": partner.name,
+                                    "email": alias_email,
+                                    "type": "other",
+                                }
+                            )
                     elif not partner.email:
                         partner.email = request.email_from
                 if request.partner_phone and not partner.phone:
