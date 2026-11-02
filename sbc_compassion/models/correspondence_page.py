@@ -188,16 +188,20 @@ class CorrespondencePage(models.Model):
         """
         Returns the cloudinary url with the correct crop so that the page is displayed
         """
-        if not cloudinary_url:
+        # Pages added to hold overflowing text are not part of the letter image
+        letter_pages = self.correspondence_id.page_ids
+        scanned_pages = letter_pages.filtered("original_page_url") or letter_pages
+        if not cloudinary_url or self not in scanned_pages:
             return False
+        scanned_index = list(scanned_pages).index(self) + 1
         if cloudinary_url.endswith("p1.jpg"):
-            return cloudinary_url.replace("p1.jpg", f"p{str(self.page_index)}.jpg")
+            return cloudinary_url.replace("p1.jpg", f"p{scanned_index}.jpg")
         response = requests.get(cloudinary_url, timeout=3)
         if not response.ok:
             return False
         width, total_height = Image.open(BytesIO(response.content)).size
-        height = total_height // len(self.correspondence_id.page_ids)
-        y_start = (self.page_index - 1) * height
+        height = total_height // len(scanned_pages)
+        y_start = (scanned_index - 1) * height
         crop_operator = f"c_crop,h_{height},w_{width},x_0,y_{y_start}"
         url_parts = cloudinary_url.split("upload/")
         return f"{url_parts[0]}upload/{crop_operator}/{url_parts[1]}"
