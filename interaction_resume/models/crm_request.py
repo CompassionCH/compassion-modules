@@ -16,7 +16,11 @@ class CrmRequest(models.Model):
             .with_context(active_test=False)
             .search([("email", "=", partner.email)])
         ) | partner
-        partners |= partner._get_email_aliases()
+        alias_ids = self.env.context.get("interaction_alias_ids")
+        if alias_ids is None:
+            partners |= partner._get_email_aliases()
+        else:
+            partners |= partners.browse(alias_ids)
         for claim in self:
             # All thread discussion messages
             messages = (

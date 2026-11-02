@@ -192,7 +192,11 @@ def _choose_main(group):
 
 def _relation(dst, src):
     """How the contact src matches the main contact dst.
-    :return: "merge", "child", or None if they do not match directly."""
+    :return: "merge", "child", None if they do not match directly, or
+             "different" if their birthdates differ: they are not the same person.
+    """
+    if dst["birthdate"] and src["birthdate"] and dst["birthdate"] != src["birthdate"]:
+        return "different"
     same_name = dst["name_key"] == src["name_key"]
     same_email = bool(dst["email_key"]) and dst["email_key"] == src["email_key"]
     different_email = (
@@ -251,6 +255,8 @@ def _process_group(env, group, to_merge, converted, flagged):
             to_merge[dst.id].append(src.id)
         elif relation == "child":
             converted[src.id] = dst.id
+        elif relation == "different":
+            continue  # same name, but another person (relative...)
         else:
             lines.append(
                 (src, "possible duplicate, not matching directly this contact")
@@ -271,25 +277,12 @@ def _describe_usage(partner):
 
 def _convert_to_children(env, converted):
     """Turn the contacts in e-mail aliases of their main contact, as
-    the aliases of the v14 migration: their relations go to the main contact."""
+    the aliases of the v14 migration: their relations go to the main contact,
+    with their own children."""
     if not converted:
         return
     cr = env.cr
-    partners = env["res.partner"]
+    redundant, with_email = cleanup.classify_aliases(cr, converted)
     cleanup.move_relations(cr, converted)
-    env.invalidate_all()
-    srcs = partners.browse(list(converted))
-    cc_aliases = cleanup.get_cc_aliases(cr, srcs.ids)
-    for src in srcs:
-        dst = partners.browse(converted[src.id])
-        redundant = cleanup.is_redundant(src, dst, cc_aliases)
-        cr.execute(
-            "UPDATE res_partner SET parent_id = %s, type = 'email_alias' WHERE id = %s",
-            (dst.id, src.id),
-        )
-        env.invalidate_all()
-        if src.name != dst.name:
-            src.name = dst.name
-        if redundant:
-            src.active = False
+    cleanup.apply_aliases(env, converted, redundant, with_email)
     cleanup.reset_interactions(cr, set(converted) | set(converted.values()))

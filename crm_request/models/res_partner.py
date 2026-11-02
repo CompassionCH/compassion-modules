@@ -30,7 +30,7 @@ class ResPartner(models.Model):
         for duplicate in self.browse(duplicate_ids).exists():
             try:
                 with self.env.cr.savepoint():
-                    cleanup.fix_visitor_tokens(self.env.cr, [self.id, duplicate.id])
+                    cleanup.fix_visitors(self.env, [self.id, duplicate.id])
                     wizard._merge(
                         [self.id, duplicate.id], dst_partner=self, extra_checks=False
                     )

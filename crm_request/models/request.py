@@ -285,32 +285,34 @@ class CrmClaim(models.Model):
                 ).write({"author_id": values["partner_id"]})
                 # Sync partner fields
                 partner = request.partner_id
-                if request.email_from:
-                    if partner.email and (
-                        partner.email.strip().lower()
-                        != request.email_from.strip().lower()
-                    ):
+                if partner.type == "email_alias" and partner.parent_id:
+                    # The other address of an alias belongs to its main contact
+                    partner = partner.parent_id
+                # email_from can be "John <john@example.com>"
+                email = email_normalize(request.email_from)
+                if email:
+                    partner_email = email_normalize(partner.email)
+                    if partner_email and partner_email != email:
                         # Keep the other address as an alias of the partner, so
                         # that the next e-mails from it are matched. The request
                         # stays on the main contact, replies use email_from.
-                        alias_email = request.email_from.strip()
                         if not self.env["res.partner"].search_count(
                             [
                                 ("parent_id", "=", partner.id),
                                 ("type", "=", "email_alias"),
-                                ("email", "=ilike", alias_email),
+                                ("email_normalized", "=", email),
                             ]
                         ):
                             self.env["res.partner"].create(
                                 {
                                     "parent_id": partner.id,
                                     "name": partner.name,
-                                    "email": alias_email,
+                                    "email": email,
                                     "type": "email_alias",
                                 }
                             )
                     elif not partner.email:
-                        partner.email = request.email_from
+                        partner.email = email
                 if request.partner_phone and not partner.phone:
                     partner.phone = request.partner_phone
 

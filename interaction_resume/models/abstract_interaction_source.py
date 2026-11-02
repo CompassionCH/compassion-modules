@@ -15,17 +15,22 @@ class InteractionSource(models.AbstractModel):
         partner,
         since=None,
         until=None,
+        aliases=None,
     ):
         """
         Create interaction records for a given partner and date range
         @param partner:
         @param since:
         @param until:
+        @param aliases: e-mail aliases of the partner, whose interactions are
+                        also the ones of the partner (computed if not given)
         """
+        if aliases is None:
+            aliases = partner._get_email_aliases()
         # The e-mail aliases of a contact are part of the same person
         domains = [
             domain
-            for alias in partner | partner._get_email_aliases()
+            for alias in partner | aliases
             if (domain := self._get_interaction_partner_domain(alias))
         ]
         if not domains:
@@ -38,6 +43,7 @@ class InteractionSource(models.AbstractModel):
                 ("date", "<=", until),
             ]
         )
+        records = records.with_context(interaction_alias_ids=aliases.ids)
         self.env["interaction.resume"].create(records._get_interaction_data(partner.id))
         return True
 

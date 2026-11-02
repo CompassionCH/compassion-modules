@@ -89,8 +89,10 @@ class Partner(models.Model):
             "mailing.trace",
             "partner.log.other.interaction",
         ]
+        # Computed once for the sources of every model
+        aliases = self._get_email_aliases()
         for model in models:
-            self.env[model].sudo().fetch_interaction(self, since, until)
+            self.env[model].sudo().fetch_interaction(self, since, until, aliases)
         self.last_interaction_fetch_date = fields.Datetime.now()
         self.last_interaction_fetch_page = page
         return True
