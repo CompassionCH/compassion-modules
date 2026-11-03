@@ -196,6 +196,10 @@ class CrmClaim(models.Model):
                 {"email": email_normalize(defaults["email_from"])}
             )[:1]
             if partner:
+                # An e-mail alias belongs to its main contact, who owns the
+                # request. The alias address stays in email_from for replies.
+                if partner.type == "email_alias" and partner.parent_id:
+                    partner = partner.parent_id
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
 
@@ -271,6 +275,11 @@ class CrmClaim(models.Model):
         """
         - Push partner to associated mail messages
         """
+        if values.get("partner_id"):
+            # A request belongs to the main contact, not to one of its aliases
+            partner = self.env["res.partner"].browse(values["partner_id"])
+            if partner.type == "email_alias" and partner.parent_id:
+                values = {**values, "partner_id": partner.parent_id.id}
         super().write(values)
 
         if values.get("partner_id"):
@@ -281,22 +290,36 @@ class CrmClaim(models.Model):
                 ).write({"author_id": values["partner_id"]})
                 # Sync partner fields
                 partner = request.partner_id
-                if request.email_from:
-                    if partner.email and (
-                        partner.email.strip().lower()
-                        != request.email_from.strip().lower()
-                    ):
-                        # Create an alias if the email differs
-                        partner_alias = self.env["res.partner"].create(
-                            {
-                                "parent_id": partner.id,
-                                "email": request.email_from,
-                                "type": "other",
-                            }
-                        )
-                        request.partner_id = partner_alias
+                # email_from can be "John <john@example.com>"
+                email = email_normalize(request.email_from)
+                if email:
+                    partner_email = email_normalize(partner.email)
+                    if partner_email and partner_email != email:
+                        # Keep the other address as an alias of the partner, so
+                        # that the next e-mails from it are matched. The request
+                        # stays on the main contact, replies use email_from.
+                        # An archived alias is not created again
+                        if (
+                            not self.env["res.partner"]
+                            .with_context(active_test=False)
+                            .search_count(
+                                [
+                                    ("parent_id", "=", partner.id),
+                                    ("type", "=", "email_alias"),
+                                    ("email_normalized", "=", email),
+                                ]
+                            )
+                        ):
+                            self.env["res.partner"].create(
+                                {
+                                    "parent_id": partner.id,
+                                    "name": partner.name,
+                                    "email": email,
+                                    "type": "email_alias",
+                                }
+                            )
                     elif not partner.email:
-                        partner.email = request.email_from
+                        partner.email = email
                 if request.partner_phone and not partner.phone:
                     partner.phone = request.partner_phone
 

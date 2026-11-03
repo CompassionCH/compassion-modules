@@ -48,7 +48,7 @@ class ThankYouConfig(models.Model):
         )
 
         config = filtered_config[0]
-        total_amount = sum(invoice_lines.mapped("price_subtotal"))
+        total_amount = invoice_lines.get_donation_amount()
         for thankyou_config in filtered_config:
             if total_amount >= thankyou_config.min_donation_amount:
                 config = thankyou_config

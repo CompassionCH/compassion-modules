@@ -5,6 +5,7 @@ from . import (
     request,
     request_category,
     request_stage,
+    res_partner,
     res_partner_match,
     res_users,
 )

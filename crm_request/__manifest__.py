@@ -4,7 +4,7 @@
 {
     "name": "CRM Request",
     "summary": "Enables Customer Support Inbox",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "development_status": "Production/Stable",
     "category": "Helpdesk",
     "website": "https://github.com/CompassionCH/compassion-modules",
