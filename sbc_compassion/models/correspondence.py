@@ -929,12 +929,13 @@ class Correspondence(models.Model):
     def get_pdf(self):
         """
         Retrieves the PDF of the letter, trying different sources in order.
-        1. Returns the already stored PDF if available.
+        1. Returns the already stored PDF if available, unless we print our
+           translation on the pages.
         2. Generates a new PDF from pages if they exist.
         3. Downloads the PDF from a remote service as a last resort.
         """
         self.ensure_one()
-        if self.sponsor_letter_scan:
+        if self.sponsor_letter_scan and not self._prints_translation_on_pages():
             return base64.b64decode(self.sponsor_letter_scan)
 
         if self.page_ids:
@@ -944,6 +945,17 @@ class Correspondence(models.Model):
 
         self.attach_b2s_pdf()
         return base64.b64decode(self.sponsor_letter_scan or b"")
+
+    def _prints_translation_on_pages(self):
+        """The stored PDF of GMC doesn't hold the translation we print on the
+        page images. Without all the images, keep the stored PDF."""
+        self.ensure_one()
+        pages = self.page_ids.filtered("final_page_url")
+        return bool(
+            self.report_needs_final_text
+            and pages
+            and all(page.fetch_image() for page in pages)
+        )
 
     def hold_letters(self, message="Project suspended"):
         """Prevents to send S2B letters to GMC."""
