@@ -30,6 +30,10 @@ class IrActionsReport(models.Model):
                 ("res_field", "=", "sponsor_letter_scan"),
             ]
         )
+        letters = self.env["correspondence"].browse(attachments.mapped("res_id"))
+        attachments = attachments.filtered(
+            lambda a: not letters.browse(a.res_id)._prints_translation_on_pages()
+        )
         if not attachments:
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
