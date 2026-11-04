@@ -1729,3 +1729,10 @@ msgstr "aperçu"
 #: model:mail.template,subject:partner_communication.default_communication_template
 msgid "{{object.subject or ' '}}"
 msgstr "\t{{object.subject or ' '}}"
+
+#. module: partner_communication
+#. odoo-python
+#: code:addons/partner_communication/wizards/email_template_preview_view.py:0
+msgid ""
+"No communication uses this template yet. Choose one in Record to preview it."
+msgstr "Aucune communication n'utilise encore ce modèle. Choisissez-en une dans Enregistrement pour le prévisualiser."

@@ -1725,3 +1725,10 @@ msgstr "anteprima"
 #: model:mail.template,subject:partner_communication.default_communication_template
 msgid "{{object.subject or ' '}}"
 msgstr "{{oggetto.soggetto o ' '}}"
+
+#. module: partner_communication
+#. odoo-python
+#: code:addons/partner_communication/wizards/email_template_preview_view.py:0
+msgid ""
+"No communication uses this template yet. Choose one in Record to preview it."
+msgstr "Nessuna comunicazione utilizza ancora questo modello. Sceglierne una in Record per visualizzarne l'anteprima."
