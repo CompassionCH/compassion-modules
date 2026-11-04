@@ -220,7 +220,12 @@ class CrmClaim(models.Model):
         defaults.pop("name", False)
         defaults.update(custom_values)
 
-        request_id = super().message_new(msg, defaults)
+        # The responsible set by the e-mail alias follows the request and gets
+        # the incoming e-mail itself: no separate "You have been assigned"
+        # e-mail on top of it (T3647). Assigning by hand still sends it.
+        request_id = super(
+            CrmClaim, self.with_context(mail_auto_subscribe_no_notify=True)
+        ).message_new(msg, defaults)
         request = self.browse(request_id.id)
         if not request.language:
             request.language = (
@@ -234,7 +239,7 @@ class CrmClaim(models.Model):
         except Exception as e:
             _logger.error(f"The automatic mail failed\n{e}")
 
-        return request_id
+        return request
 
     def message_update(self, msg_dict, update_vals=None):
         """Change the stage to "Waiting on support" when the customer writes a
