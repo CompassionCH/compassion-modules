@@ -11,7 +11,6 @@ import base64
 import logging
 import re
 from datetime import datetime, timezone
-from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from odoo import _, api, fields, models
@@ -210,6 +209,7 @@ class ChildPictures(models.Model):
                 self.headshot = data
             elif pic_type.lower() == "fullshot":
                 self.fullshot = data
-        except (AttributeError, ValueError, URLError, HTTPError, TypeError):
+        # OSError also covers URLError/HTTPError and read timeouts (TimeoutError)
+        except (AttributeError, ValueError, OSError, TypeError):
             logger.error("Failed to fetch image from %s", self.image_url, exc_info=True)
         return _image_date
