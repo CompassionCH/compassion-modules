@@ -8,4 +8,9 @@
 #
 ##############################################################################
 
-from . import test_crm_claim_categories, test_crm_claim_request, test_my_profile
+from . import (
+    test_crm_claim_categories,
+    test_crm_claim_request,
+    test_my_profile,
+    test_request_notifications,
+)
