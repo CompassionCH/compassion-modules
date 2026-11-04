@@ -12,6 +12,10 @@
         <field name="name">Demand planning: correct negative resupply</field>
         <field name="model_id" ref="model_demand_weekly_demand" />
         <field name="trigger">on_create_or_write</field>
+        <field
+            name="trigger_field_ids"
+            eval="[(6, 0, [ref('crm_compassion.field_demand_weekly_demand__resupply_events')])]"
+        />
         <field name="filter_domain">[('resupply_events', '&lt;', 0)]</field>
         <field name="action_server_ids" eval="[(6,0,[ref('crm_compassion.correct_resupply_event_action')])]"/>
     </record>
