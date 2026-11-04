@@ -538,10 +538,13 @@ class SponsorshipContract(models.Model):
     @api.depends("correspondent_id")
     def _compute_is_first_sponsorship(self):
         for sponsorship in self:
+            # Sponsorships started on the same day are new together: a sponsor
+            # taking several sponsorships at once has all of them as first.
+            start = (sponsorship.start_date or sponsorship.create_date).date()
             old_sponsorships = sponsorship.correspondent_id.sponsorship_ids.filtered(
-                lambda c, sponsorship=sponsorship: c.state != "cancelled"
+                lambda c, start=start: c.state != "cancelled"
                 and c.start_date
-                and c.start_date < (sponsorship.start_date or sponsorship.create_date)
+                and c.start_date.date() < start
             )
             sponsorship.is_first_sponsorship = not old_sponsorships
 
