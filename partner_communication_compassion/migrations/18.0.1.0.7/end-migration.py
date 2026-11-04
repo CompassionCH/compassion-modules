@@ -45,21 +45,29 @@ def migrate(env, version):
     # Skip the children already in a biennial since their last picture came,
     # so that the sponsor does not receive the same picture twice.
     biennial = env.ref("partner_communication_compassion.biennial")
+    # The biennial jobs are split once into one row per child, so that the
+    # children are matched with an equality join instead of scanning the
+    # object_ids of every job for each picture.
     env.cr.execute(
-        """
+        r"""
+        WITH biennial_child AS (
+            SELECT DISTINCT job.create_date, child.id::integer AS child_id
+            FROM partner_communication_job job,
+                 unnest(string_to_array(job.object_ids, ',')) AS child(id)
+            WHERE job.config_id = %s
+              AND job.state != 'cancel'
+              AND child.id ~ '^\d+$'
+        )
         SELECT DISTINCT pic.child_id
-        FROM compassion_child_pictures pic
-        JOIN partner_communication_job job
-          ON job.config_id = %s
-         AND job.state != 'cancel'
-         AND job.create_date >= pic.create_date
-         AND pic.child_id::text = ANY(string_to_array(job.object_ids, ','))
-        WHERE pic.child_id = ANY(%s)
-          AND pic.id = (
-            SELECT last.id FROM compassion_child_pictures last
-            WHERE last.child_id = pic.child_id
-            ORDER BY last.date DESC, last.id DESC LIMIT 1
-          )
+        FROM (
+            SELECT DISTINCT ON (child_id) id, child_id, create_date
+            FROM compassion_child_pictures
+            WHERE child_id = ANY(%s)
+            ORDER BY child_id, date DESC, id DESC
+        ) pic
+        JOIN biennial_child bc
+          ON bc.child_id = pic.child_id
+         AND bc.create_date >= pic.create_date
         """,
         (biennial.id, list(child_ids)),
     )
@@ -70,12 +78,18 @@ def migrate(env, version):
 
     # Prepared but not sent: staff review them before they reach the sponsors.
     # They are only merged into pending jobs that would not be sent either.
-    children = env["compassion.child"].browse(child_ids - already_prepared)
-    jobs_before = env["partner.communication.job"].search_count([])
+    # Generating a communication is slow (the report is rendered), so it is
+    # done in queue jobs rather than in the migration.
+    children = env["compassion.child"].browse(sorted(child_ids - already_prepared))
     children.with_context(
         default_auto_send=False, same_job_search=[("auto_send", "=", False)]
-    )._check_new_photo()
+    ).with_delay_sh(
+        "_check_new_photo",
+        split=50,
+        channel="root.partner_communication",
+        priority=500,
+    )
     _logger.info(
-        "T3178: %s missed biennial communications prepared",
-        env["partner.communication.job"].search_count([]) - jobs_before,
+        "T3178: biennial communications of %s children queued for generation",
+        len(children),
     )
