@@ -13,6 +13,7 @@ from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
+
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
 
@@ -80,45 +81,18 @@ class CorrespondenceParagraph(models.Model):
         self.ensure_one()
         text_box = self.get_text_box(field_name)
         text = self[field_name]
-        max_chars = text_box.max_chars
-        line_length = text_box.line_size
-
-        if not max_chars or not line_length or not text:
+        if not text:
             return text, ""
-
-        text_that_fits, text_that_overflows = self._split_text(
-            text, max_chars, line_length
-        )
-        return self._finalize_text(text_that_fits, text_that_overflows)
-
-    def _split_text(self, text, max_chars, line_length):
-        text_that_fits = []
-        text_that_overflows = []
-        current_line_length = 0
-        total_chars = 0
-        lbr_replace = "$" * line_length
-
-        for word in text.replace("\n", " " + lbr_replace + " ").split():
-            is_lbr = word == lbr_replace
-            word_length = len(word) if not is_lbr else line_length - current_line_length
-            current_line_length += word_length + 1
-            if current_line_length >= line_length:
-                current_line_length = 0
-            total_chars += word_length + 1
-            if total_chars <= max_chars:
-                text_that_fits.append(word if not is_lbr else "\n")
-            else:
-                text_that_overflows.append(word if not is_lbr else "\n")
-
-        return text_that_fits, text_that_overflows
-
-    def _finalize_text(self, text_that_fits, text_that_overflows):
-        if text_that_overflows and text_that_fits:
-            last_word = text_that_fits.pop()
-            text_that_overflows.insert(0, last_word)
-            text_that_overflows.insert(0, "...")
-            text_that_fits.append("...")
-        return " ".join(text_that_fits), " ".join(text_that_overflows)
+        if not text_box:
+            # The page has no box for this text (e.g. B2S L4/L6 print the
+            # translation on page 2 only): move it to the next box.
+            return "", text
+        try:
+            return text_box.split_text(text)
+        except Exception:
+            # Never block the creation of a letter: keep the text uncut instead.
+            _logger.exception("Could not measure the text of paragraph %s", self.id)
+            return text, ""
 
     def get_text_box(self, field_name):
         """

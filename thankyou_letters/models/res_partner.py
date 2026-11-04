@@ -28,7 +28,6 @@ class ResPartner(models.Model):
 
     _inherit = "res.partner"
 
-    gender = fields.Selection(related="title.gender", readonly=True)
     thankyou_preference = fields.Selection(
         "_get_delivery_preference", default="auto_digital", required=True
     )
@@ -43,7 +42,7 @@ class ResPartner(models.Model):
         lang = self.env.context.get("lang") or self.env.lang
         for partner in self:
             t_partner = partner.with_context(lang=lang)
-            lines = []
+            name_line = ""
             if not partner.is_company and partner.title.shortcut:
                 title = escape(t_partner.title.shortcut)
                 firstname = escape(partner.firstname or "")

@@ -52,6 +52,7 @@ class CompassionChild(models.Model):
 
     old_values = fields.Char(compute="_compute_revised_values")
     old_firstname = fields.Char(compute="_compute_revised_values")
+    old_birthdate = fields.Date(compute="_compute_revised_values")
     current_values = fields.Char(compute="_compute_revised_values")
     completion_month = fields.Char(compute="_compute_completion_month")
 
@@ -65,6 +66,16 @@ class CompassionChild(models.Model):
                 ).old_value
                 or child.firstname
             )
+            # old_values joins the old values of all revisions received
+            # together (ex: birthdate and grade level), it can't be read as
+            # a date.
+            old_birthdate = child.revised_value_ids.filtered(
+                lambda c: c.name == "Birthdate"
+            )[:1].old_value
+            try:
+                child.old_birthdate = fields.Date.to_date(old_birthdate)
+            except ValueError:
+                child.old_birthdate = False
 
     def _major_revision(self, vals):
         """Private method when a major revision is received for a child.

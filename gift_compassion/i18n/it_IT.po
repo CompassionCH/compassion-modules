@@ -1,0 +1,689 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* gift_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "%s / year"
+msgstr "%s / anno"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "%s total"
+msgstr "%s in totale"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_needaction
+msgid "Action Needed"
+msgstr "Azione Necessaria"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__amount
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_tree
+msgid "Amount"
+msgstr "Importo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__amount_us_dollars
+msgid "Amount due"
+msgstr "Importo dovuto"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_attachment_count
+msgid "Attachment Count"
+msgstr "Numero allegati"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Cancel Gift"
+msgstr "Annulla il regalo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__child_id
+msgid "Child"
+msgstr "Bambino"
+
+#. module: gift_compassion
+#: model:ir.actions.act_window,name:gift_compassion.action_collect_invoices
+msgid "Collect Invoices"
+msgstr "Raccogli le fatture"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Collect invoices"
+msgstr "Raccogli le fatture"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__company_id
+msgid "Company"
+msgstr "Azienda"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Impostazioni di configurazione"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__create_uid
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__create_uid
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__create_date
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__create_date
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__currency_id
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__currency_id
+msgid "Currency"
+msgstr "Valuta"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__currency_usd
+msgid "Currency Usd"
+msgstr "Valuta USD"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__date_partner_paid
+msgid "Date Partner Paid"
+msgstr "Data di pagamento del partner"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__delivered
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Delivered"
+msgstr "Consegnato"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__display_name
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__display_name
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__display_name
+msgid "Display Name"
+msgstr "Visualizza Nome"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__domain
+msgid "Domain"
+msgstr "Dominio"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__draft
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: gift_compassion
+#: model:base.automation,name:gift_compassion.enable_postponed_gifts
+msgid "Enable postponed gifts"
+msgstr "Abilita i regali rinviati"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__exchange_rate
+msgid "Exchange Rate"
+msgstr "Tasso di cambio"
+
+#. module: gift_compassion
+#: model:ir.actions.server,name:gift_compassion.action_enable_postponed_gifts
+#: model:ir.actions.server,name:gift_compassion.action_postpone_gift
+msgid "Execute Code"
+msgstr "Esegui codice"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messaggi non riusciti"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__field_office_notes
+msgid "Field Office Notes"
+msgstr "Note dell'ufficio sul campo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__company_id
+msgid "Field is retrieve from the associated sponsorship"
+msgstr "Il campo viene recuperato dal sostegno associato"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_follower_ids
+msgid "Followers"
+msgstr "Seguaci"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partner)"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_account_move_line__gift_id
+msgid "GMC Gift"
+msgstr "Regalo GMC"
+
+#. module: gift_compassion
+#: model:account.account,name:gift_compassion.comp_2002_2
+msgid "GMC Gift Due"
+msgstr "Regali GMC da pagare"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_id
+msgid "GMC message"
+msgstr "Messaggio GMC"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__gender
+msgid "Gender"
+msgstr "Sesso"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/sponsorship_gift.py:0
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Gift"
+msgstr "Regalo"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_gift_collect_wizard
+msgid "Gift Collect Wizard"
+msgstr "Procedura guidata di raccolta dei regali"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__gift_date
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Gift Date"
+msgstr "Data del regalo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__gift_frequency
+msgid "Gift Frequency"
+msgstr "Frequenza dei regali"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_generate_gift_wizard
+msgid "Gift Generation Wizard"
+msgstr "Creazione guidata di regali"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Gift OK"
+msgstr "Regalo OK"
+
+#. module: gift_compassion
+#: model:ir.actions.act_window,name:gift_compassion.open_view_gift_threshold_settings
+msgid "Gift Threshold Configuration"
+msgstr "Configurazione delle soglie dei regali"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_gift_threshold_settings
+#: model:ir.ui.menu,name:gift_compassion.menu_gift_configuration
+msgid "Gift Thresholds"
+msgstr "Soglie dei regali"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Gift Type"
+msgstr "Tipo di regalo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_reformat_all_phonenumbers__gift_notify_ids
+#: model:ir.model.fields,field_description:gift_compassion.field_res_config_settings__gift_notify_ids
+msgid "Gift Undeliverable"
+msgstr "Regalo non consegnabile"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/sponsorship_gift.py:0
+msgid "Gift Undeliverable Notification"
+msgstr "Notifica di regalo non consegnabile"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__gift_type_id
+msgid "Gift type"
+msgstr "Tipo di regalo"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_sponsorship_contract_gift_form
+msgid "Gifts"
+msgstr "Regali"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__attribution
+msgid "Gmc Attribution"
+msgstr "Attribuzione GMC"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__gmc_gift_id
+msgid "Gmc Gift"
+msgstr "Regalo GMC"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__gift_type
+msgid "Gmc Gift Type"
+msgstr "Tipo di regalo GMC"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__sponsorship_gift_type
+msgid "Gmc Sponsorship Gift Type"
+msgstr "Tipo di regalo di sostegno GMC"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__has_message
+msgid "Has Message"
+msgstr "Ha un messaggio"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__project_suspended
+msgid "Hold Gifts"
+msgstr "Regali in hold"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__id
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__id
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__id
+msgid "ID"
+msgstr "ID"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Se selezionato, i nuovi messaggi richiedono la tua attenzione"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__message_has_error
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Se selezionato, alcuni messaggi presentano un errore di consegna."
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__in_progress
+msgid "In Progress"
+msgstr "In corso"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__instructions
+msgid "Instructions"
+msgstr "Istruzioni"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_collect
+msgid "Invoice Lines"
+msgstr "Righe di fattura"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__invoice_line_ids
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__invoice_line_ids
+msgid "Invoice lines"
+msgstr "Linee di fatturazione"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Invoiced"
+msgstr "Fatturato"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/sponsorship_gift.py:0
+msgid "Invoices"
+msgstr "Fatture"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_is_follower
+msgid "Is Follower"
+msgstr "E' Follower"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_account_move
+msgid "Journal Entry"
+msgstr "Registrazione contabile"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_account_move_line
+msgid "Journal Item"
+msgstr "Movimento contabile"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__write_uid
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__write_uid
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__write_uid
+msgid "Last Updated by"
+msgstr "Ultima modifica di"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_collect_wizard__write_date
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__write_date
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__write_date
+msgid "Last Updated on"
+msgstr "Ultima modifica il"
+
+#. module: gift_compassion
+#: model:ir.actions.server,name:gift_compassion.deliver_gift
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Mark as delivered"
+msgstr "Segna come consegnato"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__max_amount
+msgid "Max Amount"
+msgstr "Importo massimo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_error
+msgid "Message Delivery error"
+msgstr "Errore di consegna messaggio"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_ids
+msgid "Messages"
+msgstr "Messaggi"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__min_amount
+msgid "Min Amount"
+msgstr "Importo minimo"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__name
+msgid "Name"
+msgstr "Nome"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_recurring_contract__no_birthday_invoice
+msgid "No Birthday Invoice"
+msgstr "Nessuna fattura di compleanno"
+
+#. module: gift_compassion
+#: model_terms:ir.actions.act_window,help:gift_compassion.action_sponsorship_gift
+msgid "No gifts."
+msgstr "Nessun regalo."
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Not sent"
+msgstr "Non inviato"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_recurring_contract__number_gifts
+msgid "Number Gifts"
+msgstr "Numero di regali"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Numero di Azioni"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_error_counter
+msgid "Number of errors"
+msgstr "Numero di errori"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Numero di messaggi che richiedono un'azione"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Numero di messaggi con errore di consegna"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_account_partial_reconcile
+msgid "Partial Reconcile"
+msgstr "Riconciliazione parziale"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__beneficiary_exited
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__participant_exited
+msgid "Participant Exited"
+msgstr "Partecipante uscito"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__beneficiary_exited_more_than_90_days_ago
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__participant_exited_more_than_90_days_ago
+msgid "Participant Exited More Than 90 Days Ago"
+msgstr "Partecipante uscito da più di 90 giorni"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__beneficiary_exited/whereabouts_unknown
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__participant_exited/whereabouts_unknown
+msgid "Participant Exited/Whereabouts Unknown"
+msgstr "Partecipante uscito/Luogo di residenza sconosciuto"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__partner_id
+msgid "Partner"
+msgstr "Partner"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__threshold_alert
+msgid "Partner exceeded the maximum gift amount allowed"
+msgstr "Il partner ha superato l'importo massimo di regalo consentito"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__open
+msgid "Pending"
+msgstr "In attesa"
+
+#. module: gift_compassion
+#: model:base.automation,name:gift_compassion.postpone_future_gifts_automation
+msgid "Postpone future gifts"
+msgstr "Rinvia i regali futuri"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__date_sent
+msgid "Process Date"
+msgstr "Data di elaborazione"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__product_id
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__project_id
+msgid "Project"
+msgstr "Progetto"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__undeliverable_reason__project_transitioned
+msgid "Project Transitioned"
+msgstr "Progetto in transizione"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__rating_ids
+msgid "Ratings"
+msgstr "Valutazioni"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_recurring_contract
+msgid "Recurring contract"
+msgstr "Contratto ricorrente"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Errore di consegna degli SMS"
+
+#. module: gift_compassion
+#: model:ir.actions.server,name:gift_compassion.send_gift
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Send Now"
+msgstr "Invia ora"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Sent"
+msgstr "Inviata"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Sponsor payments"
+msgstr "Pagamenti dei sostenitori"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__sponsorship_id
+msgid "Sponsorship"
+msgstr "Sostegno"
+
+#. module: gift_compassion
+#: model:ir.model,name:gift_compassion.model_sponsorship_gift
+msgid "Sponsorship Gift"
+msgstr "Regalo di sostegno"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__gift_type_id
+msgid "Sponsorship Gift Type"
+msgstr "Tipo di regalo di sostegno"
+
+#. module: gift_compassion
+#: model:ir.actions.act_window,name:gift_compassion.action_sponsorship_gift
+#: model:ir.ui.menu,name:gift_compassion.menu_sponsorship_gift
+msgid "Sponsorship Gifts"
+msgstr "Regali di sostegno"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/contracts.py:0
+msgid "Sponsorship gifts"
+msgstr "Regali di sostegno"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__state
+msgid "State"
+msgstr "Stato"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Status"
+msgstr "Stato"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__status_change_date
+msgid "Status Change Date"
+msgstr "Data di cambio stato"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__suspended
+msgid "Suspended"
+msgstr "Sospeso"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_recurring_contract__no_birthday_invoice
+msgid ""
+"The automatic birthday gift will not generate an invoice.This means a "
+"birthday gift will always be sent to GMC even if we didn't register a "
+"payment."
+msgstr ""
+"Il regalo di compleanno automatico non genererà una fattura. Ciò significa "
+"che un regalo di compleanno verrà sempre inviato a GMC anche se non abbiamo "
+"registrato un pagamento."
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid ""
+"This will cancel the message for GMC and put the gift in Delivered state. "
+"Are you sure?"
+msgstr ""
+"Questo annullerà il messaggio per GMC e porterà il regalo allo stato "
+"Consegnato. Sei sicuro?"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__threshold_alert
+msgid "Threshold Alert"
+msgstr "Avviso di soglia"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__threshold_alert_type
+msgid "Threshold Alert Type"
+msgstr "Tipo di avviso di soglia"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "To Verify"
+msgstr "Da verificare"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__undeliverable
+msgid "Undeliverable"
+msgstr "Non consegnabile"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__undeliverable_reason
+msgid "Undeliverable Reason"
+msgstr "Motivo di mancata consegna"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/gift_threshold_settings.py:0
+msgid "Unlimited"
+msgstr "Illimitato"
+
+#. module: gift_compassion
+#: model:ir.model.fields.selection,name:gift_compassion.selection__sponsorship_gift__state__verify
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_filter
+msgid "Verify"
+msgstr "Da verificare"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__website_message_ids
+msgid "Website Messages"
+msgstr "Messaggi sito web"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_sponsorship_gift__website_message_ids
+msgid "Website communication history"
+msgstr "Storico comunicazione sito"
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_form
+msgid "Will unreconcile the payment"
+msgstr "Annullerà la riconciliazione del pagamento"
+
+#. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__yearly_threshold
+msgid "Yearly Threshold"
+msgstr "Soglia annuale"
+
+#. module: gift_compassion
+#: model:ir.model.constraint,message:gift_compassion.constraint_gift_threshold_settings_unique_gift_threshold
+msgid "You already have a threshold rule for this gift"
+msgstr "Hai già una regola di soglia per questo regalo"
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/account_partial_reconcile.py:0
+msgid "You cannot delete the %s. It is already sent to GMC."
+msgstr "Non puoi eliminare %s. È già stato inviato a GMC."
+
+#. module: gift_compassion
+#. odoo-python
+#: code:addons/gift_compassion/models/sponsorship_gift.py:0
+msgid "You cannot delete the %s.It is already sent to GMC."
+msgstr "Non puoi eliminare %s. È già stato inviato a GMC."
+
+#. module: gift_compassion
+#: model_terms:ir.ui.view,arch_db:gift_compassion.view_gift_collect
+msgid "_Add to gift"
+msgstr "_Aggiungi al regalo"

@@ -27,7 +27,7 @@ class ChildLifecycle(models.Model):
                     "partner_communication_compassion.planned_exit_notification"
                 )
                 sponsorship = lifecycle.child_id.sponsorship_ids[:1]
-                if sponsorship.end_date.date() == date.today():
+                if sponsorship.end_date and sponsorship.end_date.date() == date.today():
                     sponsorship.send_communication(communication_type, both=True)
             else:
                 communication_type = self.env["partner.communication.config"].search(
@@ -44,7 +44,8 @@ class ChildLifecycle(models.Model):
                     object_ids = lifecycle.child_id.id
                     can_send = (
                         sponsorship.state == "active"
-                        or sponsorship.end_date.date() == date.today()
+                        or sponsorship.end_date
+                        and sponsorship.end_date.date() == date.today()
                     )
                     if lifecycle.type == "Unplanned Exit":
                         object_ids = lifecycle.child_id.sponsorship_ids[:1].id

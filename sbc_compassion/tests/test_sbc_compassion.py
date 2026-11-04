@@ -11,7 +11,13 @@
 import base64
 import logging
 import os
+from datetime import datetime
 from os import path
+from unittest.mock import patch
+
+from psycopg2 import OperationalError
+
+from odoo import fields
 
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
     BaseSponsorshipTest,
@@ -49,6 +55,53 @@ class TestSbcCompassion(BaseSponsorshipTest):
         self.assertEqual(self.t_sponsorship.child_id.local_id, "TT123456789")
         self.assertEqual(self.t_sponsorship.partner_id.global_id, "12345678")
         self.assertEqual(self.t_sponsorship.state, "active")
+
+    def _create_letter(self):
+        return self.env["correspondence"].create(
+            {
+                "sponsorship_id": self.t_sponsorship.id,
+                "direction": "Beneficiary To Supporter",
+                "original_text": "Hello",
+            }
+        )
+
+    def test_mark_email_read_keeps_first_read_date(self):
+        letter = self._create_letter()
+        self.assertFalse(letter.email_read)
+        first_read = datetime(2026, 1, 1, 10, 0, 0)
+        second_read = datetime(2026, 1, 1, 10, 0, 5)
+
+        with patch.object(fields.Datetime, "now", return_value=first_read):
+            letter.mark_email_read()
+        self.assertEqual(letter.email_read, first_read)
+
+        with patch.object(fields.Datetime, "now", return_value=second_read):
+            letter.mark_email_read()
+        self.assertEqual(letter.email_read, first_read)
+
+    def test_set_email_read_works_for_the_public_user(self):
+        """The fallback job runs as the user who queued it (public user)"""
+        letter = self._create_letter()
+        read_date = datetime(2026, 1, 1, 10, 0, 0)
+        public_user = self.env.ref("base.public_user")
+
+        letter.with_user(public_user)._set_email_read(read_date)
+
+        self.assertEqual(letter.email_read, read_date)
+
+    def test_mark_email_read_falls_back_to_a_job(self):
+        letter = self._create_letter()
+        letter_model = type(letter)
+
+        with (
+            patch.object(letter_model, "_set_email_read", side_effect=OperationalError),
+            patch.object(letter_model, "with_delay_sh") as delayed,
+        ):
+            letter.mark_email_read()
+
+        delayed.assert_called_once()
+        self.assertEqual(delayed.call_args.args[0], "_set_email_read")
+        self.assertFalse(letter.email_read)
 
     def test_import_pdf(self):
         """

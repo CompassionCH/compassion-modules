@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
@@ -15,7 +15,12 @@ class ResPartner(models.Model):
     _name = "res.partner"
 
     salutation = fields.Char(compute="_compute_salutation")
-    gender = fields.Selection(related="title.gender", readonly=False)
+    gender = fields.Selection(compute="_compute_gender")
+
+    @api.depends("title.gender")
+    def _compute_gender(self):
+        for partner in self:
+            partner.gender = partner.title.gender
 
     def _compute_salutation(self):
         """Define a method _get_salutation_<lang_code> for using a specific salutation

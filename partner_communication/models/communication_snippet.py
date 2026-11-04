@@ -21,7 +21,7 @@ class CommunicationSnippet(models.Model):
     _description = "Communication Snippet"
 
     name = fields.Char(required=True, index=True)
-    snippet_text = fields.Html(required=True, translate=True, sanitize=False)
+    snippet_text = fields.Html(required=True, translate=True)
     description = fields.Text()
 
     category_id = fields.Many2one(

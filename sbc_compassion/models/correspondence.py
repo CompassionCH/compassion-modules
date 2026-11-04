@@ -17,6 +17,7 @@ import uuid
 from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
+from psycopg2 import OperationalError
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
@@ -29,6 +30,9 @@ from ..tools.onramp_connector import SBCConnector
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
+
+# Template sent by GMC for the Compassion Moment B2S letters
+COMPASSION_MOMENT_TEMPLATE = "MX-C-1S10"
 
 ROWS_PER_ATTACHMENT_PAGE = 2
 
@@ -79,7 +83,9 @@ class Correspondence(models.Model):
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
-    child_id = fields.Many2one(related="sponsorship_id.child_id", readonly=True)
+    child_id = fields.Many2one(
+        related="sponsorship_id.child_id", store=True, readonly=True, index=True
+    )
     avatar_128 = fields.Image(compute="_compute_avatar")
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, tracking=True)
@@ -202,6 +208,10 @@ class Correspondence(models.Model):
         string="Number of pages", compute="_compute_nbr_pages", store=True
     )
     template_id = fields.Many2one("correspondence.template", "Template")
+    is_compassion_moment = fields.Boolean(
+        help="The B2S letter comes from GMC with the Compassion Moment template "
+        f"{COMPASSION_MOMENT_TEMPLATE}",
+    )
 
     # 4. Additional information
     ###########################
@@ -449,6 +459,15 @@ class Correspondence(models.Model):
             else:
                 letter.letter_format = False
 
+    def _refresh_letter_format(self):
+        """
+        Recompute the format and the file name from the scanned files. The compute
+        reads the whole scan of every letter: call it on small batches (jobs).
+        """
+        for fname in ("letter_format", "file_name"):
+            self.env.add_to_compute(self._fields[fname], self)
+            self.flush_recordset([fname])
+
     def _get_uuid(self):
         return str(uuid.uuid4())
 
@@ -678,6 +697,10 @@ class Correspondence(models.Model):
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
+        # The report overlays the original text on the template pages, so the
+        # text must be spread on as many pages as needed to fit the text boxes.
+        for letter in letters.filtered("report_needs_original_text"):
+            letter.spread_text_to_pages()
         # Make sure the translation language is set correctly.
         letters._check_translation_language()
         for letter in letters:
@@ -749,6 +772,40 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def mark_email_read(self):
+        """Set the date at which the letters were first read through the e-mail
+        link. A letter opened again keeps its first date.
+
+        This must never prevent a sponsor from seeing the letter: when another
+        transaction is updating the same letters, the date is set later by a job.
+        """
+        unread = self.filtered(lambda letter: not letter.email_read)
+        if not unread:
+            return True
+        read_date = fields.Datetime.now()
+        try:
+            with self.env.cr.savepoint():
+                unread._set_email_read(read_date)
+        except OperationalError:
+            _logger.info(
+                "Letters %s: concurrent update, marking as read later", unread.ids
+            )
+            unread.with_delay_sh("_set_email_read", read_date)
+        return True
+
+    def _set_email_read(self, read_date):
+        """Also run as a job: letters read in the meantime keep their date.
+
+        A job runs as the user who queued it, which is the public user for a
+        sponsor opening the link without being logged in. The callers (the
+        letter download controllers) already use sudo for this, but a job does
+        not keep it, so the access is restored here.
+        """
+        self.sudo().filtered(lambda letter: not letter.email_read).write(
+            {"email_read": read_date}
+        )
+        return True
+
     def validate(self):
         for letter in self:
             if letter.state == "Draft":
@@ -863,15 +920,22 @@ class Correspondence(models.Model):
             ", ".join(self.mapped("child_id.local_id")),
         )
 
+    def _is_ready_for_sponsor(self):
+        """Tells if a published B2S letter can be communicated to the sponsor.
+        Extended by modules that hold letters back (e.g. translation)."""
+        self.ensure_one()
+        return True
+
     def get_pdf(self):
         """
         Retrieves the PDF of the letter, trying different sources in order.
-        1. Returns the already stored PDF if available.
+        1. Returns the already stored PDF if available, unless we print our
+           translation on the pages.
         2. Generates a new PDF from pages if they exist.
         3. Downloads the PDF from a remote service as a last resort.
         """
         self.ensure_one()
-        if self.sponsor_letter_scan:
+        if self.sponsor_letter_scan and not self._prints_translation_on_pages():
             return base64.b64decode(self.sponsor_letter_scan)
 
         if self.page_ids:
@@ -881,6 +945,17 @@ class Correspondence(models.Model):
 
         self.attach_b2s_pdf()
         return base64.b64decode(self.sponsor_letter_scan or b"")
+
+    def _prints_translation_on_pages(self):
+        """The stored PDF of GMC doesn't hold the translation we print on the
+        page images. Without all the images, keep the stored PDF."""
+        self.ensure_one()
+        pages = self.page_ids.filtered("final_page_url")
+        return bool(
+            self.report_needs_final_text
+            and pages
+            and all(page.fetch_image() for page in pages)
+        )
 
     def hold_letters(self, message="Project suspended"):
         """Prevents to send S2B letters to GMC."""
@@ -976,6 +1051,7 @@ class Correspondence(models.Model):
     def json_to_data(self, json, mapping_name=None):
         template_name = json.pop("Template", "CH-A-6S11-1")
         odoo_data = super().json_to_data(json, mapping_name)
+        odoo_data["is_compassion_moment"] = template_name == COMPASSION_MOMENT_TEMPLATE
 
         if not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(
@@ -987,13 +1063,17 @@ class Correspondence(models.Model):
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.get("partner_id")
             child = odoo_data.pop("child_id")
-            sponsorship = self.env["recurring.contract"].search(
+            sponsorships = self.env["recurring.contract"].search(
                 [
                     ("correspondent_id", "=", partner),
                     ("child_id", "=", child),
-                ],
-                limit=1,
+                ]
             )
+            # Prefer the live sponsorship: bound to an inactive duplicate,
+            # send_communication drops the letter and it never gets published.
+            # The sort is stable, so the newest contract wins within a state.
+            state_rank = {"active": 0, "terminated": 1, "waiting": 2}
+            sponsorship = sponsorships.sorted(lambda s: state_rank.get(s.state, 3))[:1]
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
 
@@ -1204,17 +1284,24 @@ class Correspondence(models.Model):
             return flat_images
         return images
 
-    def spread_text_to_pages(self):
+    def spread_text_to_pages(self, fields_to_check=None):
         """
         Used for the report generation.
         We spread the text to the pages to be used in the report
         depending on the text box sizes.
         """
         self.ensure_one()
-        fields_to_check = ["original_text", "english_text", "translated_text"]
+        fields_to_check = fields_to_check or [
+            "original_text",
+            "english_text",
+            "translated_text",
+        ]
         new_page = self.env["correspondence.page"]
 
         for field in fields_to_check:
+            if not self._has_text_box(field):
+                # The text would be moved to new pages forever.
+                continue
             overflow = ""
             for page in self.page_ids:
                 overflow = self._process_page_text(page, field, overflow)
@@ -1223,9 +1310,17 @@ class Correspondence(models.Model):
                 new_page = self._create_new_page(new_page, field, overflow)
 
         if new_page:
-            self.spread_text_to_pages()
+            self.spread_text_to_pages(fields_to_check)
 
         return True
+
+    def _has_text_box(self, field):
+        text_type = "Original" if field == "original_text" else "Translation"
+        # Same templates as the pages created to hold the overflow
+        templates = self.page_ids.template_id | self.template_id.page_ids
+        if self.direction == "Beneficiary To Supporter":
+            templates |= self.template_id.additional_page_id
+        return text_type in templates.text_box_ids.mapped("text_type")
 
     def _process_page_text(self, page, field, overflow):
         for paragraph in page.paragraph_ids:
@@ -1238,21 +1333,12 @@ class Correspondence(models.Model):
         return overflow
 
     def _handle_overflow(self, paragraph, field, overflow):
-        text_box = paragraph.get_text_box(field)
-        total_length = len(overflow) + len(paragraph[field]) + (text_box.line_size or 0)
-
-        if total_length <= (text_box.max_chars or 0):
-            paragraph[field] = f"{overflow}\n\n{paragraph[field]}"
-            overflow = ""
-        else:
-            next_box_text = paragraph[field]
-            paragraph[field] = overflow
-            text, overflow = paragraph.check_overflow(field)
-            if overflow:
-                overflow = f"{overflow}\n\n{next_box_text}"
-                paragraph[field] = text
-            else:
-                overflow = next_box_text
+        if paragraph[field]:
+            overflow = f"{overflow}\n\n{paragraph[field]}"
+        paragraph[field] = overflow
+        text, overflow = paragraph.check_overflow(field)
+        if overflow:
+            paragraph[field] = text
         return overflow
 
     def _create_new_page(self, new_page, field, overflow):
@@ -1277,6 +1363,7 @@ class Correspondence(models.Model):
                     ("template_id.is_christmas_letter", "=", True),
                     ("kit_identifier", "=", False),
                     ("state", "=", "Exception"),
+                    ("on_hold", "=", True),
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))

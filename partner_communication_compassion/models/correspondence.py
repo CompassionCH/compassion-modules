@@ -84,33 +84,19 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def attach_zip(self):
-        """
-        When a partner gets multiple letters, we make a zip and attach it
-        to the first letter, so that he can only download this zip.
-        :return: True
-        """
-        if len(self) > 5:
-            _zip = (
-                self.env["correspondence.download.wizard"]
-                .with_context(active_model=self._name, active_ids=self.ids)
-                .create({})
-            )
-            _zip.get_letters()
-            self.write({"sponsor_letter_scan": False})
-            letter_attach = self[:1]
-            letter_attach.write({"sponsor_letter_scan": _zip.download_data})
-        return True
-
     def publish_b2s_letter(self):
         # Prepare the communication when a letter is published
         res = super().publish_b2s_letter()
-        self.with_delay_sh(
+        # Letters held back (e.g. waiting for translation) are sent once ready
+        ready_letters = self.filtered(lambda letter: letter._is_ready_for_sponsor())
+        if not ready_letters:
+            return res
+        ready_letters.with_delay_sh(
             "send_communication",
             channel="root.partner_communication",
             priority=100,
             description="Send B2S letter communication",
-            identity_key=f"sbc.send_communication.{self.ids}",
+            identity_key=f"sbc.send_communication.{ready_letters.ids}",
         )
         return res
 
@@ -152,6 +138,7 @@ class Correspondence(models.Model):
         first_letter_template = self.env.ref(module + "config_onboarding_first_letter")
         final_template = self.env.ref(module + "child_letter_final_config")
         new_template = self.env.ref(module + "child_letter_config")
+        moment_template = self.env.ref(module + "child_letter_moment_config")
         old_template = self.env.ref(module + "child_letter_old_config")
         old_limit = datetime.today() - relativedelta(months=2)
 
@@ -174,8 +161,15 @@ class Correspondence(models.Model):
                 lambda letter: letter.create_date < old_limit
             )
             new_letters -= old_letters
+            moment_letters = (
+                self.browse()
+                if is_first
+                else new_letters.filtered("is_compassion_moment")
+            )
+            new_letters -= moment_letters
 
             final_letters._generate_communication(final_template)
+            moment_letters._generate_communication(moment_template)
             new_letters._generate_communication(
                 first_letter_template if is_first else new_template
             )

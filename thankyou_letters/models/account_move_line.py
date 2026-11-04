@@ -18,6 +18,23 @@ _logger = logging.getLogger(__name__)
 class AccountInvoiceLine(models.Model):
     _inherit = "account.move.line"
 
+    def get_donation_amount(self):
+        """
+        Total donated amount of the lines, in the document currency.
+        Invoice lines carry the amount in price_subtotal, but donations booked
+        directly on a journal entry (e.g. from a bank statement line) have no
+        unit price: their amount is only in amount_currency, negative on the
+        credit side. A debit line on such an entry (reversal) reduces the total.
+        :return: float
+        """
+        total = 0.0
+        for line in self:
+            if line.move_id.is_invoice(include_receipts=True):
+                total += line.price_subtotal
+            else:
+                total -= line.amount_currency
+        return total
+
     def get_donations(self):
         """
         Gets a tuple for thank_you communication
@@ -25,7 +42,7 @@ class AccountInvoiceLine(models.Model):
         :return: (total_donation_amount, product_name)
         """
         res_name = False
-        total = sum(self.mapped("price_subtotal"))
+        total = self.get_donation_amount()
         total_string = f"{int(total):,}".replace(",", "'")
 
         product_names = self.mapped("product_id.thanks_name")
@@ -156,6 +173,10 @@ class AccountInvoiceLine(models.Model):
                 existing_comm = existing_comm.create(comm_vals)
 
             if new_communication_config == communication_config:
-                self.mapped("move_id").write({"communication_id": existing_comm.id})
+                # Only the moves that change: rewriting the others only
+                # conflicts with the jobs working on the same invoices.
+                self.mapped("move_id").filtered(
+                    lambda move, comm=existing_comm: move.communication_id != comm
+                ).write({"communication_id": existing_comm.id})
             generated_comms += existing_comm
         return generated_comms.ids

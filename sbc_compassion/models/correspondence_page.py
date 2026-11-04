@@ -124,11 +124,13 @@ class CorrespondencePage(models.Model):
                 # Handle case where page index exceeds the number of template pages
                 new_index = (page.page_index - 1) % 2
                 modulo_page = template.page_ids[new_index : new_index + 1]
-                page_template = (
-                    modulo_page
-                    if page.correspondence_id.direction == "Supporter To Beneficiary"
-                    else template.additional_page_id or modulo_page
-                )
+                if page.correspondence_id.direction == "Supporter To Beneficiary":
+                    page_template = modulo_page
+                elif page.original_page_url:
+                    # Extra scanned page of the child: no text box over it
+                    page_template = template.page_ids.browse()
+                else:
+                    page_template = template.additional_page_id or modulo_page
             page.template_id = page_template
 
     def fetch_image(self):
@@ -168,7 +170,12 @@ class CorrespondencePage(models.Model):
     def _get_cloundinary_image(self, cloudinary_url):
         if not cloudinary_url:
             return False
-        response = requests.get(cloudinary_url, timeout=3)
+        try:
+            response = requests.get(cloudinary_url, timeout=3)
+        except requests.RequestException:
+            # Fall back to the next image source instead of failing the PDF
+            _logger.warning("Could not download %s", cloudinary_url, exc_info=True)
+            return False
         return base64.b64encode(response.content) if response.ok else False
 
     @api.depends(
@@ -188,16 +195,20 @@ class CorrespondencePage(models.Model):
         """
         Returns the cloudinary url with the correct crop so that the page is displayed
         """
-        if not cloudinary_url:
+        # Pages added to hold overflowing text are not part of the letter image
+        letter_pages = self.correspondence_id.page_ids
+        scanned_pages = letter_pages.filtered("original_page_url") or letter_pages
+        if not cloudinary_url or self not in scanned_pages:
             return False
+        scanned_index = list(scanned_pages).index(self) + 1
         if cloudinary_url.endswith("p1.jpg"):
-            return cloudinary_url.replace("p1.jpg", f"p{str(self.page_index)}.jpg")
+            return cloudinary_url.replace("p1.jpg", f"p{scanned_index}.jpg")
         response = requests.get(cloudinary_url, timeout=3)
         if not response.ok:
             return False
         width, total_height = Image.open(BytesIO(response.content)).size
-        height = total_height // len(self.correspondence_id.page_ids)
-        y_start = (self.page_index - 1) * height
+        height = total_height // len(scanned_pages)
+        y_start = (scanned_index - 1) * height
         crop_operator = f"c_crop,h_{height},w_{width},x_0,y_{y_start}"
         url_parts = cloudinary_url.split("upload/")
         return f"{url_parts[0]}upload/{crop_operator}/{url_parts[1]}"

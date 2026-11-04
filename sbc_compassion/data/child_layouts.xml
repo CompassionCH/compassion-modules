@@ -39,7 +39,7 @@
         <field name="x_min">54.76</field>
         <field name="y_min">47.14</field>
         <field name="width">35.71</field>
-        <field name="height">10.10</field>
+        <field name="height">46</field>
         <field name="text_line_height">24</field>
         <field name="text_type">Translation</field>
         <field name="line_size">42</field>
@@ -51,7 +51,7 @@
         <field name="x_min">52.38</field>
         <field name="y_min">18.52</field>
         <field name="width">38.10</field>
-        <field name="height">84.18</field>
+        <field name="height">64.5</field>
         <field name="text_line_height">24</field>
         <field name="text_type">Translation</field>
         <field name="line_size">44</field>
@@ -60,9 +60,9 @@
     <record id="b2s_l3_box_2" model="correspondence.text.box">
         <field name="name">B2S-L3-2-1</field>
         <field name="x_min">52.38</field>
-        <field name="y_min">2.02</field>
+        <field name="y_min">7</field>
         <field name="width">38.57</field>
-        <field name="height">84.18</field>
+        <field name="height">79</field>
         <field name="text_line_height">24</field>
         <field name="text_type">Translation</field>
         <field name="line_size">48</field>
@@ -71,10 +71,10 @@
 
     <record id="b2s_l4_box_1" model="correspondence.text.box">
         <field name="name">B2S-L4-2-1</field>
-        <field name="x_min">7.14</field>
-        <field name="y_min">1.68</field>
-        <field name="width">83.33</field>
-        <field name="height">39.73</field>
+        <field name="x_min">8.14</field>
+        <field name="y_min">5</field>
+        <field name="width">82.33</field>
+        <field name="height">35.41</field>
         <field name="text_line_height">24</field>
         <field name="text_type">Translation</field>
         <field name="line_size">92</field>

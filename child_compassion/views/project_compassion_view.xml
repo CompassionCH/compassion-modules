@@ -76,14 +76,8 @@
                                     <field name="website" />
                                     <field name="social_media_site" />
                                     <field name="available_for_visits" />
-                                    <field
-                    name="nb_csp_kids"
-                    invisible="funding_type == 'Donor-Funded'"
-                  />
-                                    <field
-                    name="nb_cdsp_kids"
-                    invisible="funding_type == 'Donor-Funded'"
-                  />
+                                    <field name="nb_csp_kids" />
+                                    <field name="nb_cdsp_kids" />
                                     <field
                     name="participant_expected_capacity"
                     invisible="funding_type != 'Donor-Funded'"
@@ -337,10 +331,16 @@
         <field name="model">compassion.project</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name" />
-                <field name="fcp_id" />
-                <field name="last_update_date" />
-                <field name="suspension" />
+                <field name="name"/>
+                <field name="fcp_id"/>
+                <field name="program_start_date"/>
+                <field name="nb_csp_kids" sum="nb_csp_kids"/>
+                <field name="nb_cdsp_kids" sum="nb_cdsp_kids"/>
+                <field name="available_for_visits"/>
+                <field name="funding_type"/>
+                <field name="last_update_date"/>
+                <field name="suspension"/>
+                <field name="status"/>
             </list>
         </field>
     </record>

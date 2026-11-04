@@ -83,7 +83,7 @@ class Correspondence(models.Model):
     )
 
     @api.model
-    def _read_group_translation_status(self, statuses, domain, order):
+    def _read_group_translation_status(self, statuses, domain):
         return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
@@ -246,12 +246,15 @@ class Correspondence(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
-            "views": [[False, "form"]],
+            # A form_view_ref in the context would also apply to the wizards
+            # opened from this form (e.g. Retrieve image).
+            "views": [
+                [self.env.ref("sbc_compassion.view_correspondence_form").id, "form"]
+            ],
             "res_id": self.id,
-            "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
-    def process_letter(self):
+    def publish_b2s_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
@@ -265,25 +268,25 @@ class Correspondence(models.Model):
             langs_match = letter._sponsor_can_read_letter()
 
             # Is the letter still in the translation process?
-            translation_hold = (
-                letter.translation_status in ["to do", "in progress", "to validate"]
-                or letter.translation_issue
-            )
+            translation_hold = letter._is_in_translation()
 
             if (langs_match and not translation_hold) or force_publish:
-                super(Correspondence, letter).process_letter()
+                super(Correspondence, letter).publish_b2s_letter()
             else:
-                try:
-                    letter.download_attach_letter_image()
-                except UserError:
-                    _logger.warning(
-                        f"Could not download image for letter {letter.id}, "
-                        f"but proceeding to translation queue."
-                    )
                 # (re)send to translation queue ONLY if not on hold
                 if not translation_hold:
                     letter.action_send_local_translate()
         return True
+
+    def _is_in_translation(self):
+        self.ensure_one()
+        return bool(
+            self.translation_status in ["to do", "in progress", "to validate"]
+            or self.translation_issue
+        )
+
+    def _is_ready_for_sponsor(self):
+        return super()._is_ready_for_sponsor() and not self._is_in_translation()
 
     def calculate_translation_priority(self):
         """
@@ -442,26 +445,26 @@ class Correspondence(models.Model):
 
     def action_remove_local_translate(self):
         """
-        Remove a letter from local translation platform and change state of
-        letter in Odoo without triggering automated publishing or emails.
+        Remove a letter from local translation platform. The letter is kept in
+        Exception and is not sent to anyone; the letter responsible gets a to-do.
         :return: bool
         """
         self.ensure_one()
-
-        # Reset both B2S and S2B to a clean neutral state and clear translation metadata
+        reason = _("Removed from translation platform")
         self.write(
             {
-                "state": "Received in the system",
+                "state": "Exception",
                 "translator": False,
                 "new_translator_id": False,
                 "translation_status": False,
             }
         )
-
-        # Only S2B requires internal kit bundling
-        if self.direction == "Supporter To Beneficiary":
-            self.create_commkit()
-
+        self.message_post(
+            body=reason, message_type="comment", subtype_xmlid="mail.mt_note"
+        )
+        responsible = self.env["res.config.settings"].get_param("letter_responsible")
+        if responsible:
+            self._make_activity(reason, responsible)
         return True
 
     def save_translation(self, letter_elements, translator_id=None, submit=False):
@@ -640,6 +643,19 @@ class Correspondence(models.Model):
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
+        else:
+            self.with_user(SUPERUSER_ID).spread_translation()
+            # Translation is done: publish the B2S letter to the sponsor
+            self.with_user(SUPERUSER_ID).with_context(
+                force_publish=True
+            ).publish_b2s_letter()
+
+    def spread_translation(self):
+        """Fit the translation in the boxes of the letters printing it on
+        their original image."""
+        for letter in self.filtered("report_needs_final_text"):
+            letter.spread_text_to_pages(["translated_text"])
+        return True
 
     def list_letters(self):
         """API call to fetch letters to translate"""
@@ -698,17 +714,25 @@ class Correspondence(models.Model):
 
     def get_translated_elements(self):
         res = []
+        # Translations into English are saved in the english_text field (see
+        # save_translation). Supporter letters have no english text from GMC.
+        english_target = (
+            self.direction == "Supporter To Beneficiary"
+            and self.translation_language_id.code_iso == "eng"
+        )
         for i, page in enumerate(self.page_ids):
             for paragraph in page.paragraph_ids:
                 res.append(
                     {
                         "type": "paragraph",
                         "id": paragraph.id,
-                        "content": paragraph.translated_text,
+                        "content": paragraph.english_text
+                        if english_target
+                        else paragraph.translated_text,
                         "comments": paragraph.comments,
-                        "source": paragraph.english_text
-                        or paragraph.original_text
-                        or "",
+                        "source": paragraph.original_text
+                        if english_target
+                        else paragraph.english_text or paragraph.original_text or "",
                     }
                 )
             if i < len(self.page_ids) - 1:

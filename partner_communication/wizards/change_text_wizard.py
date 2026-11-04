@@ -48,9 +48,14 @@ class ChangeTextWizard(models.TransientModel):
                 _("You can only update text on one communication " "type at time.")
             )
         new_texts = template._render_template(
-            self.template_text, template.model, communications.ids
+            self.template_text,
+            template.model,
+            communications.ids,
+            engine="qweb",
+            options={"post_process": True},
         )
-        for comm in communications:
+        # Skip the page count, it would render the PDF (wkhtmltopdf) at each write
+        for comm in communications.with_context(skip_pdf_count=True):
             comm.body_html = new_texts[comm.id]
 
         return True
@@ -60,7 +65,11 @@ class ChangeTextWizard(models.TransientModel):
         communication = self.env[context["active_model"]].browse(context["active_id"])
         template = communication.email_template_id
         self.preview = template._render_template(
-            self.template_text, template.model, communication.ids
+            self.template_text,
+            template.model,
+            communication.ids,
+            engine="qweb",
+            options={"post_process": True},
         )[communication.id]
         self.state = "preview"
         return self._reload()

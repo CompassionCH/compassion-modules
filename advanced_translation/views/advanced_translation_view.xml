@@ -11,6 +11,7 @@
                 <field name="female_singular" />
                 <field name="male_plural" />
                 <field name="female_plural" />
+                <field name="src_fallback" />
                 <field name="group" />
             </list>
         </field>

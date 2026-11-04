@@ -54,7 +54,7 @@ class ChildLifecycleEvent(models.Model):
         ],
         readonly=True,
     )
-    gender = fields.Selection(related="child_id.gender")
+    gender = fields.Selection(compute="_compute_gender")
 
     # All reasons for all request types
     request_reason = fields.Selection(
@@ -372,6 +372,11 @@ class ChildLifecycleEvent(models.Model):
     _sql_constraints = [
         ("global_id", "unique(global_id)", "The lifecycle already exists in database.")
     ]
+
+    @api.depends("child_id.gender")
+    def _compute_gender(self):
+        for event in self:
+            event.gender = event.child_id.gender
 
     @api.model_create_multi
     def create(self, vals_list):
