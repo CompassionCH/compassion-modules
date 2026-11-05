@@ -131,8 +131,13 @@ class CorrespondencePage(models.Model):
                 modulo_page = template.page_ids[new_index : new_index + 1]
                 if page.correspondence_id.direction == "Supporter To Beneficiary":
                     page_template = modulo_page
-                elif page.original_page_url:
-                    # Extra scanned page of the child: no text box over it
+                elif (
+                    page.original_page_url
+                    or page.page_index
+                    <= page.correspondence_id.overlay_source_nbr_pages
+                ):
+                    # Extra scanned page of the child or page of the source
+                    # PDF: no text box over it
                     page_template = template.page_ids.browse()
                 else:
                     page_template = template.additional_page_id or modulo_page
@@ -147,6 +152,10 @@ class CorrespondencePage(models.Model):
         """
         self.ensure_one()
         letter = self.correspondence_id
+        if self.page_index <= letter.overlay_source_nbr_pages:
+            return self._fetch_pdf_page_image(
+                letter.with_context(bin_size=False).overlay_source_pdf, 150
+            )
         if letter.direction == "Supporter To Beneficiary" and not letter.kit_identifier:
             if self.template_id.background:
                 return self.template_id.background
@@ -186,10 +195,17 @@ class CorrespondencePage(models.Model):
 
     def _fetch_sponsor_pdf_image(self):
         self.ensure_one()
-        if self.correspondence_id.sponsor_letter_scan:
-            pdf_data = base64.b64decode(self.correspondence_id.sponsor_letter_scan)
+        return self._fetch_pdf_page_image(
+            self.correspondence_id.sponsor_letter_scan, 96
+        )
+
+    def _fetch_pdf_page_image(self, pdf, dpi):
+        """Image of the page of a PDF corresponding to this letter page."""
+        self.ensure_one()
+        if pdf:
+            pdf_data = base64.b64decode(pdf)
             image = convert_from_bytes(
-                pdf_data, 96, first_page=self.page_index, last_page=self.page_index
+                pdf_data, dpi, first_page=self.page_index, last_page=self.page_index
             )[0]
             return self.env["import.letters.history"].create_preview(image)
         return False
