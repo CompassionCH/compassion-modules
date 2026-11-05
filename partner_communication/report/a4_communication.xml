@@ -5,6 +5,7 @@
             <field name="model">partner.communication.job</field>
             <field name="name">A4 communication</field>
             <field name="report_type">qweb-pdf</field>
+            <field name="print_delay">0</field>
             <field
         name="report_name"
       >partner_communication.a4_communication</field>

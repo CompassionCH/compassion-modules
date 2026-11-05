@@ -1,3 +1,5 @@
+from PIL import Image
+
 from odoo.tests import TransactionCase
 
 from ..models.correspondence_text_box import PAGE_WIDTH_PX
@@ -108,3 +110,40 @@ class TestTextSpreading(TransactionCase):
     def test_nothing_fits_keeps_text(self):
         self.text_box.height = 1
         self.assertEqual(self.text_box.split_text("word"), ("word", ""))
+
+
+class TestPageBounds(TransactionCase):
+    """Pages are stacked in one image by Cloudinary, with different heights."""
+
+    def _stack(self, heights, width=300):
+        image = Image.new("L", (width, sum(heights)), 255)
+        y = 0
+        for height in heights[:-1]:
+            y += height
+            # Dark border at the edge of the page, a few rows thick
+            for row in range(y - 1, y + 2):
+                for col in range(3):
+                    image.putpixel((col, row), 20)
+        return image
+
+    def test_pages_of_different_heights(self):
+        page = self.env["correspondence.page"]
+        bounds = page._find_page_bounds(self._stack([400, 400, 330]), 3)
+        self.assertEqual(len(bounds), 3)
+        for (start, height), (real_start, real_height) in zip(
+            bounds, [(0, 400), (400, 400), (800, 330)], strict=False
+        ):
+            self.assertAlmostEqual(start, real_start, delta=2)
+            self.assertAlmostEqual(height, real_height, delta=3)
+        self.assertEqual(sum(height for _start, height in bounds), 1130)
+
+    def test_single_page(self):
+        page = self.env["correspondence.page"]
+        self.assertEqual(page._find_page_bounds(self._stack([500]), 1), [(0, 500)])
+
+    def test_no_reliable_crop_gives_nothing(self):
+        page = self.env["correspondence.page"]
+        # No border between the pages
+        self.assertEqual(page._find_page_bounds(Image.new("L", (300, 900), 255), 3), [])
+        # More borders than expected
+        self.assertEqual(page._find_page_bounds(self._stack([300, 300, 300]), 2), [])

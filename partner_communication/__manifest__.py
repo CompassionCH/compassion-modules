@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Other",
     "author": "Compassion Switzerland",
     "license": "AGPL-3",
@@ -56,6 +56,7 @@
         "views/generate_communication_wizard_view.xml",
         "views/ir_attachment_view.xml",
         "views/ir_actions_view.xml",
+        "views/ir_actions_report_view.xml",
         "views/download_print_wizard_view.xml",
         "views/settings_view.xml",
         "views/communication_snippet_view.xml",
