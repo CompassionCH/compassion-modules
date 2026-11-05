@@ -40,7 +40,7 @@
                              the text boxes follow as they are in % of the image -->
                         <div
               class="image-container"
-              t-attf-style="position: relative; display: block; overflow: hidden; margin: 0 auto; width: {{page.fetch_image_width(background)}}px;"
+              t-attf-style="position: relative; display: block; margin: 0 auto; width: {{page.fetch_image_width(background)}}px;"
             >
                             <img
                 t-if="background"
