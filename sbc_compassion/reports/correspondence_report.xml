@@ -32,18 +32,20 @@
             <t t-foreach="docs" t-as="letter">
                 <t t-foreach="letter.page_ids" t-as="page">
                     <div class="page" style="page-break-after:always;">
+                        <t
+              t-set="background"
+              t-value="page.fetch_image()"
+            />
+                        <!-- Pages higher than A4 are shrunk to fit on the page,
+                             the text boxes follow as they are in % of the image -->
                         <div
-              class="image-container w-100"
-              style="position: relative;display: inline-block;"
+              class="image-container"
+              t-attf-style="position: relative; display: block; overflow: hidden; margin: 0 auto; width: {{page.fetch_image_width(background)}}px;"
             >
-                            <t
-                t-set="background"
-                t-value="page.fetch_image()"
-              />
                             <img
                 t-if="background"
                 t-attf-src="data:image/jpeg;base64,{{background}}"
-                class="w-100"
+                style="display: block; width: 100%;"
               />
                             <t t-if="letter.report_needs_overlay">
                                 <div

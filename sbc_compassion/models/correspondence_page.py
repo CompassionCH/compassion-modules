@@ -19,6 +19,7 @@ from PIL import Image
 from odoo import api, fields, models
 
 from ..tools.onramp_connector import SBCConnector
+from .correspondence_text_box import PAGE_HEIGHT_PX, PAGE_WIDTH_PX
 
 _logger = logging.getLogger(__name__)
 
@@ -78,24 +79,28 @@ class CorrespondencePage(models.Model):
         image_field = f"{image_type}_page_image"
         url_field = f"{image_type}_page_url"
         for page in self:
-            if getattr(page, cloudinary_url_field):
-                setattr(
-                    page,
-                    image_field,
-                    page._get_cloundinary_image(getattr(page, cloudinary_url_field)),
-                )
-            if not getattr(page, image_field) and getattr(page, url_field):
-                connector = SBCConnector(self.env)
-                setattr(
-                    page,
-                    image_field,
-                    connector.get_letter_image(getattr(page, url_field), {"dpi": 96}),
-                )
-            if (
-                not getattr(page, image_field)
-                and page.correspondence_id.direction == "Beneficiary To Supporter"
-            ):
+            cloudinary_url = getattr(page, cloudinary_url_field)
+            page_url = getattr(page, url_field)
+            image = False
+            # A cropped image slices a stack of pages in equal parts, which is
+            # wrong when the pages don't have the same height: the page of the
+            # document is used first.
+            connect_first = bool(cloudinary_url and "c_crop" in cloudinary_url)
+            if connect_first:
+                image = page._get_connect_image(page_url)
+            if not image and cloudinary_url:
+                image = page._get_cloundinary_image(cloudinary_url)
+            if not image and not connect_first:
+                image = page._get_connect_image(page_url)
+            if image:
+                setattr(page, image_field, image)
+            elif page.correspondence_id.direction == "Beneficiary To Supporter":
                 setattr(page, image_field, page.template_id.background)
+
+    def _get_connect_image(self, page_url):
+        if not page_url:
+            return False
+        return SBCConnector(self.env).get_letter_image(page_url, {"dpi": 96}) or False
 
     def _compute_original_page_image(self):
         self._compute_page_image("original")
@@ -156,6 +161,28 @@ class CorrespondencePage(models.Model):
         if not getattr(self, image_field):
             self._compute_page_image(image_field.replace("_page_image", ""))
         return getattr(self, image_field)
+
+    @api.model
+    def fetch_image_width(self, image):
+        """
+        Used by the PDF report: width in px at which the image is printed so
+        that it fits on one A4 page. The width must be absolute, because a
+        percentage resolves to the natural size of the image in wkhtmltopdf,
+        which makes large images overflow on the next page. Images that are
+        higher than A4 are shrunk, the others keep the full page width.
+        """
+        if not image:
+            return PAGE_WIDTH_PX
+        try:
+            width, height = Image.open(BytesIO(base64.b64decode(image))).size
+        except Exception:
+            _logger.warning("Could not read the size of a page image", exc_info=True)
+            return PAGE_WIDTH_PX
+        if not width or not height:
+            return PAGE_WIDTH_PX
+        # Keep a small margin so that rounding never pushes it onto a new page
+        max_width = (PAGE_HEIGHT_PX - 2) * width / height
+        return round(min(PAGE_WIDTH_PX, max_width), 1)
 
     def _fetch_sponsor_pdf_image(self):
         self.ensure_one()
