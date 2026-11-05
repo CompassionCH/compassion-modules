@@ -8,37 +8,37 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import _, api, models
+
+JOB_MODEL = "partner.communication.job"
 
 
 class TemplatePreview(models.TransientModel):
     _inherit = "mail.template.preview"
 
-    res_id = fields.Reference(
-        selection=lambda s: s._reference_models(), default=lambda s: s._default_model()
-    )
+    def _is_communication_template(self):
+        return self.mail_template_id.sudo().model == JOB_MODEL
 
-    @api.model
-    def _reference_models(self):
-        template = self.env["mail.template"].browse(self._context.get("active_id"))
-        domain = [("model", "=", template.model)]
-        models = self.env["ir.model"].search(domain)
-        result = [(model.model, model.name) for model in models]
-        return result
+    @api.depends("mail_template_id")
+    def _compute_resource_ref(self):
+        """A communication template reads the objects of its own rule (e.g. a
+        registration): preview it on a communication of a rule using it, not
+        on the latest communication of any rule."""
+        res = super()._compute_resource_ref()
+        for preview in self.filtered(lambda p: p._is_communication_template()):
+            job = self.env[JOB_MODEL].search(
+                [("config_id.email_template_id", "=", preview.mail_template_id.id)],
+                limit=1,
+            )
+            preview.resource_ref = f"{JOB_MODEL},{job.id}" if job else False
+        return res
 
-    @api.model
-    def _default_model(self):
-        recs = self._reference_models()
-        model = recs[0][0]
-        model_obj = self.env[model]
-        has_partner_field = hasattr(model_obj, "partner_id")
-        if has_partner_field:
-            domain = [("partner_id", "!=", False)]
-        else:
-            domain = []
-        result = model + "," + str(model_obj.search(domain, limit=1).id)
-        return result
-
-    @api.onchange("res_id")
-    def on_change_res_id(self):
-        return super().on_change_res_id()
+    @api.depends("lang", "resource_ref")
+    def _compute_mail_template_fields(self):
+        res = super()._compute_mail_template_fields()
+        if self._is_communication_template() and not self.resource_ref:
+            self.error_msg = _(
+                "No communication uses this template yet. Choose one in Record "
+                "to preview it."
+            )
+        return res

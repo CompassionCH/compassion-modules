@@ -1750,3 +1750,10 @@ msgstr "Vorschau"
 #: model:mail.template,subject:partner_communication.default_communication_template
 msgid "{{object.subject or ' '}}"
 msgstr ""
+
+#. module: partner_communication
+#. odoo-python
+#: code:addons/partner_communication/wizards/email_template_preview_view.py:0
+msgid ""
+"No communication uses this template yet. Choose one in Record to preview it."
+msgstr "Noch keine Kommunikation verwendet diese Vorlage. Wählen Sie eine unter Datensatz, um sie in der Vorschau anzuzeigen."
