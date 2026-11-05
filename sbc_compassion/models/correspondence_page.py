@@ -92,15 +92,29 @@ class CorrespondencePage(models.Model):
                 image = page._get_cloundinary_image(cloudinary_url)
             if not image and not connect_first:
                 image = page._get_connect_image(page_url)
-            if image:
-                setattr(page, image_field, image)
-            elif page.correspondence_id.direction == "Beneficiary To Supporter":
-                setattr(page, image_field, page.template_id.background)
+            if (
+                not image
+                and page.correspondence_id.direction == "Beneficiary To Supporter"
+            ):
+                image = page.template_id.background
+            # The computed field must always be assigned
+            setattr(page, image_field, image or False)
 
     def _get_connect_image(self, page_url):
         if not page_url:
             return False
-        return SBCConnector(self.env).get_letter_image(page_url, {"dpi": 96}) or False
+        image = SBCConnector(self.env).get_letter_image(page_url, {"dpi": 96})
+        # Connect returns the body of an error as it is: only keep real images
+        try:
+            Image.open(BytesIO(base64.b64decode(image or b""))).verify()
+        except Exception:
+            _logger.warning(
+                "Connect did not return an image for %s: %r",
+                page_url,
+                base64.b64decode(image or b"")[:200],
+            )
+            return False
+        return image
 
     def _compute_original_page_image(self):
         self._compute_page_image("original")

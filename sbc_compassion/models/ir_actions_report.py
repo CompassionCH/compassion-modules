@@ -23,6 +23,10 @@ class IrActionsReport(models.Model):
         ):
             return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
 
+        # The web client reads the binaries with bin_size, which gives their size
+        # ("107.17 Kb") instead of the page images printed in the report.
+        self = self.with_context(bin_size=False)
+
         # As the v14 composition did, lay the translation out in the boxes
         # before printing, whatever page it was saved on. Writes only once.
         letters = self.env["correspondence"].sudo().browse(res_ids)
