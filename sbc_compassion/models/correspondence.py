@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import uuid
 from collections import defaultdict
+from io import BytesIO
 
 from dateutil.relativedelta import relativedelta
 from psycopg2 import OperationalError
@@ -155,7 +156,22 @@ class Correspondence(models.Model):
 
     # 2. Attachments and scans
     ##########################
-    sponsor_letter_scan = fields.Binary()
+    sponsor_letter_scan = fields.Binary(
+        string="Final letter PDF",
+        help="Final PDF of the letter. It is sent as it is, nothing is "
+        "overlaid on it, and the Source PDF is ignored.",
+    )
+    overlay_source_pdf = fields.Binary(
+        string="Source PDF",
+        help="Original PDF of a letter that was loaded manually. It is never "
+        "modified: the translation is composed on top of it when the letter "
+        "is printed, so it can be edited and composed again. It is only used "
+        "while there is no final letter PDF, which is used as it is.",
+    )
+    overlay_source_file_name = fields.Char(compute="_compute_overlay_source_file_name")
+    overlay_source_nbr_pages = fields.Integer(
+        compute="_compute_overlay_source_nbr_pages", store=True
+    )
     file_name = fields.Char(compute="_compute_file_name", store=True)
     letter_format = fields.Selection(
         [("pdf", "pdf"), ("zip", "zip")],
@@ -443,6 +459,30 @@ class Correspondence(models.Model):
         )
         return ("\n" + PAGE_SEPARATOR + "\n").join(txt)
 
+    @api.depends("file_name")
+    def _compute_overlay_source_file_name(self):
+        for letter in self:
+            name = (letter.file_name or letter.name or "letter").rsplit(".", 1)[0]
+            letter.overlay_source_file_name = f"{name} - Source.pdf"
+
+    @api.depends("overlay_source_pdf")
+    def _compute_overlay_source_nbr_pages(self):
+        for letter in self:
+            nbr_pages = 0
+            if letter.overlay_source_pdf:
+                try:
+                    pdf_data = base64.b64decode(
+                        letter.with_context(bin_size=False).overlay_source_pdf
+                    )
+                    nbr_pages = PdfFileReader(BytesIO(pdf_data)).numPages
+                except Exception:
+                    _logger.warning(
+                        "Could not read the source PDF of letter %s",
+                        letter.id,
+                        exc_info=True,
+                    )
+            letter.overlay_source_nbr_pages = nbr_pages
+
     @api.depends("sponsor_letter_scan")
     def _compute_letter_format(self):
         for letter in self:
@@ -695,6 +735,7 @@ class Correspondence(models.Model):
                 )
 
         letters = super().create(vals_list)
+        letters._create_overlay_source_pages()
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
         # The report overlays the original text on the template pages, so the
@@ -750,6 +791,8 @@ class Correspondence(models.Model):
             )
 
         super().write(vals)
+        if vals.get("overlay_source_pdf"):
+            self._create_overlay_source_pages()
         if "translation_language_id" in vals or "page_ids" in vals:
             if not self.mapped("page_ids.paragraph_ids"):
                 self.create_text_boxes()
@@ -948,8 +991,14 @@ class Correspondence(models.Model):
 
     def _prints_translation_on_pages(self):
         """The stored PDF of GMC doesn't hold the translation we print on the
-        page images. Without all the images, keep the stored PDF."""
+        page images. Without all the images, keep the stored PDF.
+        A source PDF is composed with the translation, unless a final PDF is
+        stored."""
         self.ensure_one()
+        if self.overlay_source_pdf:
+            # The source PDF is meant to get the translation printed on it,
+            # until a final PDF is set: it is then kept as it is.
+            return not self.sponsor_letter_scan
         pages = self.page_ids.filtered("final_page_url")
         return bool(
             self.report_needs_final_text
@@ -1364,6 +1413,8 @@ class Correspondence(models.Model):
                     ("kit_identifier", "=", False),
                     ("state", "=", "Exception"),
                     ("on_hold", "=", True),
+                    # Released with the project reactivation instead
+                    ("child_id.project_id.hold_s2b_letters", "!=", True),
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))
@@ -1530,6 +1581,12 @@ class Correspondence(models.Model):
                     letter._create_missing_pages(number_pages)
                     letter.cloudinary_final_letter_url = cloudinary_final
                     letter.sponsor_letter_scan = False
+
+    def _create_overlay_source_pages(self):
+        """Each page of the source PDF needs a letter page to compose on."""
+        for letter in self.filtered("overlay_source_pdf"):
+            for _i in range(len(letter.page_ids), letter.overlay_source_nbr_pages):
+                letter.page_ids.create({"correspondence_id": letter.id})
 
     def _create_missing_pages(self, number_pages=0):
         self.ensure_one()

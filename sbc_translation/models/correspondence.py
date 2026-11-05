@@ -254,6 +254,23 @@ class Correspondence(models.Model):
             "res_id": self.id,
         }
 
+    def action_open_translation_view(self):
+        """Open the letter in the form used in the translation pool."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "views": [
+                [
+                    self.env.ref(
+                        "sbc_translation.correspondence_simple_translation_form"
+                    ).id,
+                    "form",
+                ]
+            ],
+            "res_id": self.id,
+        }
+
     def publish_b2s_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""

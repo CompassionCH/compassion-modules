@@ -12,10 +12,12 @@ import base64
 import logging
 import os
 from datetime import datetime
+from io import BytesIO
 from os import path
 from unittest.mock import patch
 
 from psycopg2 import OperationalError
+from PyPDF2 import PdfFileWriter
 
 from odoo import fields
 
@@ -64,6 +66,33 @@ class TestSbcCompassion(BaseSponsorshipTest):
                 "original_text": "Hello",
             }
         )
+
+    def test_overlay_source_pdf(self):
+        """The pages of a source PDF are composed with the translation, and the
+        translation never gets a box over them."""
+        writer = PdfFileWriter()
+        for _i in range(3):
+            writer.addBlankPage(595, 842)
+        pdf = BytesIO()
+        writer.write(pdf)
+        letter = self._create_letter()
+        self.assertFalse(letter._prints_translation_on_pages())
+
+        letter.overlay_source_pdf = base64.b64encode(pdf.getvalue())
+
+        self.assertEqual(letter.overlay_source_nbr_pages, 3)
+        self.assertEqual(len(letter.page_ids), 3)
+        self.assertTrue(letter._prints_translation_on_pages())
+        # A final PDF is kept as it is and wins over the source PDF
+        letter.sponsor_letter_scan = letter.overlay_source_pdf
+        self.assertFalse(letter._prints_translation_on_pages())
+        letter.sponsor_letter_scan = False
+        # The page of the source PDF is the image of the page
+        self.assertTrue(letter.page_ids[0].fetch_image())
+        # A page past the template pages has no text box over the source PDF
+        template_pages = len(letter.template_id.page_ids)
+        if template_pages < 3:
+            self.assertFalse(letter.page_ids[2].template_id)
 
     def test_mark_email_read_keeps_first_read_date(self):
         letter = self._create_letter()

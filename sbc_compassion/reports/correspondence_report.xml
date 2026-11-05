@@ -26,24 +26,30 @@
 }
 .overlay p {
   margin: 0 0 5mm;
-  min-height: 1em;
+}
+/* A blank line adds one line to the gap, see BLANK_LINE_HEIGHT_PX */
+.overlay p.blank {
+  margin: 0;
+  min-height: 19.2px;
 }
       </style>
             <t t-foreach="docs" t-as="letter">
                 <t t-foreach="letter.page_ids" t-as="page">
                     <div class="page" style="page-break-after:always;">
+                        <t
+              t-set="background"
+              t-value="page.fetch_image()"
+            />
+                        <!-- Pages higher than A4 are shrunk to fit on the page,
+                             the text boxes follow as they are in % of the image -->
                         <div
-              class="image-container w-100"
-              style="position: relative;display: inline-block;"
+              class="image-container"
+              t-attf-style="position: relative; display: block; margin: 0 auto; width: {{page.fetch_image_width(background)}}px;"
             >
-                            <t
-                t-set="background"
-                t-value="page.fetch_image()"
-              />
                             <img
                 t-if="background"
                 t-attf-src="data:image/jpeg;base64,{{background}}"
-                class="w-100"
+                style="display: block; width: 100%;"
               />
                             <t t-if="letter.report_needs_overlay">
                                 <div
@@ -65,10 +71,10 @@
                     t-att-style="text_box.fetch_style('original_text')"
                   >
                                         <t
-                      t-foreach="(text_box.original_text or '').split('\n')"
+                      t-foreach="text_box.report_lines('original_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                     <div
@@ -77,10 +83,10 @@
                     t-att-style="text_box.fetch_style('translated_text')"
                   >
                                         <t
-                      t-foreach="(text_box.translated_text or '').split('\n')"
+                      t-foreach="text_box.report_lines('translated_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                     <div
@@ -89,10 +95,10 @@
                     t-att-style="text_box.fetch_style('english_text')"
                   >
                                         <t
-                      t-foreach="(text_box.english_text or '').split('\n')"
+                      t-foreach="text_box.report_lines('english_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                 </t>

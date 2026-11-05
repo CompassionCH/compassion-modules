@@ -9,6 +9,8 @@
                         class="oe_highlight" invisible="state != 'Global Partner translation queue'"/>
                 <button name="action_send_local_translate" type="object" string="To Translate" class="oe_highlight"
                         invisible="state not in ('Published to Global Partner', 'Received in the system')" context="{'resubmit': True}"/>
+                <button name="action_open_translation_view" type="object" string="Open translation view"
+                        invisible="state != 'Global Partner translation queue'"/>
             </button>
             <button name="resubmit_letter" position="after">
                 <button name="action_resubmit_to_translation" type="object"
