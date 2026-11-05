@@ -25,6 +25,10 @@ _logger = logging.getLogger(__name__)
 
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
+# Detection of the pages in the stacked image of Cloudinary
+EDGE_WIDTH_PX = 4
+SEAM_EDGE_JUMP = 60
+SEAM_MAX_THICKNESS_PX = 12
 
 
 class CorrespondencePage(models.Model):
@@ -81,16 +85,9 @@ class CorrespondencePage(models.Model):
         for page in self:
             cloudinary_url = getattr(page, cloudinary_url_field)
             page_url = getattr(page, url_field)
-            image = False
-            # A cropped image slices a stack of pages in equal parts, which is
-            # wrong when the pages don't have the same height: the page of the
-            # document is used first.
-            connect_first = bool(cloudinary_url and "c_crop" in cloudinary_url)
-            if connect_first:
-                image = page._get_connect_image(page_url)
-            if not image and cloudinary_url:
-                image = page._get_cloundinary_image(cloudinary_url)
-            if not image and not connect_first:
+            # Cloudinary is much faster than Connect, which is the fallback
+            image = page._get_cloundinary_image(cloudinary_url)
+            if not image:
                 image = page._get_connect_image(page_url)
             if (
                 not image
@@ -260,15 +257,59 @@ class CorrespondencePage(models.Model):
         scanned_index = list(scanned_pages).index(self) + 1
         if cloudinary_url.endswith("p1.jpg"):
             return cloudinary_url.replace("p1.jpg", f"p{scanned_index}.jpg")
-        response = requests.get(cloudinary_url, timeout=3)
-        if not response.ok:
+        try:
+            response = requests.get(cloudinary_url, timeout=3)
+            if not response.ok:
+                return False
+            image = Image.open(BytesIO(response.content))
+            image.load()
+        except (requests.RequestException, OSError):
+            _logger.warning("Could not download %s", cloudinary_url, exc_info=True)
             return False
-        width, total_height = Image.open(BytesIO(response.content)).size
-        height = total_height // len(scanned_pages)
-        y_start = (scanned_index - 1) * height
-        crop_operator = f"c_crop,h_{height},w_{width},x_0,y_{y_start}"
+        bounds = self._find_page_bounds(image, len(scanned_pages))
+        if not bounds:
+            # No reliable crop: the page is fetched from Connect
+            return False
+        y_start, height = bounds[scanned_index - 1]
+        crop_operator = f"c_crop,h_{height},w_{image.width},x_0,y_{y_start}"
         url_parts = cloudinary_url.split("upload/")
         return f"{url_parts[0]}upload/{crop_operator}/{url_parts[1]}"
+
+    @api.model
+    def _find_page_bounds(self, image, nb_pages):
+        """
+        Cloudinary gives the pages of a letter stacked in one image, and the pages
+        don't always have the same height. A border is drawn at the edge of the
+        pages, so the brightness of the left edge changes sharply from one page
+        to the next one.
+        :param image: PIL image holding the stacked pages
+        :param nb_pages: number of pages in the image
+        :return: list of (y_start, height) for each page, or an empty list if the
+                 pages could not be found reliably.
+        """
+        width, total_height = image.size
+        if nb_pages <= 1:
+            return [(0, total_height)] if nb_pages == 1 else []
+        edge = image.convert("L").crop((0, 0, min(width, EDGE_WIDTH_PX), total_height))
+        edge = edge.resize((1, total_height), Image.Resampling.BOX)
+        brightness = list(edge.getdata())
+        seams = []
+        # The border at the top and bottom of the image is not between two pages
+        for y in range(SEAM_MAX_THICKNESS_PX, total_height - SEAM_MAX_THICKNESS_PX):
+            if abs(brightness[y] - brightness[y - 1]) < SEAM_EDGE_JUMP:
+                continue
+            if seams and y - seams[-1][-1] <= SEAM_MAX_THICKNESS_PX:
+                seams[-1].append(y)
+            else:
+                seams.append([y])
+        if len(seams) != nb_pages - 1:
+            return []
+        cuts = [0] + [(seam[0] + seam[-1]) // 2 for seam in seams] + [total_height]
+        heights = [end - start for start, end in zip(cuts, cuts[1:], strict=False)]
+        average = total_height / nb_pages
+        if any(not 0.5 * average <= height <= 1.5 * average for height in heights):
+            return []
+        return list(zip(cuts, heights, strict=False))
 
     def sync_text_from_paragraphs(self):
         _fields = ["original_text", "english_text", "translated_text"]
