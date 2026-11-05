@@ -16,6 +16,8 @@ _logger = logging.getLogger(__name__)
 
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
+# Shorter texts are leftovers (dots, initials), as in v14
+MIN_TEXT_LENGTH = 5
 
 
 class CorrespondenceParagraph(models.Model):
@@ -86,6 +88,8 @@ class CorrespondenceParagraph(models.Model):
         if not text_box:
             # The page has no box for this text (e.g. B2S L4/L6 print the
             # translation on page 2 only): move it to the next box.
+            if len(text.strip()) < MIN_TEXT_LENGTH:
+                return text, ""
             return "", text
         try:
             return text_box.split_text(text)
