@@ -6,3 +6,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from . import test_ir_actions_report

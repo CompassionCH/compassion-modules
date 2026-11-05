@@ -51,6 +51,7 @@
         "data/communication_config.xml",
         "data/utm_data.xml",
         "data/ir_cron_data.xml",
+        "data/report_print_delay.xml",
         "views/communication_job_view.xml",
         "views/disaster_alert_view.xml",
         "views/partner_compassion_view.xml",

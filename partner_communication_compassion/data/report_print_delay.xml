@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- These reports have no javascript: wkhtmltopdf has nothing to wait for.
+         They are defined by modules that don't depend on partner_communication. -->
+    <record id="child_compassion.report_child_picture" model="ir.actions.report">
+        <field name="print_delay">0</field>
+    </record>
+    <record id="child_compassion.report_childpack_full" model="ir.actions.report">
+        <field name="print_delay">0</field>
+    </record>
+    <record id="child_compassion.report_childpack_small" model="ir.actions.report">
+        <field name="print_delay">0</field>
+    </record>
+    <record id="sbc_compassion.report_correspondence" model="ir.actions.report">
+        <field name="print_delay">0</field>
+    </record>
+</odoo>

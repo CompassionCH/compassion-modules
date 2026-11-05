@@ -237,17 +237,21 @@ class CorrespondencePage(models.Model):
         "correspondence_id.cloudinary_final_letter_url",
     )
     def _compute_cloudinary_url(self):
+        # The stacked image of a letter is analysed once for all its pages
+        stacked_images = {}
         for page in self:
             page.cloudinary_original_page_url = page._get_cloudinary_url(
-                page.correspondence_id.cloudinary_original_letter_url
+                page.correspondence_id.cloudinary_original_letter_url, stacked_images
             )
             page.cloudinary_final_page_url = page._get_cloudinary_url(
-                page.correspondence_id.cloudinary_final_letter_url
+                page.correspondence_id.cloudinary_final_letter_url, stacked_images
             )
 
-    def _get_cloudinary_url(self, cloudinary_url):
+    def _get_cloudinary_url(self, cloudinary_url, stacked_images=None):
         """
         Returns the cloudinary url with the correct crop so that the page is displayed
+        :param stacked_images: optional dict to share the analysis of a stacked image
+                               between the pages of a letter
         """
         # Pages added to hold overflowing text are not part of the letter image
         letter_pages = self.correspondence_id.page_ids
@@ -257,23 +261,38 @@ class CorrespondencePage(models.Model):
         scanned_index = list(scanned_pages).index(self) + 1
         if cloudinary_url.endswith("p1.jpg"):
             return cloudinary_url.replace("p1.jpg", f"p{scanned_index}.jpg")
-        try:
-            response = requests.get(cloudinary_url, timeout=3)
-            if not response.ok:
-                return False
-            image = Image.open(BytesIO(response.content))
-            image.load()
-        except (requests.RequestException, OSError):
-            _logger.warning("Could not download %s", cloudinary_url, exc_info=True)
-            return False
-        bounds = self._find_page_bounds(image, len(scanned_pages))
+        stacked_images = stacked_images if stacked_images is not None else {}
+        key = (cloudinary_url, len(scanned_pages))
+        if key not in stacked_images:
+            stacked_images[key] = self._analyze_stacked_image(
+                cloudinary_url, len(scanned_pages)
+            )
+        width, bounds = stacked_images[key]
         if not bounds:
             # No reliable crop: the page is fetched from Connect
             return False
         y_start, height = bounds[scanned_index - 1]
-        crop_operator = f"c_crop,h_{height},w_{image.width},x_0,y_{y_start}"
+        crop_operator = f"c_crop,h_{height},w_{width},x_0,y_{y_start}"
         url_parts = cloudinary_url.split("upload/")
         return f"{url_parts[0]}upload/{crop_operator}/{url_parts[1]}"
+
+    def _analyze_stacked_image(self, cloudinary_url, nb_pages):
+        """
+        :return: tuple (width, bounds) of the stacked image, where bounds are the
+                 (y_start, height) of the pages, empty if they can't be found.
+        """
+        # A network error is not caught: the url is stored and would never be
+        # computed again.
+        response = requests.get(cloudinary_url, timeout=3)
+        if not response.ok:
+            return 0, []
+        try:
+            image = Image.open(BytesIO(response.content))
+            image.load()
+        except OSError:
+            _logger.warning("Not an image: %s", cloudinary_url, exc_info=True)
+            return 0, []
+        return image.width, self._find_page_bounds(image, nb_pages)
 
     @api.model
     def _find_page_bounds(self, image, nb_pages):
