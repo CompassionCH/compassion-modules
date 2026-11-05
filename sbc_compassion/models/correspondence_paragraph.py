@@ -74,6 +74,20 @@ class CorrespondenceParagraph(models.Model):
         self.ensure_one()
         return self.get_text_box(field_name).css_style
 
+    def report_lines(self, field_name):
+        """
+        Lines of the text printed in the report. Several blank lines in a row
+        are reduced to one, so that two paragraphs are at most 2 returns apart.
+        """
+        self.ensure_one()
+        lines = []
+        for line in (self[field_name] or "").split("\n"):
+            if line.strip() or (lines and lines[-1].strip()):
+                lines.append(line)
+        while lines and not lines[-1].strip():
+            lines.pop()
+        return lines
+
     def check_overflow(self, field_name):
         """
         Check if the text overflows the text box.

@@ -25,6 +25,8 @@ PAGE_WIDTH_PX = 793.7
 PAGE_HEIGHT_PX = 1122.5
 FONT_SIZE_PX = 16
 PARAGRAPH_MARGIN_PX = 18.9
+# A blank line adds one line to the gap between two paragraphs (max 2 returns)
+BLANK_LINE_HEIGHT_PX = 19.2
 FONT_FILE = "web/static/fonts/lato/Lato-Reg-webfont.ttf"
 # Emojis and symbols are missing from Lato and rendered wider with a fallback font.
 FALLBACK_GLYPH_WIDTH_EM = 1.25
@@ -136,9 +138,12 @@ class CorrespondenceTextBox(models.Model):
                 nb_lines = max(0, int((max_height - height) // line_height))
                 height += len(lines) * line_height
             else:
-                # An empty paragraph keeps the height of one character.
+                # A blank line has no margin: it adds one line to the gap.
                 nb_lines = 0
-                height += FONT_SIZE_PX
+                height += BLANK_LINE_HEIGHT_PX
+                if height > max_height:
+                    return self._cut_text(paragraphs, index, lines, nb_lines, max_width)
+                continue
             if height > max_height:
                 return self._cut_text(paragraphs, index, lines, nb_lines, max_width)
             height += PARAGRAPH_MARGIN_PX
