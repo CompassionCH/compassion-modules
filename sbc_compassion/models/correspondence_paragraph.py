@@ -16,6 +16,8 @@ _logger = logging.getLogger(__name__)
 
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
+# Shorter texts are leftovers (dots, initials), as in v14
+MIN_TEXT_LENGTH = 5
 
 
 class CorrespondenceParagraph(models.Model):
@@ -72,6 +74,20 @@ class CorrespondenceParagraph(models.Model):
         self.ensure_one()
         return self.get_text_box(field_name).css_style
 
+    def report_lines(self, field_name):
+        """
+        Lines of the text printed in the report. Several blank lines in a row
+        are reduced to one, so that two paragraphs are at most 2 returns apart.
+        """
+        self.ensure_one()
+        lines = []
+        for line in (self[field_name] or "").split("\n"):
+            if line.strip() or (lines and lines[-1].strip()):
+                lines.append(line)
+        while lines and not lines[-1].strip():
+            lines.pop()
+        return lines
+
     def check_overflow(self, field_name):
         """
         Check if the text overflows the text box.
@@ -86,6 +102,8 @@ class CorrespondenceParagraph(models.Model):
         if not text_box:
             # The page has no box for this text (e.g. B2S L4/L6 print the
             # translation on page 2 only): move it to the next box.
+            if len(text.strip()) < MIN_TEXT_LENGTH:
+                return text, ""
             return "", text
         try:
             return text_box.split_text(text)

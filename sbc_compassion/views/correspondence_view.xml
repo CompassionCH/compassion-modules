@@ -128,11 +128,27 @@ records.quality_check_failed()
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"
               />
                             <field name="file_name" invisible="1" />
+                            <field name="overlay_source_file_name" invisible="1" />
+                            <field
+                                    name="overlay_source_pdf"
+                                    options="{'accepted_file_extensions': '.pdf'}"
+                                    invisible="direction != 'Beneficiary To Supporter'"
+                                    filename="overlay_source_file_name"
+                            />
                             <field
                 name="sponsor_letter_scan"
                 filename="file_name"
                 options="{'accepted_file_extensions': '.pdf,.zip'}"
               />
+                            <div
+                class="alert alert-warning"
+                role="alert"
+                colspan="2"
+                invisible="not overlay_source_pdf or not sponsor_letter_scan"
+              >
+                                The Final letter PDF is sent as it is: the Source PDF
+                                is ignored and no translation is composed on it.
+                            </div>
                             <field name="letter_format" />
                             <field name="template_id" required="1" />
                             <field name="direction" />
