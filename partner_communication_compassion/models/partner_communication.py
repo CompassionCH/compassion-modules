@@ -44,6 +44,14 @@ class PartnerCommunication(models.Model):
         if self.send_mode == "physical":
             for letter in letters:
                 try:
+                    pages = letter.page_ids.filtered(
+                        lambda p: p.original_page_url or p.final_page_url
+                    )
+                    # Without a stored PDF, the pages are composed on their images
+                    if not letter.sponsor_letter_scan and not all(
+                        page.fetch_image() for page in pages
+                    ):
+                        raise MissingError(_("Letter image could not be loaded"))
                     attachments[letter.file_name] = [
                         report,
                         self._convert_pdf(letter.get_pdf()),
