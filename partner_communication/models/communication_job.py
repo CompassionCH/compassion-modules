@@ -17,6 +17,8 @@ from html.parser import HTMLParser
 from io import BytesIO
 from urllib.parse import urlparse
 
+from lxml import etree, html
+
 from odoo import Command, _, api, fields, models, tools
 from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
@@ -254,6 +256,18 @@ class CommunicationJob(models.Model):
     )
 
     sms_cost = fields.Float()
+    signature_user_id = fields.Many2one(
+        "res.users",
+        compute="_compute_signature_user_id",
+        readonly=False,
+        help="Technical field: user whose signature is in the text being edited, "
+        "to replace it when the sender changes in the form.",
+    )
+
+    def _compute_signature_user_id(self):
+        # No dependency on purpose: keeps the previous sender in the form
+        for job in self:
+            job.signature_user_id = job.user_id
 
     def _compute_ir_attachments(self):
         for job in self:
@@ -613,7 +627,22 @@ class CommunicationJob(models.Model):
             # The attachments depend on the send mode: regenerate them
             vals["attachments_object_ids"] = False
 
+        # Only used by the form (see _onchange_user_id_signature)
+        vals.pop("signature_user_id", None)
+        # The text holds the signature of the sender: follow a sender change
+        new_bodies = {}
+        if vals.get("user_id"):
+            new_user = self.env["res.users"].browse(vals["user_id"])
+            for job in self.filtered(lambda j: j.user_id != new_user):
+                body = vals.get("body_html", job.body_html)
+                new_body = job._replace_sender_signature(body, job.user_id, new_user)
+                if new_body != body:
+                    new_bodies[job] = new_body
+
         super().write(vals)
+
+        for job, body in new_bodies.items():
+            job.write({"body_html": body})
 
         if vals.get("body_html") or vals.get("send_mode") == "physical":
             self.count_pdf_page()
@@ -779,6 +808,58 @@ class CommunicationJob(models.Model):
         text = re.sub(r" {2,}", " ", sanitize_gsm7(text))
         return "\n".join([t.strip() for t in text.split("\n")])
 
+    def _replace_sender_signature(self, body, old_user, new_user):
+        """Return the text with the signature of old_user replaced by the one
+        of new_user. The rest of the text, possibly written by hand, is kept.
+        The text is returned unchanged if the old signature is not in it
+        (removed or edited by hand, or no signature for this send mode).
+        """
+        self.ensure_one()
+        lang = self.partner_id.lang
+        old_sig = str(old_user.with_context(lang=lang).signature or "")
+        new_sig = str(new_user.with_context(lang=lang).signature or "")
+        if not body or not old_sig.strip() or old_sig == new_sig:
+            return body
+        # Markup.replace() would escape the signatures: work on plain text
+        body = str(body)
+        if old_sig in body:
+            return body.replace(old_sig, new_sig)
+        # The text editor rewrites the HTML when the text is edited: find the
+        # signature by its text instead.
+        try:
+            root = html.fragment_fromstring(body, create_parent="div")
+            old_nodes = html.fragments_fromstring(old_sig)
+            new_nodes = html.fragments_fromstring(new_sig) if new_sig.strip() else []
+        except (etree.ParserError, ValueError):
+            return body
+        if len(old_nodes) != 1 or isinstance(old_nodes[0], str):
+            return body
+        old_text = " ".join(old_nodes[0].text_content().split())
+        if not old_text:
+            return body
+        match = next(
+            (
+                el
+                for el in root.iter(old_nodes[0].tag)
+                if " ".join(el.text_content().split()) == old_text
+            ),
+            None,
+        )
+        if match is None:
+            return body
+        if not new_nodes:
+            # New sender without signature: keep the text that follows it
+            match.drop_tree()
+        else:
+            if len(new_nodes) == 1 and not isinstance(new_nodes[0], str):
+                new_el = new_nodes[0]
+            else:
+                new_el = html.fragment_fromstring(new_sig, create_parent="div")
+            new_el.tail = match.tail
+            match.getparent().replace(match, new_el)
+        # Remove the <div> added around the text by the parser
+        return html.tostring(root, encoding="unicode")[len("<div>") : -len("</div>")]
+
     def refresh_text(self):
         """Regenerate the text. The attachments are only regenerated if the
         resources of the communication changed since they were generated.
@@ -822,6 +903,15 @@ class CommunicationJob(models.Model):
                 }
             )
         return True
+
+    @api.onchange("user_id")
+    def _onchange_user_id_signature(self):
+        old_user = self.signature_user_id or self._origin.user_id
+        if old_user and self.user_id and old_user != self.user_id:
+            self.body_html = self._replace_sender_signature(
+                self.body_html, old_user, self.user_id
+            )
+        self.signature_user_id = self.user_id
 
     @api.onchange("config_id", "partner_id")
     def onchange_config_id(self):
