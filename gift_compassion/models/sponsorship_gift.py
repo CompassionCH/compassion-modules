@@ -349,6 +349,7 @@ class SponsorshipGift(models.Model):
         }
 
         if invoice_line.debit == 0 and invoice_line.credit > 0:
+            gift_vals["instructions"] = invoice_line.gift_instructions or False
             gift = self.create(gift_vals)
             eligible, message = gift.is_eligible()
             if not eligible:
