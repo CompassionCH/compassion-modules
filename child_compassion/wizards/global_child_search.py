@@ -7,6 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import sys
 from datetime import date, datetime, timedelta
 from math import ceil
@@ -15,6 +16,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
+
+_logger = logging.getLogger(__name__)
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -510,10 +513,17 @@ class GlobalChildSearch(models.TransientModel):
             restricted_children.unlink()
             self.global_child_ids += new_children
         else:
-            error = result.get("content", result)["Error"]
+            content = result.get("content", result)
+            # GMC sometimes answers with a plain-text body instead of JSON
+            error = (
+                content.get("Error", content) if isinstance(content, dict) else content
+            )
             if isinstance(error, dict):
                 error = error.get("ErrorMessage")
-            raise UserError(error)
+            _logger.error(
+                "GMC childpool search failed (%s): %s", result.get("code"), error
+            )
+            raise UserError(error or _("Global childpool search failed"))
 
     def _does_match(self, child):
         """Returns if the selected criterias correspond to the given child."""
