@@ -16,6 +16,11 @@ class AccountMoveLine(models.Model):
     gift_id = fields.Many2one(
         "sponsorship.gift", "GMC Gift", readonly=False, copy=False
     )
+    gift_instructions = fields.Char(
+        "Gift message",
+        copy=False,
+        help="Message sent with the gift to the child.",
+    )
 
     def _trigger_gifts(self):
         gift_category = self.env.ref("sponsorship_compassion.product_category_gift")

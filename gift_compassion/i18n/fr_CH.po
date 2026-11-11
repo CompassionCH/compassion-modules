@@ -254,6 +254,11 @@ msgid "Gift Undeliverable Notification"
 msgstr "Notification de cadeau non livrable"
 
 #. module: gift_compassion
+#: model:ir.model.fields,field_description:gift_compassion.field_account_move_line__gift_instructions
+msgid "Gift message"
+msgstr "Message du cadeau"
+
+#. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_gift_threshold_settings__gift_type_id
 msgid "Gift type"
 msgstr "Type de cadeau"
@@ -392,6 +397,11 @@ msgstr "Montant maximum"
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_has_error
 msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
+
+#. module: gift_compassion
+#: model:ir.model.fields,help:gift_compassion.field_account_move_line__gift_instructions
+msgid "Message sent with the gift to the child."
+msgstr "Message envoyé à l'enfant avec le cadeau."
 
 #. module: gift_compassion
 #: model:ir.model.fields,field_description:gift_compassion.field_sponsorship_gift__message_ids
