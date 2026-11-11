@@ -291,7 +291,7 @@ class SponsorshipGift(models.Model):
         else:
             aggregated_amounts = self.amount + other_gift_vals.get("amount", 0)
             self.write({"amount": aggregated_amounts})
-        instructions = [self.instructions, other_gift_vals["instructions"]]
+        instructions = [self.instructions, other_gift_vals.get("instructions")]
         self.instructions = "; ".join([x for x in instructions if x])
         return self
 
