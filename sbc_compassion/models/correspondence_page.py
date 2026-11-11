@@ -186,6 +186,41 @@ class CorrespondencePage(models.Model):
             image = self.template_id.background or self._fetch_sponsor_pdf_image()
         return image
 
+    def fetch_report_images(self):
+        """
+        Used by the PDF report: images of the page, one per printed sheet.
+        GMC gives a sent S2B letter as one image of all its A4 pages stacked,
+        whatever the number of pages we hold: it is cut back into its pages.
+        """
+        self.ensure_one()
+        image = self.fetch_image()
+        if not image or self.correspondence_id.direction != "Supporter To Beneficiary":
+            return [image]
+        try:
+            stacked = Image.open(BytesIO(base64.b64decode(image)))
+            stacked.load()
+            width, height = stacked.size
+            nb_pages = round(height / width * PAGE_WIDTH_PX / PAGE_HEIGHT_PX)
+            if nb_pages < 2:
+                return [image]
+            page_height = height // nb_pages
+            # The pages of our letters all have the same size: an even cut is
+            # exact, no need to look for the borders in the picture.
+            bounds = [(index * page_height, page_height) for index in range(nb_pages)]
+            images = []
+            for y_start, slice_height in bounds:
+                output = BytesIO()
+                stacked.crop((0, y_start, width, y_start + slice_height)).convert(
+                    "RGB"
+                ).save(output, "JPEG", quality=90)
+                images.append(base64.b64encode(output.getvalue()))
+            return images
+        except Exception:
+            _logger.warning(
+                "Could not cut the image of page %s", self.id, exc_info=True
+            )
+            return [image]
+
     @api.model
     def fetch_image_width(self, image):
         """
