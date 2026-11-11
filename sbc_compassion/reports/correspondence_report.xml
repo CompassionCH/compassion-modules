@@ -35,11 +35,12 @@
       </style>
             <t t-foreach="docs" t-as="letter">
                 <t t-foreach="letter.page_ids" t-as="page">
+                  <!-- One sheet per image: a stacked image of GMC is cut into its pages -->
+                  <t
+          t-foreach="page.fetch_report_images()"
+          t-as="background"
+        >
                     <div class="page" style="page-break-after:always;">
-                        <t
-              t-set="background"
-              t-value="page.fetch_image()"
-            />
                         <!-- Pages higher than A4 are shrunk to fit on the page,
                              the text boxes follow as they are in % of the image -->
                         <div
@@ -51,7 +52,9 @@
                 t-attf-src="data:image/jpeg;base64,{{background}}"
                 style="display: block; width: 100%;"
               />
-                            <t t-if="letter.report_needs_overlay">
+                            <t
+                t-if="letter.report_needs_overlay and background_first"
+              >
                                 <div
                   class="overlay w-100 p-4"
                   style="position: absolute; top:0; left:0"
@@ -105,6 +108,7 @@
                             </t>
                         </div>
                     </div>
+                  </t>
                 </t>
                 <t t-if="len(letter.page_ids) % 2 == 1">
                     <div class="page" style="page-break-after: always">
