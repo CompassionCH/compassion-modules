@@ -180,7 +180,11 @@ class CorrespondencePage(models.Model):
         )
         if not getattr(self, image_field):
             self._compute_page_image(image_field.replace("_page_image", ""))
-        return getattr(self, image_field)
+        image = getattr(self, image_field)
+        if not image and letter.direction == "Supporter To Beneficiary":
+            # Sent letter without page image from GMC yet: print it as it was sent
+            image = self.template_id.background or self._fetch_sponsor_pdf_image()
+        return image
 
     @api.model
     def fetch_image_width(self, image):
