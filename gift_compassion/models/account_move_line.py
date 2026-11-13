@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class AccountMoveLine(models.Model):
@@ -15,6 +15,11 @@ class AccountMoveLine(models.Model):
 
     gift_id = fields.Many2one(
         "sponsorship.gift", "GMC Gift", readonly=False, copy=False
+    )
+    gift_instructions = fields.Char(
+        "Gift message",
+        copy=False,
+        help="Message sent with the gift to the child.",
     )
 
     def _trigger_gifts(self):
@@ -36,6 +41,7 @@ class AccountMoveLine(models.Model):
                     identity_key=f"gift_from_inv_line_{move_line.id}",
                 )
 
+    @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
         res.mapped("move_id")._filter_move_lines_to_gift()._trigger_gifts()

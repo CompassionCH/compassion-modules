@@ -30,9 +30,11 @@ SPONSORSHIP_TYPE_LIST = ["S", "SC", "SWP"]
 class SponsorshipContract(models.Model):
     _inherit = ["recurring.contract", "compassion.mapped.model"]
     _name = "recurring.contract"
+    # Search contracts by what their name shows (sponsor ref - child code)
+    _rec_names_search = ["reference", "partner_id.ref", "child_id.local_id"]
 
     ##########################################################################
-    #                                 FIELDS                                 #
+    #                                 FIELDS                                #
     ##########################################################################
     correspondent_id = fields.Many2one(
         "res.partner",

@@ -291,7 +291,7 @@ class SponsorshipGift(models.Model):
         else:
             aggregated_amounts = self.amount + other_gift_vals.get("amount", 0)
             self.write({"amount": aggregated_amounts})
-        instructions = [self.instructions, other_gift_vals["instructions"]]
+        instructions = [self.instructions, other_gift_vals.get("instructions")]
         self.instructions = "; ".join([x for x in instructions if x])
         return self
 
@@ -349,6 +349,7 @@ class SponsorshipGift(models.Model):
         }
 
         if invoice_line.debit == 0 and invoice_line.credit > 0:
+            gift_vals["instructions"] = invoice_line.gift_instructions or False
             gift = self.create(gift_vals)
             eligible, message = gift.is_eligible()
             if not eligible:
