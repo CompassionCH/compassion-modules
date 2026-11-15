@@ -19,6 +19,10 @@ class TestEventCampaign(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Default settings: every event type gets an account in the plan Events
+        params = cls.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", False)
+        params.set_param("crm_compassion.analytic_event_plan_id", False)
         cls.partner = cls.env["res.partner"].create(
             {"name": "Event campaign sponsor", "country_id": cls.env.ref("base.ch").id}
         )
@@ -164,10 +168,14 @@ class TestEventCampaign(TransactionCase):
         params = self.env["ir.config_parameter"].sudo()
         params.set_param("crm_compassion.analytic_event_types", "sport, tour")
         params.set_param("crm_compassion.analytic_event_plan_id", str(trips.id))
-        self.assertEqual(
-            self._event(type="tour", name="Campaign test trip").analytic_id.plan_id,
-            trips,
+        trip = self._event(type="tour", name="Campaign test trip")
+        self.assertEqual(trip.analytic_id.plan_id, trips)
+        # an account migrated in another plan moves to the plan of its type
+        trip.analytic_id.plan_id = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test legacy"}
         )
+        trip.name = "Campaign test trip renamed"
+        self.assertEqual(trip.analytic_id.plan_id, trips)
         concert = self._event(name="Campaign test gospel")
         self.assertFalse(concert.analytic_id)
         self.assertTrue(concert.origin_id)

@@ -354,13 +354,11 @@ class EventCompassion(models.Model):
             for event in self:
                 # Update Analytic Account and Origin
                 analytic_vals = event._get_analytic_vals()
-                if event._get_analytic_plan() == self.env.ref(
-                    "crm_compassion.plan_events"
-                ):
-                    # Accounts of events migrated from other plans move to Events
-                    analytic_vals["plan_id"] = self.env.ref(
-                        "crm_compassion.plan_events"
-                    ).id
+                plan = event._get_analytic_plan()
+                if plan:
+                    # Accounts of events migrated from other plans move to
+                    # the plan of their type (default: Events)
+                    analytic_vals["plan_id"] = plan.id
                 event.analytic_id.write(analytic_vals)
                 utm_vals = {
                     fname: event[fname].id
