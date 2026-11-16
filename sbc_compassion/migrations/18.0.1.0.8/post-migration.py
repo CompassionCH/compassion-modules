@@ -1,3 +1,4 @@
+import json
 import logging
 
 from openupgradelib import openupgrade
@@ -8,17 +9,25 @@ _logger = logging.getLogger(__name__)
 @openupgrade.migrate()
 def migrate(env, version):
     # T3646: S10 letters printing their translation over page 2's printed text
-    l1 = env.ref("sbc_compassion.b2s_l1")
-    messages = env["gmc.message"].search([("content", "like", "-1S10-")])
-    messages = messages.filtered(lambda m: m.action_id.model == "correspondence")
-    letter_ids = [
-        int(letter_id)
-        for message in messages
-        for letter_id in (message.object_ids or str(message.object_id)).split(",")
-        if letter_id.strip().isdigit()
-    ]
+    kit_identifiers = set()
+    for message in env["gmc.message"].search([("content", "like", "-1S10-")]):
+        try:
+            content = json.loads(message.content)
+        except (TypeError, ValueError):
+            continue
+        if not isinstance(content, dict):
+            continue
+        # A message can hold several letters, each with its own template
+        for response in content.get("Responses") or [content]:
+            if isinstance(response, dict) and "-1S10-" in (
+                response.get("Template") or ""
+            ):
+                kit_identifiers.add(response.get("CompassionSBCId"))
     letters = env["correspondence"].search(
-        [("id", "in", letter_ids), ("template_id", "=", l1.id)]
+        [
+            ("kit_identifier", "in", list(kit_identifiers - {None})),
+            ("template_id", "=", env.ref("sbc_compassion.b2s_l1").id),
+        ]
     )
     letters = letters.filtered(
         lambda letter: any(
