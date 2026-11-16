@@ -1102,7 +1102,10 @@ class Correspondence(models.Model):
         odoo_data = super().json_to_data(json, mapping_name)
         odoo_data["is_compassion_moment"] = template_name == COMPASSION_MOMENT_TEMPLATE
 
-        if not template_name.startswith("CH"):
+        if "-1S10-" in template_name:
+            # Stationery without translation area on page 2
+            odoo_data["template_id"] = self.env.ref("sbc_compassion.b2s_l1_s10").id
+        elif not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(
                 [("name", "like", "L" + template_name[5]), ("name", "like", "B2S")],
                 limit=1,

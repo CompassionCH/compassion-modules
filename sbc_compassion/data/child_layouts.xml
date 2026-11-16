@@ -250,4 +250,20 @@
       eval="[(4, ref('b2s_additional_page_box_1'))]"
     />
     </record>
+    <!-- GMC S10 stationery (e.g. XX-C-1S10-2): no translation area on page 2 -->
+    <record id="b2s_l1_s10" model="correspondence.template">
+        <field name="name">B2S - S10</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-1S11-1</field>
+        <field name="additional_page_id" ref="b2s_additional_page" />
+    </record>
+    <record id="b2s_l1_s10_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l1_s10" />
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_1'))]" />
+    </record>
+    <record id="b2s_l1_s10_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l1_s10" />
+        <field name="page_index">2</field>
+    </record>
 </odoo>
