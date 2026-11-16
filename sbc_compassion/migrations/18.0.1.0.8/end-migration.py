@@ -29,10 +29,16 @@ def migrate(env, version):
             ("template_id", "=", env.ref("sbc_compassion.b2s_l1").id),
         ]
     )
-    letters = letters.filtered(
+    # Only letters printing our translation, when it doesn't fit on page 1.
+    # End-migration: report_needs_final_text is computed in sbc_switzerland
+    letters = letters.filtered("report_needs_final_text").filtered(
         lambda letter: any(
             len((paragraph.translated_text or "").strip()) >= 5
             for paragraph in letter.page_ids[1:2].paragraph_ids
+        )
+        or any(
+            paragraph.check_overflow("translated_text")[1].strip()
+            for paragraph in letter.page_ids[:1].paragraph_ids
         )
     )
     _logger.info("Move %s letters to the S10 layout", len(letters))
