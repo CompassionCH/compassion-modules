@@ -917,6 +917,17 @@ class Correspondence(models.Model):
             else:
                 if "id" in vals:
                     del vals["id"]
+                if not vals.get("sponsorship_id"):
+                    # Also happens when the sponsorship belongs to a company
+                    # the GMC user is not allowed to access.
+                    raise UserError(
+                        _(
+                            "No sponsorship found for supporter %(supporter)s "
+                            "and beneficiary %(child)s.",
+                            supporter=commkit.get("Supporter", {}).get("GlobalId"),
+                            child=commkit.get("Beneficiary", {}).get("GlobalId"),
+                        )
+                    )
                 letter = self.create(vals)
 
             if is_published:
