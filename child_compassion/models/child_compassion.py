@@ -538,21 +538,28 @@ class CompassionChild(models.Model):
         """
         for child in self:
             # last_picture return false is there is no new pictures
-            if child._get_last_pictures() and len(child.pictures_ids) > 1:
-                pictures = child.pictures_ids.sorted()
-                today = date.today()
-                last_photo = pictures[1].date
-                new_photo = pictures[0].date
-                diff_pic = relativedelta(new_photo, last_photo)
-                diff_today = relativedelta(today, new_photo)
+            if child._get_last_pictures():
+                child._check_new_photo()
 
-                if (
-                    (diff_pic.months >= 6 or diff_pic.years > 0)
-                    and (diff_today.months <= 6 and diff_today.years == 0)
-                    and not pictures[0].funct_new_photo_called
-                ):
-                    child.new_photo()
-                    pictures[0].funct_new_photo_called = True
+    def _check_new_photo(self):
+        """Call new_photo() for the children whose last picture is a new one,
+        without fetching any picture (see update_child_pictures).
+        """
+        today = date.today()
+        for child in self.filtered(lambda c: len(c.pictures_ids) > 1):
+            pictures = child.pictures_ids.sorted()
+            last_photo = pictures[1].date
+            new_photo = pictures[0].date
+            diff_pic = relativedelta(new_photo, last_photo)
+            diff_today = relativedelta(today, new_photo)
+
+            if (
+                (diff_pic.months >= 6 or diff_pic.years > 0)
+                and (diff_today.months <= 6 and diff_today.years == 0)
+                and not pictures[0].funct_new_photo_called
+            ):
+                child.new_photo()
+                pictures[0].funct_new_photo_called = True
 
     # Lifecycle methods
     ###################
