@@ -465,6 +465,16 @@ class CompassionIntervention(models.Model):
         message (json)
         :return list of intervention ids which are concerned by the
         message"""
+        # InterventionUpdateNotification only carries a summary of the
+        # intervention: fetch the full kit instead of writing partial data.
+        notification = commkit_data.get("InterventionUpdateNotification")
+        if notification:
+            intervention_id = notification.get("Intervention_ID")
+            if not intervention_id:
+                return []
+            intervention = self.search([("intervention_id", "=", intervention_id)])
+            intervention.get_infos()
+            return intervention.ids
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         intervention_request = (
@@ -904,9 +914,12 @@ class CompassionIntervention(models.Model):
             commkit_data.get("InterventionAmendmentKitRequest", [{}])[0],
         )
         intervention_local_ids = []
-        v = self.json_to_data(commkit_data)
-        intervention_id = v["intervention_id"]
-        amendment_amount = interventionamendment["AdditionalAmountRequestedUSD"]
+        # Read the ID from the unwrapped payload: the generic mapping
+        # doesn't see keys nested under the message name.
+        intervention_id = interventionamendment.get("Intervention_ID")
+        amendment_amount = interventionamendment.get("AdditionalAmountRequestedUSD")
+        if not intervention_id:
+            return intervention_local_ids
         intervention = self.env["compassion.intervention"].search(
             [("intervention_id", "=", intervention_id)]
         )

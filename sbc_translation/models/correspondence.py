@@ -216,8 +216,10 @@ class Correspondence(models.Model):
     def dispatch_s2b_letters(self):
         """Dispatch S2B letters to translation platform if needed,
         or to GMC if no translation is needed."""
+        # Letters with a kit identifier are already at GMC (e.g. created
+        # from a CommunicationUpdates message): nothing to dispatch.
         for correspondence in self.filtered(
-            lambda c: c.direction == "Supporter To Beneficiary"
+            lambda c: c.direction == "Supporter To Beneficiary" and not c.kit_identifier
         ):
             sponsorship = correspondence.sponsorship_id
             original_lang = correspondence.original_language_id
