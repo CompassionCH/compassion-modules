@@ -31,23 +31,29 @@ class SponsorshipGift(models.Model):
     sponsorship_id = fields.Many2one(
         "recurring.contract", "Sponsorship", readonly=False, index=True
     )
+    # Taken from the sponsorship when there is one, but stored and editable
+    # so that gifts without sponsorship (e.g. Project Gift) keep their values.
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
-        related="sponsorship_id.correspondent_id",
+        compute="_compute_sponsorship_fields",
+        store=True,
         readonly=False,
+        index=True,
     )
     project_id = fields.Many2one(
         "compassion.project",
         "Project",
-        related="sponsorship_id.project_id",
+        compute="_compute_sponsorship_fields",
+        store=True,
         readonly=False,
     )
     project_suspended = fields.Boolean(related="project_id.hold_gifts", tracking=True)
     child_id = fields.Many2one(
         "compassion.child",
         "Child",
-        related="sponsorship_id.child_id",
+        compute="_compute_sponsorship_fields",
+        store=True,
         readonly=False,
     )
     gift_type_id = fields.Many2one(
@@ -153,6 +159,18 @@ class SponsorshipGift(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.depends(
+        "sponsorship_id.correspondent_id",
+        "sponsorship_id.child_id",
+        "sponsorship_id.project_id",
+    )
+    def _compute_sponsorship_fields(self):
+        for gift in self.filtered("sponsorship_id"):
+            sponsorship = gift.sponsorship_id
+            gift.partner_id = sponsorship.correspondent_id
+            gift.child_id = sponsorship.child_id
+            gift.project_id = sponsorship.project_id
+
+    @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
         "invoice_line_ids.amount_currency",
@@ -222,11 +240,9 @@ class SponsorshipGift(models.Model):
 
             # If a gift for the same partner is to verify, put as well
             # the new one to verify.
-            partner_id = (
-                self.env["recurring.contract"]
-                .browse(vals["sponsorship_id"])
-                .partner_id.id
-            )
+            partner_id = self.env["recurring.contract"].browse(
+                vals.get("sponsorship_id")
+            ).partner_id.id or vals.get("partner_id")
             gift_to_verify = self.search_count(
                 [("partner_id", "=", partner_id), ("state", "=", "verify")]
             )
@@ -256,9 +272,18 @@ class SponsorshipGift(models.Model):
                     dates.append(default)
             gift_date = max(dates)
 
+        sponsorship_id = vals.get("sponsorship_id")
+        recipient_domain = [("sponsorship_id", "=", sponsorship_id)]
+        if not sponsorship_id:
+            # Gift without sponsorship (e.g. Project Gift): only blend gifts
+            # for the same partner and project.
+            recipient_domain += [
+                ("partner_id", "=", vals.get("partner_id")),
+                ("project_id", "=", vals.get("project_id")),
+            ]
         return self.search(
-            [
-                ("sponsorship_id", "=", vals["sponsorship_id"]),
+            recipient_domain
+            + [
                 ("gift_type_id", "=", vals["gift_type_id"]),
                 ("gift_date", "like", str(gift_date)[:4]),
                 ("state", "in", ["draft", "verify"]),
