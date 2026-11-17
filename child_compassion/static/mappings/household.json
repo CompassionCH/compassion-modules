@@ -5,8 +5,7 @@
     "BeneficiaryHouseholdMemberList": {
       "field": "member_ids.id",
       "sub_mapping": "Household Member",
-      "search_relational_record": true,
-      "search_key": "name"
+      "relational_write_mode": "overwrite"
     },
     "FemaleGuardianEmploymentStatus": "female_guardian_job_type",
     "FemaleGuardianOccupation": "female_guardian_job",
