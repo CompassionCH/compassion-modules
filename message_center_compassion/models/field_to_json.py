@@ -210,7 +210,35 @@ class FieldToJson(models.Model):
                     self.odoo_field,
                 )
                 return {}
+        elif self.field_id.ttype == "selection" and isinstance(converted_value, str):
+            converted_value = self._match_selection_key(converted_value)
+            if converted_value is None:
+                return {}
         return {field_name: converted_value}
+
+    def _match_selection_key(self, value):
+        """GMC doesn't keep a stable casing for picklist values
+        (e.g. "Donor-funded" vs "Donor-Funded"): match the selection key
+        case-insensitively. Unknown values are skipped so that the rest of
+        the record can still be updated.
+        :return: the selection key, or None if no key matches
+        """
+        field = self.env[self.field_id.model]._fields[self.field_id.name]
+        keys = field.get_values(self.env)
+        if value in keys:
+            return value
+        matching = [
+            key for key in keys if isinstance(key, str) and key.lower() == value.lower()
+        ]
+        if matching:
+            return matching[0]
+        _logger.warning(
+            "Unknown value %r received from GMC for selection field %s.%s",
+            value,
+            self.field_id.model,
+            self.field_id.name,
+        )
+        return None
 
     def _search_for_relational_values(self, value, field, relational_model, orm_vals):
         """
