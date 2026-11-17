@@ -42,7 +42,23 @@ class ChildNote(models.Model):
     def process_commkit(self, commkit_data):
         note_ids = list()
         for notes_data in commkit_data.get("GPPublicNotesKit", [commkit_data]):
+            if notes_data.get("RecordType") == "ICP":
+                # FCP notes reference the project (ICP_ID) instead of a child
+                note_ids += self._process_fcp_note(notes_data)
+                continue
             vals = self.json_to_data(notes_data)
             child_note = self.create(vals)
             note_ids.append(child_note.id)
         return note_ids
+
+    @api.model
+    def _process_fcp_note(self, notes_data):
+        """Post a note received for an FCP in the chatter of the project.
+        :return: list with the project id, empty if the project is unknown
+        """
+        project = self.env["compassion.project"].search(
+            [("fcp_id", "=", notes_data.get("GlobalID"))], limit=1
+        )
+        if project and notes_data.get("Body"):
+            project.message_post(body=notes_data["Body"], subject=_("New FCP notes"))
+        return project.ids
