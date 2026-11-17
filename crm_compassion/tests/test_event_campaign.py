@@ -157,6 +157,53 @@ class TestEventCampaign(TransactionCase):
         line = self._invoice_line(campaign_id=run.campaign_id.id)
         self.assertEqual(line.event_id, run)
 
+    def test_line_event_when_invoice_source_set_later(self):
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        line = self._invoice_line()
+        self.assertFalse(line.event_id)
+        line.move_id.source_id = event.source_id
+        self.assertEqual(line.event_id, event)
+
+    def test_change_of_type_sets_utm(self):
+        concert = self._event(name="Campaign test concert to run")
+        self.assertFalse(concert.campaign_id)
+        concert.type = "sport"
+        self.assertEqual(concert.campaign_id.title, concert.full_name)
+        self.assertEqual(concert.origin_id.campaign_id, concert.campaign_id)
+        run = self._event(type="sport", name="Campaign test run to concert")
+        self.assertFalse(run.source_id)
+        run.type = "concert"
+        self.assertEqual(run.source_id.name, run.full_name)
+        self.assertEqual(run.origin_id.source_id, run.source_id)
+
+    def test_blocked_plan_move_keeps_event_editable(self):
+        """When Odoo refuses to move the account of an event to its plan (a line
+        already holds another account of that plan), the event is still saved
+        and the account stays in its plan."""
+        event = self._event()
+        events_plan = self.env.ref("crm_compassion.plan_events")
+        legacy = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test legacy"}
+        )
+        account = event.analytic_id
+        account.plan_id = legacy
+        other = self.env["account.analytic.account"].create(
+            {"name": "Campaign test other event", "plan_id": events_plan.id}
+        )
+        self.env["account.analytic.line"].create(
+            {
+                "name": "Campaign test shared line",
+                "amount": -10,
+                legacy._column_name(): account.id,
+                events_plan._column_name(): other.id,
+            }
+        )
+        event.name = "Campaign test concert renamed"
+        self.assertEqual(event.name, "Campaign test concert renamed")
+        self.assertIn(account.plan_id, legacy | events_plan)
+
     def test_analytic_plan_settings(self):
         self.assertEqual(
             self._event().analytic_id.plan_id,

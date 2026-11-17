@@ -75,6 +75,40 @@ class TestOriginCampaign(TransactionCase):
         contract = self._contract(origin_id=self.origin_magazine.id)
         self.assertEqual(contract.campaign_id, self.magazine)
 
+    def test_create_keeps_utm_defaults(self):
+        """The defaults (context, website cookies) win over the origin and the
+        Unknown source."""
+        source = self.env["utm.source"].create({"name": "Origin campaign cookie"})
+        contract = (
+            self.env["recurring.contract"]
+            .with_context(default_source_id=source.id, default_campaign_id=self.own.id)
+            .create(
+                {
+                    "type": "O",
+                    "partner_id": self.partner.id,
+                    "group_id": self.group.id,
+                    "pricelist_id": self.pricelist.id,
+                    "origin_id": self.origin_magazine.id,
+                }
+            )
+        )
+        self.assertEqual(contract.source_id, source)
+        self.assertEqual(contract.campaign_id, self.own)
+
+    def test_onchange_of_origin_replaces_previous_origin_values(self):
+        contract = self.env["recurring.contract"].new({"type": "O"})
+        contract.origin_id = self.origin_magazine
+        contract._onchange_origin_id_utm()
+        self.assertEqual(contract.campaign_id, self.magazine)
+        contract.origin_id = self.origin_newspaper
+        contract._onchange_origin_id_utm()
+        self.assertEqual(contract.campaign_id, self.newspaper)
+        # a campaign chosen apart is kept
+        contract.campaign_id = self.own
+        contract.origin_id = self.origin_magazine
+        contract._onchange_origin_id_utm()
+        self.assertEqual(contract.campaign_id, self.own)
+
     def test_create_keeps_own_campaign(self):
         contract = self._contract(
             origin_id=self.origin_magazine.id, campaign_id=self.own.id

@@ -7,12 +7,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import math
 from datetime import datetime, timedelta
 
 from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import html2plaintext
+
+_logger = logging.getLogger(__name__)
 
 
 class EventCompassion(models.Model):
@@ -319,12 +322,7 @@ class EventCompassion(models.Model):
         calendar_obj = self.env["calendar.event"].with_context(default_start_date=None)
 
         for event in events:
-            if event._is_peer_to_peer():
-                event.with_context(no_sync=True)._ensure_campaign()
-            elif not event.source_id:
-                event.with_context(no_sync=True).source_id = self.env[
-                    "utm.source"
-                ].create({"name": event.full_name, "category": "event"})
+            event.with_context(no_sync=True)._ensure_utm()
             plan = event._get_analytic_plan()
             analytic_id = (
                 self.env["account.analytic.account"]
@@ -353,17 +351,17 @@ class EventCompassion(models.Model):
         if not self.env.context.get("no_sync"):
             for event in self:
                 # Update Analytic Account and Origin
-                analytic_vals = event._get_analytic_vals()
-                plan = event._get_analytic_plan()
-                if plan:
-                    # Accounts of events migrated from other plans move to
-                    # the plan of their type (default: Events)
-                    analytic_vals["plan_id"] = plan.id
-                event.analytic_id.write(analytic_vals)
+                event.analytic_id.write(event._get_analytic_vals())
+                event._move_analytic_to_plan()
+                utm_before = {f: event[f] for f in ("campaign_id", "source_id")}
+                if "type" in vals:
+                    # A peer-to-peer event needs its campaign, another one
+                    # its source
+                    event.with_context(no_sync=True)._ensure_utm()
                 utm_vals = {
                     fname: event[fname].id
                     for fname in ("campaign_id", "source_id")
-                    if fname in vals
+                    if fname in vals or event[fname] != utm_before[fname]
                 }
                 if utm_vals:
                     # Only administrator has write access to origins.
@@ -598,6 +596,39 @@ class EventCompassion(models.Model):
         """Participants of a peer-to-peer fundraising event raise funds on their
         own page: the event is the campaign, each fundraiser a source."""
         return self.type in ("crowdfunding", "sport")
+
+    def _ensure_utm(self):
+        """A peer-to-peer fundraising event is a campaign, another event a
+        source."""
+        for event in self:
+            if event._is_peer_to_peer():
+                event._ensure_campaign()
+            elif not event.source_id:
+                event.source_id = self.env["utm.source"].create(
+                    {"name": event.full_name, "category": "event"}
+                )
+
+    def _move_analytic_to_plan(self):
+        """Accounts of events migrated from other plans move to the plan of
+        their type (default: Events). Odoo refuses the move when a line of
+        the account already holds another account of that plan: the account
+        then stays in its plan, as in the migration."""
+        for event in self:
+            account = event.analytic_id
+            plan = event._get_analytic_plan()
+            if not account or not plan or account.plan_id == plan:
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    account.plan_id = plan
+            except (exceptions.UserError, exceptions.RedirectWarning) as error:
+                _logger.info(
+                    "Analytic account %s of event %s left in plan %s: %s",
+                    account.id,
+                    event.id,
+                    account.plan_id.name,
+                    error,
+                )
 
     def _ensure_campaign(self):
         """A peer-to-peer fundraising event is its own campaign."""

@@ -24,7 +24,13 @@ class MoveLine(models.Model):
         store=True,
     )
 
-    @api.depends("analytic_line_ids", "contract_id.origin_id.event_id")
+    def _event_depends(self):
+        depends = ["analytic_line_ids", "contract_id.origin_id.event_id"]
+        if "source_id" in self.env["account.move"]._fields:
+            depends += ["move_id.source_id", "move_id.campaign_id"]
+        return depends
+
+    @api.depends(lambda self: self._event_depends())
     def _compute_event(self):
         """The event of a line, once set, is kept. Otherwise it is found from:
         - the origin of the sponsorship of the line;

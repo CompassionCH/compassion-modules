@@ -557,6 +557,9 @@ class SponsorshipContract(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Perform various checks on contract creations"""
+        # The UTM defaults (context, website cookies) come before the ones of
+        # the origin and the Unknown source
+        utm_defaults = self.default_get(["campaign_id", "source_id", "medium_id"])
         for vals in vals_list:
             # Force the commitment_number
             partner_ids = []
@@ -607,21 +610,7 @@ class SponsorshipContract(models.Model):
                 else:
                     vals["commitment_number"] = 1
 
-            if vals.get("origin_id"):
-                origin = self.env["recurring.contract.origin"].browse(vals["origin_id"])
-                for fname in ORIGIN_UTM_FIELDS:
-                    if origin[fname] and not vals.get(fname):
-                        vals[fname] = origin[fname].id
-            if not vals.get("source_id"):
-                vals["source_id"] = self.env.ref(
-                    "sponsorship_compassion.utm_source_unknown"
-                ).id
-            if not vals.get("medium_id"):
-                medium = (
-                    self.env["utm.source"].browse(vals["source_id"])._guess_medium()
-                )
-                if medium:
-                    vals["medium_id"] = medium.id
+            self._fill_utm_vals(vals, utm_defaults)
 
         new_sponsorships = super().create(vals_list)
 
@@ -713,6 +702,28 @@ class SponsorshipContract(models.Model):
     @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
+
+    @api.model
+    def _fill_utm_vals(self, vals, utm_defaults):
+        """UTM of a new sponsorship: its own, else the defaults (context,
+        website cookies), else the ones of its origin, else the Unknown source
+        and the medium guessed from the source."""
+        for fname, value in utm_defaults.items():
+            if value and fname not in vals:
+                vals[fname] = value
+        if vals.get("origin_id"):
+            origin = self.env["recurring.contract.origin"].browse(vals["origin_id"])
+            for fname in ORIGIN_UTM_FIELDS:
+                if origin[fname] and not vals.get(fname):
+                    vals[fname] = origin[fname].id
+        if not vals.get("source_id"):
+            vals["source_id"] = self.env.ref(
+                "sponsorship_compassion.utm_source_unknown"
+            ).id
+        if not vals.get("medium_id"):
+            medium = self.env["utm.source"].browse(vals["source_id"])._guess_medium()
+            if medium:
+                vals["medium_id"] = medium.id
 
     def _follows_origin(self, fname):
         """The campaign or source of the sponsorship is empty, unknown or the one
@@ -821,9 +832,22 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     @api.onchange("origin_id")
     def _onchange_origin_id_utm(self):
+        """The campaign and source follow the origin, unless chosen apart: a
+        value is replaced when it is empty, Unknown, or the one of an origin
+        (e.g. of the origin selected before)."""
+        unknown = self.env.ref("sponsorship_compassion.utm_source_unknown")
+        origin_obj = self.env["recurring.contract.origin"]
         for fname in ORIGIN_UTM_FIELDS:
-            if self.origin_id[fname] and not self[fname]:
-                self[fname] = self.origin_id[fname]
+            new_value = self.origin_id[fname]
+            value = self[fname]
+            if not new_value or value == new_value:
+                continue
+            if (
+                not value
+                or value == unknown
+                or origin_obj.search_count([(fname, "=", value.id)], limit=1)
+            ):
+                self[fname] = new_value
 
     @api.onchange("parent_id")
     def on_change_parent_id(self):
