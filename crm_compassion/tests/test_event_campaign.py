@@ -78,6 +78,34 @@ class TestEventCampaign(TransactionCase):
         contract = self._contract(event.origin_id)
         self.assertEqual(contract.source_id, event.source_id)
 
+    def test_event_from_opportunity_takes_its_campaign(self):
+        campaign = self.env["utm.campaign"].create({"title": "Speaker tour 2023"})
+        lead = self.env["crm.lead"].create(
+            {"name": "Tour evening in a church", "campaign_id": campaign.id}
+        )
+        action = lead.create_event()
+        now = datetime.now()
+        event = (
+            self.env["crm.event.compassion"]
+            .with_context(**action["context"])
+            .create(
+                {
+                    "type": "presentation",
+                    "start_date": now,
+                    "end_date": now + timedelta(days=1),
+                    "hold_start_date": now.date(),
+                }
+            )
+        )
+        self.assertEqual(event.lead_ids, lead)
+        self.assertEqual(event.campaign_id, campaign)
+        self.assertEqual(event.source_id.name, event.full_name)
+        self.assertEqual(event.origin_id.campaign_id, campaign)
+        self.assertEqual(event.origin_id.source_id, event.source_id)
+        contract = self._contract(event.origin_id)
+        self.assertEqual(contract.campaign_id, campaign)
+        self.assertEqual(contract.source_id, event.source_id)
+
     def test_peer_to_peer_event_is_a_campaign(self):
         event = self._event(type="sport", name="Campaign test run")
         self.assertEqual(event.campaign_id.title, event.full_name)

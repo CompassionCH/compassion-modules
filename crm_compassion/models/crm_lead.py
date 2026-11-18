@@ -45,6 +45,9 @@ class CrmLead(models.Model):
                 "default_user_id": self.user_id.id,
                 "default_planned_sponsorships": self.planned_sponsorships,
                 "default_lead_ids": self.ids,
+                # the event belongs to the campaign of the opportunity (a tour,
+                # an action of several events); its source is the event itself
+                "default_campaign_id": self.campaign_id.id,
             },
         }
 
