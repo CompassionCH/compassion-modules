@@ -52,6 +52,7 @@ class CompassionChild(models.Model):
 
     old_values = fields.Char(compute="_compute_revised_values")
     old_firstname = fields.Char(compute="_compute_revised_values")
+    old_birthdate = fields.Date(compute="_compute_revised_values")
     current_values = fields.Char(compute="_compute_revised_values")
     completion_month = fields.Char(compute="_compute_completion_month")
 
@@ -65,6 +66,16 @@ class CompassionChild(models.Model):
                 ).old_value
                 or child.firstname
             )
+            # old_values joins the old values of all revisions received
+            # together (ex: birthdate and grade level), it can't be read as
+            # a date.
+            old_birthdate = child.revised_value_ids.filtered(
+                lambda c: c.name == "Birthdate"
+            )[:1].old_value
+            try:
+                child.old_birthdate = fields.Date.to_date(old_birthdate)
+            except ValueError:
+                child.old_birthdate = False
 
     def _major_revision(self, vals):
         """Private method when a major revision is received for a child.
@@ -96,16 +107,18 @@ class CompassionChild(models.Model):
         if not communication_config.active:
             return True
         job_obj = self.env["partner.communication.job"]
-        for child in self.filtered(
-            lambda r: r.sponsor_id
-            and r.pictures_ids
-            and r.sponsorship_ids[0].state == "active"
-        ):
+        for child in self.filtered(lambda r: r.sponsor_id and r.pictures_ids):
+            # Not the first sponsorship: a cancelled one can come before
+            sponsorship = child.sponsorship_ids.filtered(lambda s: s.state == "active")[
+                :1
+            ]
+            if not sponsorship:
+                continue
             sponsor = child.sponsor_id
             delivery = sponsor.photo_delivery_preference
             if "physical" in delivery or delivery == "both":
                 # Mark sponsorship for order the picture
-                child.sponsorship_ids[0].new_picture = True
+                sponsorship.new_picture = True
 
             job_obj.create(
                 {

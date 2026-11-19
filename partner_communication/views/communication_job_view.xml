@@ -25,6 +25,15 @@
             icon="fa-envelope"
             type="object"
             class="oe_highlight"
+            title="This communication has no send mode, so it cannot be sent."
+            invisible="send_mode or state != 'pending' or not id"
+          />
+                    <button
+            name="send"
+            string="Send Now"
+            icon="fa-envelope"
+            type="object"
+            class="oe_highlight"
             invisible="send_mode != 'both' or state != 'pending' or not id"
             context="{'origin': 'both_email'}"
           />
@@ -82,6 +91,14 @@
               icon="fa-search-plus"
               class="oe_stat_button"
               invisible="state != 'pending'"
+            />
+                        <button
+              name="preview_pdf_report"
+              string="Preview PDF"
+              type="object"
+              icon="fa-file-pdf-o"
+              class="oe_stat_button"
+              invisible="state != 'pending' or not report_id"
             />
                         <button
               name="open_related"
@@ -206,7 +223,7 @@
             <list
         decoration-primary="state == 'pending'"
         decoration-muted="state in ('done', 'cancel')"
-        decoration-danger="need_call!=False and len(activity_ids) or state == 'failure'"
+        decoration-danger="need_call and activity_ids or state == 'failure'"
       >
                 <field name="date" />
                 <field name="config_id" />

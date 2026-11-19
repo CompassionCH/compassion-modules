@@ -51,7 +51,7 @@ class PartnerCommunication(models.Model):
                         continue
                 except ValueError:
                     continue
-                communication.amount = sum(invoice_lines.mapped("price_subtotal"))
+                communication.amount = invoice_lines.get_donation_amount()
 
     ##########################################################################
     #                              ORM METHODS                               #

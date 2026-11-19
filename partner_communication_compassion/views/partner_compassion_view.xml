@@ -17,4 +17,31 @@
             </field>
         </field>
     </record>
+
+    <!-- Highlight terminated sponsorships whose exit communication has not yet
+         been sent to the sponsor -->
+    <record id="view_res_partner_sponsorships_exit_pending" model="ir.ui.view">
+        <field name="name">contracts.sponsorships.exit.pending</field>
+        <field name="model">recurring.contract</field>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.recurring_contract_simple_tree"
+    />
+        <field name="arch" type="xml">
+            <xpath
+        expr="/list"
+        position="attributes"
+      >
+                <attribute
+          name="decoration-muted"
+        >state in ('terminated','cancelled') and not exit_communication_pending</attribute>
+                <attribute
+          name="decoration-warning"
+        >exit_communication_pending</attribute>
+            </xpath>
+            <field name="child_id" position="after">
+                <field name="exit_communication_pending" column_invisible="1" />
+            </field>
+        </field>
+    </record>
 </odoo>

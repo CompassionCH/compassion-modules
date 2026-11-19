@@ -10,6 +10,10 @@
                     <field name="type" />
                     <field name="lang" />
                     <field name="pdf" />
+                    <field
+            name="print_qr"
+            invisible="type not in ('child_compassion.childpack_full', 'child_compassion.childpack_small')"
+          />
                 </group>
                 <group invisible="state != 'pdf'">
                     <field name="pdf_name" invisible="1" />

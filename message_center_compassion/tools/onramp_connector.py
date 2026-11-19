@@ -20,7 +20,14 @@ from odoo import _
 from odoo.exceptions import UserError
 from odoo.tools.config import config
 
+from . import onramp_fake
+
 _logger = logging.getLogger(__name__)
+
+# requests has no default timeout: without this a non-responding GMC blocks the
+# worker until the Odoo time limit kills it (up to 8h), holding its queue channel.
+# (connect, read) seconds.
+GMC_TIMEOUT = (10, 60)
 
 
 class OnrampConnector:
@@ -30,8 +37,11 @@ class OnrampConnector:
     # Private instance of the class
     __instance = None
 
-    # Holds the last time a token was retrieved from GMC.
-    _token_time = None
+    # When the token must be renewed, based on GMC's expires_in.
+    _token_expiry = None
+
+    # (client, secret, token server) to renew the token without an env.
+    _token_credentials = None
 
     # Requests Session that will be used across calls to server
     _session = None
@@ -64,9 +74,10 @@ class OnrampConnector:
 
     def __init__(self, env):
         """Get a fresh token if needed."""
-        now = datetime.now()
+        if onramp_fake.is_enabled():
+            return
         if self._connect_url and (
-            not self._token_time or self._token_time + timedelta(hours=1) <= now
+            not self._token_expiry or self._token_expiry <= datetime.now()
         ):
             self._retrieve_token(env)
 
@@ -97,6 +108,19 @@ class OnrampConnector:
                           {'code': http_status_code, 'content': response,
                            'Error': error_message, 'request_id': request id header}
         """
+        if onramp_fake.is_enabled():
+            if onramp_fake.handles(service_name, message_type):
+                return onramp_fake.fake_send_message(
+                    service_name, message_type, body=body
+                )
+            raise UserError(
+                _(
+                    "connect_fake is enabled but the %(message_type)s "
+                    "%(service_name)s request is not supported by the fake "
+                    "Compassion Connect service."
+                )
+                % {"message_type": message_type, "service_name": service_name}
+            )
         if headers is None:
             headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name if not full_url else service_name
@@ -108,17 +132,30 @@ class OnrampConnector:
         self.log_message(message_type, url, headers, log_body, self._session, params)
         count = 0
         r = None
+        token_renewed = False
         while not isinstance(r, requests.Response) and count < 5:
             try:
                 if message_type in ("GET", "GET_RAW"):
-                    r = self._session.get(url, headers=headers, params=params)
+                    r = self._session.get(
+                        url, headers=headers, params=params, timeout=GMC_TIMEOUT
+                    )
                 elif message_type == "POST":
                     r = self._session.post(
-                        url, headers=headers, json=body, params=params, data=data
+                        url,
+                        headers=headers,
+                        json=body,
+                        params=params,
+                        data=data,
+                        timeout=GMC_TIMEOUT,
                     )
                 elif message_type == "PUT":
                     r = self._session.put(
-                        url, headers=headers, json=body, params=params, data=data
+                        url,
+                        headers=headers,
+                        json=body,
+                        params=params,
+                        data=data,
+                        timeout=GMC_TIMEOUT,
                     )
                 else:
                     return {"code": 404, "Error": "No valid HTTP verb used"}
@@ -128,6 +165,12 @@ class OnrampConnector:
                 self._session = requests.Session()
                 self._session.params = session_params
             count += 1
+            if r is not None and r.status_code == 401 and not token_renewed:
+                # GMC can hand out a cached token that dies before expires_in
+                _logger.warning("GMC answered 401, renewing the token and retrying")
+                self._renew_token()
+                token_renewed = True
+                r = None
         if message_type == "GET_RAW":
             # Simply return the result
             _logger.debug(
@@ -158,19 +201,21 @@ class OnrampConnector:
 
     def _retrieve_token(self, env):
         """Retrieves the token from Connect."""
-        self._token_time = datetime.now()
         try:
-            self._session.headers.update(self.get_gmc_token(env))
+            self._token_credentials = self._get_token_credentials(env)
+            self._renew_token()
         except AttributeError:
             # Refresh the instance
             OnrampConnector.__instance = self.__new__(OnrampConnector, env)
 
+    def _renew_token(self):
+        header, expires_in = self.get_gmc_token(*self._token_credentials)
+        self._session.headers.update(header)
+        # One minute early, so a request in flight never carries a dead token
+        self._token_expiry = datetime.now() + timedelta(seconds=expires_in - 60)
+
     @classmethod
-    def get_gmc_token(cls, env):
-        """
-        Class method that fetches a token from GMC OAuth server.
-        :return: dict: Authorisation header.
-        """
+    def _get_token_credentials(cls, env):
         client = env["res.config.settings"].get_param("connect_client")
         secret = env["res.config.settings"].get_param("connect_secret")
         provider = config.get("connect_token_server")
@@ -181,6 +226,14 @@ class OnrampConnector:
                     "connect_token_server in your Odoo configuration file."
                 )
             )
+        return client, secret, provider
+
+    @classmethod
+    def get_gmc_token(cls, client, secret, provider):
+        """
+        Class method that fetches a token from GMC OAuth server.
+        :return: (Authorisation header dict, token lifetime in seconds)
+        """
         params_post = "grant_type=client_credentials&scope=connect/read-write"
         header_post = {
             "Content-type": "application/x-www-form-urlencoded",
@@ -190,14 +243,15 @@ class OnrampConnector:
             data=params_post,
             auth=(client, secret),
             headers=header_post,
-            timeout=3,
+            timeout=GMC_TIMEOUT,
         )
         try:
             token = response.json()
-            return {"Authorization": "{token_type} {access_token}".format(**token)}
+            header = {"Authorization": "{token_type} {access_token}".format(**token)}
         except (AttributeError, KeyError, JSONDecodeError) as error:
             _logger.error("GMC token retrieval error: %s", response.text, exc_info=True)
             raise UserError(_("Token validation failed.")) from error
+        return header, int(token.get("expires_in") or 3600)
 
     @classmethod
     def log_message(

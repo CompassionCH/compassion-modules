@@ -83,7 +83,7 @@ class Correspondence(models.Model):
     )
 
     @api.model
-    def _read_group_translation_status(self, statuses, domain, order):
+    def _read_group_translation_status(self, statuses, domain):
         return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
@@ -204,58 +204,76 @@ class Correspondence(models.Model):
         """Create a message for sending the CommKit after be translated on
         the local translate platform.
         """
-        b2s_vals = []
-        s2b_vals = []
-        for vals in vals_list:
-            if vals.get("direction") == "Beneficiary To Supporter":
-                b2s_vals.append(vals)
-            else:
-                s2b_vals.append(vals)
-
-        res = self.env["correspondence"]
-
-        if b2s_vals:
-            res += super().create(b2s_vals)
-
-        if s2b_vals:
-            # create letter first and let super.create()
-            # run the language detection first
-            s2b_records = super(
-                Correspondence, self.with_context(no_comm_kit=True)
-            ).create(s2b_vals)
-            res += s2b_records
-
-            for correspondence in s2b_records:
-                sponsorship = correspondence.sponsorship_id
-                original_lang = correspondence.original_language_id
-
-                # Languages the office/region understand
-                office = sponsorship.child_id.project_id.field_office_id
-                language_ids = (
-                    office.spoken_language_ids + office.translated_language_ids
-                )
-
-                if original_lang.translatable and original_lang not in language_ids:
-                    correspondence.action_send_local_translate()
-                else:
-                    # if no translation is needed, resume GMC dispatch
-                    correspondence.create_commkit()
-
-        return res
+        letters = super(Correspondence, self.with_context(no_comm_kit=True)).create(
+            vals_list
+        )
+        letters.dispatch_s2b_letters()
+        return letters
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def dispatch_s2b_letters(self):
+        """Dispatch S2B letters to translation platform if needed,
+        or to GMC if no translation is needed."""
+        # Letters with a kit identifier are already at GMC (e.g. created
+        # from a CommunicationUpdates message): nothing to dispatch.
+        for correspondence in self.filtered(
+            lambda c: c.direction == "Supporter To Beneficiary" and not c.kit_identifier
+        ):
+            sponsorship = correspondence.sponsorship_id
+            original_lang = correspondence.original_language_id
+
+            # Languages the office/region understand
+            office = sponsorship.child_id.project_id.field_office_id
+            language_ids = office.spoken_language_ids + office.translated_language_ids
+
+            # Draft letters (preview) are not ready to be dispatched yet
+            if correspondence.state == "Draft":
+                continue
+
+            if original_lang.translatable and original_lang not in language_ids:
+                correspondence.action_send_local_translate()
+            else:
+                # if no translation is needed, resume GMC dispatch
+                correspondence.create_commkit()
+
+    def validate(self):
+        """Validate a letter and send it to the translation platform if needed."""
+        res = super(Correspondence, self.with_context(no_comm_kit=True)).validate()
+        self.dispatch_s2b_letters()
+        return res
+
     def action_open_full_view(self):
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
-            "views": [[False, "form"]],
+            # A form_view_ref in the context would also apply to the wizards
+            # opened from this form (e.g. Retrieve image).
+            "views": [
+                [self.env.ref("sbc_compassion.view_correspondence_form").id, "form"]
+            ],
             "res_id": self.id,
-            "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
-    def process_letter(self):
+    def action_open_translation_view(self):
+        """Open the letter in the form used in the translation pool."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "views": [
+                [
+                    self.env.ref(
+                        "sbc_translation.correspondence_simple_translation_form"
+                    ).id,
+                    "form",
+                ]
+            ],
+            "res_id": self.id,
+        }
+
+    def publish_b2s_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
         for letter in self:
@@ -266,30 +284,28 @@ class Correspondence(models.Model):
                 letter._check_translation_language()
 
             # Can sponser read the letter?
-            langs_match = (
-                letter.beneficiary_language_ids & letter.supporter_languages_ids
-            ) or letter.translation_language_id in letter.supporter_languages_ids
+            langs_match = letter._sponsor_can_read_letter()
 
             # Is the letter still in the translation process?
-            translation_hold = (
-                letter.translation_status in ["to do", "in progress", "to validate"]
-                or letter.translation_issue
-            )
+            translation_hold = letter._is_in_translation()
 
             if (langs_match and not translation_hold) or force_publish:
-                super(Correspondence, letter).process_letter()
+                super(Correspondence, letter).publish_b2s_letter()
             else:
-                try:
-                    letter.download_attach_letter_image()
-                except UserError:
-                    _logger.warning(
-                        f"Could not download image for letter {letter.id}, "
-                        f"but proceeding to translation queue."
-                    )
                 # (re)send to translation queue ONLY if not on hold
                 if not translation_hold:
                     letter.action_send_local_translate()
         return True
+
+    def _is_in_translation(self):
+        self.ensure_one()
+        return bool(
+            self.translation_status in ["to do", "in progress", "to validate"]
+            or self.translation_issue
+        )
+
+    def _is_ready_for_sponsor(self):
+        return super()._is_ready_for_sponsor() and not self._is_in_translation()
 
     def calculate_translation_priority(self):
         """
@@ -448,17 +464,26 @@ class Correspondence(models.Model):
 
     def action_remove_local_translate(self):
         """
-        Remove a letter from local translation platform and change state of
-        letter in Odoo
-        :return: None
+        Remove a letter from local translation platform. The letter is kept in
+        Exception and is not sent to anyone; the letter responsible gets a to-do.
+        :return: bool
         """
         self.ensure_one()
-        if self.direction == "Supporter To Beneficiary":
-            self.state = "Received in the system"
-            self.create_commkit()
-        else:
-            self.state = "Published to Global Partner"
-            self.with_context(force_publish=True).process_letter()
+        reason = _("Removed from translation platform")
+        self.write(
+            {
+                "state": "Exception",
+                "translator": False,
+                "new_translator_id": False,
+                "translation_status": False,
+            }
+        )
+        self.message_post(
+            body=reason, message_type="comment", subtype_xmlid="mail.mt_note"
+        )
+        responsible = self.env["res.config.settings"].get_param("letter_responsible")
+        if responsible:
+            self._make_activity(reason, responsible)
         return True
 
     def save_translation(self, letter_elements, translator_id=None, submit=False):
@@ -637,6 +662,19 @@ class Correspondence(models.Model):
                 description="Create Commkit",
                 identity_key=f"sbc.create_commkit.{self.ids}",
             )
+        else:
+            self.with_user(SUPERUSER_ID).spread_translation()
+            # Translation is done: publish the B2S letter to the sponsor
+            self.with_user(SUPERUSER_ID).with_context(
+                force_publish=True
+            ).publish_b2s_letter()
+
+    def spread_translation(self):
+        """Fit the translation in the boxes of the letters printing it on
+        their original image."""
+        for letter in self.filtered("report_needs_final_text"):
+            letter.spread_text_to_pages(["translated_text"])
+        return True
 
     def list_letters(self):
         """API call to fetch letters to translate"""
@@ -695,17 +733,25 @@ class Correspondence(models.Model):
 
     def get_translated_elements(self):
         res = []
+        # Translations into English are saved in the english_text field (see
+        # save_translation). Supporter letters have no english text from GMC.
+        english_target = (
+            self.direction == "Supporter To Beneficiary"
+            and self.translation_language_id.code_iso == "eng"
+        )
         for i, page in enumerate(self.page_ids):
             for paragraph in page.paragraph_ids:
                 res.append(
                     {
                         "type": "paragraph",
                         "id": paragraph.id,
-                        "content": paragraph.translated_text,
+                        "content": paragraph.english_text
+                        if english_target
+                        else paragraph.translated_text,
                         "comments": paragraph.comments,
-                        "source": paragraph.english_text
-                        or paragraph.original_text
-                        or "",
+                        "source": paragraph.original_text
+                        if english_target
+                        else paragraph.english_text or paragraph.original_text or "",
                     }
                 )
             if i < len(self.page_ids) - 1:

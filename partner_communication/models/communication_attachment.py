@@ -78,6 +78,7 @@ class CommunicationAttachment(models.Model):
                         "datas": vals["data"],
                         "name": name,
                         "report_id": vals["report_id"],
+                        "type": "binary",
                     }
                 )
                 vals["attachment_id"] = attachment.id
@@ -91,7 +92,9 @@ class CommunicationAttachment(models.Model):
     def unlink(self):
         attachments = self.mapped("attachment_id")
         super().unlink()
-        attachments.unlink()
+        # Deleting the ir.attachment is internal to deleting its wrapper record,
+        # which was already access-checked.
+        attachments.sudo().unlink()
         return True
 
     def print_attachments(self, output_tray=None):

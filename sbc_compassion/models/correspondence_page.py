@@ -19,11 +19,16 @@ from PIL import Image
 from odoo import api, fields, models
 
 from ..tools.onramp_connector import SBCConnector
+from .correspondence_text_box import PAGE_HEIGHT_PX, PAGE_WIDTH_PX
 
 _logger = logging.getLogger(__name__)
 
 BOX_SEPARATOR = "#BOX#"
 PAGE_SEPARATOR = "#PAGE#"
+# Detection of the pages in the stacked image of Cloudinary
+EDGE_WIDTH_PX = 4
+SEAM_EDGE_JUMP = 60
+SEAM_MAX_THICKNESS_PX = 12
 
 
 class CorrespondencePage(models.Model):
@@ -78,24 +83,35 @@ class CorrespondencePage(models.Model):
         image_field = f"{image_type}_page_image"
         url_field = f"{image_type}_page_url"
         for page in self:
-            if getattr(page, cloudinary_url_field):
-                setattr(
-                    page,
-                    image_field,
-                    page._get_cloundinary_image(getattr(page, cloudinary_url_field)),
-                )
-            if not getattr(page, image_field) and getattr(page, url_field):
-                connector = SBCConnector(self.env)
-                setattr(
-                    page,
-                    image_field,
-                    connector.get_letter_image(getattr(page, url_field), {"dpi": 96}),
-                )
+            cloudinary_url = getattr(page, cloudinary_url_field)
+            page_url = getattr(page, url_field)
+            # Cloudinary is much faster than Connect, which is the fallback
+            image = page._get_cloundinary_image(cloudinary_url)
+            if not image:
+                image = page._get_connect_image(page_url)
             if (
-                not getattr(page, image_field)
+                not image
                 and page.correspondence_id.direction == "Beneficiary To Supporter"
             ):
-                setattr(page, image_field, page.template_id.background)
+                image = page.template_id.background
+            # The computed field must always be assigned
+            setattr(page, image_field, image or False)
+
+    def _get_connect_image(self, page_url):
+        if not page_url:
+            return False
+        image = SBCConnector(self.env).get_letter_image(page_url, {"dpi": 96})
+        # Connect returns the body of an error as it is: only keep real images
+        try:
+            Image.open(BytesIO(base64.b64decode(image or b""))).verify()
+        except Exception:
+            _logger.warning(
+                "Connect did not return an image for %s: %r",
+                page_url,
+                base64.b64decode(image or b"")[:200],
+            )
+            return False
+        return image
 
     def _compute_original_page_image(self):
         self._compute_page_image("original")
@@ -124,11 +140,18 @@ class CorrespondencePage(models.Model):
                 # Handle case where page index exceeds the number of template pages
                 new_index = (page.page_index - 1) % 2
                 modulo_page = template.page_ids[new_index : new_index + 1]
-                page_template = (
-                    modulo_page
-                    if page.correspondence_id.direction == "Supporter To Beneficiary"
-                    else template.additional_page_id or modulo_page
-                )
+                if page.correspondence_id.direction == "Supporter To Beneficiary":
+                    page_template = modulo_page
+                elif (
+                    page.original_page_url
+                    or page.page_index
+                    <= page.correspondence_id.overlay_source_nbr_pages
+                ):
+                    # Extra scanned page of the child or page of the source
+                    # PDF: no text box over it
+                    page_template = template.page_ids.browse()
+                else:
+                    page_template = template.additional_page_id or modulo_page
             page.template_id = page_template
 
     def fetch_image(self):
@@ -140,6 +163,10 @@ class CorrespondencePage(models.Model):
         """
         self.ensure_one()
         letter = self.correspondence_id
+        if self.page_index <= letter.overlay_source_nbr_pages:
+            return self._fetch_pdf_page_image(
+                letter.with_context(bin_size=False).overlay_source_pdf, 150
+            )
         if letter.direction == "Supporter To Beneficiary" and not letter.kit_identifier:
             if self.template_id.background:
                 return self.template_id.background
@@ -153,14 +180,82 @@ class CorrespondencePage(models.Model):
         )
         if not getattr(self, image_field):
             self._compute_page_image(image_field.replace("_page_image", ""))
-        return getattr(self, image_field)
+        image = getattr(self, image_field)
+        if not image and letter.direction == "Supporter To Beneficiary":
+            # Sent letter without page image from GMC yet: print it as it was sent
+            image = self.template_id.background or self._fetch_sponsor_pdf_image()
+        return image
+
+    def fetch_report_images(self):
+        """
+        Used by the PDF report: images of the page, one per printed sheet.
+        GMC gives a sent S2B letter as one image of all its A4 pages stacked,
+        whatever the number of pages we hold: it is cut back into its pages.
+        """
+        self.ensure_one()
+        image = self.fetch_image()
+        if not image or self.correspondence_id.direction != "Supporter To Beneficiary":
+            return [image]
+        try:
+            stacked = Image.open(BytesIO(base64.b64decode(image)))
+            stacked.load()
+            width, height = stacked.size
+            nb_pages = round(height / width * PAGE_WIDTH_PX / PAGE_HEIGHT_PX)
+            if nb_pages < 2:
+                return [image]
+            page_height = height // nb_pages
+            # The pages of our letters all have the same size: an even cut is
+            # exact, no need to look for the borders in the picture.
+            bounds = [(index * page_height, page_height) for index in range(nb_pages)]
+            images = []
+            for y_start, slice_height in bounds:
+                output = BytesIO()
+                stacked.crop((0, y_start, width, y_start + slice_height)).convert(
+                    "RGB"
+                ).save(output, "JPEG", quality=90)
+                images.append(base64.b64encode(output.getvalue()))
+            return images
+        except Exception:
+            _logger.warning(
+                "Could not cut the image of page %s", self.id, exc_info=True
+            )
+            return [image]
+
+    @api.model
+    def fetch_image_width(self, image):
+        """
+        Used by the PDF report: width in px at which the image is printed so
+        that it fits on one A4 page. The width must be absolute, because a
+        percentage resolves to the natural size of the image in wkhtmltopdf,
+        which makes large images overflow on the next page. Images that are
+        higher than A4 are shrunk, the others keep the full page width.
+        """
+        if not image:
+            return PAGE_WIDTH_PX
+        try:
+            width, height = Image.open(BytesIO(base64.b64decode(image))).size
+        except Exception:
+            _logger.warning("Could not read the size of a page image", exc_info=True)
+            return PAGE_WIDTH_PX
+        if not width or not height:
+            return PAGE_WIDTH_PX
+        # Keep a small margin so that rounding never pushes it onto a new page
+        max_width = (PAGE_HEIGHT_PX - 2) * width / height
+        return round(min(PAGE_WIDTH_PX, max_width), 1)
 
     def _fetch_sponsor_pdf_image(self):
         self.ensure_one()
-        if self.correspondence_id.sponsor_letter_scan:
-            pdf_data = base64.b64decode(self.correspondence_id.sponsor_letter_scan)
+        return self._fetch_pdf_page_image(
+            self.correspondence_id.sponsor_letter_scan, 96
+        )
+
+    def _fetch_pdf_page_image(self, pdf, dpi):
+        """Image of the page of a PDF corresponding to this letter page."""
+        self.ensure_one()
+        if pdf:
+            pdf_data = base64.b64decode(pdf)
             image = convert_from_bytes(
-                pdf_data, 96, first_page=self.page_index, last_page=self.page_index
+                pdf_data, dpi, first_page=self.page_index, last_page=self.page_index
             )[0]
             return self.env["import.letters.history"].create_preview(image)
         return False
@@ -168,7 +263,12 @@ class CorrespondencePage(models.Model):
     def _get_cloundinary_image(self, cloudinary_url):
         if not cloudinary_url:
             return False
-        response = requests.get(cloudinary_url, timeout=3)
+        try:
+            response = requests.get(cloudinary_url, timeout=3)
+        except requests.RequestException:
+            # Fall back to the next image source instead of failing the PDF
+            _logger.warning("Could not download %s", cloudinary_url, exc_info=True)
+            return False
         return base64.b64encode(response.content) if response.ok else False
 
     @api.depends(
@@ -176,31 +276,98 @@ class CorrespondencePage(models.Model):
         "correspondence_id.cloudinary_final_letter_url",
     )
     def _compute_cloudinary_url(self):
+        # The stacked image of a letter is analysed once for all its pages
+        stacked_images = {}
         for page in self:
             page.cloudinary_original_page_url = page._get_cloudinary_url(
-                page.correspondence_id.cloudinary_original_letter_url
+                page.correspondence_id.cloudinary_original_letter_url, stacked_images
             )
             page.cloudinary_final_page_url = page._get_cloudinary_url(
-                page.correspondence_id.cloudinary_final_letter_url
+                page.correspondence_id.cloudinary_final_letter_url, stacked_images
             )
 
-    def _get_cloudinary_url(self, cloudinary_url):
+    def _get_cloudinary_url(self, cloudinary_url, stacked_images=None):
         """
         Returns the cloudinary url with the correct crop so that the page is displayed
+        :param stacked_images: optional dict to share the analysis of a stacked image
+                               between the pages of a letter
         """
-        if not cloudinary_url:
+        # Pages added to hold overflowing text are not part of the letter image
+        letter_pages = self.correspondence_id.page_ids
+        scanned_pages = letter_pages.filtered("original_page_url") or letter_pages
+        if not cloudinary_url or self not in scanned_pages:
             return False
+        scanned_index = list(scanned_pages).index(self) + 1
         if cloudinary_url.endswith("p1.jpg"):
-            return cloudinary_url.replace("p1.jpg", f"p{str(self.page_index)}.jpg")
-        response = requests.get(cloudinary_url, timeout=3)
-        if not response.ok:
+            return cloudinary_url.replace("p1.jpg", f"p{scanned_index}.jpg")
+        stacked_images = stacked_images if stacked_images is not None else {}
+        key = (cloudinary_url, len(scanned_pages))
+        if key not in stacked_images:
+            stacked_images[key] = self._analyze_stacked_image(
+                cloudinary_url, len(scanned_pages)
+            )
+        width, bounds = stacked_images[key]
+        if not bounds:
+            # No reliable crop: the page is fetched from Connect
             return False
-        width, total_height = Image.open(BytesIO(response.content)).size
-        height = total_height // len(self.correspondence_id.page_ids)
-        y_start = (self.page_index - 1) * height
+        y_start, height = bounds[scanned_index - 1]
         crop_operator = f"c_crop,h_{height},w_{width},x_0,y_{y_start}"
         url_parts = cloudinary_url.split("upload/")
         return f"{url_parts[0]}upload/{crop_operator}/{url_parts[1]}"
+
+    def _analyze_stacked_image(self, cloudinary_url, nb_pages):
+        """
+        :return: tuple (width, bounds) of the stacked image, where bounds are the
+                 (y_start, height) of the pages, empty if they can't be found.
+        """
+        # A network error is not caught: the url is stored and would never be
+        # computed again.
+        response = requests.get(cloudinary_url, timeout=3)
+        if not response.ok:
+            return 0, []
+        try:
+            image = Image.open(BytesIO(response.content))
+            image.load()
+        except OSError:
+            _logger.warning("Not an image: %s", cloudinary_url, exc_info=True)
+            return 0, []
+        return image.width, self._find_page_bounds(image, nb_pages)
+
+    @api.model
+    def _find_page_bounds(self, image, nb_pages):
+        """
+        Cloudinary gives the pages of a letter stacked in one image, and the pages
+        don't always have the same height. A border is drawn at the edge of the
+        pages, so the brightness of the left edge changes sharply from one page
+        to the next one.
+        :param image: PIL image holding the stacked pages
+        :param nb_pages: number of pages in the image
+        :return: list of (y_start, height) for each page, or an empty list if the
+                 pages could not be found reliably.
+        """
+        width, total_height = image.size
+        if nb_pages <= 1:
+            return [(0, total_height)] if nb_pages == 1 else []
+        edge = image.convert("L").crop((0, 0, min(width, EDGE_WIDTH_PX), total_height))
+        edge = edge.resize((1, total_height), Image.Resampling.BOX)
+        brightness = list(edge.getdata())
+        seams = []
+        # The border at the top and bottom of the image is not between two pages
+        for y in range(SEAM_MAX_THICKNESS_PX, total_height - SEAM_MAX_THICKNESS_PX):
+            if abs(brightness[y] - brightness[y - 1]) < SEAM_EDGE_JUMP:
+                continue
+            if seams and y - seams[-1][-1] <= SEAM_MAX_THICKNESS_PX:
+                seams[-1].append(y)
+            else:
+                seams.append([y])
+        if len(seams) != nb_pages - 1:
+            return []
+        cuts = [0] + [(seam[0] + seam[-1]) // 2 for seam in seams] + [total_height]
+        heights = [end - start for start, end in zip(cuts, cuts[1:], strict=False)]
+        average = total_height / nb_pages
+        if any(not 0.5 * average <= height <= 1.5 * average for height in heights):
+            return []
+        return list(zip(cuts, heights, strict=False))
 
     def sync_text_from_paragraphs(self):
         _fields = ["original_text", "english_text", "translated_text"]

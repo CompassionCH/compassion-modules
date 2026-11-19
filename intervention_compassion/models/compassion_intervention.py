@@ -9,6 +9,7 @@
 ##############################################################################
 
 import logging
+import re
 import time
 
 from odoo import _, api, fields, models
@@ -422,7 +423,11 @@ class CompassionIntervention(models.Model):
 
             if intervention_name.find("FY") != -1:
                 split_name = intervention_name.split("FY")
-                search_value = split_name[0] + "FY" + str(int(split_name[1]) - 1)
+                match = re.search(r"\\d+", split_name[1])
+                year_str = match.group() if match else None
+                search_value = (
+                    split_name[0] + "FY" + str(int(year_str) - 1) if year_str else ""
+                )
                 last_intervention = self.search([("name", "=", search_value)])
                 if last_intervention:
                     vals["product_template_id"] = (
@@ -460,6 +465,16 @@ class CompassionIntervention(models.Model):
         message (json)
         :return list of intervention ids which are concerned by the
         message"""
+        # InterventionUpdateNotification only carries a summary of the
+        # intervention: fetch the full kit instead of writing partial data.
+        notification = commkit_data.get("InterventionUpdateNotification")
+        if notification:
+            intervention_id = notification.get("Intervention_ID")
+            if not intervention_id:
+                return []
+            intervention = self.search([("intervention_id", "=", intervention_id)])
+            intervention.get_infos()
+            return intervention.ids
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         intervention_request = (
@@ -899,9 +914,12 @@ class CompassionIntervention(models.Model):
             commkit_data.get("InterventionAmendmentKitRequest", [{}])[0],
         )
         intervention_local_ids = []
-        v = self.json_to_data(commkit_data)
-        intervention_id = v["intervention_id"]
-        amendment_amount = interventionamendment["AdditionalAmountRequestedUSD"]
+        # Read the ID from the unwrapped payload: the generic mapping
+        # doesn't see keys nested under the message name.
+        intervention_id = interventionamendment.get("Intervention_ID")
+        amendment_amount = interventionamendment.get("AdditionalAmountRequestedUSD")
+        if not intervention_id:
+            return intervention_local_ids
         intervention = self.env["compassion.intervention"].search(
             [("intervention_id", "=", intervention_id)]
         )

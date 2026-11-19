@@ -26,9 +26,18 @@ class MoveLine(models.Model):
 
     @api.depends("analytic_line_ids")
     def _compute_event(self):
+        """Event analytic accounts can be in any analytic plan: the
+        ``crm_compassion.plan_events`` plan, but also older plans (e.g. the
+        accounts of events migrated from v14), each stored in its own column
+        on account.analytic.line."""
+        analytic_obj = self.env["account.analytic.account"]
         for line in self:
-            if not line.event_id and line.analytic_line_ids.account_id.event_id:
-                line.event_id = line.analytic_line_ids.account_id.event_id
+            analytic_accounts = analytic_obj.union(
+                *(al._get_analytic_accounts() for al in line.analytic_line_ids)
+            )
+            event = analytic_accounts.mapped("event_id")[:1]
+            if not line.event_id and event:
+                line.event_id = event
             else:
                 line.event_id = line.event_id
 
@@ -37,6 +46,14 @@ class MoveLine(models.Model):
         """Push Ambassador to invoice line."""
         if self.contract_id.ambassador_id:
             self.user_id = self.contract_id.ambassador_id
+
+    def unlink(self):
+        # The analytic lines left on these items are deleted by the database
+        # (ondelete cascade), without account.analytic.line.unlink().
+        events = self.analytic_line_ids._get_events()
+        res = super().unlink()
+        events._recompute_expenses()
+        return res
 
     def generate_thank_you(self):
         """

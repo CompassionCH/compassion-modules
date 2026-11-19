@@ -25,4 +25,26 @@
             </xpath>
         </field>
     </record>
+    <record model="ir.ui.view" id="view_project_search">
+        <field name="name">project.compassion.intervention.search</field>
+        <field name="model">compassion.project</field>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_project_filter"
+    />
+        <field name="arch" type="xml">
+            <filter name="suspended2month" position="after">
+                <filter
+          name="donor_funded_fcps"
+          string="donor funded fcps"
+          domain="[['intervention_ids.category_id.name','ilike','funded']]"
+        />
+                <filter
+          name="fcp_with_contracts"
+          string="fcp with sponsorships"
+          domain="[('contract_ids.state', 'not in', ['terminated', 'cancelled'])]"
+        />
+            </filter>
+        </field>
+    </record>
 </odoo>

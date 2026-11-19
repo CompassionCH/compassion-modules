@@ -428,7 +428,9 @@ class ResPartner(models.Model):
     def anonymize(self, vals=None):
         # Called after Forget Me message sent to GMC. Anonymize all data from partner.
         self.ensure_one()
-        partner = self.with_context(no_upsert=True, tracking_disable=True).sudo()
+        partner = self.with_context(
+            no_upsert=True, tracking_disable=True, allow_smart_tag_modification=True
+        ).sudo()
 
         def _random_str():
             return "".join([random.choice(string.ascii_letters) for n in range(8)])

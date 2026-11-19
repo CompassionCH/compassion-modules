@@ -18,24 +18,43 @@
 .container {
   padding: 0;
 }
+/* Must match the text layout measured in correspondence_text_box.py */
+.overlay {
+  font-family: "Lato";
+  font-size: 16px;
+  word-wrap: break-word;
+}
+.overlay p {
+  margin: 0 0 5mm;
+}
+/* A blank line adds one line to the gap, see BLANK_LINE_HEIGHT_PX */
+.overlay p.blank {
+  margin: 0;
+  min-height: 19.2px;
+}
       </style>
             <t t-foreach="docs" t-as="letter">
                 <t t-foreach="letter.page_ids" t-as="page">
+                  <!-- One sheet per image: a stacked image of GMC is cut into its pages -->
+                  <t
+          t-foreach="page.fetch_report_images()"
+          t-as="background"
+        >
                     <div class="page" style="page-break-after:always;">
+                        <!-- Pages higher than A4 are shrunk to fit on the page,
+                             the text boxes follow as they are in % of the image -->
                         <div
-              class="image-container w-100"
-              style="position: relative;display: inline-block;"
+              class="image-container"
+              t-attf-style="position: relative; display: block; margin: 0 auto; width: {{page.fetch_image_width(background)}}px;"
             >
-                            <t
-                t-set="background"
-                t-value="page.fetch_image()"
-              />
                             <img
                 t-if="background"
                 t-attf-src="data:image/jpeg;base64,{{background}}"
-                class="w-100"
+                style="display: block; width: 100%;"
               />
-                            <t t-if="letter.report_needs_overlay">
+                            <t
+                t-if="letter.report_needs_overlay and background_first"
+              >
                                 <div
                   class="overlay w-100 p-4"
                   style="position: absolute; top:0; left:0"
@@ -51,107 +70,112 @@
                 >
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_original_text"
+                    t-if="letter.report_needs_original_text and text_box.fetch_style('original_text')"
                     t-att-style="text_box.fetch_style('original_text')"
                   >
                                         <t
-                      t-foreach="text_box.original_text.split('\n')"
+                      t-foreach="text_box.report_lines('original_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_final_text"
+                    t-if="letter.report_needs_final_text and text_box.fetch_style('translated_text')"
                     t-att-style="text_box.fetch_style('translated_text')"
                   >
                                         <t
-                      t-foreach="text_box.translated_text.split('\n')"
+                      t-foreach="text_box.report_lines('translated_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                     <div
                     class="overlay"
-                    t-if="letter.report_needs_english_text"
+                    t-if="letter.report_needs_english_text and text_box.fetch_style('english_text')"
                     t-att-style="text_box.fetch_style('english_text')"
                   >
                                         <t
-                      t-foreach="text_box.english_text.split('\n')"
+                      t-foreach="text_box.report_lines('english_text')"
                       t-as="p"
                     >
-                                            <p t-out="p" />
+                                            <p t-att-class="'blank' if not p.strip() else None" t-out="p" />
                                         </t>
                                     </div>
                                 </t>
                             </t>
                         </div>
                     </div>
+                  </t>
                 </t>
                 <t t-if="len(letter.page_ids) % 2 == 1">
-                    <div class="page p-2" style="page-break-after: always">
-                        <p />
+                    <div class="page" style="page-break-after: always">
+                        <t
+                t-set="back_background"
+                t-value="letter.direction == 'Supporter To Beneficiary' and letter.template_id.page_ids[1:2].background"
+              />
+                        <img
+                t-if="back_background"
+                t-attf-src="data:image/jpeg;base64,{{back_background}}"
+                class="w-100"
+              />
                     </div>
                 </t>
-                <t
-          t-if="letter.report_needs_original_text"
-          t-foreach="letter.get_attachments_per_page()"
-          t-as="attachments_page"
-        >
-                    <div
-            t-if="attachments_page_value[0]"
-            class="page p-5"
-            style="page-break-after:always;"
-          >
-                        <t t-if="attachments_page_index % 2 == 0">
-                            <t t-call="sbc_compassion.correspondence_header" />
-                        </t>
-                        <h1 class="text-center text-uppercase">
-                            <span>Additional pictures</span>
-                            <t t-if="attachments_page_size &gt; 1">
-                                <t
-                  t-out="'(' + str(attachments_page_index+1) + '/' + str(attachments_page_size) +  ')'"
-                />
-                            </t>
-                        </h1>
-                        <t
-              t-foreach="attachments_page_value"
-              t-as="attachments_row"
+                <t t-if="letter.report_needs_original_text">
+                    <t
+              t-foreach="letter.get_attachments_per_page()"
+              t-as="attachments_page"
             >
-                            <div class="row mx-5 my-5">
-                                <t
-                  t-foreach="attachments_row_value"
-                  t-as="attachment"
+                        <div
+                t-if="attachments_page_value[0]"
+                class="page p-5"
+                style="page-break-after:always;"
+              >
+                            <t t-if="attachments_page_index % 2 == 0">
+                                <t t-call="sbc_compassion.correspondence_header" />
+                            </t>
+                            <t
+                  t-foreach="attachments_page_value"
+                  t-as="attachments_row"
                 >
-                                    <div class="col-6 px-4">
-                                        <img
-                      t-if="attachment"
-                      t-attf-src="data:image/jpeg;base64,{{attachment}}"
-                      class="w-100"
-                    />
-                                    </div>
-                                </t>
-                            </div>
-                        </t>
-                    </div>
+                                <div class="row mx-3 my-4">
+                                    <t
+                      t-foreach="attachments_row_value"
+                      t-as="attachment"
+                    >
+                                        <div class="col-12 px-4">
+                                            <!-- Aspect-ratio box: wkhtmltopdf renders
+                                                 CSS mm at ~0.8x, so size relative to the
+                                                 page width and let the background fit
+                                                 inside without distorting the picture. -->
+                                            <div
+                          t-if="attachment"
+                          t-attf-style="height: 0; padding-bottom: 70%; background-image: url('data:image/jpeg;base64,{{attachment}}'); background-size: contain; background-position: center; background-repeat: no-repeat;"
+                        />
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
                 </t>
             </t>
         </t>
     </template>
-    <template id="correspondence_header">
-        <t t-set="child" t-value="letter.sponsorship_id.child_id" />
-        <t t-set="sponsor" t-value="letter.sponsorship_id.partner_id" />
-        <div class="d-flex flex-row-reverse">
-            <span
-        t-out="f'{sponsor.global_id} - {sponsor.preferred_name or sponsor.firstname}'"
-      />
-        </div>
-        <div class="d-flex flex-row-reverse">
-            <span
-        t-out="f'{child.global_id} - {child.preferred_name} - {child.gender} - {child.age}'"
-      />
-        </div>
-    </template>
+   <template id="correspondence_header">
+    <t t-set="child" t-value="letter.sponsorship_id.child_id" />
+    <t t-set="sponsor" t-value="letter.sponsorship_id.correspondent_id" />
+    <div style="text-align: right; margin-right: 30mm;">
+        <span
+    t-out="'%s - %s' % (sponsor.global_id, sponsor.preferred_name or sponsor.firstname)"
+  />
+    </div>
+    <div style="text-align: right; margin-right: 30mm;">
+        <span
+    t-out="'%s - %s - %s - %s' % (child.global_id, child.preferred_name, child.gender, child.age)"
+  />
+    </div>
+</template>
 </odoo>

@@ -61,12 +61,20 @@ class IrActionsServer(models.Model):
                 if self.auto_send:
                     vals["auto_send"] = self.auto_send
                 delay = datetime.now() + timedelta(minutes=3)
-                identity_key = f"create_communication.{self.config_id.id}.{partner.id}"
+                # Include the records in the key: automations (e.g. on_time) run
+                # the action once per record, and a key shared by all records of
+                # the partner would drop all but the first queued job. Jobs for
+                # the same partner are merged when created.
+                identity_key = (
+                    f"create_communication.{self.config_id.id}.{partner.id}."
+                    f"{','.join(map(str, sorted(records.ids)))}"
+                )
                 self.with_delay_sh(
                     "create_communication_job",
                     vals,
                     identity_key=identity_key,
                     eta=delay,
+                    fresh_context=True,
                 )
         return {}
 

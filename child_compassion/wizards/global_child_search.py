@@ -7,16 +7,17 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import sys
 from datetime import date, datetime, timedelta
 from math import ceil
-
-from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
+
+_logger = logging.getLogger(__name__)
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -122,7 +123,6 @@ class GlobalChildSearch(models.TransientModel):
         help="These children were removed from the search results because "
         "of a National Office restriction configuration.",
     )
-    missing_dates = fields.Text(help="All birthdates not found when using 365 search")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -307,49 +307,6 @@ class GlobalChildSearch(models.TransientModel):
         # Delete leftover children
         (self.global_child_ids - found_children).unlink()
         return True
-
-    def do_365_mix(self):
-        """Try to find one child per day of the year having his birthdate
-        on that date."""
-        today = date.today()
-        first_day = today.replace(day=1, month=1)
-        last_day = today.replace(day=31, month=12)
-        current_date = first_day
-        # First step as regular search
-        self.write(
-            {
-                "birthday_day": 1,
-                "birthday_month": 1,
-                "take": 1,
-                "missing_dates": "",
-                "skip": 0,
-            }
-        )
-        self.do_search()
-        while current_date < last_day:
-            # Next steps: add child to the search result
-            current_date += relativedelta(days=1)
-            self.write(
-                {
-                    "birthday_day": current_date.day,
-                    "birthday_month": current_date.month,
-                    "skip": 0,
-                }
-            )
-            try:
-                self.add_search()
-            except UserError:
-                # No children found on that date: displays it.
-                self.missing_dates += current_date.strftime("%d.%m\n")
-
-        # Reset search criteria
-        self.write(
-            {
-                "birthday_day": 0,
-                "birthday_month": 0,
-                "take": 80,
-            }
-        )
 
     def filter(self):
         self.ensure_one()
@@ -556,10 +513,17 @@ class GlobalChildSearch(models.TransientModel):
             restricted_children.unlink()
             self.global_child_ids += new_children
         else:
-            error = result.get("content", result)["Error"]
+            content = result.get("content", result)
+            # GMC sometimes answers with a plain-text body instead of JSON
+            error = (
+                content.get("Error", content) if isinstance(content, dict) else content
+            )
             if isinstance(error, dict):
                 error = error.get("ErrorMessage")
-            raise UserError(error)
+            _logger.error(
+                "GMC childpool search failed (%s): %s", result.get("code"), error
+            )
+            raise UserError(error or _("Global childpool search failed"))
 
     def _does_match(self, child):
         """Returns if the selected criterias correspond to the given child."""

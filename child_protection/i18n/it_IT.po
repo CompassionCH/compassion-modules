@@ -1,0 +1,104 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* child_protection
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: child_protection
+#: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
+msgid "Child Protection"
+msgstr "Protezione dei bambini"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_file
+#: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_file
+msgid "Code of Conduct"
+msgstr "Codice di condotta"
+
+#. module: child_protection
+#: model:ir.model,name:child_protection.model_res_partner
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: child_protection
+#: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_ir_actions_server
+msgid "Create activity: A criminal record is expiring today"
+msgstr "Crea attività: oggi scade un casellario giudiziale"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record
+#: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record
+msgid "Criminal Record"
+msgstr "Fedina penale"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_date
+#: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_date
+msgid "Criminal Record Date"
+msgstr "Data del casellario giudiziale"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__criminal_record_name
+#: model:ir.model.fields,field_description:child_protection.field_res_users__criminal_record_name
+msgid "Criminal Record Name"
+msgstr "Nome del casellario giudiziale"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__date_agreed_child_protection_charter
+#: model:ir.model.fields,field_description:child_protection.field_res_users__date_agreed_child_protection_charter
+msgid "Date Agreed Child Protection Charter"
+msgstr "Data di accettazione della Carta per la protezione dell'infanzia"
+
+#. module: child_protection
+#: model_terms:ir.ui.view,arch_db:child_protection.view_partner_form_child_protection
+msgid "Date agreed"
+msgstr "Data di accettazione"
+
+#. module: child_protection
+#: model:ir.model.fields,field_description:child_protection.field_res_partner__code_of_conduct_filename
+#: model:ir.model.fields,field_description:child_protection.field_res_users__code_of_conduct_filename
+msgid "File Name"
+msgstr "Nome del file"
+
+#. module: child_protection
+#: model:res.groups,name:child_protection.group_criminal_record
+msgid "Manage Criminal Records"
+msgstr "Gestire i casellari giudiziali"
+
+#. module: child_protection
+#: model:base.automation,name:child_protection.partner_notify_criminal_record_expiration
+#: model:ir.actions.server,name:child_protection.partner_notify_criminal_record_expiration_action
+msgid "Partner: Notify criminal record expiration"
+msgstr "Partner: notifica la scadenza del casellario giudiziale"
+
+#. module: child_protection
+#: model:ir.model.fields,help:child_protection.field_res_partner__date_agreed_child_protection_charter
+#: model:ir.model.fields,help:child_protection.field_res_users__date_agreed_child_protection_charter
+msgid ""
+"The date and time when the partner has agreed to the childprotection "
+"charter."
+msgstr ""
+"La data e l'ora in cui il partner ha accettato la Carta per la protezione "
+"dell'infanzia."
+
+#. module: child_protection
+#: model:ir.model.fields,help:child_protection.field_res_partner__code_of_conduct_file
+#: model:ir.model.fields,help:child_protection.field_res_users__code_of_conduct_file
+msgid "Upload file"
+msgstr "Carica un file"
+
+#. module: child_protection
+#: model:res.groups,comment:child_protection.group_criminal_record
+msgid "the user will have access to all criminal records."
+msgstr "l'utente avrà accesso a tutti i casellari giudiziali."

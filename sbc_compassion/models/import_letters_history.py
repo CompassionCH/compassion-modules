@@ -145,6 +145,8 @@ class ImportLettersHistory(models.Model):
     def button_review(self):
         """Returns a form view for import lines in order to browse them"""
         self.ensure_one()
+        if not self.import_line_ids:
+            raise UserError(_("There is no letter to review in this import."))
         return {
             "name": _("Review Imports"),
             "type": "ir.actions.act_window",
@@ -264,7 +266,7 @@ class ImportLettersHistory(models.Model):
             failed_files = self.failed_file_name or ""
             if failed_files:
                 failed_files += "\n"
-            failed_files += file_name
+            failed_files += str(file_name)
             self.write(
                 {
                     "failed_file_name": failed_files,

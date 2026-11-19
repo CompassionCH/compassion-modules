@@ -47,9 +47,7 @@ class DownloadLetters(models.TransientModel):
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, "w") as zip_data:
             for letter in letters:
-                zip_data.writestr(
-                    letter.file_name, base64.b64decode(letter.sponsor_letter_scan)
-                )
+                zip_data.writestr(letter.file_name, letter.get_pdf())
         zip_buffer.seek(0)
         self.download_data = base64.b64encode(zip_buffer.read())
 

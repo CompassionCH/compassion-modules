@@ -15,6 +15,7 @@ from . import (
     communication_job,
     communication_snippet,
     ir_actions,
+    ir_actions_report,
     ir_attachment,
     mail_mail,
     res_partner,

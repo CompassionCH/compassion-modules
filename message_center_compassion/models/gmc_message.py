@@ -13,8 +13,11 @@ import re
 import traceback
 from datetime import datetime
 
+from psycopg2 import OperationalError
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.service.model import PG_CONCURRENCY_ERRORS_TO_RETRY
 
 from ..tools.onramp_connector import OnrampConnector
 
@@ -194,18 +197,11 @@ class GmcMessage(models.Model):
 
         message_update = {"process_date": fields.Datetime.now()}
         if action.direction == "in":
-            try:
-                message_update.update(self._perform_incoming_action())
-            except Exception:
-                # Abort pending operations
-                logger.error("Failure when processing message", exc_info=True)
-                self.env.cr.rollback()
-                self.env.clear()
-                # Write error
-                message_update.update(
-                    {"state": "failure", "failure_reason": traceback.format_exc()}
-                )
-
+            # Process each message on its own so that a failing message
+            # doesn't make the other messages of the job fail.
+            for message in messages:
+                message._process_incoming_message(dict(message_update))
+            return True
         elif action.direction == "out":
             self._perform_outgoing_action()
         else:
@@ -217,6 +213,33 @@ class GmcMessage(models.Model):
             self.mapped("message_ids").unlink()
 
         return True
+
+    def _process_incoming_message(self, message_update):
+        """Process one incoming message inside a savepoint and store the
+        result (or the failure) on the message."""
+        self.ensure_one()
+        try:
+            with self.env.cr.savepoint():
+                message_update.update(self._perform_incoming_action())
+        except Exception as e:
+            if (
+                isinstance(e, OperationalError)
+                and e.pgcode in PG_CONCURRENCY_ERRORS_TO_RETRY
+            ):
+                # Retryable concurrency error: propagate so the queue job
+                # is retried instead of writing in the failed transaction.
+                raise
+            # The savepoint rolled back the changes of this message only:
+            # drop the cache that may still hold them.
+            logger.error("Failure when processing message", exc_info=True)
+            self.env.clear()
+            message_update.update(
+                {"state": "failure", "failure_reason": traceback.format_exc()}
+            )
+        self.write(message_update)
+        if message_update.get("state") == "success":
+            # Remove thread history
+            self.message_ids.unlink()
 
     def _perform_incoming_action(self):
         """Convert the data incoming from Connect into Odoo object values
@@ -410,6 +433,13 @@ class GmcMessage(models.Model):
                 f(answer_data)
                 self.state = "success"
         except Exception as e:
+            if (
+                isinstance(e, OperationalError)
+                and e.pgcode in PG_CONCURRENCY_ERRORS_TO_RETRY
+            ):
+                # Retryable concurrency error: the transaction is aborted and
+                # cannot be written to; propagate so the queue job is retried.
+                raise
             logger.error(traceback.format_exc())
             try:
                 if action.failure_method:

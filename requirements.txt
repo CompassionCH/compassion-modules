@@ -9,6 +9,8 @@ pdf2image
 phonenumbers
 pyjwt
 pypdf
+pypng
+pyqrcode
 pyquery
 pytesseract
 pytz

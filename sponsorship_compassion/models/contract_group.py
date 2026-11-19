@@ -54,7 +54,7 @@ class ContractGroup(models.Model):
         # Push parent sponsorship for gift contracts
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
         if contract_line and contract_line.contract_id.type == "G":
-            res["contract_id"] = contract_line.sponsorship_id
+            res["contract_id"] = contract_line.sponsorship_id.id
         return res
 
     def _get_partner_for_contract(self, contract, gift_wizard=False):

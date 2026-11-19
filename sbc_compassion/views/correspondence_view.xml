@@ -48,6 +48,21 @@
         <field name="binding_type">action</field>
     </record>
 
+<!-- Server action to fail quality check -->
+    <record id="action_quality_check_failed_menu" model="ir.actions.server">
+        <field name="name">Quality Check Failed</field>
+        <field name="model_id" ref="sbc_compassion.model_correspondence" />
+        <field name="state">code</field>
+        <field name="code">
+invalid_records = records.filtered(lambda r: r.state in ('Printed and sent to ICP', 'Quality check unsuccessful') or r.direction == 'Beneficiary To Supporter')
+if invalid_records:
+    raise UserError(env._("Failed quality check action cannot be performed for this letter."))
+records.quality_check_failed()
+        </field>
+        <field name="binding_model_id" ref="sbc_compassion.model_correspondence" />
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">form</field>
+    </record>
 
     <record id="view_correspondence_form" model="ir.ui.view">
         <field name="name">correspondence.form</field>
@@ -87,14 +102,6 @@
                     <field name="report_needs_overlay" invisible="True" />
                     <div name="button_box">
                         <button
-              name="quality_check_failed"
-              type="object"
-              string="Quality Check Failed"
-              invisible="state in ('Printed and sent to ICP', 'Quality check unsuccessful') or direction == 'Beneficiary To Supporter'"
-              class="bg-warning"
-              icon="fa-times"
-            />
-                        <button
               name="spread_text_to_pages"
               type="object"
               string="Spread text to pages"
@@ -121,11 +128,27 @@
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"
               />
                             <field name="file_name" invisible="1" />
+                            <field name="overlay_source_file_name" invisible="1" />
+                            <field
+                                    name="overlay_source_pdf"
+                                    options="{'accepted_file_extensions': '.pdf'}"
+                                    invisible="direction != 'Beneficiary To Supporter'"
+                                    filename="overlay_source_file_name"
+                            />
                             <field
                 name="sponsor_letter_scan"
                 filename="file_name"
                 options="{'accepted_file_extensions': '.pdf,.zip'}"
               />
+                            <div
+                class="alert alert-warning"
+                role="alert"
+                colspan="2"
+                invisible="not overlay_source_pdf or not sponsor_letter_scan"
+              >
+                                The Final letter PDF is sent as it is: the Source PDF
+                                is ignored and no translation is composed on it.
+                            </div>
                             <field name="letter_format" />
                             <field name="template_id" required="1" />
                             <field name="direction" />

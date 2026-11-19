@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Thank You Letters",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "development_status": "Production/Stable",

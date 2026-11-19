@@ -180,11 +180,23 @@ class CorrespondenceS2bGenerator(models.Model):
                 lambda c, _sp=sponsorship: c.sponsorship_id == _sp
             )
             if letter:
+                # Remove any preview (Draft) letters so they are recreated
+                # via the create() path, which correctly handles
+                # translation/commkit dispatch. Writing the new text would keep
+                # the pages added for the previous overflow.
+                draft_letters = letter.filtered(
+                    lambda _letter: _letter.state == "Draft"
+                )
+                draft_letters.unlink()
+                letter -= draft_letters
+            if letter:
                 letter.write(vals)
             else:
                 letter = letters.create(vals)
             letters += letter
         letters.create_text_boxes()
+        for letter in letters:
+            letter.spread_text_to_pages()
         self.write({"letter_ids": [Command.set(letters.ids)]})
         if not preview_mode:
             self.write(

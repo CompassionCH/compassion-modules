@@ -36,6 +36,12 @@ class RecurringContract(models.Model):
         "transmitted to the sponsor."
     )
     exit_communication_sent = fields.Datetime()
+    exit_communication_pending = fields.Boolean(
+        compute="_compute_exit_communication_pending",
+        help="A child departure was registered but the exit communication has "
+        "not been sent to the sponsor yet. Sponsor-facing changes (invoice "
+        "cleanup, donations page) are held back until it is sent.",
+    )
 
     @api.onchange("origin_id", "correspondent_id")
     def _do_not_send_letter_to_transfer(self):
@@ -48,9 +54,39 @@ class RecurringContract(models.Model):
         else:
             self.send_introduction_letter = True
 
+    @api.depends("state", "end_reason_id", "exit_communication_sent")
+    def _compute_exit_communication_pending(self):
+        depart = self.env.ref(
+            "sponsorship_compassion.end_reason_depart", raise_if_not_found=False
+        )
+        for contract in self:
+            contract.exit_communication_pending = bool(
+                contract.state == "terminated"
+                and contract.end_reason_id == depart
+                and not contract.exit_communication_sent
+                and contract.child_id
+                and contract.type.startswith("S")
+            )
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def cancel_contract_invoices(self):
+        """Defer invoice cleanup for child departures until the exit
+        communication has been sent.
+
+        The termination itself (state, end_date, SDS sub workflow, ...) still
+        happens immediately so that the staff sees the departure. Only the
+        invoice cleanup that would lower the sponsor's amount is held back; it
+        is triggered later from ``partner.communication.job.send`` once the
+        exit communication has been sent to the sponsor.
+        """
+        deferred = self.filtered("exit_communication_pending")
+        to_clean = self - deferred
+        if to_clean:
+            super(RecurringContract, to_clean).cancel_contract_invoices()
+        return True
+
     def send_communication(self, communication, correspondent=True, both=False):
         """Sends a communication to selected sponsorships.
         :param communication: the communication config to use

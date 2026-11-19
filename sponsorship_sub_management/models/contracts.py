@@ -119,13 +119,26 @@ class RecurringContract(models.Model):
         self.parent_id._trigger_sub()
 
     def switch_contract_view(self):
+        # The button gives the view to open in form_view_ref. Use it for this
+        # action only: kept in the context, it would also be applied to the
+        # wizards opened from the new view (ex: Force activation), which crash.
+        # The web client merges the button context back into the action, so
+        # the keys must be reset, not removed.
+        view = self.env.ref(
+            self.env.context.get("form_view_ref") or "", raise_if_not_found=False
+        )
+        context = {
+            key: False if key.endswith("_view_ref") else value
+            for key, value in self.env.context.items()
+        }
         return {
             "view_mode": "form",
+            "views": [(view.id if view else False, "form")],
             "res_model": self._name,
             "type": "ir.actions.act_window",
             "target": "current",
             "res_id": self.ids[0],
-            "context": self.env.context,
+            "context": context,
         }
 
     def action_no_sub(self):

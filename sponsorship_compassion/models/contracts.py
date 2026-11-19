@@ -201,8 +201,13 @@ class SponsorshipContract(models.Model):
 
     @api.onchange("group_id")
     def _get_correct_pricelist(self):
-        if "S" in self.env.context.get("default_type", "O"):
-            self.contract_line_ids = self._get_sponsorship_standard_lines(False)
+        contract_type = self.type or self.env.context.get("default_type", "O")
+        # Child sponsorships only: a survival sponsorship (CSP) keeps the lines
+        # of its country, chosen before its payment options.
+        if contract_type in SPONSORSHIP_TYPE_LIST:
+            self.contract_line_ids = self._get_sponsorship_standard_lines(
+                contract_type in ["SC", "SWP"]
+            )
 
     @api.onchange("type")
     def _create_empty_lines_for_correspondence(self):
@@ -245,14 +250,18 @@ class SponsorshipContract(models.Model):
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
         pricelist = self.pricelist_id
-        sponsorship_price = pricelist._get_product_price(
-            sponsorship_product,
-            1.0,
-        )
-        gen_price = pricelist._get_product_price(
-            gen_product,
-            1.0,
-        )
+        if pricelist:
+            sponsorship_price = pricelist._get_product_price(
+                sponsorship_product,
+                1.0,
+            )
+            gen_price = pricelist._get_product_price(
+                gen_product,
+                1.0,
+            )
+        else:
+            sponsorship_price = sponsorship_product.list_price
+            gen_price = gen_product.list_price
         sponsorship_vals = {
             "product_id": sponsorship_product.id,
             "quantity": 0 if correspondence else 1,
@@ -291,7 +300,12 @@ class SponsorshipContract(models.Model):
                 or [False]
             )
 
-    @api.depends("invoice_line_ids")
+    @api.depends(
+        "invoice_line_ids",
+        # nb_invoices also counts the gifts of the related sponsorship
+        "contract_line_ids.sponsorship_id.invoice_line_ids.payment_state",
+        "contract_line_ids.sponsorship_id.invoice_line_ids.parent_state",
+    )
     @api.depends_context(
         "open_invoices_sponsorship_only", "open_invoices_exclude_sponsorship"
     )
@@ -311,17 +325,25 @@ class SponsorshipContract(models.Model):
                 contract.open_invoice_ids = contract.open_invoice_ids.filtered(
                     lambda i: i.invoice_category != "sponsorship"
                 )
-        gift_contracts = self.filtered(lambda c: c.type == "G")
-        for contract in gift_contracts:
-            invoices = contract.mapped(
-                "contract_line_ids.sponsorship_id.invoice_line_ids.move_id"
-            )
-            gift_invoices = invoices.filtered(
-                lambda i: i.invoice_category == "gift"
-                and i.state not in ("cancel", "draft")
-            )
-            contract.nb_invoices += len(gift_invoices)
         return res
+
+    def _get_open_invoices(self):
+        """Include the gifts of the related sponsorship for gift contracts.
+
+        Gift invoice lines are attached to the sponsorship contract (see
+        build_inv_line_data), so they never show up in the gift contract own
+        invoice_line_ids.
+        """
+        invoices = super()._get_open_invoices()
+        for contract in self.filtered(lambda c: c.type == "G"):
+            invoices |= (
+                contract.mapped(
+                    "contract_line_ids.sponsorship_id.invoice_line_ids.move_id"
+                )
+                .filtered(lambda i: i.invoice_category == "gift")
+                ._filter_open_invoices()
+            )
+        return invoices
 
     def _compute_gift_partner(self):
         for contract in self:
@@ -516,10 +538,13 @@ class SponsorshipContract(models.Model):
     @api.depends("correspondent_id")
     def _compute_is_first_sponsorship(self):
         for sponsorship in self:
+            # Sponsorships started on the same day are new together: a sponsor
+            # taking several sponsorships at once has all of them as first.
+            start = (sponsorship.start_date or sponsorship.create_date).date()
             old_sponsorships = sponsorship.correspondent_id.sponsorship_ids.filtered(
-                lambda c, sponsorship=sponsorship: c.state != "cancelled"
+                lambda c, start=start: c.state != "cancelled"
                 and c.start_date
-                and c.start_date < (sponsorship.start_date or sponsorship.create_date)
+                and c.start_date.date() < start
             )
             sponsorship.is_first_sponsorship = not old_sponsorships
 
@@ -743,19 +768,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    def open_invoices(self):
-        res = super().open_invoices()
-        if self.type == "G":
-            # Include gifts of related sponsorship for gift contracts
-            sponsorship_invoices = self.mapped(
-                "contract_line_ids.sponsorship_id.invoice_line_ids.move_id"
-            )
-            gift_invoices = sponsorship_invoices.filtered(
-                lambda i: i.invoice_category == "gift"
-            )
-            res["domain"] = [("id", "in", gift_invoices.ids)]
-        return res
-
     @api.onchange("parent_id")
     def on_change_parent_id(self):
         """If a previous sponsorship is selected, the origin should be

@@ -180,17 +180,36 @@ class ProductProduct(models.Model):
                 )
 
     def warn_admin(self):
-        responsible_product_warn_user = (
-            self.env["res.config.settings"]
+        # The setting stores partner ids; activities need their internal users.
+        partner_ids = (
+            self.env["ir.config_parameter"]
             .sudo()
-            .get_param("survival_sponsorship_warn_user_ids")
+            .get_param(
+                "survival_sponsorship_compassion.survival_sponsorship_warn_user_ids",
+                "",
+            )
         )
+        users = (
+            self.env["res.partner"]
+            .browse([int(pid) for pid in partner_ids.split(",") if pid])
+            .exists()
+            .user_ids.filtered(lambda u: not u.share)
+        )
+        if not users:
+            return
+        summary = "Product survival limit reached."
         for product in self:
-            if product.slot_used >= 80 and product.survival_sponsorship_sale:
+            if not (product.slot_used >= 80 and product.survival_sponsorship_sale):
+                continue
+            # slot_used changes with every contract line: warn each user only once.
+            warned = product.activity_ids.filtered(
+                lambda a, s=summary: a.summary == s
+            ).user_id
+            for user in users - warned:
                 product.activity_schedule(
                     date_deadline=datetime.today() + relativedelta(days=7),
-                    summary="Product survival limit reached.",
+                    summary=summary,
                     note="Some intervention should be added for the country "
                     "or the sale should stop.",
-                    user_id=responsible_product_warn_user,
+                    user_id=user.id,
                 )

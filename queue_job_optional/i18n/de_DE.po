@@ -1,0 +1,273 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* queue_job_optional
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:14+0000\n"
+"PO-Revision-Date: 2026-10-16 19:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid ""
+"Another job with same identity key is already scheduled with different "
+"arguments."
+msgstr ""
+"Ein anderer Job mit demselben Identitätsschlüssel ist bereits mit anderen "
+"Argumenten geplant."
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "Another job with same identity key is already scheduled."
+msgstr ""
+"Ein anderer Job mit demselben Identitätsschlüssel ist bereits geplant."
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "Another job(s) with same identity key is already running."
+msgstr ""
+"Ein oder mehrere andere Jobs mit demselben Identitätsschlüssel laufen "
+"bereits."
+
+#. module: queue_job_optional
+#: model:ir.model,name:queue_job_optional.model_base
+msgid "Base"
+msgstr "Basis"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__channel
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Channel"
+msgstr "Kanal"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__context
+msgid "Context"
+msgstr "Kontext"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__create_uid
+msgid "Created by"
+msgstr "Angelegt von"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__create_date
+msgid "Created on"
+msgstr "Angelegt am"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__description
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: queue_job_optional
+#: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__done
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Done"
+msgstr "Erledigt"
+
+#. module: queue_job_optional
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "ETA Today"
+msgstr "Ausführung heute"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__end_date
+msgid "End Date"
+msgstr "Enddatum"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__eta
+msgid "Execute only after"
+msgstr "Erst ausführen nach"
+
+#. module: queue_job_optional
+#: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__failed
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__id
+msgid "ID"
+msgstr "ID"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__identity_key
+msgid "Identity Key"
+msgstr "Identitätsschlüssel"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__is_predecessor_complete
+msgid "Is Predecessor Complete"
+msgstr "Vorgänger abgeschlossen"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_args
+msgid "Job Args"
+msgstr "Job-Argumente"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_function
+msgid "Job Function"
+msgstr "Job-Funktion"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__job_result
+msgid "Job Result"
+msgstr "Job-Ergebnis"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: queue_job_optional
+#: model:res.groups,name:queue_job_optional.group_queue_job_replacement_user
+msgid "Manage Queue Job Replacement"
+msgstr "Queue-Job-Ersatz verwalten"
+
+#. module: queue_job_optional
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Model"
+msgstr "Modell"
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "No related record ids are defined for this job."
+msgstr "Für diesen Job sind keine zugehörigen Datensatz-IDs definiert."
+
+#. module: queue_job_optional
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
+msgid "Open Related"
+msgstr "Zugehörigen Datensatz öffnen"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__parent_job_id
+msgid "Parent Job"
+msgstr "Übergeordneter Job"
+
+#. module: queue_job_optional
+#: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__pending
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Pending"
+msgstr "Anstehend"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__priority
+msgid "Priority"
+msgstr "Priorität"
+
+#. module: queue_job_optional
+#: model:ir.model.fields.selection,name:queue_job_optional.selection__queue_job_replacement__state__processing
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "Processing"
+msgstr "Verarbeite"
+
+#. module: queue_job_optional
+#: model:ir.actions.server,name:queue_job_optional.ir_cron_queue_job_replacement_process_ir_actions_server
+msgid "Queue Job Replacement: Process Jobs"
+msgstr "Queue-Job-Ersatz: Jobs verarbeiten"
+
+#. module: queue_job_optional
+#: model:ir.actions.act_window,name:queue_job_optional.queue_job_replacement_action
+#: model:ir.ui.menu,name:queue_job_optional.queue_job_replacement_menu_list
+msgid "Queue Job Replacements"
+msgstr "Ersatz-Queue-Jobs"
+
+#. module: queue_job_optional
+#: model:ir.ui.menu,name:queue_job_optional.queue_job_replacement_menu_root
+msgid "Queue Jobs"
+msgstr "Queue-Jobs"
+
+#. module: queue_job_optional
+#: model:ir.model,name:queue_job_optional.model_queue_job_replacement
+msgid "Queued Job for later execution"
+msgstr "Für später eingereihter Job"
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "Related record ids are invalid."
+msgstr "Die zugehörigen Datensatz-IDs sind ungültig."
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "Related records"
+msgstr "Zugehörige Datensätze"
+
+#. module: queue_job_optional
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
+msgid "Requeue"
+msgstr "Erneut einreihen"
+
+#. module: queue_job_optional
+#: model:ir.actions.server,name:queue_job_optional.queue_job_replacement_action_requeue_selected
+msgid "Requeue Jobs"
+msgstr "Jobs erneut einreihen"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__res_ids
+msgid "Res"
+msgstr "Res"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__res_model
+msgid "Res Model"
+msgstr "Res-Modell"
+
+#. module: queue_job_optional
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_form
+msgid "Set Done"
+msgstr "Als erledigt markieren"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__start_date
+msgid "Start Date"
+msgstr "Startdatum"
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__state
+#: model_terms:ir.ui.view,arch_db:queue_job_optional.queue_job_replacement_view_search
+msgid "State"
+msgstr "Status"
+
+#. module: queue_job_optional
+#. odoo-python
+#: code:addons/queue_job_optional/models/queue_job_replacement.py:0
+msgid "Unsupported operator for is_predecessor_complete search."
+msgstr ""
+"Nicht unterstützter Operator für die Suche nach is_predecessor_complete."
+
+#. module: queue_job_optional
+#: model:ir.model.fields,field_description:queue_job_optional.field_queue_job_replacement__user_id
+msgid "User"
+msgstr "Benutzer"

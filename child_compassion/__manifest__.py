@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Children",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.1.3",
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -42,7 +42,9 @@
     ],
     "external_dependencies": {
         "python": [
+            "pyqrcode",
             "pyquery",
+            "pypng",
             "pytz",
             "timezonefinder",
             "wbgapi",

@@ -10,7 +10,9 @@
 import logging
 import traceback
 from datetime import date
+from urllib.parse import urlencode
 
+import pyqrcode
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
@@ -223,6 +225,10 @@ class CompassionChild(models.Model):
     # Just for migration
     delegated_comment = fields.Text()
 
+    qr_code_data = fields.Binary(
+        compute="_compute_qr_code", help="QR code for sponsoring the child"
+    )
+
     _sql_constraints = [
         ("compass_id", "unique(compass_id)", "The child already exists in database."),
         ("global_id", "unique(global_id)", "The child already exists in database."),
@@ -283,6 +289,29 @@ class CompassionChild(models.Model):
         for child in self:
             if child.pictures_ids:
                 child.fullshot = child.pictures_ids.sorted()[:1].fullshot
+            else:
+                child.fullshot = False
+
+    @api.depends_context("qr_utm_medium", "qr_utm_source", "qr_utm_campaign")
+    def _compute_qr_code(self):
+        """QR code linking to the child's online sponsorship page.
+
+        UTMs can be overridden through the context keys ``qr_utm_medium``,
+        ``qr_utm_source`` and ``qr_utm_campaign``.
+        """
+        utm_params = {
+            "utm_medium": self.env.context.get("qr_utm_medium") or "childpack_qr",
+            "utm_source": self.env.context.get("qr_utm_source") or "hold_campaign",
+        }
+        utm_campaign = self.env.context.get("qr_utm_campaign")
+        if utm_campaign:
+            utm_params["utm_campaign"] = utm_campaign
+        query = urlencode(utm_params)
+        for child in self:
+            base_url = child.get_base_url().rstrip("/")
+            url = f"{base_url}/my2/new-sponsorship/{child.id}?{query}"
+            qr = pyqrcode.create(url)
+            child.qr_code_data = qr.png_as_base64_str(15, (0, 84, 166))
 
     @api.model
     def _available_states(self):
@@ -310,7 +339,7 @@ class CompassionChild(models.Model):
             )
             child.birthday_dm = child.get_date("birthdate", "MM-dd")
 
-    @api.constrains("state", "hold_type")
+    @api.constrains("state")
     def check_state(self):
         # child state vs hold type validity mapping
         consignment_holds = [
@@ -509,21 +538,28 @@ class CompassionChild(models.Model):
         """
         for child in self:
             # last_picture return false is there is no new pictures
-            if child._get_last_pictures() and len(child.pictures_ids) > 1:
-                pictures = child.pictures_ids.sorted()
-                today = date.today()
-                last_photo = pictures[1].date
-                new_photo = pictures[0].date
-                diff_pic = relativedelta(new_photo, last_photo)
-                diff_today = relativedelta(today, new_photo)
+            if child._get_last_pictures():
+                child._check_new_photo()
 
-                if (
-                    (diff_pic.months >= 6 or diff_pic.years > 0)
-                    and (diff_today.months <= 6 and diff_today.years == 0)
-                    and not pictures[0].funct_new_photo_called
-                ):
-                    child.new_photo()
-                    pictures[0].funct_new_photo_called = True
+    def _check_new_photo(self):
+        """Call new_photo() for the children whose last picture is a new one,
+        without fetching any picture (see update_child_pictures).
+        """
+        today = date.today()
+        for child in self.filtered(lambda c: len(c.pictures_ids) > 1):
+            pictures = child.pictures_ids.sorted()
+            last_photo = pictures[1].date
+            new_photo = pictures[0].date
+            diff_pic = relativedelta(new_photo, last_photo)
+            diff_today = relativedelta(today, new_photo)
+
+            if (
+                (diff_pic.months >= 6 or diff_pic.years > 0)
+                and (diff_today.months <= 6 and diff_today.years == 0)
+                and not pictures[0].funct_new_photo_called
+            ):
+                child.new_photo()
+                pictures[0].funct_new_photo_called = True
 
     # Lifecycle methods
     ###################

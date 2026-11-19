@@ -61,21 +61,6 @@ class Partner(models.Model):
         res = portal.action_apply()
         return res
 
-    def _compute_opportunity_count(self):
-        res = super()._compute_opportunity_count()
-        for partner in self:
-            operator = "child_of" if partner.is_company else "="
-            # Using partner.ids[0] is a trick to avoid error with child_of
-            # when partner has a temporary NewId
-            partner.opportunity_count += self.env["crm.lead"].search_count(
-                [
-                    ("partner_id", operator, partner.ids[0]),
-                    ("type", "=", "opportunity"),
-                    ("active", "=", False),
-                ]
-            )
-        return res
-
     def log_call(self):
         """Prepare crm.phonecall creation."""
         self.ensure_one()

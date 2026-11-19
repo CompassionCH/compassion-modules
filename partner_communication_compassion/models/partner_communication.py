@@ -10,13 +10,19 @@
 import base64
 import logging
 from io import BytesIO
+from zipfile import ZipFile
 
+from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import MissingError
 
+from odoo.addons.sbc_compassion.controllers.b2s_image import _fill_archive
+
 _logger = logging.getLogger(__name__)
+
+LETTERS_ZIP = "letters.zip"
 
 
 class PartnerCommunication(models.Model):
@@ -38,6 +44,14 @@ class PartnerCommunication(models.Model):
         if self.send_mode == "physical":
             for letter in letters:
                 try:
+                    pages = letter.page_ids.filtered(
+                        lambda p: p.original_page_url or p.final_page_url
+                    )
+                    # Without a stored PDF, the pages are composed on their images
+                    if not letter.sponsor_letter_scan and not all(
+                        page.fetch_image() for page in pages
+                    ):
+                        raise MissingError(_("Letter image could not be loaded"))
                     attachments[letter.file_name] = [
                         report,
                         self._convert_pdf(letter.get_pdf()),
@@ -51,10 +65,65 @@ class PartnerCommunication(models.Model):
                         subject=_("Missing letter"),
                     )
                     continue
-        else:
-            # Attach directly a zip in the letters
-            letters.attach_zip()
         return attachments
+
+    def get_letters_zip_url(self):
+        """Download link for a zip of all letters of the communication."""
+        self.ensure_one()
+        letter = self.get_objects()[:1]
+        return f"{self.get_base_url()}/b2s_image/letters?letter_uuid={letter.uuid}"
+
+    def _send_mail_asynchronous(self):
+        if self.config_id.model == "correspondence" and len(self.get_objects()) > 5:
+            if self.env.context.get("queue_job__no_delay"):
+                # Zipping the letters takes minutes: never in a web request
+                return self.with_context(queue_job__no_delay=False).with_delay_sh(
+                    "_send_mail_asynchronous",
+                    channel="root.partner_communication",
+                    priority=50,
+                    identity_key=f"{self._name}._send_mail.{self.id}",
+                )
+            self._store_letters_zip()
+        return super()._send_mail_asynchronous()
+
+    def _store_letters_zip(self):
+        """Prepare the zip linked in the e-mail: the letters are rendered on the fly,
+        too slow to do it when the sponsor clicks the link."""
+        self._get_letters_zip().unlink()
+        letters = self.get_objects()
+        buffer = BytesIO()
+        _fill_archive(buffer, letters)
+        if len(ZipFile(buffer).namelist()) < len(letters):
+            # A letter is not available yet: the link builds the zip when clicked
+            _logger.warning("Letters zip of communication %s is incomplete", self.id)
+            return
+        self.env["ir.attachment"].create(
+            {
+                "name": LETTERS_ZIP,
+                "res_model": self._name,
+                "res_id": self.id,
+                "raw": buffer.getvalue(),
+            }
+        )
+
+    def _get_letters_zip(self):
+        return self.env["ir.attachment"].search(
+            [
+                ("res_model", "=", self._name),
+                ("res_id", "=", self.id),
+                ("name", "=", LETTERS_ZIP),
+            ]
+        )
+
+    @api.model
+    def _cron_delete_letters_zip(self):
+        self.env["ir.attachment"].search(
+            [
+                ("res_model", "=", self._name),
+                ("name", "=", LETTERS_ZIP),
+                ("create_date", "<", fields.Datetime.now() - relativedelta(days=90)),
+            ]
+        ).unlink()
 
     def final_letter_attachment(self):
         """Include PDF of final letter if any exists. Remove any other correspondence
@@ -156,32 +225,75 @@ class PartnerCommunication(models.Model):
             base64.encodebytes(report_str.encode())
         return output
 
+    def _biennial_sponsorships(self):
+        """The sponsorships flagged for a printed picture by these biennial
+        communications: the sponsorships of each child with the job's sponsor
+        (T3178). child.new_photo() flags the child's active sponsorship, whose
+        correspondent is the sponsor the job is addressed to; it may have
+        ended since. The child's other sponsorships keep their flag: it
+        belongs to another sponsor's picture (e.g. the child was sponsored
+        again after the old sponsor's biennial was prepared)."""
+        sponsorships = self.env["recurring.contract"]
+        for job in self:
+            sponsorships |= job.get_objects().sponsorship_ids.filtered(
+                lambda s, sponsor=job.partner_id: s.correspondent_id == sponsor
+            )
+        return sponsorships
+
     def send(self):
         res = super().send()
         biennial = self.env.ref("partner_communication_compassion.biennial")
         biennials = self.filtered(
             lambda j: j.state == "done" and j.config_id == biennial
         )
-        if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
-        exit_confs = self.env.ref(
-            "partner_communication_compassion.lifecycle_child_planned_exit"
-        ) + self.env.ref(
-            "partner_communication_compassion.lifecycle_child_unplanned_exit"
-        )
-        exits = self.filtered(lambda j: j.state == "done" and j.config_id in exit_confs)
-        if exits:
-            exits.get_objects().write(
-                {"exit_communication_sent": fields.Datetime.now()}
-            )
+        biennials._biennial_sponsorships().write({"new_picture": False})
         return res
 
     def cancel(self):
         res = super().cancel()
         biennial = self.env.ref("partner_communication_compassion.biennial")
         biennials = self.filtered(lambda j: j.config_id == biennial)
-        if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
+        biennials._biennial_sponsorships().write({"new_picture": False})
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
+        return res
+
+    def _exit_communication_configs(self):
+        """Communication configs that notify the sponsor of a child's exit."""
+        return self.env.ref(
+            "partner_communication_compassion.lifecycle_child_planned_exit"
+        ) + self.env.ref(
+            "partner_communication_compassion.lifecycle_child_unplanned_exit"
+        )
+
+    def _finalize_exit_communications(self):
+        """Finalize these resolved (sent or canceled) exit communications:
+        record them as sent on their contracts, and run the deferred invoice
+        cleanup on the ones already terminated.
+        """
+        if not self:
+            return
+        contracts = self.get_objects()
+        # Cleanup only the terminated departures still waiting for it.
+        to_clean = contracts.filtered("exit_communication_pending")
+        # Record contracts not yet stamped (incl. ones still active, so a later
+        # termination does not re-flag them); skip already-recorded ones to keep
+        # the original communication date on a re-send.
+        contracts.filtered(lambda c: not c.exit_communication_sent).write(
+            {"exit_communication_sent": fields.Datetime.now()}
+        )
+        if to_clean:
+            # Never inside the send transaction: a failing cleanup would roll
+            # back a mail that has already left.
+            to_clean.with_context(queue_job__no_delay=False).cancel_contract_invoices()
+
+    def _job_sent(self, send_mode):
+        res = super()._job_sent(send_mode)
+        # Finalize (only) exit communications now that they have actually been sent.
+        exit_confs = self._exit_communication_configs()
+        self.filtered(
+            lambda j: j.config_id in exit_confs
+        )._finalize_exit_communications()
         return res

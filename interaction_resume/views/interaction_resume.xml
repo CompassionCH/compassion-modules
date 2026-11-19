@@ -7,9 +7,9 @@
             <list
                     js_class="button_in_tree"
                     decoration-muted="communication_type == 'Mass'"
-                    decoration-info="communication_type in ['Phone', 'SMS']"
-                    decoration-danger="direction == 'in' and communication_type not in ['Mass', 'Phone', 'SMS']"
-                    decoration-success="direction == 'out' and communication_type not in ['Mass', 'Phone', 'SMS']"
+                    decoration-danger="direction == 'in' and communication_type != 'Mass'"
+                    decoration-info="direction == 'out' and communication_type in ['SMS', 'Phone']"
+                    decoration-success="direction == 'out' and communication_type in ['Paper', 'Email', 'Other', 'Support']"
                     edit="0"
                     create="0"
                     delete="0"

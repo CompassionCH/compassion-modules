@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Survival Sponsorships",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "summary": "New type for the sponsorships that add the possibility "
     "to sponsor a country in the survival program (CSP).",
     "category": "Other",
