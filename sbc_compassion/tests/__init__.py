@@ -11,3 +11,4 @@
 from . import test_sbc_compassion
 from . import test_letter_language_verdict
 from . import test_correspondence_template
+from . import test_compassion_moment

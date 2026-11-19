@@ -67,7 +67,7 @@
                 </t>
             </field>
         </record>
-        <!-- New letter: Compassion Moment (GMC template MX-C-1S10) -->
+        <!-- New letter: Compassion Moment (GMC template XX-C-1S10-n or XX-G-1S10-n) -->
         <record id="new_letter_compassion_moment" model="mail.template">
             <field name="name">B2S Compassion Moment</field>
             <field
