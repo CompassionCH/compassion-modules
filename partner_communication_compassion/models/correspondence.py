@@ -146,7 +146,9 @@ class Correspondence(models.Model):
             letters = eligible_letters.filtered(
                 lambda letter, _partner=partner: letter.partner_id == _partner
             )
-            is_first = eligible_letters.filtered(
+            # Only the letters of this partner: a first letter in the batch
+            # must not change the communication of the other partners (T3477)
+            is_first = letters.filtered(
                 lambda letter: letter.communication_type_ids
                 == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
             )
