@@ -225,24 +225,35 @@ class PartnerCommunication(models.Model):
             base64.encodebytes(report_str.encode())
         return output
 
+    def _biennial_sponsorships(self):
+        """The sponsorships flagged for a printed picture by these biennial
+        communications: the sponsorships of each child with the job's sponsor
+        (T3178). child.new_photo() flags the child's active sponsorship, whose
+        correspondent is the sponsor the job is addressed to; it may have
+        ended since. The child's other sponsorships keep their flag: it
+        belongs to another sponsor's picture (e.g. the child was sponsored
+        again after the old sponsor's biennial was prepared)."""
+        sponsorships = self.env["recurring.contract"]
+        for job in self:
+            sponsorships |= job.get_objects().sponsorship_ids.filtered(
+                lambda s, sponsor=job.partner_id: s.correspondent_id == sponsor
+            )
+        return sponsorships
+
     def send(self):
         res = super().send()
         biennial = self.env.ref("partner_communication_compassion.biennial")
         biennials = self.filtered(
             lambda j: j.state == "done" and j.config_id == biennial
         )
-        if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
+        biennials._biennial_sponsorships().write({"new_picture": False})
         return res
 
     def cancel(self):
         res = super().cancel()
         biennial = self.env.ref("partner_communication_compassion.biennial")
         biennials = self.filtered(lambda j: j.config_id == biennial)
-        if biennials:
-            for child in biennials.get_objects():
-                child.sponsorship_ids[0].new_picture = False
+        biennials._biennial_sponsorships().write({"new_picture": False})
         exit_confs = self._exit_communication_configs()
         self.filtered(
             lambda j: j.config_id in exit_confs
