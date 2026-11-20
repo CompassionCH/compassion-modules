@@ -1,0 +1,298 @@
+##############################################################################
+#
+#    Copyright (C) 2026 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+from datetime import datetime, timedelta
+
+from odoo.tests import TransactionCase, tagged
+
+
+@tagged("post_install", "-at_install")
+class TestEventCampaign(TransactionCase):
+    """An event is a source, or a campaign for peer-to-peer fundraising, given
+    to its origin and to its sponsorships."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Default settings: every event type gets an account in the plan Events
+        params = cls.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", False)
+        params.set_param("crm_compassion.analytic_event_plan_id", False)
+        cls.partner = cls.env["res.partner"].create(
+            {"name": "Event campaign sponsor", "country_id": cls.env.ref("base.ch").id}
+        )
+        cls.product = cls.env["product.product"].create(
+            {"name": "Event campaign donation", "type": "service", "list_price": 40}
+        )
+        cls.pricelist = cls.env["product.pricelist"].create(
+            {"name": "Event campaign pricelist"}
+        )
+        cls.group = cls.env["recurring.contract.group"].create(
+            {
+                "partner_id": cls.partner.id,
+                "advance_billing_months": 1,
+                "recurring_value": 1,
+                "recurring_unit": "month",
+            }
+        )
+
+    def _event(self, **vals):
+        now = datetime.now()
+        return self.env["crm.event.compassion"].create(
+            {
+                "name": "Campaign test concert",
+                "type": "concert",
+                "start_date": now,
+                "end_date": now + timedelta(days=1),
+                "hold_start_date": now.date(),
+                "user_id": self.env.uid,
+                **vals,
+            }
+        )
+
+    def _contract(self, origin, **vals):
+        return self.env["recurring.contract"].create(
+            {
+                "type": "O",
+                "partner_id": self.partner.id,
+                "group_id": self.group.id,
+                "pricelist_id": self.pricelist.id,
+                "origin_id": origin.id,
+                "contract_line_ids": [
+                    (0, 0, {"product_id": self.product.id, "amount": 40.0})
+                ],
+                **vals,
+            }
+        )
+
+    def test_event_is_a_source(self):
+        event = self._event()
+        self.assertEqual(event.source_id.name, event.full_name)
+        self.assertFalse(event.campaign_id)
+        self.assertEqual(event.origin_id.source_id, event.source_id)
+        contract = self._contract(event.origin_id)
+        self.assertEqual(contract.source_id, event.source_id)
+
+    def test_event_from_opportunity_takes_its_campaign(self):
+        campaign = self.env["utm.campaign"].create({"title": "Speaker tour 2023"})
+        lead = self.env["crm.lead"].create(
+            {"name": "Tour evening in a church", "campaign_id": campaign.id}
+        )
+        action = lead.create_event()
+        now = datetime.now()
+        event = (
+            self.env["crm.event.compassion"]
+            .with_context(**action["context"])
+            .create(
+                {
+                    "type": "presentation",
+                    "start_date": now,
+                    "end_date": now + timedelta(days=1),
+                    "hold_start_date": now.date(),
+                }
+            )
+        )
+        self.assertEqual(event.lead_ids, lead)
+        self.assertEqual(event.campaign_id, campaign)
+        self.assertEqual(event.source_id.name, event.full_name)
+        self.assertEqual(event.origin_id.campaign_id, campaign)
+        self.assertEqual(event.origin_id.source_id, event.source_id)
+        contract = self._contract(event.origin_id)
+        self.assertEqual(contract.campaign_id, campaign)
+        self.assertEqual(contract.source_id, event.source_id)
+
+    def test_peer_to_peer_event_is_a_campaign(self):
+        event = self._event(type="sport", name="Campaign test run")
+        self.assertEqual(event.campaign_id.title, event.full_name)
+        self.assertFalse(event.source_id)
+        self.assertEqual(event.origin_id.campaign_id, event.campaign_id)
+
+    def test_event_keeps_given_campaign(self):
+        tour = self.env["utm.campaign"].create({"title": "Campaign test tour"})
+        event = self._event(campaign_id=tour.id)
+        self.assertEqual(event.campaign_id, tour)
+        self.assertEqual(event.origin_id.campaign_id, tour)
+        self.assertEqual(self._contract(event.origin_id).campaign_id, tour)
+
+    def test_change_of_event_campaign(self):
+        event = self._event()
+        follower = self._contract(event.origin_id)
+        own_campaign = self.env["utm.campaign"].create({"title": "Campaign test own"})
+        own = self._contract(event.origin_id, campaign_id=own_campaign.id)
+        tour = self.env["utm.campaign"].create({"title": "Campaign test tour"})
+        event.campaign_id = tour
+        self.assertEqual(event.origin_id.campaign_id, tour)
+        self.assertEqual(follower.campaign_id, tour)
+        self.assertEqual(own.campaign_id, own_campaign)
+
+    def test_utm_follows_event_name(self):
+        event = self._event()
+        event.name = "Campaign test gospel concert"
+        self.assertEqual(event.source_id.name, event.full_name)
+        # A source named otherwise keeps its name
+        event.source_id.name = "Campaign test gospel night"
+        event.name = "Campaign test gospel evening"
+        self.assertEqual(event.source_id.name, "Campaign test gospel night")
+        run = self._event(type="sport", name="Campaign test run")
+        run.name = "Campaign test relay"
+        self.assertEqual(run.campaign_id.title, run.full_name)
+
+    def test_copy_gets_own_source(self):
+        event = self._event()
+        copy = event.copy()
+        self.assertTrue(copy.source_id)
+        self.assertNotEqual(copy.source_id, event.source_id)
+
+    def _invoice_line(self, line_vals=None, **move_vals):
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.product.id,
+                            "price_unit": 40,
+                            **(line_vals or {}),
+                        },
+                    )
+                ],
+                **move_vals,
+            }
+        )
+        return invoice.invoice_line_ids
+
+    def test_line_event_from_contract_origin(self):
+        event = self._event()
+        contract = self._contract(event.origin_id)
+        line = self._invoice_line({"contract_id": contract.id})
+        self.assertEqual(line.event_id, event)
+
+    def test_line_event_from_invoice_source(self):
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        line = self._invoice_line(source_id=event.source_id.id)
+        self.assertEqual(line.event_id, event)
+        run = self._event(type="sport", name="Campaign test run")
+        line = self._invoice_line(campaign_id=run.campaign_id.id)
+        self.assertEqual(line.event_id, run)
+
+    def test_line_event_when_invoice_source_set_later(self):
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        line = self._invoice_line()
+        self.assertFalse(line.event_id)
+        line.move_id.source_id = event.source_id
+        self.assertEqual(line.event_id, event)
+
+    def _pay(self, invoice):
+        invoice.action_post()
+        self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=invoice.ids
+        ).create({})._create_payments()
+        self.assertEqual(invoice.payment_state, "paid")
+
+    def test_event_income(self):
+        """Income of an event: its paid invoice lines without sponsorship."""
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        donation = self._invoice_line(source_id=event.source_id.id)
+        unpaid = self._invoice_line({"price_unit": 15}, source_id=event.source_id.id)
+        unpaid.move_id.action_post()
+        sponsorship = self._invoice_line(
+            {"contract_id": self._contract(event.origin_id).id, "price_unit": 30}
+        )
+        self.assertEqual(sponsorship.event_id, event)
+        self.assertEqual(event.total_income, 0.0)
+        self._pay(donation.move_id)
+        self._pay(sponsorship.move_id)
+        # every line of the invoices is linked to the event (receivable too)
+        self.assertLessEqual(donation | unpaid | sponsorship, event.invoice_line_ids)
+        self.assertEqual(event.income_line_ids, donation.move_id.line_ids)
+        self.assertEqual(event.total_income, 40.0)
+        self.assertEqual(event.balance, 40.0 - event.total_expense)
+
+    def test_change_of_type_sets_utm(self):
+        concert = self._event(name="Campaign test concert to run")
+        self.assertFalse(concert.campaign_id)
+        concert.type = "sport"
+        self.assertEqual(concert.campaign_id.title, concert.full_name)
+        self.assertEqual(concert.origin_id.campaign_id, concert.campaign_id)
+        run = self._event(type="sport", name="Campaign test run to concert")
+        self.assertFalse(run.source_id)
+        run.type = "concert"
+        self.assertEqual(run.source_id.name, run.full_name)
+        self.assertEqual(run.origin_id.source_id, run.source_id)
+
+    def test_blocked_plan_move_keeps_event_editable(self):
+        """When Odoo refuses to move the account of an event to its plan (a line
+        already holds another account of that plan), the event is still saved
+        and the account stays in its plan."""
+        event = self._event()
+        events_plan = self.env.ref("crm_compassion.plan_events")
+        legacy = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test legacy"}
+        )
+        account = event.analytic_id
+        account.plan_id = legacy
+        other = self.env["account.analytic.account"].create(
+            {"name": "Campaign test other event", "plan_id": events_plan.id}
+        )
+        self.env["account.analytic.line"].create(
+            {
+                "name": "Campaign test shared line",
+                "amount": -10,
+                legacy._column_name(): account.id,
+                events_plan._column_name(): other.id,
+            }
+        )
+        event.name = "Campaign test concert renamed"
+        self.assertEqual(event.name, "Campaign test concert renamed")
+        self.assertIn(account.plan_id, legacy | events_plan)
+
+    def test_analytic_plan_settings(self):
+        self.assertEqual(
+            self._event().analytic_id.plan_id,
+            self.env.ref("crm_compassion.plan_events"),
+        )
+        trips = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test trips"}
+        )
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", "sport, tour")
+        params.set_param("crm_compassion.analytic_event_plan_id", str(trips.id))
+        trip = self._event(type="tour", name="Campaign test trip")
+        self.assertEqual(trip.analytic_id.plan_id, trips)
+        # an account migrated in another plan moves to the plan of its type
+        trip.analytic_id.plan_id = self.env["account.analytic.plan"].create(
+            {"name": "Campaign test legacy"}
+        )
+        trip.name = "Campaign test trip renamed"
+        self.assertEqual(trip.analytic_id.plan_id, trips)
+        concert = self._event(name="Campaign test gospel")
+        self.assertFalse(concert.analytic_id)
+        self.assertTrue(concert.origin_id)
+        concert.name = "Campaign test gospel renamed"
+
+    def test_track_expenses(self):
+        plan = self.env["account.analytic.plan"].create({"name": "Campaign test costs"})
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", "sport")
+        params.set_param("sponsorship_compassion.cost_analytic_plan_id", str(plan.id))
+        concert = self._event(name="Campaign test costly concert")
+        self.assertFalse(concert.analytic_id)
+        concert.action_track_expenses()
+        account = concert.analytic_id
+        self.assertEqual(account.plan_id, plan)
+        self.assertEqual(account.source_id, concert.source_id)
+        self.assertEqual(account.event_id, concert)

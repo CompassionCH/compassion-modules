@@ -20,6 +20,10 @@ class TestEventAnalytic(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Default settings: every event type gets an account in the plan Events
+        params = cls.env["ir.config_parameter"].sudo()
+        params.set_param("crm_compassion.analytic_event_types", False)
+        params.set_param("crm_compassion.analytic_event_plan_id", False)
         now = datetime.now()
         cls.event = cls.env["crm.event.compassion"].create(
             {

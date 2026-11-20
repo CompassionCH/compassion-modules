@@ -13,4 +13,5 @@ from . import (
     test_sponsorship_impact,
     test_project_compassion,
     test_contract_lines_onchange,
+    test_origin_campaign,
 )
