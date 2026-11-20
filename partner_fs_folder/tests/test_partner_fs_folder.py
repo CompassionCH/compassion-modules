@@ -257,3 +257,26 @@ class TestPartnerFsFolder(TransactionCase):
             self.contact.document_folder.ref,
             f"{UNASSIGNED_FOLDER}/6001 - Beta AG/5002 - Jean Dupont",
         )
+
+    def test_contact_left_company_before_company_move(self):
+        """A contact detached while the company move is pending keeps its folder.
+
+        The company job moves the folder of the former contact with the company
+        folder: its link must follow, so that its own job can then move it.
+        """
+        self.contact.action_create_document_folder()
+        self.contact.document_folder.fs.pipe_file("cv.txt", b"contact")
+        delayed = dict(queue_job__no_delay=False)
+        self.company.with_context(**delayed).user_id = self.sales_2
+        self.contact.with_context(**delayed).parent_id = False
+        # the jobs run in this order
+        self.company._move_document_folder()
+        self.assertEqual(
+            self.contact.document_folder.ref,
+            "Bob Sales/5001 - Acme SA/5002 - Jean Dupont",
+        )
+        self.contact._move_document_folder()
+        self.assertEqual(
+            self.contact.document_folder.ref, "Bob Sales/5002 - Jean Dupont"
+        )
+        self.assertEqual(self.contact.document_folder.fs.cat_file("cv.txt"), b"contact")

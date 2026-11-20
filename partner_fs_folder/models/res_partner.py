@@ -168,21 +168,34 @@ class ResPartner(models.Model):
         return True
 
     def _update_document_subfolder_links(self, old_path, new_path, storage_code, fs):
-        """Update the links of the contact folders moved with this folder."""
+        """Update the links of all the folders moved with this folder.
+
+        They are found by path, not by company: a contact may have left the
+        company before the job moving the company folder ran, its folder was
+        moved all the same.
+        """
         self.ensure_one()
         adapter = self.env["fs.folder.field.value.adapter"]
-        prefix = f"{old_path}/"
-        contacts = (
+        prefix = adapter._created_folder_name_to_stored_value(
+            f"{old_path}/", storage_code, fs
+        )
+        self.flush_model(["document_folder"])
+        # left() rather than LIKE: "_" (as in _Unassigned) is a LIKE wildcard
+        self.env.cr.execute(
+            "SELECT id FROM res_partner "
+            "WHERE left(document_folder, length(%s)) = %s AND id != %s",
+            (prefix, prefix, self.id),
+        )
+        partners = (
             self.sudo()
             .with_context(active_test=False)
-            .search([("id", "child_of", self.id), ("id", "!=", self.id)])
+            .browse([row[0] for row in self.env.cr.fetchall()])
         )
-        for contact in contacts.filtered("document_folder"):
-            value = contact.document_folder
-            if value.storage_code == storage_code and value.ref.startswith(prefix):
-                contact.document_folder = adapter._created_folder_name_to_stored_value(
-                    new_path + value.ref[len(old_path) :], storage_code, fs
-                )
+        for partner in partners:
+            ref = partner.document_folder.ref
+            partner.document_folder = adapter._created_folder_name_to_stored_value(
+                new_path + ref[len(old_path) :], storage_code, fs
+            )
 
     @api.model
     def _move_document_folder_back(self, storage_code, path, original_path):
