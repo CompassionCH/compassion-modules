@@ -1,0 +1,34 @@
+name: Label on-stage
+
+on:
+  push:
+    branches:
+      - stage
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add the on-stage label to open PRs pushed on stage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          shas="$AFTER"
+          if [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            shas=$(gh api --paginate "repos/$REPO/compare/$BEFORE...$AFTER" \
+              --jq '.commits[].sha') || shas="$AFTER"
+          fi
+          for sha in $shas; do
+            gh api "repos/$REPO/commits/$sha/pulls" \
+              --jq '.[] | select(.state == "open") | .number'
+          done | sort -un | while read -r pr; do
+            echo "Adding on-stage to PR #$pr"
+            gh api -X POST "repos/$REPO/issues/$pr/labels" -f "labels[]=on-stage"
+          done
