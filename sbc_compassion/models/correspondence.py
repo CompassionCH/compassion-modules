@@ -32,8 +32,10 @@ from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
-# Template sent by GMC for the Compassion Moment B2S letters
-COMPASSION_MOMENT_TEMPLATE = "MX-C-1S10"
+# Part of the GMC template name of the Compassion Moment B2S letters. GMC puts
+# the country before and a version after, in two families: e.g. "UG-C-1S10-2"
+# and "TG-G-1S10-1". Every 1S10 letter is a Compassion Moment (T3477).
+COMPASSION_MOMENT_TEMPLATE = "-1S10-"
 
 ROWS_PER_ATTACHMENT_PAGE = 2
 
@@ -225,8 +227,8 @@ class Correspondence(models.Model):
     )
     template_id = fields.Many2one("correspondence.template", "Template")
     is_compassion_moment = fields.Boolean(
-        help="The B2S letter comes from GMC with the Compassion Moment template "
-        f"{COMPASSION_MOMENT_TEMPLATE}",
+        help="The B2S letter comes from GMC with a Compassion Moment template "
+        f"(its name contains {COMPASSION_MOMENT_TEMPLATE}, e.g. UG-C-1S10-2)",
     )
 
     # 4. Additional information
@@ -1109,9 +1111,10 @@ class Correspondence(models.Model):
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
-        template_name = json.pop("Template", "CH-A-6S11-1")
+        # GMC can send the key empty: fall back to our template like a missing key
+        template_name = json.pop("Template", None) or "CH-A-6S11-1"
         odoo_data = super().json_to_data(json, mapping_name)
-        odoo_data["is_compassion_moment"] = template_name == COMPASSION_MOMENT_TEMPLATE
+        odoo_data["is_compassion_moment"] = COMPASSION_MOMENT_TEMPLATE in template_name
 
         if "-1S10-" in template_name:
             # Stationery without translation area on page 2
