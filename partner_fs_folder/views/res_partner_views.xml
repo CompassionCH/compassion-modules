@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Compassion CH (http://www.compassion.ch)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_partner_form_document_folder" model="ir.ui.view">
+        <field name="name">res.partner.form.document.folder</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Documents" name="document_folder">
+                    <button
+                        name="action_create_document_folder"
+                        type="object"
+                        string="Create Documents Folder"
+                        class="btn-secondary"
+                        invisible="document_folder"
+                    />
+                    <field name="document_folder" nolabel="1" />
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
