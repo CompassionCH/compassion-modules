@@ -25,6 +25,8 @@
                     <field name="json_name" />
                     <field name="odoo_field" />
                     <field name="relational_field" invisible="1" />
+                    <field name="relational_comodel_name" invisible="1" />
+                    <field name="relational_ttype" invisible="1" />
                     <field
             name="search_relational_record"
             invisible="not relational_field and not sub_mapping_id"
@@ -32,6 +34,23 @@
                     <field
             name="search_key"
             invisible="not search_relational_record and not sub_mapping_id"
+          />
+                    <field
+            name="relational_domain_restrict"
+            widget="domain"
+            options="{'model': 'relational_comodel_name'}"
+            invisible="not search_relational_record and not sub_mapping_id"
+          />
+                    <field
+            name="many2one_multiple_match_policy"
+            invisible="relational_ttype != 'many2one' or (not search_relational_record and not sub_mapping_id)"
+          />
+                    <button
+            name="action_check_duplicate_matches"
+            type="object"
+            string="Check for duplicates"
+            class="btn-secondary"
+            invisible="relational_ttype != 'many2one' or not search_relational_record"
           />
                     <field
             name="allow_null"
@@ -72,9 +91,51 @@
                 <field name="json_name" />
                 <field name="odoo_field" />
                 <field name="sub_mapping_id" />
+                <field name="relational_domain_restrict" optional="hide" />
+                <field name="many2one_multiple_match_policy" optional="hide" />
             </list>
         </field>
     </record>
+    <record id="view_field_to_json_many2one_review_list" model="ir.ui.view">
+        <field name="name">field.to.json.many2one.review.list</field>
+        <field name="model">compassion.field.to.json</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="mapping_id" />
+                <field name="model" string="Source Model" />
+                <field name="json_name" />
+                <field name="odoo_field" />
+                <field name="relational_comodel_name" string="Target Model" />
+                <field name="relational_domain_restrict" />
+                <field name="many2one_multiple_match_policy" />
+                <button
+            name="action_check_duplicate_matches"
+            type="object"
+            string="Check for duplicates"
+            class="btn-secondary"
+          />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_field_to_json_many2one_review" model="ir.actions.act_window">
+        <field name="name">Many2one Fields to Review</field>
+        <field name="res_model">compassion.field.to.json</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_field_to_json_many2one_review_list" />
+        <field
+      name="domain"
+    >[('search_relational_record', '=', True), ('relational_ttype', '=', 'many2one')]</field>
+    </record>
+
+    <menuitem
+    id="menu_field_to_json_many2one_review"
+    parent="menu_message_config"
+    name="Many2one Fields to Review"
+    action="action_field_to_json_many2one_review"
+    sequence="40"
+  />
+
     <record id="view_compassion_mapping_tree" model="ir.ui.view">
         <field name="name">compassion.mapping.list</field>
         <field name="model">compassion.mapping</field>
