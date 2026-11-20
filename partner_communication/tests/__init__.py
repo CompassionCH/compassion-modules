@@ -7,3 +7,4 @@
 #
 ##############################################################################
 from . import test_ir_actions_report
+from . import test_sender_signature
