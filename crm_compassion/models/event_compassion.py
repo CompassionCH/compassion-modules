@@ -200,13 +200,29 @@ class EventCompassion(models.Model):
                 )
             event.expense_line_ids = expenses
 
+    def _income_domain(self):
+        """Income of the events: paid customer invoice lines without
+        sponsorship. Searched in the database: an event can have thousands of
+        invoice lines, and each invoice line linked to the event recomputes
+        its income."""
+        return [
+            ("event_id", "in", self._origin.ids),
+            ("payment_state", "=", "paid"),
+            ("contract_id", "=", False),
+            ("move_id.move_type", "=", "out_invoice"),
+        ]
+
+    @api.depends(
+        "invoice_line_ids",
+        "invoice_line_ids.payment_state",
+        "invoice_line_ids.contract_id",
+    )
     def _compute_income_lines(self):
+        line_obj = self.env["account.move.line"]
+        lines = line_obj.search(self._income_domain()) if self._origin else line_obj
+        by_event = lines.grouped("event_id")
         for event in self:
-            event.income_line_ids = event.invoice_line_ids.filtered(
-                lambda line: line.payment_state == "paid"
-                and not line.contract_id
-                and line.move_id.move_type == "out_invoice"
-            )
+            event.income_line_ids = by_event.get(event._origin, line_obj)
 
     # A dependency on analytic_id.line_ids never fires: account.analytic.line
     # triggers the recompute itself (_recompute_expenses).
@@ -226,9 +242,16 @@ class EventCompassion(models.Model):
 
     @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
+        totals = {}
+        if self._origin:
+            groups = self.env["account.move.line"]._read_group(
+                self._income_domain(),
+                groupby=["event_id"],
+                aggregates=["price_subtotal:sum"],
+            )
+            totals = {event.id: amount for event, amount in groups}
         for event in self:
-            incomes = event.income_line_ids
-            event.total_income = sum(incomes.mapped("price_subtotal") or [0])
+            event.total_income = totals.get(event._origin.id, 0.0)
 
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):

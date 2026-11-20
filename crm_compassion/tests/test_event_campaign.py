@@ -194,6 +194,34 @@ class TestEventCampaign(TransactionCase):
         line.move_id.source_id = event.source_id
         self.assertEqual(line.event_id, event)
 
+    def _pay(self, invoice):
+        invoice.action_post()
+        self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=invoice.ids
+        ).create({})._create_payments()
+        self.assertEqual(invoice.payment_state, "paid")
+
+    def test_event_income(self):
+        """Income of an event: its paid invoice lines without sponsorship."""
+        if "source_id" not in self.env["account.move"]._fields:
+            self.skipTest("account.move has no UTM without the sale module")
+        event = self._event()
+        donation = self._invoice_line(source_id=event.source_id.id)
+        unpaid = self._invoice_line({"price_unit": 15}, source_id=event.source_id.id)
+        unpaid.move_id.action_post()
+        sponsorship = self._invoice_line(
+            {"contract_id": self._contract(event.origin_id).id, "price_unit": 30}
+        )
+        self.assertEqual(sponsorship.event_id, event)
+        self.assertEqual(event.total_income, 0.0)
+        self._pay(donation.move_id)
+        self._pay(sponsorship.move_id)
+        # every line of the invoices is linked to the event (receivable too)
+        self.assertLessEqual(donation | unpaid | sponsorship, event.invoice_line_ids)
+        self.assertEqual(event.income_line_ids, donation.move_id.line_ids)
+        self.assertEqual(event.total_income, 40.0)
+        self.assertEqual(event.balance, 40.0 - event.total_expense)
+
     def test_change_of_type_sets_utm(self):
         concert = self._event(name="Campaign test concert to run")
         self.assertFalse(concert.campaign_id)
