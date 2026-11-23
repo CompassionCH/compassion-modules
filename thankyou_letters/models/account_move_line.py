@@ -58,15 +58,37 @@ class AccountInvoiceLine(models.Model):
         ).generate_thank_you()
         return res
 
+    def _get_unsent_communications(self):
+        """Communications listing these lines and not sent yet: the thank you
+        their entries point to, and any other one holding them without that
+        pointer (thank you merged at creation or cancelled by a merge, thank
+        you wizard, ambassador receipts).
+        """
+        jobs = self.mapped("move_id.communication_id")
+        partners = self.mapped("partner_id")
+        partners |= partners.mapped("commercial_partner_id")
+        if partners:
+            jobs |= self.env["partner.communication.job"].search(
+                [
+                    ("partner_id", "in", partners.ids),
+                    ("config_id.model_id.model", "=", self._name),
+                    ("state", "in", ("pending", "call", "failure")),
+                ]
+            )
+        return jobs.filtered(
+            lambda job: job.state not in ("processing", "done")
+            and job.get_objects() & self
+        )
+
     def unlink(self):
         to_refresh = self.env["partner.communication.job"]
-        for thank_you_letter in self.mapped("move_id.communication_id").filtered(
-            lambda job: job.state not in ("processing", "done")
-        ):
-            other_lines = thank_you_letter.get_objects() - self
+        for thank_you_letter in self._get_unsent_communications():
+            other_lines = (thank_you_letter.get_objects() - self).exists()
             if not other_lines:
                 thank_you_letter.unlink()
             else:
+                # The deleted lines would make the next rendering fail
+                thank_you_letter.object_ids = other_lines.ids
                 to_refresh |= thank_you_letter
         res = super().unlink()
         to_refresh.refresh_text()
@@ -124,7 +146,8 @@ class AccountInvoiceLine(models.Model):
 
         all_invoice_lines = new_invoice_lines
         if all_existing_comm:
-            all_invoice_lines |= all_existing_comm.get_objects()
+            # A pending thank you can still list a deleted line
+            all_invoice_lines |= all_existing_comm.get_objects().exists()
 
         thankyou_config = (
             self.env["thankyou.config"].search([]).for_donation(all_invoice_lines)
@@ -146,7 +169,7 @@ class AccountInvoiceLine(models.Model):
             )
 
             if existing_comm:
-                invoice_lines |= existing_comm.get_objects()
+                invoice_lines |= existing_comm.get_objects().exists()
             if len(existing_comm) > 1:
                 existing_comm[1:].cancel()
                 existing_comm = existing_comm[:1]
