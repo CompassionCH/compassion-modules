@@ -61,20 +61,16 @@ class AccountInvoiceLine(models.Model):
     def _get_unsent_communications(self):
         """Communications listing these lines and not sent yet: the thank you
         their entries point to, and any other one holding them without that
-        pointer (thank you merged at creation or cancelled by a merge, thank
-        you wizard, ambassador receipts).
+        pointer, whoever it is sent to (thank you merged at creation or
+        cancelled by a merge, thank you wizard, ambassador receipts).
         """
         jobs = self.mapped("move_id.communication_id")
-        partners = self.mapped("partner_id")
-        partners |= partners.mapped("commercial_partner_id")
-        if partners:
-            jobs |= self.env["partner.communication.job"].search(
-                [
-                    ("partner_id", "in", partners.ids),
-                    ("config_id.model_id.model", "=", self._name),
-                    ("state", "in", ("pending", "call", "failure")),
-                ]
-            )
+        jobs |= self.env["partner.communication.job"].search(
+            [
+                ("config_id.model_id.model", "=", self._name),
+                ("state", "in", ("pending", "call", "failure")),
+            ]
+        )
         return jobs.filtered(
             lambda job: job.state not in ("processing", "done")
             and job.get_objects() & self
@@ -170,6 +166,11 @@ class AccountInvoiceLine(models.Model):
 
             if existing_comm:
                 invoice_lines |= existing_comm.get_objects().exists()
+            if not invoice_lines:
+                # Pending thank you of another config whose lines were all
+                # deleted: nothing left to thank for.
+                existing_comm.cancel()
+                continue
             if len(existing_comm) > 1:
                 existing_comm[1:].cancel()
                 existing_comm = existing_comm[:1]

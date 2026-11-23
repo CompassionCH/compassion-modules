@@ -100,12 +100,16 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
         comm.refresh_text()
 
     def test_deleted_line_of_thank_you_without_entry_pointer(self):
-        """A thank you made by the wizard or merged at creation holds lines
-        whose entries do not point to it."""
+        """A communication can hold donation lines without their entries
+        pointing to it, and be sent to someone else than the donor: thank
+        you wizard, merge at creation, ambassador receipt (sent to the
+        ambassador)."""
         lines = self._donation_entry(200, 100).line_ids.filtered("product_id")
-        comm = self.env["partner.communication.job"].create(
+        ambassador = self.partner_b
+        self.assertNotEqual(ambassador.commercial_partner_id, self.partner_a)
+        receipt = self.env["partner.communication.job"].create(
             {
-                "partner_id": self.partner_a.id,
+                "partner_id": ambassador.id,
                 "config_id": self.env.ref(
                     "thankyou_letters.config_thankyou_standard"
                 ).id,
@@ -116,7 +120,7 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
 
         self._delete(lines[0])
 
-        self.assertEqual(comm.object_ids, str(lines[1].id))
+        self.assertEqual(receipt.object_ids, str(lines[1].id))
 
     def test_new_donation_drops_deleted_line_of_pending_thank_you(self):
         """A thank you already holding a deleted line (before this fix) is
@@ -135,6 +139,25 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
         self.assertEqual(comm2, comm)
         self.assertEqual(comm.get_objects(), first | second)
         self.assertEqual(comm.get_objects().get_donation_amount(), 350)
+
+    def test_new_donation_cancels_thank_you_of_deleted_lines_only(self):
+        """A pending thank you of another config listing only deleted lines
+        is cancelled by the next donation instead of blocking it."""
+        old_lines, old_comm = self._thank(self._donation_entry(200))
+        old_comm.config_id = self.env.ref(
+            "thankyou_letters.config_thankyou_standard"
+        ).copy()
+        self.env.cr.execute(
+            "UPDATE partner_communication_job SET object_ids = %s WHERE id = %s",
+            (str(self._dead_line_id()), old_comm.id),
+        )
+        old_comm.invalidate_recordset(["object_ids"])
+
+        lines, comm = self._thank(self._donation_entry(150))
+
+        self.assertEqual(old_comm.state, "cancel")
+        self.assertNotEqual(comm, old_comm)
+        self.assertEqual(comm.get_objects(), lines)
 
     def test_thank_you_of_deleted_lines_is_removed(self):
         lines, comm = self._thank(self._donation_entry(200))
