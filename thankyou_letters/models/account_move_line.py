@@ -90,6 +90,16 @@ class AccountInvoiceLine(models.Model):
         to_refresh.refresh_text()
         return res
 
+    def generate_thank_you_job(self):
+        """Queued thank you. The lines can be deleted before the job runs,
+        e.g. when their bank statement line is reconciled again: the new
+        lines have their own job, so the deleted ones are skipped.
+        """
+        lines = self.exists()
+        if not lines:
+            return "Donation lines deleted since the job was queued"
+        return lines.generate_thank_you()
+
     def generate_thank_you(self):
         """Creates a thankyou letter communication.
         Must be called only on a single partner at a time.

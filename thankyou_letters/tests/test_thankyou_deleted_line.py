@@ -159,6 +159,25 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
         self.assertNotEqual(comm, old_comm)
         self.assertEqual(comm.get_objects(), lines)
 
+    def test_queued_thank_you_skips_lines_deleted_since(self):
+        """The thank you job of lines deleted before it runs (bank statement
+        line reconciled again) does nothing for them, and still thanks the
+        lines that remain."""
+        lines = self._donation_entry(200, 100).line_ids.filtered("product_id")
+        queued = self.env["account.move.line"].browse(lines.ids)
+        self._delete(lines[0])
+
+        comm_ids = queued.generate_thank_you_job()
+
+        comm = self.env["partner.communication.job"].browse(comm_ids)
+        self.assertEqual(comm.get_objects(), lines[1])
+
+        self._delete(lines[1])
+        self.assertEqual(
+            queued.generate_thank_you_job(),
+            "Donation lines deleted since the job was queued",
+        )
+
     def test_thank_you_of_deleted_lines_is_removed(self):
         lines, comm = self._thank(self._donation_entry(200))
         lines.move_id.line_ids.unlink()
