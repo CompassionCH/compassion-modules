@@ -7,4 +7,9 @@
 #
 ##############################################################################
 
-from . import test_partner_address, test_thankyou_config, test_thankyou_letters
+from . import (
+    test_partner_address,
+    test_thankyou_config,
+    test_thankyou_deleted_line,
+    test_thankyou_letters,
+)
