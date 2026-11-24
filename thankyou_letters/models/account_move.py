@@ -113,20 +113,13 @@ class AccountInvoice(models.Model):
     def cancel_thankyou_letter(self):
         for move in self:
             comm = move.communication_id
-            if comm.state in ("done", "cancel"):
+            if not comm or comm.state in ("done", "cancel"):
                 continue
-            object_ids = comm.object_ids or ""
+            # Lines of the other entries the thank you was also for
+            remaining_lines = (comm.get_objects() - move.line_ids).exists()
             comm.unlink()
-            # Check if the communication needs to be refreshed.
-            for line in move.line_ids:
-                object_ids = (
-                    object_ids.replace(str(line.id), "").replace(",,", "").strip(",")
-                )
-            if object_ids:
+            if remaining_lines:
                 # Refresh donation receipt
-                remaining_lines = self.env["account.move.line"].browse(
-                    [int(i) for i in object_ids.split(",")]
-                )
                 remaining_lines.with_delay_sh(
                     "generate_thank_you_job",
                     channel="root.thankyou_letters",
