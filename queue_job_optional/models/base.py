@@ -52,6 +52,9 @@ class Base(models.AbstractModel):
         no_delay = self.env.context.get("queue_job__no_delay")
         fresh_context = delay_args.pop("fresh_context", False)
         if queue_job_installed:
+            if isinstance(delay_args.get("eta"), float):
+                # queue_job only converts int seconds: a float is stored as is
+                delay_args["eta"] = timedelta(seconds=delay_args["eta"])
             parent_job = delay_args.pop("parent_job_id", None)
             wait_for_children = delay_args.pop("wait_for_children", False)
             if not no_delay and (split or parent_job is not None or wait_for_children):

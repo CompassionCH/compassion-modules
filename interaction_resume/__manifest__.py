@@ -4,7 +4,7 @@
 {
     "name": "Interaction Resume",
     "summary": "Display a timeline of all communications exchanged with a partner",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     # see https://odoo-community.org/page/development-status
     "development_status": "Beta",
     "category": "Tools",
@@ -14,7 +14,7 @@
     "license": "AGPL-3",
     "installable": True,
     "data": [
-        "data/base_automation.xml",
+        "data/ir_cron.xml",
         "security/ir.model.access.csv",
         "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",

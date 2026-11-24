@@ -104,7 +104,7 @@ class AccountInvoice(models.Model):
             )
             if move_lines:
                 move_lines.with_delay_sh(
-                    "generate_thank_you",
+                    "generate_thank_you_job",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{move_lines.ids}",
@@ -128,7 +128,7 @@ class AccountInvoice(models.Model):
                     [int(i) for i in object_ids.split(",")]
                 )
                 remaining_lines.with_delay_sh(
-                    "generate_thank_you",
+                    "generate_thank_you_job",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{remaining_lines.ids}",
