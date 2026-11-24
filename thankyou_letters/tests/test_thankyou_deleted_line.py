@@ -199,6 +199,7 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
             middle.move_id.button_draft()
 
         self.assertFalse(comm.exists())
+        queue.assert_called_once()
         queued_lines, job_function = queue.call_args.args[:2]
         self.assertEqual(job_function, "generate_thank_you_job")
         self.assertEqual(queued_lines, first | last)
@@ -206,6 +207,27 @@ class TestThankYouDeletedLine(AccountTestInvoicingCommon):
             queued_lines.generate_thank_you_job()
         )
         self.assertEqual(new_comm.get_objects().get_donation_amount(), 300)
+
+    def test_entries_reset_to_draft_together(self):
+        """Two of the three entries of a thank you are reset to draft in one
+        call (several entries cancelled at once): the new thank you is only
+        for the third donation."""
+        moves = [self._donation_entry(amount) for amount in (200, 150, 100)]
+        for move in moves:
+            move.action_post()
+        first, middle, last = (self._thank(move)[0] for move in moves)
+        comm = first.move_id.communication_id
+        self.assertEqual(comm.get_objects(), first | middle | last)
+
+        Line = type(self.env["account.move.line"])
+        with patch.object(Line, "with_delay_sh", autospec=True) as queue:
+            (first | middle).move_id.button_draft()
+
+        self.assertFalse(comm.exists())
+        queue.assert_called_once()
+        queued_lines, job_function = queue.call_args.args[:2]
+        self.assertEqual(job_function, "generate_thank_you_job")
+        self.assertEqual(queued_lines, last)
 
     def test_thank_you_of_deleted_lines_is_removed(self):
         lines, comm = self._thank(self._donation_entry(200))

@@ -111,12 +111,22 @@ class AccountInvoice(models.Model):
                 )
 
     def cancel_thankyou_letter(self):
+        """Delete the pending thank you of these entries and queue a new one
+        for the donations of the other entries it was also for, which are
+        still posted. Called by button_draft (and through it button_cancel,
+        unlink of posted entries, action_draft of payments) and queued by
+        _compute_amount.
+        """
         for move in self:
             comm = move.communication_id
+            # Several entries of the same thank you: done with the first one
             if not comm or comm.state in ("done", "cancel"):
                 continue
-            # Lines of the other entries the thank you was also for
-            remaining_lines = (comm.get_objects() - move.line_ids).exists()
+            remaining_lines = (
+                (comm.get_objects() - self.line_ids)
+                .exists()
+                .filtered(lambda line: line.parent_state == "posted")
+            )
             comm.unlink()
             if remaining_lines:
                 # Refresh donation receipt
