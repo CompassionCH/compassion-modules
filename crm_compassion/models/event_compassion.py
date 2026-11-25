@@ -7,12 +7,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import math
 from datetime import datetime, timedelta
 
 from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import html2plaintext
+
+_logger = logging.getLogger(__name__)
 
 
 class EventCompassion(models.Model):
@@ -149,7 +152,23 @@ class EventCompassion(models.Model):
     calendar_event_id = fields.Many2one("calendar.event", readonly=False)
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
-    campaign_id = fields.Many2one("utm.campaign", "Campaign", readonly=False)
+    campaign_id = fields.Many2one(
+        "utm.campaign",
+        "Campaign",
+        readonly=False,
+        copy=False,
+        index="btree_not_null",
+        help="The fundraising action the event belongs to. A peer-to-peer "
+        "fundraising event (crowdfunding, sport) is its own campaign.",
+    )
+    source_id = fields.Many2one(
+        "utm.source",
+        "Source",
+        copy=False,
+        index="btree_not_null",
+        help="The event as the occasion that brought the sponsorships. A "
+        "peer-to-peer fundraising event has one source per fundraiser instead.",
+    )
 
     # Multi-company
     company_id = fields.Many2one(
@@ -181,13 +200,29 @@ class EventCompassion(models.Model):
                 )
             event.expense_line_ids = expenses
 
+    def _income_domain(self):
+        """Income of the events: paid customer invoice lines without
+        sponsorship. Searched in the database: an event can have thousands of
+        invoice lines, and each invoice line linked to the event recomputes
+        its income."""
+        return [
+            ("event_id", "in", self._origin.ids),
+            ("payment_state", "=", "paid"),
+            ("contract_id", "=", False),
+            ("move_id.move_type", "=", "out_invoice"),
+        ]
+
+    @api.depends(
+        "invoice_line_ids",
+        "invoice_line_ids.payment_state",
+        "invoice_line_ids.contract_id",
+    )
     def _compute_income_lines(self):
+        line_obj = self.env["account.move.line"]
+        lines = line_obj.search(self._income_domain()) if self._origin else line_obj
+        by_event = lines.grouped("event_id")
         for event in self:
-            event.income_line_ids = event.invoice_line_ids.filtered(
-                lambda line: line.payment_state == "paid"
-                and not line.contract_id
-                and line.move_id.move_type == "out_invoice"
-            )
+            event.income_line_ids = by_event.get(event._origin, line_obj)
 
     # A dependency on analytic_id.line_ids never fires: account.analytic.line
     # triggers the recompute itself (_recompute_expenses).
@@ -207,9 +242,16 @@ class EventCompassion(models.Model):
 
     @api.depends("invoice_line_ids", "invoice_line_ids.payment_state")
     def _compute_income(self):
+        totals = {}
+        if self._origin:
+            groups = self.env["account.move.line"]._read_group(
+                self._income_domain(),
+                groupby=["event_id"],
+                aggregates=["price_subtotal:sum"],
+            )
+            totals = {event.id: amount for event, amount in groups}
         for event in self:
-            incomes = event.income_line_ids
-            event.total_income = sum(incomes.mapped("price_subtotal") or [0])
+            event.total_income = totals.get(event._origin.id, 0.0)
 
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):
@@ -303,10 +345,14 @@ class EventCompassion(models.Model):
         calendar_obj = self.env["calendar.event"].with_context(default_start_date=None)
 
         for event in events:
+            event.with_context(no_sync=True)._ensure_utm()
+            plan = event._get_analytic_plan()
             analytic_id = (
                 self.env["account.analytic.account"]
-                .create(event._get_analytic_vals())
+                .create(dict(event._get_analytic_vals(), plan_id=plan.id))
                 .id
+                if plan
+                else False
             )
             origin_id = (
                 self.env["recurring.contract.origin"]
@@ -323,11 +369,30 @@ class EventCompassion(models.Model):
 
     def write(self, vals):
         """Push values to linked objects."""
+        old_names = {event: event.full_name for event in self}
         res = super().write(vals)
         if not self.env.context.get("no_sync"):
             for event in self:
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
+                event._move_analytic_to_plan()
+                utm_before = {f: event[f] for f in ("campaign_id", "source_id")}
+                if "type" in vals:
+                    # A peer-to-peer event needs its campaign, another one
+                    # its source
+                    event.with_context(no_sync=True)._ensure_utm()
+                utm_vals = {
+                    fname: event[fname].id
+                    for fname in ("campaign_id", "source_id")
+                    if fname in vals or event[fname] != utm_before[fname]
+                }
+                if utm_vals:
+                    # Only administrator has write access to origins.
+                    self.env["recurring.contract.origin"].sudo().search(
+                        [("event_id", "=", event.id)]
+                    ).write(utm_vals)
+                if event.full_name != old_names[event]:
+                    event._rename_utm(old_names[event])
                 if "user_id" in vals and event.origin_id:
                     event.origin_id.partner_id = event.user_id.partner_id
 
@@ -501,8 +566,23 @@ class EventCompassion(models.Model):
             "year": self.year,
             "partner_id": self.user_id.partner_id.id,
             "event_id": self.id,
-            "plan_id": self.env.ref("crm_compassion.plan_events").id,
         }
+
+    def _get_analytic_plan(self):
+        """Plan of the analytic account of a new event; none when its type gets
+        no account. Settings (system parameters):
+        - crm_compassion.analytic_event_types: types getting an account, comma
+          separated (default: all);
+        - crm_compassion.analytic_event_plan_id: their plan (default: Events)."""
+        self.ensure_one()
+        params = self.env["ir.config_parameter"].sudo()
+        plan_obj = self.env["account.analytic.plan"]
+        types = params.get_param("crm_compassion.analytic_event_types")
+        if types and self.type not in [t.strip() for t in types.split(",")]:
+            return plan_obj
+        plan_id = params.get_param("crm_compassion.analytic_event_plan_id")
+        plan = plan_obj.browse(int(plan_id)).exists() if plan_id else plan_obj
+        return plan or self.env.ref("crm_compassion.plan_events")
 
     def _recompute_expenses(self):
         """Recompute the expenses after a change of analytic lines, which the
@@ -517,7 +597,77 @@ class EventCompassion(models.Model):
             "event_id": self.id,
             "analytic_id": analytic_id,
             "partner_id": self.user_id.partner_id.id,
+            "campaign_id": self.campaign_id.id,
+            "source_id": self.source_id.id,
         }
+
+    def action_track_expenses(self):
+        """Give the event a cost account when it has none: its expenses are
+        followed by the analytic accounting, its income by its UTM source."""
+        self.ensure_one()
+        if not self.analytic_id:
+            account = self.env["account.analytic.account"]._create_cost_account(
+                self.full_name,
+                campaign=self.campaign_id if self._is_peer_to_peer() else None,
+                source=self.source_id,
+            )
+            account.event_id = self
+            self.with_context(no_sync=True).analytic_id = account
+        return self.analytic_id._action_open()
+
+    def _is_peer_to_peer(self):
+        """Participants of a peer-to-peer fundraising event raise funds on their
+        own page: the event is the campaign, each fundraiser a source."""
+        return self.type in ("crowdfunding", "sport")
+
+    def _ensure_utm(self):
+        """A peer-to-peer fundraising event is a campaign, another event a
+        source."""
+        for event in self:
+            if event._is_peer_to_peer():
+                event._ensure_campaign()
+            elif not event.source_id:
+                event.source_id = self.env["utm.source"].create(
+                    {"name": event.full_name, "category": "event"}
+                )
+
+    def _move_analytic_to_plan(self):
+        """Accounts of events migrated from other plans move to the plan of
+        their type (default: Events). Odoo refuses the move when a line of
+        the account already holds another account of that plan: the account
+        then stays in its plan, as in the migration."""
+        for event in self:
+            account = event.analytic_id
+            plan = event._get_analytic_plan()
+            if not account or not plan or account.plan_id == plan:
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    account.plan_id = plan
+            except (exceptions.UserError, exceptions.RedirectWarning) as error:
+                _logger.info(
+                    "Analytic account %s of event %s left in plan %s: %s",
+                    account.id,
+                    event.id,
+                    account.plan_id.name,
+                    error,
+                )
+
+    def _ensure_campaign(self):
+        """A peer-to-peer fundraising event is its own campaign."""
+        for event in self.filtered(lambda e: not e.campaign_id):
+            event.campaign_id = self.env["utm.campaign"].create(
+                {"title": event.full_name}
+            )
+
+    def _rename_utm(self, old_name):
+        """The campaign and source named after the event follow its name."""
+        if self.campaign_id.title == old_name:
+            self.campaign_id.title = self.full_name
+        if self.source_id.name == old_name:
+            self.source_id.name = self.env["utm.mixin"]._get_unique_names(
+                "utm.source", [self.full_name]
+            )[0]
 
     def _get_calendar_vals(self):
         """

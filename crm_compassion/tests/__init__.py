@@ -8,4 +8,9 @@
 #
 ##############################################################################
 
-from . import test_crm_compassion, test_event_analytic, test_migration_expenses
+from . import (
+    test_crm_compassion,
+    test_event_analytic,
+    test_event_campaign,
+    test_migration_expenses,
+)
