@@ -111,19 +111,23 @@ class AccountInvoiceLine(models.Model):
 
         new_communication_config = self.env.context.get("default_communication_config")
         if not new_communication_config:
-            product_configs = new_invoice_lines.mapped(
-                "product_id.partner_communication_config"
-            )
+            # A specific thank you only when all the donations ask for it.
+            # Mixed donations (e.g. a MyCompassion basket in one invoice) get
+            # the standard one: a product without a config counts as standard.
+            standard_config = self.env.ref("thankyou_letters.config_thankyou_standard")
+            product_configs = self.env["partner.communication.config"]
+            for line in new_invoice_lines:
+                product_configs |= (
+                    line.product_id.partner_communication_config or standard_config
+                )
             if len(product_configs) == 1:
-                new_communication_config = product_configs[0]
+                new_communication_config = product_configs
             else:
-                _logger.warning(
-                    f"{len(product_configs)} product thank you config found, "
-                    f"falling back to the default"
+                _logger.info(
+                    "%s thank you configs for the donations, using the standard one",
+                    len(product_configs),
                 )
-                new_communication_config = self.env.ref(
-                    "thankyou_letters.config_thankyou_standard"
-                )
+                new_communication_config = standard_config
 
         partner = self.mapped("partner_id")
         partner.ensure_one()
