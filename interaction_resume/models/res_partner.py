@@ -7,11 +7,16 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 from datetime import datetime as dt
 
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, fields, models
+
+_logger = logging.getLogger(__name__)
+
+VACUUM_BATCH_SIZE = 1000
 
 
 class Partner(models.Model):
@@ -111,3 +116,35 @@ class Partner(models.Model):
             {"last_interaction_fetch_date": False, "last_interaction_fetch_page": 0}
         )
         return True
+
+    def _cron_vacuum_interactions(self):
+        """Reset interactions fetched more than 15 days ago, in batches."""
+        domain = [
+            (
+                "last_interaction_fetch_date",
+                "<",
+                fields.Datetime.now() - relativedelta(days=15),
+            )
+        ]
+        partner_obj = self.with_context(active_test=False)
+        total = partner_obj.search_count(domain)
+        partners = partner_obj.search(domain, limit=VACUUM_BATCH_SIZE, order="id")
+        done = 0
+        try:
+            with self.env.cr.savepoint():
+                partners.reset_interactions()
+            done = len(partners)
+        except Exception:
+            # One bad partner must not block the batch: retry one by one, skip it.
+            # Browse each id alone, else every retry prefetches the whole batch.
+            for partner_id in partners.ids:
+                partner = partner_obj.browse(partner_id)
+                try:
+                    with self.env.cr.savepoint():
+                        partner.reset_interactions()
+                    done += 1
+                except Exception:
+                    _logger.exception(
+                        "Vacuum interaction failed for partner %s", partner.id
+                    )
+        self.env["ir.cron"]._notify_progress(done=done, remaining=total - done)

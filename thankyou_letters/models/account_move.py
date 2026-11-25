@@ -104,31 +104,34 @@ class AccountInvoice(models.Model):
             )
             if move_lines:
                 move_lines.with_delay_sh(
-                    "generate_thank_you",
+                    "generate_thank_you_job",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{move_lines.ids}",
                 )
 
     def cancel_thankyou_letter(self):
+        """Delete the pending thank you of these entries and queue a new one
+        for the donations of the other entries it was also for, which are
+        still posted. Called by button_draft (and through it button_cancel,
+        unlink of posted entries, action_draft of payments) and queued by
+        _compute_amount.
+        """
         for move in self:
             comm = move.communication_id
-            if comm.state in ("done", "cancel"):
+            # Several entries of the same thank you: done with the first one
+            if not comm or comm.state in ("done", "cancel"):
                 continue
-            object_ids = comm.object_ids or ""
+            remaining_lines = (
+                (comm.get_objects() - self.line_ids)
+                .exists()
+                .filtered(lambda line: line.parent_state == "posted")
+            )
             comm.unlink()
-            # Check if the communication needs to be refreshed.
-            for line in move.line_ids:
-                object_ids = (
-                    object_ids.replace(str(line.id), "").replace(",,", "").strip(",")
-                )
-            if object_ids:
+            if remaining_lines:
                 # Refresh donation receipt
-                remaining_lines = self.env["account.move.line"].browse(
-                    [int(i) for i in object_ids.split(",")]
-                )
                 remaining_lines.with_delay_sh(
-                    "generate_thank_you",
+                    "generate_thank_you_job",
                     channel="root.thankyou_letters",
                     priority=50,
                     identity_key=f"thank_you_for_lines_{remaining_lines.ids}",
