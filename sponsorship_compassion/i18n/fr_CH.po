@@ -676,11 +676,6 @@ msgid "Generated Invoices"
 msgstr "Factures générées"
 
 #. module: sponsorship_compassion
-#: model:ir.ui.menu,name:sponsorship_compassion.menu_recurring_invoicer_form
-msgid "Generated invoices"
-msgstr "Factures générées"
-
-#. module: sponsorship_compassion
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_partner__sr_total_gift
 #: model:ir.model.fields,field_description:sponsorship_compassion.field_res_users__sr_total_gift
 #: model:ir.model.fields.selection,name:sponsorship_compassion.selection__account_move__invoice_category__gift
