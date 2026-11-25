@@ -81,6 +81,10 @@ def migrate(env, version):
     # Generating a communication is slow (the report is rendered), so it is
     # done in queue jobs rather than in the migration.
     children = env["compassion.child"].browse(sorted(child_ids - already_prepared))
+    if not children:
+        # queue_job refuses to delay an empty group: "Expecting jobs".
+        _logger.info("T3178: no biennial communication to queue")
+        return
     children.with_context(
         default_auto_send=False, same_job_search=[("auto_send", "=", False)]
     ).with_delay_sh(
