@@ -72,6 +72,7 @@ class ResPartner(models.Model):
     # Actions
     # ------------------------------------------------------------------
     def action_create_document_folder(self):
+        """Create the documents folder (the "Create Folder" button of the widget)."""
         # fs_folder reads fs.storage without sudo when it creates the folder
         # (create_value_in_fs -> fs.storage.get_by_code), which users that are
         # not system administrators cannot read (and must not: it holds the

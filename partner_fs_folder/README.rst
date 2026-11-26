@@ -26,8 +26,8 @@ Adds a **Documents** tab on partners showing a folder of an external
 file system (configured with ``fs_storage``, e.g. a Google Drive Shared
 Drive served over WebDAV), where users can drop any kind of content.
 
--  The folder is created on demand only (button *Create Documents
-   Folder*), not for every partner.
+-  The folder is created on demand only (button *Create Folder* of the
+   tab), not for every partner.
 -  Folders of companies and individuals are filed by salesperson:
    ``<salesperson>/<reference> - <name>`` (``_Unassigned`` when the
    partner has no salesperson).

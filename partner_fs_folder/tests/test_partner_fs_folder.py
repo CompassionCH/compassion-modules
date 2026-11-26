@@ -166,6 +166,31 @@ class TestPartnerFsFolder(TransactionCase):
             self.partner.document_folder.ref, "Anna Sales/1234 - Major Donor"
         )
 
+    def test_widget_button_creates_folder_for_non_admin_user(self):
+        """The "Create Folder" button of the widget goes through the workaround."""
+        user = new_test_user(
+            self.env,
+            login="test_pfsf_widget",
+            groups="base.group_user,base.group_partner_manager",
+        )
+        api = self.env["fs.folder.field.web.api"].with_user(user)
+        api.initialize_field_value(self.contact.id, "res.partner", "document_folder")
+        self.assertEqual(
+            self.contact.document_folder.ref,
+            "Anna Sales/5001 - Acme SA/5002 - Jean Dupont",
+        )
+
+    def test_widget_button_without_write_access(self):
+        user = new_test_user(
+            self.env, login="test_pfsf_widget_reader", groups="base.group_user"
+        )
+        api = self.env["fs.folder.field.web.api"].with_user(user)
+        with self.assertRaises(AccessError):
+            api.initialize_field_value(
+                self.partner.id, "res.partner", "document_folder"
+            )
+        self.assertFalse(self.partner.document_folder)
+
     def test_user_without_write_access_cannot_create(self):
         user = new_test_user(
             self.env, login="test_pfsf_reader", groups="base.group_user"
