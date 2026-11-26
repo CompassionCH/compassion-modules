@@ -1864,6 +1864,96 @@ msgstr ""
 msgid "— Page Break —"
 msgstr ""
 
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A campaign leaderboard needs a campaign."
+msgstr "Eine Kampagnen-Rangliste benötigt eine Kampagne."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard cannot be modified."
+msgstr "Eine endgültige Rangliste kann nicht geändert werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard ranking cannot be modified."
+msgstr "Die endgültige Rangfolge kann nicht geändert werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_user.py:0
+msgid "Anonymous translator"
+msgstr "Anonymer Übersetzer"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Campaign"
+msgstr "Kampagne"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Leaderboard entries are written by the system only."
+msgstr "Ranglisteneinträge werden ausschließlich vom System geschrieben."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be edited."
+msgstr "Nur Kampagnen-Ranglisten können bearbeitet werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be linked to a campaign."
+msgstr "Nur Kampagnen-Ranglisten können mit einer Kampagne verknüpft werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Final leaderboards and running weekly or monthly leaderboards cannot be cancelled."
+msgstr "Endgültige Ranglisten sowie laufende Wochen- oder Monatsranglisten können nicht storniert werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only scheduled leaderboards can be edited."
+msgstr "Nur geplante Ranglisten können bearbeitet werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "This leaderboard has not started yet."
+msgstr "Diese Rangliste hat noch nicht begonnen."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Week %(week)s - %(year)s"
+msgstr "Woche %(week)s - %(year)s"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Weekly and monthly leaderboards are created automatically."
+msgstr "Wöchentliche und monatliche Ranglisten werden automatisch erstellt."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "The state of a leaderboard cannot be edited."
+msgstr "Der Status einer Rangliste kann nicht bearbeitet werden."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "The period of a campaign leaderboard follows the dates of its campaign: change the campaign dates instead."
+msgstr "Der Zeitraum einer Kampagnen-Rangliste folgt den Daten ihrer Kampagne: Bitte die Daten der Kampagne ändern."
+
 #~ msgid "Last Modified on"
 #~ msgstr "Zuletzt geändert am"
 

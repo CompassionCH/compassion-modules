@@ -1839,6 +1839,96 @@ msgstr ""
 msgid "— Page Break —"
 msgstr ""
 
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A campaign leaderboard needs a campaign."
+msgstr "Un classement de campagne doit être lié à une campagne."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard cannot be modified."
+msgstr "Un classement final ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard ranking cannot be modified."
+msgstr "Le classement final ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_user.py:0
+msgid "Anonymous translator"
+msgstr "Traducteur anonyme"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Campaign"
+msgstr "Campagne"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Leaderboard entries are written by the system only."
+msgstr "Les entrées du classement sont écrites uniquement par le système."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be edited."
+msgstr "Seuls les classements de campagne peuvent être modifiés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be linked to a campaign."
+msgstr "Seuls les classements de campagne peuvent être liés à une campagne."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Final leaderboards and running weekly or monthly leaderboards cannot be cancelled."
+msgstr "Les classements finaux et les classements hebdomadaires ou mensuels en cours ne peuvent pas être annulés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only scheduled leaderboards can be edited."
+msgstr "Seuls les classements planifiés peuvent être modifiés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "This leaderboard has not started yet."
+msgstr "Ce classement n'a pas encore commencé."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Week %(week)s - %(year)s"
+msgstr "Semaine %(week)s - %(year)s"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Weekly and monthly leaderboards are created automatically."
+msgstr "Les classements hebdomadaires et mensuels sont créés automatiquement."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "The state of a leaderboard cannot be edited."
+msgstr "L'état d'un classement ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "The period of a campaign leaderboard follows the dates of its campaign: change the campaign dates instead."
+msgstr "La période d'un classement de campagne suit les dates de sa campagne : il faut modifier les dates de la campagne."
+
 #~ msgid "Last Modified on"
 #~ msgstr "Dernière Modification le"
 
