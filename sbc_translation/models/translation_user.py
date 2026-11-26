@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.tools.image import image_data_uri
 
 
@@ -48,6 +48,9 @@ class TranslationUser(models.Model):
         "translation.competence", help="Utility field only used for the search view"
     )
     avatar = fields.Binary(related="partner_id.image_128")
+    leaderboard_visibility = fields.Selection(
+        related="user_id.leaderboard_visibility", readonly=False
+    )
     force_validation = fields.Boolean(
         help="If checked, all translations submitted by this user will require "
         "validation by a supervisor, regardless of their verified skills"
@@ -479,6 +482,7 @@ class TranslationUser(models.Model):
             "year": self.nb_translated_letters_this_year or "None",
             "lastYear": self.nb_translated_letters_last_year or "None",
             "translatorId": self.id,
+            "leaderboardVisibility": user.leaderboard_visibility,
             "skills": [
                 {
                     "source": skill.competence_id.source_language_id.name,
@@ -515,3 +519,37 @@ class TranslationUser(models.Model):
 class ResUsers(models.Model):
     _inherit = "res.users"
     translator_id = fields.Many2one("translation.user", "Translator")
+    leaderboard_visibility = fields.Selection(
+        [("public", "Public"), ("anonymous", "Anonymous")],
+        default="public",
+        required=True,
+        help="Anonymous: other translators see 'Anonymous translator' instead "
+        "of your name. Your rank and score are kept.",
+    )
+
+    @property
+    def SELF_READABLE_FIELDS(self):
+        return super().SELF_READABLE_FIELDS + ["leaderboard_visibility"]
+
+    @property
+    def SELF_WRITEABLE_FIELDS(self):
+        return super().SELF_WRITEABLE_FIELDS + ["leaderboard_visibility"]
+
+    def _get_leaderboard_name(self):
+        """Display name on leaderboards: 'First name + last name initial'.
+
+        Returns 'Anonymous translator' for anonymous users, except for the
+        current user who always sees his own name.
+        """
+        self.ensure_one()
+        if self.leaderboard_visibility == "anonymous" and self.id != self.env.uid:
+            return _("Anonymous translator")
+        partner = self.partner_id
+        firstname = partner.preferred_name or getattr(partner, "firstname", False)
+        lastname = getattr(partner, "lastname", False)
+        if not firstname:
+            parts = (partner.name or "").split()
+            firstname = parts[0] if parts else ""
+            lastname = lastname or (parts[-1] if len(parts) > 1 else "")
+        initial = f" {lastname.strip()[0].upper()}." if lastname else ""
+        return f"{firstname}{initial}".strip()
