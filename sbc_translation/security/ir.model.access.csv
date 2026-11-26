@@ -19,3 +19,6 @@ access_translation_badge_user,translation.badge.user,model_translation_badge,gro
 access_translation_badge_manager,translation.badge.manager,model_translation_badge,sbc_translation.group_manager,1,1,1,1
 access_sbc_translation_user_badge,sbc.translation.user.badge.user,model_sbc_translation_user_badge,group_user,1,0,0,0
 access_sbc_translation_user_badge_manager,sbc.translation.user.badge.manager,model_sbc_translation_user_badge,sbc_translation.group_manager,1,1,1,1
+access_translation_leaderboard_user,translation.leaderboard.user,model_translation_leaderboard,group_user,1,0,0,0
+access_translation_leaderboard_manager,translation.leaderboard.manager,model_translation_leaderboard,group_manager,1,1,1,1
+access_translation_leaderboard_entry_manager,translation.leaderboard.entry.manager,model_translation_leaderboard_entry,group_manager,1,0,0,0

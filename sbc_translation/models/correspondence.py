@@ -40,7 +40,9 @@ class Correspondence(models.Model):
         tracking=True,
     )
     translate_date = fields.Datetime(tracking=True)
-    translate_done = fields.Datetime(tracking=True)
+    # Indexed: the leaderboard ranking is computed on each request with a
+    # date range on this field (see translation.leaderboard._compute_ranking)
+    translate_done = fields.Datetime(tracking=True, index="btree_not_null")
     translation_status = fields.Selection(
         [
             ("to do", "To do"),

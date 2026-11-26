@@ -4,3 +4,4 @@ from . import translation_competence
 from . import correspondence_paragraph
 from . import res_partner
 from . import translation_badge
+from . import translation_leaderboard

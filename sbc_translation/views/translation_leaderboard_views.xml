@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_translation_leaderboard_tree" model="ir.ui.view">
+        <field name="name">translation.leaderboard.list</field>
+        <field name="model">translation.leaderboard</field>
+        <field name="arch" type="xml">
+            <list string="Leaderboards" decoration-muted="state == 'final'" decoration-success="state == 'live'">
+                <field name="name"/>
+                <field name="leaderboard_type"/>
+                <field name="start_at"/>
+                <field name="end_at"/>
+                <field name="participant_count"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_translation_leaderboard_form" model="ir.ui.view">
+        <field name="name">translation.leaderboard.form</field>
+        <field name="model">translation.leaderboard</field>
+        <field name="arch" type="xml">
+            <form string="Leaderboard">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel leaderboard"
+                            invisible="not id or not (state == 'scheduled' or (leaderboard_type == 'campaign' and state in ('live', 'closing')))"
+                            confirm="This will delete the leaderboard: translators will no longer see it. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="leaderboard_type" readonly="1"/>
+                            <field name="campaign_id" required="leaderboard_type == 'campaign'"
+                                   invisible="leaderboard_type != 'campaign'"
+                                   readonly="state != 'scheduled'"/>
+                            <field name="show_inactive_users" readonly="state != 'scheduled'"/>
+                        </group>
+                        <group>
+                            <!-- Always taken from the campaign dates -->
+                            <field name="start_at" readonly="1"/>
+                            <field name="end_at" readonly="1"/>
+                            <field name="created_by"/>
+                            <field name="name_key" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Final ranking" invisible="state != 'final'">
+                            <field name="entry_ids" readonly="1">
+                                <list>
+                                    <field name="rank"/>
+                                    <field name="user_id"/>
+                                    <field name="score"/>
+                                    <field name="score_reached_at"/>
+                                    <field name="lifetime_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_translation_leaderboard_search" model="ir.ui.view">
+        <field name="name">translation.leaderboard.search</field>
+        <field name="model">translation.leaderboard</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="campaign_id"/>
+                <filter name="current" string="Live / closing" domain="[('state', 'in', ['live', 'closing'])]"/>
+                <filter name="final" string="Final" domain="[('state', '=', 'final')]"/>
+                <separator/>
+                <filter name="campaign" string="Campaign" domain="[('leaderboard_type', '=', 'campaign')]"/>
+                <filter name="weekly" string="Weekly" domain="[('leaderboard_type', '=', 'weekly')]"/>
+                <filter name="monthly" string="Monthly" domain="[('leaderboard_type', '=', 'monthly')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Type" context="{'group_by': 'leaderboard_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_translation_leaderboard" model="ir.actions.act_window">
+        <field name="name">Leaderboards</field>
+        <field name="res_model">translation.leaderboard</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_leaderboard_type': 'campaign'}</field>
+    </record>
+
+    <menuitem id="menu_translation_leaderboard"
+              parent="menu_translation_platform"
+              name="Leaderboards"
+              action="action_translation_leaderboard"
+              sequence="5"
+              groups="sbc_translation.group_manager"/>
+</odoo>
