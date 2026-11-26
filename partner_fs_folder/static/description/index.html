@@ -376,17 +376,17 @@ Drive served over WebDAV), where users can drop any kind of content.</p>
 <ul class="simple">
 <li>The folder is created on demand only (button <em>Create Folder</em> of the
 tab), not for every partner.</li>
-<li>Folders of companies and individuals are filed by salesperson:
+<li>Folders of the partners without parent are filed by salesperson:
 <tt class="docutils literal"><span class="pre">&lt;salesperson&gt;/&lt;reference&gt;</span> - &lt;name&gt;</tt> (<tt class="docutils literal">_Unassigned</tt> when the
 partner has no salesperson).</li>
-<li>Folders of the contacts of a company are subfolders of the company
-folder:
+<li>Folders of the partners with a parent (contacts of a company,
+subsidiaries) are subfolders of the parent folder:
 <tt class="docutils literal"><span class="pre">&lt;salesperson&gt;/&lt;company</span> reference&gt; - <span class="pre">&lt;company&gt;/&lt;reference&gt;</span> - &lt;name&gt;</tt>.
-The company folder is created when needed, and the salesperson of the
-contact is not used.</li>
-<li>When the salesperson or the company of a partner changes, a queue job
-moves the folder to its new place and updates the links (also the
-ones of the contact folders inside a moved company folder).</li>
+The parent folder is created when needed, and the salesperson of a
+partner with a parent is not used.</li>
+<li>When the salesperson, the parent, the name or the reference of a
+partner changes, a queue job moves or renames its folder and updates
+the links (also the ones of the folders inside it).</li>
 <li>Access to the folder follows the access to the partner: reading the
 folder requires read access on the partner, changing its content
 requires write access.</li>

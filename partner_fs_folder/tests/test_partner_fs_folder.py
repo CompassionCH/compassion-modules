@@ -305,3 +305,85 @@ class TestPartnerFsFolder(TransactionCase):
             self.contact.document_folder.ref, "Bob Sales/5002 - Jean Dupont"
         )
         self.assertEqual(self.contact.document_folder.fs.cat_file("cv.txt"), b"contact")
+
+    # ------------------------------------------------------------------
+    # Renaming
+    # ------------------------------------------------------------------
+    def test_rename_partner_renames_folder(self):
+        self.partner.action_create_document_folder()
+        self.partner.document_folder.fs.pipe_file("note.txt", b"hello")
+        self.partner.name = "Major Donor Foundation"
+        self.assertEqual(
+            self.partner.document_folder.ref,
+            "Anna Sales/1234 - Major Donor Foundation",
+        )
+        self.assertFalse(os.path.exists(self._abs("Anna Sales", "1234 - Major Donor")))
+        self.assertEqual(self.partner.document_folder.fs.cat_file("note.txt"), b"hello")
+
+    def test_ref_change_renames_folder(self):
+        self.partner.action_create_document_folder()
+        self.partner.ref = "9999"
+        self.assertEqual(
+            self.partner.document_folder.ref, "Anna Sales/9999 - Major Donor"
+        )
+
+    def test_rename_company_updates_contact_links(self):
+        self.contact.action_create_document_folder()
+        self.contact.document_folder.fs.pipe_file("cv.txt", b"contact")
+        self.company.name = "Acme Holding SA"
+        self.assertEqual(
+            self.company.document_folder.ref, "Anna Sales/5001 - Acme Holding SA"
+        )
+        self.assertEqual(
+            self.contact.document_folder.ref,
+            "Anna Sales/5001 - Acme Holding SA/5002 - Jean Dupont",
+        )
+        self.assertEqual(self.contact.document_folder.fs.cat_file("cv.txt"), b"contact")
+
+    def test_folder_name_sanitized_on_rename(self):
+        self.partner.action_create_document_folder()
+        self.partner.name = "Major/Donor"
+        self.assertEqual(
+            self.partner.document_folder.ref, "Anna Sales/1234 - Major_Donor"
+        )
+
+    # ------------------------------------------------------------------
+    # Subsidiaries
+    # ------------------------------------------------------------------
+    def test_subsidiary_in_parent_company_folder(self):
+        subsidiary = self.env["res.partner"].create(
+            {
+                "name": "Acme Suisse",
+                "ref": "5100",
+                "is_company": True,
+                "parent_id": self.company.id,
+                "user_id": self.sales_2.id,  # not used: it has a parent
+            }
+        )
+        contact = self.env["res.partner"].create(
+            {"name": "Paul Muster", "ref": "5101", "parent_id": subsidiary.id}
+        )
+        contact.action_create_document_folder()
+        self.assertEqual(
+            contact.document_folder.ref,
+            "Anna Sales/5001 - Acme SA/5100 - Acme Suisse/5101 - Paul Muster",
+        )
+        # the group changes salesperson: the whole tree follows
+        self.company.user_id = self.sales_2
+        self.assertEqual(
+            contact.document_folder.ref,
+            "Bob Sales/5001 - Acme SA/5100 - Acme Suisse/5101 - Paul Muster",
+        )
+
+    def test_company_attached_to_parent_company(self):
+        other = self.env["res.partner"].create(
+            {"name": "Beta AG", "ref": "6001", "is_company": True}
+        )
+        other.action_create_document_folder()
+        self.assertEqual(
+            other.document_folder.ref, f"{UNASSIGNED_FOLDER}/6001 - Beta AG"
+        )
+        other.parent_id = self.company
+        self.assertEqual(
+            other.document_folder.ref, "Anna Sales/5001 - Acme SA/6001 - Beta AG"
+        )

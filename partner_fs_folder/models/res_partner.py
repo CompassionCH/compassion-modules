@@ -13,6 +13,9 @@ _logger = logging.getLogger(__name__)
 
 UNASSIGNED_FOLDER = "_Unassigned"
 
+# fields used in the name of the folder (firstname/lastname: partner_firstname)
+FOLDER_NAME_FIELDS = {"name", "ref", "firstname", "lastname"}
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -25,19 +28,19 @@ class ResPartner(models.Model):
 
     # ------------------------------------------------------------------
     # Folder location:
-    #   <salesperson>/<ref> - <name>                  (company or individual)
-    #   <company folder>/<ref> - <name>               (contact of a company)
+    #   <salesperson>/<ref> - <name>                  (partner without parent)
+    #   <parent folder>/<ref> - <name>                (contact, subsidiary...)
     # (fs_folder calls the hooks with (field, fs), see fs_folder/fields.py)
     # ------------------------------------------------------------------
-    def _get_document_folder_company(self):
+    def _get_document_folder_holder(self):
         """Return the partner whose folder holds the folder of this partner.
 
-        That is the commercial entity (top company) for a contact of a company,
-        nothing for a company or an individual.
+        That is the parent partner: the company of a contact, the parent company
+        of a subsidiary. Nothing for a partner without parent, whose folder is
+        filed under its salesperson.
         """
         self.ensure_one()
-        company = self.commercial_partner_id
-        return company if company != self else self.browse()
+        return self.parent_id
 
     def _get_document_folder_salesperson_dirname(self):
         self.ensure_one()
@@ -46,14 +49,14 @@ class ResPartner(models.Model):
     def _get_document_folder_parent_parts(self):
         """Return the path parts of the folder holding the documents folder.
 
-        The folder of the company of a contact is created if it is missing.
+        The folder of the parent partner is created if it is missing.
         """
         self.ensure_one()
-        company = self._get_document_folder_company()
-        if company:
-            if not company.document_folder:
-                company.document_folder.initialize()
-            return company.document_folder.ref.split("/")
+        holder = self._get_document_folder_holder()
+        if holder:
+            if not holder.document_folder:
+                holder.document_folder.initialize()
+            return holder.document_folder.ref.split("/")
         return [self._get_document_folder_salesperson_dirname()]
 
     def _get_document_folder_parent(self, field, fs):
@@ -61,12 +64,12 @@ class ResPartner(models.Model):
             partner.id: partner._get_document_folder_parent_parts() for partner in self
         }
 
+    def _get_document_folder_dirname(self):
+        self.ensure_one()
+        return f"{self.ref or self.id} - {self.name or self.display_name}"
+
     def _get_document_folder_name(self, field, fs):
-        return {
-            partner.id: f"{partner.ref or partner.id} - "
-            f"{partner.name or partner.display_name}"
-            for partner in self
-        }
+        return {partner.id: partner._get_document_folder_dirname() for partner in self}
 
     # ------------------------------------------------------------------
     # Actions
@@ -83,21 +86,17 @@ class ResPartner(models.Model):
         return True
 
     # ------------------------------------------------------------------
-    # Keep the folder at its place when the salesperson or company changes
+    # Keep the folder at its place and name when the salesperson, the parent
+    # or the name of the partner changes. The folders inside it follow it.
     # ------------------------------------------------------------------
     def write(self, vals):
         res = super().write(vals)
-        if "parent_id" in vals or "is_company" in vals:
-            # the company of the contacts below these partners changes too
-            partners = (
-                self.sudo()
-                .with_context(active_test=False)
-                .search([("id", "child_of", self.ids)])
-            )
+        if "parent_id" in vals or FOLDER_NAME_FIELDS & vals.keys():
+            partners = self.sudo()
         elif "user_id" in vals:
-            # the salesperson of a contact of a company is not used
+            # the salesperson is used only for the partners without parent
             partners = self.sudo().filtered(
-                lambda p: not p._get_document_folder_company()
+                lambda p: not p._get_document_folder_holder()
             )
         else:
             return res
@@ -109,10 +108,10 @@ class ResPartner(models.Model):
         return res
 
     def _move_document_folder(self):
-        """Move the documents folder to where it belongs now.
+        """Move (or rename) the documents folder to where it belongs now.
 
-        Idempotent: the target is computed from the current salesperson and
-        company, so the job can be retried or run after several changes.
+        Idempotent: the target is computed from the current salesperson, parent
+        and name, so the job can be retried or run after several changes.
         The folders of the contacts inside the moved folder follow it: their
         links are updated.
         """
@@ -124,10 +123,12 @@ class ResPartner(models.Model):
             fs = self.env["fs.storage"].get_fs_by_code(storage_code)
             old_path = value.ref
             parent_parts = partner._get_document_folder_parent_parts()
+            name = partner._get_document_folder_dirname()
             if storage.sanitize_fs_name:
                 parent_parts = storage.sanitize_fs_item_names(parent_parts)
+                name = storage.sanitize_fs_item_name(name)
             parent = posixpath.join(*parent_parts)
-            new_path = posixpath.join(parent, posixpath.basename(old_path))
+            new_path = posixpath.join(parent, name)
             if new_path == old_path:
                 continue
             if not fs.exists(old_path):
@@ -171,7 +172,7 @@ class ResPartner(models.Model):
     def _update_document_subfolder_links(self, old_path, new_path, storage_code, fs):
         """Update the links of all the folders moved with this folder.
 
-        They are found by path, not by company: a contact may have left the
+        They are found by path, not by parent: a contact may have left the
         company before the job moving the company folder ran, its folder was
         moved all the same.
         """
