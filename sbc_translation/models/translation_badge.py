@@ -45,6 +45,16 @@ class TranslationBadge(models.Model):
         )
     ]
 
+    def write(self, vals):
+        res = super().write(vals)
+        if {"start_date", "end_date"} & set(vals):
+            # The period of their scheduled leaderboards follows the campaign
+            # dates: start them now if the new period has already begun.
+            self.env["translation.leaderboard"].sudo().search(
+                [("campaign_id", "in", self.ids), ("state", "!=", "final")]
+            )._update_state()
+        return res
+
 
 class TranslationUserBadge(models.Model):
     _name = "sbc.translation.user.badge"
