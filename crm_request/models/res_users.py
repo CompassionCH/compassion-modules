@@ -19,3 +19,9 @@ class ResUsers(models.Model):
         "you're assigned to",
         default=True,
     )
+
+    @property
+    def SELF_READABLE_FIELDS(self):
+        # Shown in "My Profile": without it, the user's own HR fields are
+        # refused there (T3604).
+        return super().SELF_READABLE_FIELDS + ["do_reminder_support_req"]

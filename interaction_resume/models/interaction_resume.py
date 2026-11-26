@@ -50,6 +50,7 @@ class InteractionResume(models.Model):
             ("error", "Error"),
             ("deferred", "Deferred"),
             ("sent", "Sent"),
+            ("pending", "Pending"),
             ("delivered", "Delivered"),
             ("opened", "Opened"),
             ("rejected", "Rejected"),

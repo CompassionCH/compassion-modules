@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class TranslationBadge(models.Model):
@@ -12,7 +13,7 @@ class TranslationBadge(models.Model):
         help="Archive a badge to stop awarding it while keeping existing awards.",
     )
 
-    icon = fields.Image(max_width=256, max_height=256)
+    icon = fields.Image(max_width=128, max_height=128)
 
     badge_type = fields.Selection(
         [
@@ -34,7 +35,7 @@ class TranslationBadge(models.Model):
     end_date = fields.Date(string="Campaign End Date")
 
     user_badge_ids = fields.One2many(
-        "sbc.translation.user.badge", "badge_id", string="Granted to", readonly=True
+        "translation.user.badge", "badge_id", string="Granted to", readonly=True
     )
 
     _sql_constraints = [
@@ -44,6 +45,18 @@ class TranslationBadge(models.Model):
             "The target must be bigger than 0.",
         )
     ]
+
+    @api.constrains("badge_type", "start_date", "end_date")
+    def _check_campaign_dates(self):
+        for badge in self.filtered(lambda b: b.badge_type == "campaign"):
+            if not badge.start_date or not badge.end_date:
+                raise ValidationError(
+                    _("A campaign badge requires a start date and an end date.")
+                )
+            if badge.end_date < badge.start_date:
+                raise ValidationError(
+                    _("The campaign end date must be on or after its start date.")
+                )
 
     def write(self, vals):
         res = super().write(vals)
@@ -57,11 +70,11 @@ class TranslationBadge(models.Model):
 
 
 class TranslationUserBadge(models.Model):
-    _name = "sbc.translation.user.badge"
+    _name = "translation.user.badge"
     _description = "User Unlocked Badges"
 
-    user_id = fields.Many2one(
-        "res.users",
+    translator_id = fields.Many2one(
+        "translation.user",
         required=True,
         index=True,
         ondelete="cascade",
@@ -81,7 +94,7 @@ class TranslationUserBadge(models.Model):
     _sql_constraints = [
         (
             "unique_user_badge",
-            "UNIQUE(user_id, badge_id)",
+            "UNIQUE(translator_id, badge_id)",
             "A user can only unlock a specific badge once.",
         )
     ]

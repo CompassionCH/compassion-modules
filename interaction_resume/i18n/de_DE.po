@@ -1,0 +1,686 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* interaction_resume
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 19:13+0000\n"
+"PO-Revision-Date: 2026-10-16 19:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_needaction
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_needaction
+msgid "Action Needed"
+msgstr "Aktion notwendig"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_ids
+msgid "Activities"
+msgstr "Aktivitäten"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_exception_decoration
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Aktivität Ausnahme Dekoration"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_state
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_state
+msgid "Activity State"
+msgstr "Status der Aktivität"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_type_icon
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivitätsart-Symbol"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_attachment_count
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_attachment_count
+msgid "Attachment Count"
+msgstr "# Anhänge"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__ir_attachment_ids
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
+msgid "Attachments"
+msgstr "Dateianhänge"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__body
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__body
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__body
+msgid "Body"
+msgstr "Nachrichtentext"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__bounced
+msgid "Bounced"
+msgstr "Unzustellbar"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__canceled
+msgid "Canceled"
+msgstr "Abgebrochen"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_crm_claim__date
+msgid "Claim Date"
+msgstr "Datum der Reklamation"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_partner_communication_job
+msgid "Communication Job"
+msgstr "Kommunikation Job"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__communication_type
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__communication_type
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__communication_type
+msgid "Communication Type"
+msgstr "Kommunikationsart"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_res_partner
+#: model:ir.model.fields,field_description:interaction_resume.field_crm_phonecall__partner_id
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: interaction_resume
+#. odoo-javascript
+#: code:addons/interaction_resume/static/src/xml/message_edit.xml:0
+msgid "Convert to Interaction"
+msgstr "In Interaktion umwandeln"
+
+#. module: interaction_resume
+#: model:ir.actions.server,name:interaction_resume.action_convert_mail_message_to_interaction
+msgid "Convert to Other Interaction"
+msgstr "In andere Interaktion umwandeln"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__create_uid
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__create_uid
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__create_uid
+msgid "Created by"
+msgstr "erstellt von"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__create_date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__create_date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__create_date
+#: model:ir.model.fields,field_description:interaction_resume.field_sms_sms__date
+msgid "Created on"
+msgstr "erstellt am"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_sms_sms__partner_id
+msgid "Customer"
+msgstr "Kunde"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_crm_phonecall__date
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__date
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_source__date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_communication_job__date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__date
+msgid "Date"
+msgstr "Datum"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__deferred
+msgid "Deferred"
+msgstr "Zurückgestellt"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__delivered
+msgid "Delivered"
+msgstr "Ausgeliefert"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__direction
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__direction
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__direction
+msgid "Direction"
+msgstr "Richtung"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__display_name
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__display_name
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__email
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__email
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__email
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__email
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+msgid "Email"
+msgstr "E-Mail"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__error
+msgid "Error"
+msgstr "Fehler"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__exception
+msgid "Exception"
+msgstr "Ausnahme"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__failed_message_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__failed_message_ids
+msgid "Failed Messages"
+msgstr "Fehlgeschlagene Nachrichten"
+
+#. module: interaction_resume
+#. odoo-javascript
+#: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
+msgid "Fetch More"
+msgstr "Mehr laden"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_follower_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_follower_ids
+msgid "Followers"
+msgstr "Beobachter"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_partner_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Beobachter (Partner)"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_type_icon
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Fontawesome-Icon, z. B. fa-tasks"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__gender
+msgid "Gender"
+msgstr "Geschlecht"
+
+#. module: interaction_resume
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+msgid "Group By..."
+msgstr "Gruppieren nach ..."
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__has_attachment
+msgid "Has Attachment"
+msgstr "Hat Anhang"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__has_message
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__has_message
+msgid "Has Message"
+msgstr "Hat Nachricht"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_exception_icon
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_exception_icon
+msgid "Icon"
+msgstr "Symbol"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_exception_icon
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Symbol, um eine Ausnahmeaktivität anzuzeigen."
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_needaction
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_has_error
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_has_sms_error
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_has_error
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+"Das Senden mancher Nachrichten ist fehlgeschlagen wenn dieses Fenster "
+"angekreuzt ist."
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__ignored
+msgid "Ignored"
+msgstr "Ignoriert"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__direction__in
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__direction__in
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__direction__in
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
+msgid "Incoming"
+msgstr "Eingehend"
+
+#. module: interaction_resume
+#: model_terms:ir.ui.view,arch_db:interaction_resume.res_partner_view_form
+msgid "Interaction Resume"
+msgstr "Lebenslauf der Interaktionen"
+
+#. module: interaction_resume
+#. odoo-python
+#: code:addons/interaction_resume/models/res_partner.py:0
+#: model:ir.model.fields,field_description:interaction_resume.field_res_partner__interaction_resume_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_res_users__interaction_resume_ids
+msgid "Interaction resume"
+msgstr "Interaktionszusammenfassung"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_is_follower
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_is_follower
+msgid "Is Follower"
+msgstr "Ist Beobachter"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_res_partner__last_interaction_fetch_page
+#: model:ir.model.fields,field_description:interaction_resume.field_res_users__last_interaction_fetch_page
+msgid "Last Interaction Fetch Page"
+msgstr "Letzte abgerufene Interaktionsseite"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__write_uid
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__write_uid
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__write_uid
+msgid "Last Updated by"
+msgstr "zuletzt aktualisiert von"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__write_date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__write_date
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__write_date
+msgid "Last Updated on"
+msgstr "zuletzt aktualisiert am"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_res_partner__last_interaction_fetch_date
+#: model:ir.model.fields,help:interaction_resume.field_res_users__last_interaction_fetch_date
+msgid "Last date the interactions were fetched for this partner"
+msgstr ""
+"Datum, an dem die Interaktionen für diesen Partner zuletzt abgerufen wurden"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_res_partner__last_interaction_fetch_date
+#: model:ir.model.fields,field_description:interaction_resume.field_res_users__last_interaction_fetch_date
+msgid "Last interaction fetch date"
+msgstr "Datum des letzten Interaktionsabrufs"
+
+#. module: interaction_resume
+#. odoo-javascript
+#: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
+msgid "Log Interaction"
+msgstr "Interaktion protokollieren"
+
+#. module: interaction_resume
+#: model:ir.actions.act_window,name:interaction_resume.action_log_other_interaction
+#: model_terms:ir.ui.view,arch_db:interaction_resume.log_other_interaction_wizard_view
+msgid "Log interaction"
+msgstr "Interaktion protokollieren"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_partner_log_other_interaction
+msgid "Logging for other interactions"
+msgstr "Protokollierung für andere Interaktionen"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_partner_log_other_interaction_wizard
+msgid "Logging wizard for other interactions"
+msgstr "Assistent zur Protokollierung anderer Interaktionen"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_mailing_trace
+msgid "Mailing Statistics"
+msgstr "E-Mail Statistik"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__mass
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__mass
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__mass
+msgid "Mass Mailing"
+msgstr "Massenmailing"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_mail_message
+msgid "Message"
+msgstr "Nachricht"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_has_error
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_has_error
+msgid "Message Delivery error"
+msgstr "Fehler beim Senden der Nachricht"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_res_partner__message_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_res_users__message_ids
+msgid "Messages"
+msgstr "Mitteilungen"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__my_activity_date_deadline
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Meine Aktivität Deadline"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_calendar_event_id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Kalenderereignis der nächsten Aktivität"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_date_deadline
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Nächste Aktivitätsfrist"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_summary
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_summary
+msgid "Next Activity Summary"
+msgstr "Zusammenfassung nächste Aktion"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_type_id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nächster Aktivitätstyp"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_needaction_counter
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Anzahl der Aktionen"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_has_error_counter
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_has_error_counter
+msgid "Number of errors"
+msgstr "Anzahl der Fehler"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_needaction_counter
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__message_has_error_counter
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
+
+#. module: interaction_resume
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_form_view
+msgid "Open communication"
+msgstr "Kommunikation öffnen"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__opened
+msgid "Opened"
+msgstr "Geöffnet"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__other
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__other
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__other
+msgid "Other"
+msgstr "Anderes"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__other_type
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__other_type
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__other_type
+msgid "Other Type"
+msgstr "Anderer Typ"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__direction__out
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__outgoing
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__direction__out
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__direction__out
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
+msgid "Outgoing"
+msgstr "Ausgehend"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_sms_sms
+msgid "Outgoing SMS"
+msgstr "Ausgehende SMS"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__paper
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__paper
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__paper
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+msgid "Paper"
+msgstr "Papier"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_crm_claim__partner_id
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__partner_id
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_source__partner_id
+#: model:ir.model.fields,field_description:interaction_resume.field_mailing_trace__partner_id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__partner_id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__partner_id
+msgid "Partner"
+msgstr "Partner"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__pending
+msgid "Pending"
+msgstr "Anstehend"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__phone
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__phone
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__phone
+msgid "Phone"
+msgstr "Telefon"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_crm_phonecall
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+msgid "Phonecall"
+msgstr "Telefonanruf"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__rating_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__rating_ids
+msgid "Ratings"
+msgstr "Bewertungen"
+
+#. module: interaction_resume
+#. odoo-javascript
+#: code:addons/interaction_resume/static/src/xml/tree_button.xml:0
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__rejected
+msgid "Rejected"
+msgstr "Abgelehnt"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__replied
+msgid "Replied"
+msgstr "Beantwortet"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_crm_claim
+msgid "Request"
+msgstr "Anfrage"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__res_id
+msgid "Res"
+msgstr "Res"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__res_model
+msgid "Res Model"
+msgstr "Res-Modell"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__activity_user_id
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__activity_user_id
+msgid "Responsible User"
+msgstr "Verantwortlicher Benutzer"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_interaction_resume
+msgid "Resume of a given partner"
+msgstr "Zusammenfassung eines bestimmten Partners"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__sms
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__sms
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__sms
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_search
+msgid "SMS"
+msgstr "SMS"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__message_has_sms_error
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Zustellungsfehler"
+
+#. module: interaction_resume
+#: model_terms:ir.ui.view,arch_db:interaction_resume.interaction_resume_tree_view
+msgid "Send mode"
+msgstr "Sendemodus"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_communication_job__partner_id
+msgid "Send to"
+msgstr "Senden an"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__sent
+msgid "Sent"
+msgstr "Gesendet"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_mailing_trace__date
+msgid "Sent On"
+msgstr "Gesendet am"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__soft-bounced
+msgid "Soft bounced"
+msgstr "Vorübergehend unzustellbar"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__spam
+msgid "Spam"
+msgstr "Spam"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_state
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status basierend auf Aktivitäten\n"
+"Überfällig: Fälligkeitsdatum bereits überschritten\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
+"Geplant: anstehende Aktivitäten."
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__subject
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__subject
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__subject
+msgid "Subject"
+msgstr "Betreff"
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__communication_type__support
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction__communication_type__support
+#: model:ir.model.fields.selection,name:interaction_resume.selection__partner_log_other_interaction_wizard__communication_type__support
+msgid "Support"
+msgstr "unterstützen"
+
+#. module: interaction_resume
+#. odoo-python
+#: code:addons/interaction_resume/wizards/partner_log_other_interaction_wizard.py:0
+msgid "The interaction has been added to the resume."
+msgstr "Die Interaktion wurde zum Lebenslauf hinzugefügt."
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__tracking_status
+msgid "Tracking Status"
+msgstr "Tracking-Status"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__activity_exception_decoration
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Art der aufgezeichneten Ausnahmeaktivität."
+
+#. module: interaction_resume
+#: model:ir.model.fields.selection,name:interaction_resume.selection__interaction_resume__tracking_status__unsub
+msgid "Unsubscribed"
+msgstr "Abgemeldet"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_interaction_resume__user_id
+msgid "User"
+msgstr "Benutzer"
+
+#. module: interaction_resume
+#: model:base.automation,name:interaction_resume.vacuum_interaction
+#: model:ir.actions.server,name:interaction_resume.action_vacuum_interaction
+msgid "Vacuum interaction"
+msgstr "Interaktionen bereinigen"
+
+#. module: interaction_resume
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction__website_message_ids
+#: model:ir.model.fields,field_description:interaction_resume.field_partner_log_other_interaction_wizard__website_message_ids
+msgid "Website Messages"
+msgstr "Website Nachrichten"
+
+#. module: interaction_resume
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction__website_message_ids
+#: model:ir.model.fields,help:interaction_resume.field_partner_log_other_interaction_wizard__website_message_ids
+msgid "Website communication history"
+msgstr "Website-Kommunikationshistorie"
+
+#. module: interaction_resume
+#: model:ir.model,name:interaction_resume.model_interaction_source
+msgid "interaction.source"
+msgstr "interaction.source"

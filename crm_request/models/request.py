@@ -21,7 +21,11 @@ class CrmClaim(models.Model):
         help="The destination email address that the contacts used.",
         readonly=False,
     )
-    stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
+    stage_id = fields.Many2one(
+        group_expand="_read_group_stage_ids",
+        readonly=False,
+        default=lambda self: self._get_default_request_stage(),
+    )
     ref = fields.Char(related="partner_id.ref")
     color = fields.Integer("Color index", compute="_compute_color")
     language = fields.Selection("_get_lang")
@@ -34,6 +38,17 @@ class CrmClaim(models.Model):
     incoming_message = fields.Html(compute="_compute_incoming_message")
     quoted_reply = fields.Html(compute="_compute_incoming_message")
     reply_to = fields.Char(compute="_compute_incoming_message")
+
+    @api.model
+    def _get_default_request_stage(self):
+        """New requests start in "New", whatever the order of the stages.
+
+        crm_claim takes the stage with sequence 1, which changes as soon as
+        the stages are reordered (T1937). Requests created without a stage,
+        like the website forms, then landed in another stage.
+        """
+        stage_new = self.env.ref("crm_claim.stage_claim1", raise_if_not_found=False)
+        return stage_new.id if stage_new else self._get_default_stage_id()
 
     def _compute_color(self):
         for request in self:
@@ -84,7 +99,16 @@ class CrmClaim(models.Model):
         if not self.user_id:
             self.user_id = self.env.user
 
-        template_id = self.categ_id.template_id.id
+        template = self.categ_id.template_id
+        template_id = template.id
+        # The composer ignores the template when a body is given (T3547):
+        # render the template answer ourselves, above the quoted message.
+        if template:
+            answer = template.with_context(
+                salutation_language=self.language
+            )._generate_template(self.ids, {"body_html"})[self.id]["body_html"]
+        else:
+            answer = self.partner_id.salutation
         ctx = {
             "default_model": "crm.claim",
             "default_res_ids": self.ids,
@@ -96,10 +120,7 @@ class CrmClaim(models.Model):
             "use_email_alias": self.reply_to or self.email_from,
             "mark_so_as_sent": True,
             "salutation_language": self.language,
-            "default_body": prepend_html_content(
-                self.quoted_reply,
-                self.partner_id.salutation,
-            ),
+            "default_body": prepend_html_content(self.quoted_reply, answer),
         }
 
         return {
@@ -137,7 +158,17 @@ class CrmClaim(models.Model):
             custom_values = {}
 
         alias_char = parseaddr(msg.get("to"))[1].split("@")[0]
-        alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
+        # The "To" header may not hold the alias address (forward, Bcc...).
+        # An empty name would match every record-level alias.
+        alias = self.env["mail.alias"]
+        if alias_char:
+            alias = alias.search(
+                [
+                    ("alias_name", "=", alias_char),
+                    ("alias_model_id.model", "=", self._name),
+                ],
+                limit=1,
+            )
 
         # Find the corresponding type
         subject = msg.get("subject", "")
@@ -251,7 +282,10 @@ class CrmClaim(models.Model):
                 # Sync partner fields
                 partner = request.partner_id
                 if request.email_from:
-                    if partner.email and request.email_from:
+                    if partner.email and (
+                        partner.email.strip().lower()
+                        != request.email_from.strip().lower()
+                    ):
                         # Create an alias if the email differs
                         partner_alias = self.env["res.partner"].create(
                             {
@@ -261,7 +295,7 @@ class CrmClaim(models.Model):
                             }
                         )
                         request.partner_id = partner_alias
-                    else:
+                    elif not partner.email:
                         partner.email = request.email_from
                 if request.partner_phone and not partner.phone:
                     partner.phone = request.partner_phone

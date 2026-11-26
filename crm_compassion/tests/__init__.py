@@ -8,4 +8,4 @@
 #
 ##############################################################################
 
-from . import test_crm_compassion, test_event_analytic
+from . import test_crm_compassion, test_event_analytic, test_migration_expenses

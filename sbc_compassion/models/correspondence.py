@@ -17,6 +17,7 @@ import uuid
 from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
+from psycopg2 import OperationalError
 from PyPDF2 import PdfFileReader
 
 from odoo import _, api, fields, models
@@ -29,6 +30,9 @@ from ..tools.onramp_connector import SBCConnector
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
+
+# Template sent by GMC for the Compassion Moment B2S letters
+COMPASSION_MOMENT_TEMPLATE = "MX-C-1S10"
 
 ROWS_PER_ATTACHMENT_PAGE = 2
 
@@ -79,7 +83,9 @@ class Correspondence(models.Model):
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=False, ondelete="restrict"
     )
-    child_id = fields.Many2one(related="sponsorship_id.child_id", readonly=True)
+    child_id = fields.Many2one(
+        related="sponsorship_id.child_id", store=True, readonly=True, index=True
+    )
     avatar_128 = fields.Image(compute="_compute_avatar")
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, tracking=True)
@@ -202,6 +208,10 @@ class Correspondence(models.Model):
         string="Number of pages", compute="_compute_nbr_pages", store=True
     )
     template_id = fields.Many2one("correspondence.template", "Template")
+    is_compassion_moment = fields.Boolean(
+        help="The B2S letter comes from GMC with the Compassion Moment template "
+        f"{COMPASSION_MOMENT_TEMPLATE}",
+    )
 
     # 4. Additional information
     ###########################
@@ -449,6 +459,15 @@ class Correspondence(models.Model):
             else:
                 letter.letter_format = False
 
+    def _refresh_letter_format(self):
+        """
+        Recompute the format and the file name from the scanned files. The compute
+        reads the whole scan of every letter: call it on small batches (jobs).
+        """
+        for fname in ("letter_format", "file_name"):
+            self.env.add_to_compute(self._fields[fname], self)
+            self.flush_recordset([fname])
+
     def _get_uuid(self):
         return str(uuid.uuid4())
 
@@ -678,6 +697,10 @@ class Correspondence(models.Model):
         letters = super().create(vals_list)
         # T1676 : Each page should contain at least one textbox (paragraph)
         letters.create_text_boxes()
+        # The report overlays the original text on the template pages, so the
+        # text must be spread on as many pages as needed to fit the text boxes.
+        for letter in letters.filtered("report_needs_original_text"):
+            letter.spread_text_to_pages()
         # Make sure the translation language is set correctly.
         letters._check_translation_language()
         for letter in letters:
@@ -749,6 +772,40 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    def mark_email_read(self):
+        """Set the date at which the letters were first read through the e-mail
+        link. A letter opened again keeps its first date.
+
+        This must never prevent a sponsor from seeing the letter: when another
+        transaction is updating the same letters, the date is set later by a job.
+        """
+        unread = self.filtered(lambda letter: not letter.email_read)
+        if not unread:
+            return True
+        read_date = fields.Datetime.now()
+        try:
+            with self.env.cr.savepoint():
+                unread._set_email_read(read_date)
+        except OperationalError:
+            _logger.info(
+                "Letters %s: concurrent update, marking as read later", unread.ids
+            )
+            unread.with_delay_sh("_set_email_read", read_date)
+        return True
+
+    def _set_email_read(self, read_date):
+        """Also run as a job: letters read in the meantime keep their date.
+
+        A job runs as the user who queued it, which is the public user for a
+        sponsor opening the link without being logged in. The callers (the
+        letter download controllers) already use sudo for this, but a job does
+        not keep it, so the access is restored here.
+        """
+        self.sudo().filtered(lambda letter: not letter.email_read).write(
+            {"email_read": read_date}
+        )
+        return True
+
     def validate(self):
         for letter in self:
             if letter.state == "Draft":
@@ -863,6 +920,12 @@ class Correspondence(models.Model):
             ", ".join(self.mapped("child_id.local_id")),
         )
 
+    def _is_ready_for_sponsor(self):
+        """Tells if a published B2S letter can be communicated to the sponsor.
+        Extended by modules that hold letters back (e.g. translation)."""
+        self.ensure_one()
+        return True
+
     def get_pdf(self):
         """
         Retrieves the PDF of the letter, trying different sources in order.
@@ -976,6 +1039,7 @@ class Correspondence(models.Model):
     def json_to_data(self, json, mapping_name=None):
         template_name = json.pop("Template", "CH-A-6S11-1")
         odoo_data = super().json_to_data(json, mapping_name)
+        odoo_data["is_compassion_moment"] = template_name == COMPASSION_MOMENT_TEMPLATE
 
         if not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(
@@ -987,13 +1051,17 @@ class Correspondence(models.Model):
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.get("partner_id")
             child = odoo_data.pop("child_id")
-            sponsorship = self.env["recurring.contract"].search(
+            sponsorships = self.env["recurring.contract"].search(
                 [
                     ("correspondent_id", "=", partner),
                     ("child_id", "=", child),
-                ],
-                limit=1,
+                ]
             )
+            # Prefer the live sponsorship: bound to an inactive duplicate,
+            # send_communication drops the letter and it never gets published.
+            # The sort is stable, so the newest contract wins within a state.
+            state_rank = {"active": 0, "terminated": 1, "waiting": 2}
+            sponsorship = sponsorships.sorted(lambda s: state_rank.get(s.state, 3))[:1]
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
 
@@ -1277,6 +1345,7 @@ class Correspondence(models.Model):
                     ("template_id.is_christmas_letter", "=", True),
                     ("kit_identifier", "=", False),
                     ("state", "=", "Exception"),
+                    ("on_hold", "=", True),
                 ]
             )
             correspondences.reactivate_letters(_("Christmas period started"))

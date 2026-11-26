@@ -62,6 +62,10 @@ class Base(models.AbstractModel):
                     job = job.split(split, chain=chain)
                 if parent_job is not None:
                     parent_job.on_done(job)
+                    # on_done only stores the edge in the parent's graph: add it
+                    # to the child's graph too, so delaying the child also delays
+                    # its parent(s).
+                    job._graph.add_edge(parent_job, job)
                 if not wait_for_children:
                     job.delay()
                 return job

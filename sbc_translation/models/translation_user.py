@@ -1,7 +1,13 @@
+import logging
 from datetime import timedelta
 
+from psycopg2 import IntegrityError
+
 from odoo import _, api, fields, models
+from odoo.tools import mute_logger
 from odoo.tools.image import image_data_uri
+
+_logger = logging.getLogger(__name__)
 
 
 class TranslationUser(models.Model):
@@ -52,13 +58,42 @@ class TranslationUser(models.Model):
         related="user_id.leaderboard_visibility", readonly=False
     )
     force_validation = fields.Boolean(
-        help="If checked, all translations submitted by this user will require "
-        "validation by a supervisor, regardless of their verified skills"
+        help="If checked, all translations submitted by this user will "
+        "require validation by a supervisor, regardless of their verified"
+        "skills",
     )
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
+
+    @api.model
+    def _get_validated_translations_domain(
+        self, translators, date_from=None, date_to=None
+    ):
+        """
+        Single definition of a counted translation, shared by badges and
+        leaderboards: a translation counts once validated, dated by its
+        validation time. Bounds are inclusive.
+        """
+        domain = [
+            ("new_translator_id", "in", translators.ids),
+            ("translation_status", "=", "done"),
+            ("translate_done", "!=", False),
+        ]
+        if date_from:
+            domain.append(("translate_done", ">=", date_from))
+        if date_to:
+            domain.append(("translate_done", "<=", date_to))
+        return domain
+
+    @api.model
+    def _get_campaign_domain(self, translators, badge):
+        """Validated translations counted for a campaign badge (whole end day)."""
+        domain = self._get_validated_translations_domain(translators, badge.start_date)
+        if badge.end_date:
+            domain.append(("translate_done", "<", badge.end_date + timedelta(days=1)))
+        return domain
 
     @api.depends("translated_letter_ids.translation_status")
     def _compute_nb_translated_letters(self):
@@ -129,12 +164,9 @@ class TranslationUser(models.Model):
             translations = (
                 self.env["correspondence"]
                 .sudo()
-                .search(
-                    [
-                        ("new_translator_id", "=", translator.id),
-                        ("translation_status", "=", "done"),
-                        ("translate_done", "!=", False),
-                    ]
+                .search_fetch(
+                    self._get_validated_translations_domain(translator),
+                    ["translate_done"],
                 )
             )
 
@@ -142,7 +174,7 @@ class TranslationUser(models.Model):
                 translator.current_streak = 0
                 continue
 
-            translator_tz = translator.user_id.tz or self.env.user.tz or "UTC"
+            translator_tz = translator.user_id.tz or "Europe/Zurich"
             tz_context = translator.with_context(tz=translator_tz)
 
             active_dates = set()
@@ -184,8 +216,8 @@ class TranslationUser(models.Model):
             streak_count = translator.current_streak or 0
 
             unlocked_ids = (
-                self.env["sbc.translation.user.badge"]
-                .search([("user_id", "=", translator.user_id.id)])
+                self.env["translation.user.badge"]
+                .search([("translator_id", "=", translator.id)])
                 .mapped("badge_id")
                 .ids
             )
@@ -206,32 +238,37 @@ class TranslationUser(models.Model):
                 elif badge.badge_type == "campaign":
                     if badge.start_date and badge.start_date > today:
                         continue
-                    domain = [
-                        ("new_translator_id", "=", translator.id),
-                        ("translation_status", "=", "done"),
-                    ]
-                    if badge.start_date:
-                        domain.append(("translate_done", ">=", badge.start_date))
-                    if badge.end_date:
-                        domain.append(
-                            ("translate_done", "<", badge.end_date + timedelta(days=1))
-                        )
-
-                    campaign_count = self.env["correspondence"].search_count(domain)
+                    campaign_count = self.env["correspondence"].search_count(
+                        self._get_campaign_domain(translator, badge)
+                    )
                     if campaign_count >= badge.threshold:
                         should_unlock = True
 
                 if should_unlock:
-                    existing = self.env["sbc.translation.user.badge"].search_count(
+                    existing = self.env["translation.user.badge"].search_count(
                         [
-                            ("user_id", "=", translator.user_id.id),
+                            ("translator_id", "=", translator.id),
                             ("badge_id", "=", badge.id),
                         ]
                     )
                     if not existing:
-                        self.env["sbc.translation.user.badge"].sudo().create(
-                            {"user_id": translator.user_id.id, "badge_id": badge.id}
-                        )
+                        # This runs inside the letter submission: a concurrent
+                        # award (e.g. the cron) must not make the submission fail.
+                        try:
+                            with mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+                                self.env["translation.user.badge"].sudo().create(
+                                    {
+                                        "translator_id": translator.id,
+                                        "badge_id": badge.id,
+                                    }
+                                )
+                        except IntegrityError:
+                            # Already awarded at the same time by another process
+                            _logger.debug(
+                                "Badge %s already awarded to user %s",
+                                badge.id,
+                                translator.user_id.id,
+                            )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -242,7 +279,10 @@ class TranslationUser(models.Model):
         user_group = self.env.ref("sbc_translation.group_user")
         for translator in records:
             translator.user_id.write(
-                {"groups_id": [(4, user_group.id)], "translator_id": translator.id}
+                {
+                    "groups_id": [(4, user_group.id)],
+                    "translator_id": translator.id,
+                }
             )
         return records
 
@@ -332,11 +372,11 @@ class TranslationUser(models.Model):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
 
         Badge = self.env["translation.badge"]
-        UserBadge = self.env["sbc.translation.user.badge"]
+        UserBadge = self.env["translation.user.badge"]
         Correspondence = self.env["correspondence"]
 
         unlocked_badge_ids = (
-            UserBadge.search([("user_id", "=", self.user_id.id)]).mapped("badge_id").ids
+            UserBadge.search([("translator_id", "=", self.id)]).mapped("badge_id").ids
         )
         all_badges = Badge.with_context(active_test=False).search(
             ["|", ("active", "=", True), ("id", "in", unlocked_badge_ids)],
@@ -368,6 +408,7 @@ class TranslationUser(models.Model):
             current_value = 0
             days_left = False
             days_until_start = False
+            is_finished = False
 
             if badge.badge_type == "count":
                 current_value = corr_count
@@ -388,30 +429,9 @@ class TranslationUser(models.Model):
                     days_until_start = (badge.start_date - today).days
 
                 else:
-                    domain = [
-                        ("new_translator_id", "=", self.id),
-                        ("translation_status", "=", "done"),
-                    ]
-
-                    if badge.start_date:
-                        domain.append(
-                            (
-                                "translate_done",
-                                ">=",
-                                badge.start_date,
-                            )
-                        )
-
-                    if badge.end_date:
-                        domain.append(
-                            (
-                                "translate_done",
-                                "<",
-                                badge.end_date + timedelta(days=1),
-                            )
-                        )
-
-                    current_value = Correspondence.search_count(domain)
+                    current_value = Correspondence.search_count(
+                        self._get_campaign_domain(self, badge)
+                    )
 
                     progress = min(
                         1.0,
@@ -419,10 +439,8 @@ class TranslationUser(models.Model):
                     )
 
                     if badge.end_date:
-                        if badge.end_date >= today:
-                            days_left = (badge.end_date - today).days
-                        else:
-                            days_left = 0
+                        days_left = max((badge.end_date - today).days, 0)
+                        is_finished = badge.end_date < today
 
             if is_unlocked:
                 progress = 1.0
@@ -445,6 +463,7 @@ class TranslationUser(models.Model):
                 "threshold": badge.threshold,
                 "days_left": days_left,
                 "days_until_start": days_until_start,
+                "is_finished": is_finished,
                 "start_date": (
                     badge.start_date.strftime("%d/%m/%Y") if badge.start_date else False
                 ),
@@ -518,6 +537,7 @@ class TranslationUser(models.Model):
 
 class ResUsers(models.Model):
     _inherit = "res.users"
+
     translator_id = fields.Many2one("translation.user", "Translator")
     leaderboard_visibility = fields.Selection(
         [("public", "Public"), ("anonymous", "Anonymous")],

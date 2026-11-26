@@ -39,7 +39,7 @@ class PdfPreviewWizard(models.TransientModel):
             wizard.preview = (
                 self.env["ir.actions.report"]
                 .with_context(bin_size=False, lang=comm.partner_id.lang)
-                ._render_qweb_html(comm.report_id.xml_id, comm.ids)[0]
+                ._render_qweb_html(comm.report_id, comm.ids)[0]
             )
 
     def _compute_html(self):
