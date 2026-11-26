@@ -634,7 +634,7 @@ class TranslationLeaderboardEntry(models.Model):
         ondelete="cascade",
     )
     user_id = fields.Many2one(
-        "res.users", required=True, readonly=True, index=True, ondelete="cascade"
+        "res.users", required=True, readonly=True, index=True, ondelete="restrict"
     )
     rank = fields.Integer(required=True, readonly=True)
     score = fields.Integer(required=True, readonly=True)
