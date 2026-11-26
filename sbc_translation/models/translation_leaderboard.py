@@ -18,6 +18,16 @@ SYSTEM_FIELDS = {"state"}
 PERIOD_FIELDS = {"start_at", "end_at"}
 
 
+def _is_system(env):
+    """True for lifecycle writes made by the system itself.
+
+    The ``leaderboard_system`` context key alone is not enough: an RPC
+    caller can set any context key. System writes also run in superuser
+    mode (``sudo()``), which an RPC call can never reach.
+    """
+    return env.su and bool(env.context.get("leaderboard_system"))
+
+
 def _local_to_utc(local_dt):
     """Convert a naive Europe/Zurich datetime into a naive UTC datetime."""
     return LEADERBOARD_TZ.localize(local_dt).astimezone(pytz.utc).replace(tzinfo=None)
@@ -226,7 +236,7 @@ class TranslationLeaderboard(models.Model):
     # ------------------------------------------------------------------
     @api.model_create_multi
     def create(self, vals_list):
-        is_system = self.env.context.get("leaderboard_system")
+        is_system = _is_system(self.env)
         for vals in vals_list:
             if not is_system:
                 if vals.get("leaderboard_type", "campaign") != "campaign":
@@ -243,7 +253,7 @@ class TranslationLeaderboard(models.Model):
         return boards
 
     def write(self, vals):
-        if not self.env.context.get("leaderboard_system"):
+        if not _is_system(self.env):
             if set(vals) & SYSTEM_FIELDS:
                 raise UserError(_("The state of a leaderboard cannot be edited."))
             if set(vals) & PERIOD_FIELDS:
@@ -262,7 +272,7 @@ class TranslationLeaderboard(models.Model):
         res = super().write(vals)
         # Other campaign, so other period: start the leaderboard now if
         # needed, without waiting for the cron
-        if not self.env.context.get("leaderboard_system") and "campaign_id" in vals:
+        if not _is_system(self.env) and "campaign_id" in vals:
             self._update_state()
         return res
 
@@ -646,11 +656,11 @@ class TranslationLeaderboardEntry(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if not self.env.context.get("leaderboard_system"):
+        if not _is_system(self.env):
             raise UserError(_("Leaderboard entries are written by the system only."))
         return super().create(vals_list)
 
     def write(self, vals):
-        if not self.env.context.get("leaderboard_system"):
+        if not _is_system(self.env):
             raise UserError(_("A final leaderboard ranking cannot be modified."))
         return super().write(vals)
