@@ -9,4 +9,13 @@
         <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
+    <record id="ir_cron_refresh_translation_leaderboards" model="ir.cron">
+        <field name="name">Translation: Update Leaderboards</field>
+        <field name="model_id" ref="model_translation_leaderboard"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_refresh_leaderboards()</field>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
 </odoo>

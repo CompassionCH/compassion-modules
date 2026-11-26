@@ -228,6 +228,10 @@ msgstr "Créer un nouveau document"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__create_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__create_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__create_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -238,6 +242,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__create_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__create_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__create_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__create_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__create_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -264,6 +272,10 @@ msgstr "Langue de destination"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__display_name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__display_name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__display_name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__display_name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__display_name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -294,6 +306,10 @@ msgstr "Élevé"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__id
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__id
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__id
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__id
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__id
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__id
 msgid "ID"
 msgstr "Identifiant"
 
@@ -354,6 +370,10 @@ msgstr "Type de problème"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_uid
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__write_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__write_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__write_uid
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
@@ -364,6 +384,10 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__write_date
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user_skill__write_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__write_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__write_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__write_date
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user_badge__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
@@ -447,6 +471,7 @@ msgstr "Ma supervision"
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_competence__name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_letter_counting_wizard__name
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__name
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__name
 msgid "Name"
 msgstr "Nom"
 
@@ -825,6 +850,7 @@ msgstr "Urgent"
 #. module: sbc_translation
 #: model:ir.model.fields,field_description:sbc_translation.field_translation_user__user_id
 #: model:res.groups,name:sbc_translation.group_user
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__user_id
 msgid "User"
 msgstr "Utilisateur"
 
@@ -901,3 +927,327 @@ msgstr "l'utilisateur aura accès à la plateforme de traduction."
 #: model_terms:ir.ui.view,arch_db:sbc_translation.correspondence_translation_kanban
 msgid "translation priority"
 msgstr "priorité à la traduction"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A campaign leaderboard needs a campaign."
+msgstr "Un classement de campagne doit être lié à une campagne."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard cannot be modified."
+msgstr "Un classement final ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "A final leaderboard ranking cannot be modified."
+msgstr "Le classement final ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_user.py:0
+msgid "Anonymous translator"
+msgstr "Traducteur anonyme"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__campaign_id
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__leaderboard_type__campaign
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Campaign"
+msgstr "Campagne"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Leaderboard entries are written by the system only."
+msgstr "Les entrées du classement sont écrites uniquement par le système."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be edited."
+msgstr "Seuls les classements de campagne peuvent être modifiés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only campaign leaderboards can be linked to a campaign."
+msgstr "Seuls les classements de campagne peuvent être liés à une campagne."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid ""
+"Final leaderboards and running weekly or monthly leaderboards cannot be "
+"cancelled."
+msgstr ""
+"Les classements finaux et les classements hebdomadaires ou mensuels en cours"
+" ne peuvent pas être annulés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Only scheduled leaderboards can be edited."
+msgstr "Seuls les classements planifiés peuvent être modifiés."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "This leaderboard has not started yet."
+msgstr "Ce classement n'a pas encore commencé."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Week %(week)s - %(year)s"
+msgstr "Semaine %(week)s - %(year)s"
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "Weekly and monthly leaderboards are created automatically."
+msgstr "Les classements hebdomadaires et mensuels sont créés automatiquement."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid "The state of a leaderboard cannot be edited."
+msgstr "L'état d'un classement ne peut pas être modifié."
+
+#. module: sbc_translation
+#. odoo-python
+#: code:addons/sbc_translation/models/translation_leaderboard.py:0
+msgid ""
+"The period of a campaign leaderboard follows the dates of its campaign: "
+"change the campaign dates instead."
+msgstr ""
+"La période d'un classement de campagne suit les dates de sa campagne : il "
+"faut modifier les dates de la campagne."
+
+#. module: sbc_translation
+#: model:ir.model.constraint,message:sbc_translation.constraint_translation_leaderboard_unique_name_key
+msgid "A leaderboard already exists for this period."
+msgstr "Un classement existe déjà pour cette période."
+
+#. module: sbc_translation
+#: model:ir.model.constraint,message:sbc_translation.constraint_translation_leaderboard_entry_unique_user
+msgid "A user can only appear once in a leaderboard."
+msgstr "Un utilisateur ne peut apparaître qu'une fois dans un classement."
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_leaderboard__created_by
+msgid ""
+"Administrator who created the leaderboard. Empty for leaderboards generated "
+"automatically by the system."
+msgstr ""
+"Administrateur qui a créé le classement. Vide pour les classements générés "
+"automatiquement par le système."
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__res_users__leaderboard_visibility__anonymous
+msgid "Anonymous"
+msgstr "Anonyme"
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_res_users__leaderboard_visibility
+#: model:ir.model.fields,help:sbc_translation.field_translation_user__leaderboard_visibility
+msgid ""
+"Anonymous: other translators see 'Anonymous translator' instead of your "
+"name. Your rank and score are kept."
+msgstr ""
+"Anonyme : les autres traducteurs voient « Traducteur anonyme » à la place de"
+" votre nom. Votre rang et votre score sont conservés."
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_form
+msgid "Cancel leaderboard"
+msgstr "Annuler le classement"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__created_by
+msgid "Created By"
+msgstr "Créé par"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__end_at
+msgid "End At"
+msgstr "Fin"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__state__final
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Final"
+msgstr "Final"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__entry_ids
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_form
+msgid "Final ranking"
+msgstr "Classement final"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__leaderboard_id
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_form
+msgid "Leaderboard"
+msgstr "Classement"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_res_users__leaderboard_visibility
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_user__leaderboard_visibility
+msgid "Leaderboard Visibility"
+msgstr "Visibilité dans le classement"
+
+#. module: sbc_translation
+#: model:ir.actions.act_window,name:sbc_translation.action_translation_leaderboard
+#: model:ir.ui.menu,name:sbc_translation.menu_translation_leaderboard
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_tree
+msgid "Leaderboards"
+msgstr "Classements"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__lifetime_count
+msgid "Lifetime Count"
+msgstr "Total cumulé"
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_leaderboard__show_inactive_users
+msgid ""
+"List translators with 0 points after the ranked ones, without rank number "
+"('Not ranked yet')."
+msgstr ""
+"Afficher les traducteurs à 0 point après ceux qui sont classés, sans numéro "
+"de rang (« Pas encore classé »)."
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__state__live
+msgid "Live"
+msgstr "En cours"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Live / closing"
+msgstr "En cours / en clôture"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__leaderboard_type__monthly
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Monthly"
+msgstr "Mensuel"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__name_key
+msgid "Name Key"
+msgstr "Clé du nom"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__participant_count
+msgid "Participant Count"
+msgstr "Nombre de participants"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__res_users__leaderboard_visibility__public
+msgid "Public"
+msgstr "Public"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__rank
+msgid "Rank"
+msgstr "Rang"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__state__closing
+msgid "Results being finalized"
+msgstr "Résultats en cours de finalisation"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__state__scheduled
+msgid "Scheduled"
+msgstr "Planifié"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__score
+msgid "Score"
+msgstr "Score"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard_entry__score_reached_at
+msgid "Score Reached At"
+msgstr "Score atteint le"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__show_inactive_users
+msgid "Show Inactive Users"
+msgstr "Afficher les utilisateurs inactifs"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__start_at
+msgid "Start At"
+msgstr "Début"
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__state
+msgid "State"
+msgstr "État"
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: sbc_translation
+#: model:ir.model.fields,help:sbc_translation.field_translation_leaderboard__name_key
+msgid "Technical key used by the platform to translate the period name."
+msgstr ""
+"Clé technique utilisée par la plateforme pour traduire le nom de la période."
+
+#. module: sbc_translation
+#: model:ir.model.constraint,message:sbc_translation.constraint_translation_leaderboard_period_valid
+msgid "The end of the leaderboard must be after its start."
+msgstr "La fin du classement doit être postérieure à son début."
+
+#. module: sbc_translation
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_form
+msgid ""
+"This will delete the leaderboard: translators will no longer see it. "
+"Continue?"
+msgstr ""
+"Le classement sera supprimé : les traducteurs ne le verront plus. Continuer "
+"?"
+
+#. module: sbc_translation
+#: model:ir.model,name:sbc_translation.model_translation_leaderboard
+msgid "Translation Leaderboard"
+msgstr "Classement des traductions"
+
+#. module: sbc_translation
+#: model:ir.model,name:sbc_translation.model_translation_leaderboard_entry
+msgid "Translation Leaderboard Final Entry"
+msgstr "Entrée finale du classement des traductions"
+
+#. module: sbc_translation
+#: model:ir.model.constraint,message:sbc_translation.constraint_translation_leaderboard_entry_unique_rank
+msgid "Two users cannot share the same rank."
+msgstr "Deux utilisateurs ne peuvent pas avoir le même rang."
+
+#. module: sbc_translation
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_badge__badge_type
+#: model:ir.model.fields,field_description:sbc_translation.field_translation_leaderboard__leaderboard_type
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Type"
+msgstr "Type"
+
+#. module: sbc_translation
+#: model:ir.model.fields.selection,name:sbc_translation.selection__translation_leaderboard__leaderboard_type__weekly
+#: model_terms:ir.ui.view,arch_db:sbc_translation.view_translation_leaderboard_search
+msgid "Weekly"
+msgstr "Hebdomadaire"

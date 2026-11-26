@@ -88,4 +88,17 @@
         <field name="perm_create" eval="True" />
         <field name="perm_unlink" eval="True" />
     </record>
+    <!-- Scheduled leaderboards are not visible to translators (spec 9.1) -->
+    <record id="translation_leaderboard_user_rule" model="ir.rule">
+        <field name="name">Translator: started leaderboards only</field>
+        <field name="model_id" ref="model_translation_leaderboard" />
+        <field name="domain_force">[('state', '!=', 'scheduled')]</field>
+        <field name="groups" eval="[(4, ref('group_user'))]" />
+    </record>
+    <record id="translation_leaderboard_manager_rule" model="ir.rule">
+        <field name="name">Manager: all leaderboards</field>
+        <field name="model_id" ref="model_translation_leaderboard" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_manager'))]" />
+    </record>
 </odoo>
