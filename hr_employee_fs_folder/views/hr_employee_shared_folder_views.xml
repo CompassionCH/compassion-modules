@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Compassion CH (http://www.compassion.ch)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_shared_folder_form" model="ir.ui.view">
+        <field name="name">hr.employee.shared.folder.form</field>
+        <field name="model">hr.employee.shared.folder</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="employee_id" readonly="1" />
+                        </h1>
+                    </div>
+                    <field name="folder" nolabel="1" readonly="1" />
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_open_my_documents" model="ir.actions.server">
+        <field name="name">My Documents</field>
+        <field name="model_id" ref="model_hr_employee_shared_folder" />
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_my_documents()</field>
+    </record>
+
+    <menuitem
+        id="menu_my_documents"
+        name="My Documents"
+        parent="hr.menu_hr_root"
+        action="action_open_my_documents"
+        groups="base.group_user"
+        sequence="5"
+    />
+</odoo>
