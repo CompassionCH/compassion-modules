@@ -11,6 +11,7 @@ import logging
 from werkzeug.utils import redirect
 
 from odoo import http
+from odoo.http import request
 from odoo.tools import file_open
 
 _logger = logging.getLogger(__name__)
@@ -37,3 +38,12 @@ class TranslationPlatformController(http.Controller):
             return redirect(f"/sbc_translation/static/tp/{page}")
         with file_open("sbc_translation/static/tp/index.html") as app:
             return app.read()
+
+    # The built webapp requests these images at the site root.
+    @http.route(
+        ["/logo_simple.png", "/logo_white.png", "/splash.jpg"],
+        type="http",
+        auth="public",
+    )
+    def translation_platform_images(self):
+        return redirect(f"/sbc_translation/static/tp{request.httprequest.path}")

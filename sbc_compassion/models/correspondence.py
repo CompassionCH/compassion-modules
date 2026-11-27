@@ -145,7 +145,7 @@ class Correspondence(models.Model):
         ],
         compute="_compute_states",
     )
-    state = fields.Selection("get_states", default="Draft", tracking=True)
+    state = fields.Selection("get_states", default="Draft", tracking=True, index=True)
     on_hold = fields.Boolean(
         readonly=True,
         help="Letter is in the 'Exception' state only because it was deliberately "
