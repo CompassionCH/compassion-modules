@@ -8,10 +8,11 @@
 ##############################################################################
 import logging
 
+from werkzeug.exceptions import NotFound
 from werkzeug.utils import redirect
 
 from odoo import http
-from odoo.http import request
+from odoo.http import content_disposition, request
 from odoo.tools import file_open
 
 _logger = logging.getLogger(__name__)
@@ -47,3 +48,28 @@ class TranslationPlatformController(http.Controller):
     )
     def translation_platform_images(self):
         return redirect(f"/sbc_translation/static/tp{request.httprequest.path}")
+
+    @http.route("/sbc_translation/letter_pdf", type="http", auth="public")
+    def letter_pdf(self, letter_uuid=None, **kwargs):
+        """Letter PDF for the translation platform (doesn't mark it as read)."""
+        letter = request.env["correspondence"].sudo()
+        if letter_uuid:
+            letter = letter.search(
+                [
+                    ("uuid", "=", letter_uuid),
+                    ("state", "=", "Global Partner translation queue"),
+                ],
+                limit=1,
+            )
+        if not letter:
+            raise NotFound()
+        return request.make_response(
+            letter.get_translation_pdf().raw or b"",
+            headers=[
+                ("Content-Type", "application/pdf"),
+                (
+                    "Content-Disposition",
+                    content_disposition(letter.file_name, "inline"),
+                ),
+            ],
+        )
