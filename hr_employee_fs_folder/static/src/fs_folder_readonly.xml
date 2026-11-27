@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 Compassion CH (http://www.compassion.ch)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<templates xml:space="preserve">
+    <t t-inherit="fs_folder.FsFolder" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('oe_highlight')]" position="attributes">
+            <attribute
+                name="t-if"
+            >!props.record.data[props.name] and !props.readonly</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_add_folder']" position="attributes">
+            <attribute name="t-if">!props.readonly</attribute>
+        </xpath>
+        <xpath expr="//FileUploader" position="attributes">
+            <attribute name="t-if">!props.readonly</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_paste']" position="attributes">
+            <attribute name="t-if">state.copy and !props.readonly</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('ms-auto')]" position="attributes">
+            <attribute name="t-if">!props.readonly</attribute>
+        </xpath>
+    </t>
+</templates>
