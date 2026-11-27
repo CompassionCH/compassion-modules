@@ -28,12 +28,22 @@ class SponsorshipLine(models.Model):
         ondelete="cascade",
     )
 
-    @api.depends("contract_id.type")
+    @api.depends("contract_id.type", "product_id.categ_id")
     def _compute_amount_from_pricelist(self):
+        """The pricelist only proposes the amount of a new line, the line
+        amount is invoiced. Only the sponsorship price is fixed by the
+        pricelist, so that a change of that price reaches every sponsorship;
+        a sponsor giving more gets an extra line of another product. In a
+        contribution (SC, SWP) the sponsor chooses the sponsorship amount."""
         res = super()._compute_amount_from_pricelist()
+        sponsorship_category = self.env.ref(
+            "sponsorship_compassion.product_category_sponsorship"
+        )
         for line in self:
-            if line.contract_id.type in ("SC", "SWP"):
-                # The sponsor freely chooses the amount of their contribution
+            if (
+                line.product_id.categ_id != sponsorship_category
+                or line.contract_id.type in ("SC", "SWP")
+            ):
                 line.amount_from_pricelist = False
         return res
 
