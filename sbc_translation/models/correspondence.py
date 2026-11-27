@@ -15,6 +15,9 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+# res_field keeps these PDFs out of the letter's attachments
+TP_PDF_FIELD = "translation_platform_pdf"
+
 
 class Correspondence(models.Model):
     """This class intercepts a letter before it is sent to GMC.
@@ -380,6 +383,9 @@ class Correspondence(models.Model):
                 ("state", "!=", "success"),
             ]
         ).unlink()
+        self.with_user(SUPERUSER_ID).with_delay_sh(
+            "get_translation_pdf", channel="root.sbc_compassion", priority=150
+        )
         return True
 
     def assign_supervisor(self):
@@ -470,6 +476,7 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         reason = _("Removed from translation platform")
+        self._get_translation_pdf().unlink()
         self.write(
             {
                 "state": "Exception",
@@ -643,6 +650,7 @@ class Correspondence(models.Model):
 
     def _post_process_translation(self):
         self.ensure_one()
+        self._get_translation_pdf().unlink()
         is_s2b = self.direction == "Supporter To Beneficiary"
         self.write(
             {
@@ -728,8 +736,46 @@ class Correspondence(models.Model):
                 "age": partner.age,
                 "ref": partner.ref,
             },
-            "pdfUrl": f"/b2s_image?letter_uuid={self.uuid}&disposition=inline",
+            # Not /b2s_image: that link marks the letter as read by the sponsor
+            "pdfUrl": f"/sbc_translation/letter_pdf?letter_uuid={self.uuid}",
         }
+
+    def get_translation_pdf(self):
+        """Letter PDF of the translation platform. Downloading the page images and
+        rendering takes ~1 s, so it is kept while the letter is in the queue."""
+        self.ensure_one()
+        pdf = self._get_translation_pdf()
+        if not pdf:
+            data = self.sudo().get_pdf()
+            if data:
+                pdf = (
+                    self.env["ir.attachment"]
+                    .sudo()
+                    .create(
+                        {
+                            "name": "translation_platform.pdf",
+                            "res_model": self._name,
+                            "res_id": self.id,
+                            "res_field": TP_PDF_FIELD,
+                            "raw": data,
+                            "mimetype": "application/pdf",
+                        }
+                    )
+                )
+        return pdf
+
+    def _get_translation_pdf(self):
+        return (
+            self.env["ir.attachment"]
+            .sudo()
+            .search(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_id", "in", self.ids),
+                    ("res_field", "=", TP_PDF_FIELD),
+                ]
+            )
+        )
 
     def get_translated_elements(self):
         res = []
