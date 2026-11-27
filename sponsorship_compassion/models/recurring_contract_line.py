@@ -32,9 +32,11 @@ class SponsorshipLine(models.Model):
     def _compute_amount_from_pricelist(self):
         """The pricelist only proposes the amount of a new line, the line
         amount is invoiced. Only the sponsorship price is fixed by the
-        pricelist, so that a change of that price reaches every sponsorship;
-        a sponsor giving more gets an extra line of another product. In a
-        contribution (SC, SWP) the sponsor chooses the sponsorship amount."""
+        pricelist: products of exactly the Sponsorship category (not its
+        sub-categories) with a pricelist item of their own, so that a change
+        of that price reaches every sponsorship; a sponsor giving more gets an
+        extra line of another product. In a contribution (SC, SWP) the sponsor
+        chooses the sponsorship amount."""
         res = super()._compute_amount_from_pricelist()
         sponsorship_category = self.env.ref(
             "sponsorship_compassion.product_category_sponsorship"

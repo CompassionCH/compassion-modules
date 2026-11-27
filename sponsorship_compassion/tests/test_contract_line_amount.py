@@ -48,9 +48,10 @@ class TestContractLineAmount(BaseContractCompassionTest):
             {"name": "Donor price test", "country_id": cls.env.ref("base.ch").id}
         )
 
-    def _contract(self, product, amount):
+    def _contract(self, product, amount, contract_type="O"):
         return self.create_contract(
             {
+                "type": contract_type,
                 "partner_id": self.partner.id,
                 "group_id": self.create_group({"partner_id": self.partner.id}).id,
             },
@@ -78,10 +79,12 @@ class TestContractLineAmount(BaseContractCompassionTest):
 
     def test_price_update_reaches_only_sponsorship_lines(self):
         sponsorship = self._contract(self.sponsorship_product, 42)
+        contribution = self._contract(self.sponsorship_product, 60, "SC")
         donation = self._contract(self.fund_product, 42)
         for prod in (self.sponsorship_product, self.fund_product):
             item = self.pricelist_item[prod]
             item.fixed_price = 45
             item.update_cl_amount()
         self.assertEqual(sponsorship.contract_line_ids.amount, 45)
+        self.assertEqual(contribution.contract_line_ids.amount, 60)
         self.assertEqual(donation.contract_line_ids.amount, 42)
