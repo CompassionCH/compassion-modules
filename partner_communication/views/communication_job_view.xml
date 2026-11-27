@@ -118,6 +118,7 @@
                 readonly="state in ('processing', 'done')"
               />
                             <field name="user_id" readonly="state == 'done'" />
+                            <field name="signature_user_id" invisible="1" />
                             <field
                 name="partner_id"
                 readonly="state in ('processing', 'done')"
